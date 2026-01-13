@@ -23,6 +23,7 @@ import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -355,5 +356,14 @@ public class Drive extends SubsystemBase {
       new Translation2d(TunerConstants.BackLeft.LocationX, TunerConstants.BackLeft.LocationY),
       new Translation2d(TunerConstants.BackRight.LocationX, TunerConstants.BackRight.LocationY)
     };
+  }
+
+  // converts the robot relative pose to a field relative pose
+  public Pose2d convertFieldRelative(Transform2d robotRelativePose) {
+    return new Pose2d(
+            getPose().getX(),
+            getPose().getY(),
+            Rotation2d.fromDegrees(getPose().getRotation().getDegrees()))
+        .plus(robotRelativePose);
   }
 }
