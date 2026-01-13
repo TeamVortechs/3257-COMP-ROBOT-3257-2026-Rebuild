@@ -1,11 +1,11 @@
-package frc.robot.subsystems.turret;
+package frc.robot.subsystems.shooter;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import java.util.function.Supplier;
 
-public class TurretRotationManager {
+public class ShooterRotationManager {
   private Supplier<Pose2d> targetPose;
   private Supplier<Pose2d> robotPose;
 
@@ -13,7 +13,7 @@ public class TurretRotationManager {
    * @param targetPose the pose of the area we want to shoot too
    * @param robotPose the pose of the robot
    */
-  public TurretRotationManager(Supplier<Pose2d> targetPose, Supplier<Pose2d> robotPose) {
+  public ShooterRotationManager(Supplier<Pose2d> targetPose, Supplier<Pose2d> robotPose) {
     this.targetPose = targetPose;
     this.robotPose = robotPose;
   }
