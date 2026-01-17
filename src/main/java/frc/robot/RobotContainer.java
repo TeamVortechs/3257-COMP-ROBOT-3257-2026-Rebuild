@@ -9,6 +9,7 @@ package frc.robot;
 
 import com.ctre.phoenix6.CANBus;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -55,7 +56,7 @@ public class RobotContainer {
   public RobotContainer() {
     switch (Constants.currentMode) {
       case REAL:
-        CANBus canBus = new CANBus("canbus");
+        CANBus rioCanBus = new CANBus("rio");
 
         // Real robot, instantiate hardware IO implementations
         // ModuleIOTalonFX is intended for modules with TalonFX drive, TalonFX turn, and
@@ -72,7 +73,7 @@ public class RobotContainer {
             new ShooterRotationManager(() -> new Pose2d(), () -> drive.getPose());
         shooter =
             new Shooter(
-                new ShooterIOTalonFX(Constants.ShooterConstants.ID, canBus),
+                new ShooterIOTalonFX(Constants.ShooterConstants.ID, rioCanBus),
                 () -> shooterRotationManager.getDistance());
         // The ModuleIOTalonFXS implementation provides an example implementation for
         // TalonFXS controller connected to a CANdi with a PWM encoder. The
@@ -129,6 +130,9 @@ public class RobotContainer {
         break;
     }
 
+    NamedCommands.registerCommand("revShooter", shooter.setManualSpeedCommand(0.25));
+    NamedCommands.registerCommand("stopShooter", shooter.setManualSpeedCommand(0));
+
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
 
@@ -176,7 +180,7 @@ public class RobotContainer {
                 () -> -controller.getLeftX(),
                 () -> shooterRotationManager.getHeading()));
 
-    controller.rightTrigger().whileTrue(shooter.setManualSpeedCommand(1));
+    controller.rightTrigger().whileTrue(shooter.setManualSpeedCommand(0.25));
 
     controller.rightBumper().whileTrue(shooter.setManualSpeedCommand(0));
 
