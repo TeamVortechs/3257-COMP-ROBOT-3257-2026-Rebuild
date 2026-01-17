@@ -139,7 +139,7 @@ public class Shooter extends SubsystemBase {
    * @return
    */
   private double getSpeedFromDistance(double distance) {
-    return distance * 10;
+    return distance / 10;
   }
 
   // the constants here should probably be more and move but that's later when this is transferred

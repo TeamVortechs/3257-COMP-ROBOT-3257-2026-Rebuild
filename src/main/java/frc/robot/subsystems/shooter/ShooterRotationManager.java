@@ -44,6 +44,8 @@ public class ShooterRotationManager {
     Rotation2d heading = new Rotation2d(delta.getX(), delta.getY());
     ;
 
+    heading = heading.plus(Rotation2d.fromDegrees(90));
+
     getDistance();
 
     return heading;
@@ -58,7 +60,11 @@ public class ShooterRotationManager {
     Rotation2d heading = getHeading();
     Rotation2d robotRotation = robotPose.get().getRotation();
 
-    return heading.minus(robotRotation);
+    Rotation2d finalRotation = heading.minus(robotRotation);
+
+    // finalRotation = finalRotation.plus(Rotation2d.fromDegrees(90));
+
+    return finalRotation;
   }
 
   /**

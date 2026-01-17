@@ -184,6 +184,8 @@ public class RobotContainer {
 
     controller.rightBumper().whileTrue(shooter.setManualSpeedCommand(0));
 
+    controller.leftBumper().whileTrue(shooter.setAutomaticCommand());
+
     // Lock to 0° when A button is held
     controller
         .a()
