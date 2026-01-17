@@ -15,10 +15,13 @@ import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
+import frc.robot.Constants;
+import frc.robot.Constants.ShooterConstants;;
+
 public class Shooter extends SubsystemBase {
 
   // this shouldn't be here but it is for now because we're probably gonna move this
-  public static final double TOLERANCE = 0.1;
+  public static final double TOLERANCE = ShooterConstants.TOLERANCE;
 
   private DoubleSupplier distanceSupplier;
 
@@ -150,8 +153,8 @@ public class Shooter extends SubsystemBase {
     SysIdRoutine m_SysIdRoutine =
         new SysIdRoutine(
             new SysIdRoutine.Config(
-                Volts.of(0.25).per(Seconds), // Ramp Rate in Volts / Seconds
-                Volts.of(1), // Dynamic Step Voltage
+                Volts.of(ShooterConstants.RAMP_RATE_VOLTS_SYSID).per(Seconds), // Ramp Rate in Volts / Seconds
+                Volts.of(ShooterConstants.DYNAMIC_STEP_VOLTS_SYSID), // Dynamic Step Voltage
                 null, // Use default timeout (10 s)
                 (state) ->
                     SignalLogger.writeString(
