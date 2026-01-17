@@ -44,6 +44,7 @@ public class ShooterSimulationIO implements ShooterIO {
 
     // rollerMotorsSim.setInputVoltage(speed * 12); // lol i hope that works
     setVoltage(speed * 12);
+    System.out.println("setting speed to " + speed);
   }
 
   @Override
@@ -59,5 +60,4 @@ public class ShooterSimulationIO implements ShooterIO {
   public double getSpeed() {
     return rollerMotorsSim.getAngularVelocityRPM();
   }
-
 }

@@ -21,6 +21,5 @@ public interface ShooterIO {
     return 0;
   }
 
-
   public default void setVoltage(double voltage) {}
 }

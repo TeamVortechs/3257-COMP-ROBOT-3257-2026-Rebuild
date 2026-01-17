@@ -40,12 +40,13 @@ public class Shooter extends SubsystemBase {
   public Shooter(ShooterIO shooterIO, DoubleSupplier distanceSupplierMeters) {
     this.distanceSupplier = distanceSupplierMeters;
     this.shooterIO = shooterIO;
+    inputs = new ShooterIOInputsAutoLogged();
   }
 
   @Override
   public void periodic() {
     shooterIO.updateInputs(inputs);
-    Logger.processInputs("detection", inputs);
+    Logger.processInputs("shooter", inputs);
 
     // calculate speed that automatically updates with distance
     automaticSpeed = getSpeedFromDistance(distanceSupplier.getAsDouble());
@@ -82,7 +83,7 @@ public class Shooter extends SubsystemBase {
    * @return wether the speed is the target speed
    */
   public boolean isOnTarget() {
-    
+
     double difference = Math.abs(shooterIO.getSpeed() - getSpeedTarget());
 
     return difference < TOLERANCE;
@@ -96,7 +97,7 @@ public class Shooter extends SubsystemBase {
    * @return the finished command
    */
   public Command setManualSpeedCommand(double speed) {
-    return new InstantCommand(() -> this.setManualSpeed(speed));
+    return new InstantCommand(() -> this.setManualSpeed(speed), this);
   }
 
   /**

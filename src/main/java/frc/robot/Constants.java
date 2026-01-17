@@ -36,5 +36,7 @@ public final class Constants {
     public static final double RAMP_RATE_VOLTS_SYSID = 0.25;
     public static final double DYNAMIC_STEP_VOLTS_SYSID = 1;
     public static final double TOLERANCE = 0.1;
+
+    public static final int ID = 24;
   }
 }

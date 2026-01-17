@@ -7,6 +7,7 @@
 
 package frc.robot;
 
+import com.ctre.phoenix6.CANBus;
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -26,6 +27,7 @@ import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterIO;
+import frc.robot.subsystems.shooter.ShooterIOTalonFX;
 import frc.robot.subsystems.shooter.ShooterRotationManager;
 import frc.robot.subsystems.shooter.ShooterSimulationIO;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
@@ -53,6 +55,8 @@ public class RobotContainer {
   public RobotContainer() {
     switch (Constants.currentMode) {
       case REAL:
+        CANBus canBus = new CANBus("canbus");
+
         // Real robot, instantiate hardware IO implementations
         // ModuleIOTalonFX is intended for modules with TalonFX drive, TalonFX turn, and
         // a CANcoder
@@ -67,7 +71,9 @@ public class RobotContainer {
         shooterRotationManager =
             new ShooterRotationManager(() -> new Pose2d(), () -> drive.getPose());
         shooter =
-            new Shooter(new ShooterSimulationIO(), () -> shooterRotationManager.getDistance());
+            new Shooter(
+                new ShooterIOTalonFX(Constants.ShooterConstants.ID, canBus),
+                () -> shooterRotationManager.getDistance());
         // The ModuleIOTalonFXS implementation provides an example implementation for
         // TalonFXS controller connected to a CANdi with a PWM encoder. The
         // implementations
@@ -169,6 +175,10 @@ public class RobotContainer {
                 () -> -controller.getLeftY(),
                 () -> -controller.getLeftX(),
                 () -> shooterRotationManager.getHeading()));
+
+    controller.rightTrigger().whileTrue(shooter.setManualSpeedCommand(1));
+
+    controller.rightBumper().whileTrue(shooter.setManualSpeedCommand(0));
 
     // Lock to 0° when A button is held
     controller
