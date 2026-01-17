@@ -28,7 +28,8 @@ public final class Constants {
     /** Replaying from a log file. */
     REPLAY
   }
-  public class ShooterConstants{
+
+  public class ShooterConstants {
     public static final double SIM_TOLERANCE = 0.5;
 
     // used in Shooter.java

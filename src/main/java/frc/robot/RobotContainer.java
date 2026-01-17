@@ -28,9 +28,7 @@ import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterIO;
 import frc.robot.subsystems.shooter.ShooterRotationManager;
 import frc.robot.subsystems.shooter.ShooterSimulationIO;
-
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
-
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -68,10 +66,8 @@ public class RobotContainer {
 
         shooterRotationManager =
             new ShooterRotationManager(() -> new Pose2d(), () -> drive.getPose());
-        shooter = new Shooter(
-            new ShooterSimulationIO(),
-            () -> shooterRotationManager.getDistance()
-        );
+        shooter =
+            new Shooter(new ShooterSimulationIO(), () -> shooterRotationManager.getDistance());
         // The ModuleIOTalonFXS implementation provides an example implementation for
         // TalonFXS controller connected to a CANdi with a PWM encoder. The
         // implementations
@@ -94,7 +90,6 @@ public class RobotContainer {
       case SIM:
         // Sim robot, instantiate physics sim IO implementations
 
-        
         drive =
             new Drive(
                 new GyroIO() {},
@@ -106,10 +101,8 @@ public class RobotContainer {
         shooterRotationManager =
             new ShooterRotationManager(() -> new Pose2d(), () -> drive.getPose());
 
-        shooter = new Shooter(
-            new ShooterSimulationIO(),
-            () -> shooterRotationManager.getDistance()
-        );
+        shooter =
+            new Shooter(new ShooterSimulationIO(), () -> shooterRotationManager.getDistance());
         break;
 
       default:
@@ -124,11 +117,8 @@ public class RobotContainer {
 
         shooterRotationManager =
             new ShooterRotationManager(() -> new Pose2d(), () -> drive.getPose());
-        
-        shooter = new Shooter(
-            new ShooterIO(){},
-            () -> shooterRotationManager.getDistance()
-        );
+
+        shooter = new Shooter(new ShooterIO() {}, () -> shooterRotationManager.getDistance());
 
         break;
     }

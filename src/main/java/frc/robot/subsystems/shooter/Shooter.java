@@ -11,12 +11,10 @@ import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.robot.Constants.ShooterConstants;
 import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
-
-import frc.robot.Constants;
-import frc.robot.Constants.ShooterConstants;;
 
 public class Shooter extends SubsystemBase {
 
@@ -84,7 +82,10 @@ public class Shooter extends SubsystemBase {
    * @return wether the speed is the target speed
    */
   public boolean isOnTarget() {
-    return shooterIO.isOnTarget();
+    
+    double difference = Math.abs(shooterIO.getSpeed() - getSpeedTarget());
+
+    return difference < TOLERANCE;
   }
 
   // COMMANDS
@@ -153,7 +154,8 @@ public class Shooter extends SubsystemBase {
     SysIdRoutine m_SysIdRoutine =
         new SysIdRoutine(
             new SysIdRoutine.Config(
-                Volts.of(ShooterConstants.RAMP_RATE_VOLTS_SYSID).per(Seconds), // Ramp Rate in Volts / Seconds
+                Volts.of(ShooterConstants.RAMP_RATE_VOLTS_SYSID)
+                    .per(Seconds), // Ramp Rate in Volts / Seconds
                 Volts.of(ShooterConstants.DYNAMIC_STEP_VOLTS_SYSID), // Dynamic Step Voltage
                 null, // Use default timeout (10 s)
                 (state) ->

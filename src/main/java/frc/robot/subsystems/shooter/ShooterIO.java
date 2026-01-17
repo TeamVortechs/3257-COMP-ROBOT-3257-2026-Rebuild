@@ -21,9 +21,6 @@ public interface ShooterIO {
     return 0;
   }
 
-  public default boolean isOnTarget() {
-    return false;
-  }
 
   public default void setVoltage(double voltage) {}
 }
