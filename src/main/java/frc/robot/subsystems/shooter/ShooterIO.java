@@ -8,7 +8,7 @@ public interface ShooterIO {
     double speed;
     double targetSpeed;
     double amps;
-    double current;
+    double voltage;
     boolean isOnTarget;
   }
 
