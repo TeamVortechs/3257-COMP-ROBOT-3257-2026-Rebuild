@@ -4,10 +4,13 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import java.util.function.Supplier;
+import org.littletonrobotics.junction.AutoLogOutput;
 
 public class ShooterRotationManager {
   private Supplier<Pose2d> targetPose;
   private Supplier<Pose2d> robotPose;
+
+  @AutoLogOutput private double distance = 0;
 
   /**
    * @param targetPose the pose of the area we want to shoot too
@@ -24,8 +27,7 @@ public class ShooterRotationManager {
    * @return the distance in meters
    */
   public double getDistance() {
-    double distance =
-        targetPose.get().getTranslation().getDistance(robotPose.get().getTranslation());
+    distance = targetPose.get().getTranslation().getDistance(robotPose.get().getTranslation());
 
     return distance;
   }
@@ -41,6 +43,8 @@ public class ShooterRotationManager {
 
     Rotation2d heading = new Rotation2d(delta.getX(), delta.getY());
     ;
+
+    getDistance();
 
     return heading;
   }
