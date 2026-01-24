@@ -1,6 +1,5 @@
 package frc.robot.subsystems.intake;
 
-import frc.robot.util.VTControlType;
 import org.littletonrobotics.junction.AutoLog;
 
 /**
@@ -46,9 +45,9 @@ public interface IntakeIO {
   }
 
   // setters for motors
-  public default void setVoltage(double volt) {}
+  public default void set(double volt) {}
 
-  // sets the position of the rollers. This function will most likely not be implemented
+  // sets the position of the arm. 
   public default void setTargetPosition(double position) {}
 
   public default double getTargetPosition() {
@@ -80,22 +79,11 @@ public interface IntakeIO {
   public default boolean isMaxPosition() {
     return false;
   }
-
-  public default void setTargetSpeed(double speed) {}
-
   public default double getSpeed() {
-    return 0;
-  }
-
-  public default double getTargetSpeed() {
     return 0;
   }
 
   public default boolean checkIfStalled() {
     return false;
-  }
-
-  public default VTControlType getControlType() {
-    return VTControlType.MANUAL;
   }
 }
