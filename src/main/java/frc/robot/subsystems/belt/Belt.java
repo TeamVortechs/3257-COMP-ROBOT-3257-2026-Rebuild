@@ -86,7 +86,7 @@ public class Belt extends SubsystemBase {
    * @return the finished command
    */
   public Command setSpeedCommand(double speed) {
-    return new InstantCommand(() -> this.setSpeed(speed));
+    return new InstantCommand(() -> this.setSpeed(speed), this);
   }
 
   /**
@@ -96,7 +96,7 @@ public class Belt extends SubsystemBase {
    * @return the finished command
    */
   public Command setSpeedCommandConsistentEnd(double speed) {
-    return new InstantCommand(() -> this.setSpeed(speed))
+    return new InstantCommand(() -> this.setSpeed(speed), this)
         .andThen(new WaitUntilCommand(() -> this.isOnTarget()));
   }
 

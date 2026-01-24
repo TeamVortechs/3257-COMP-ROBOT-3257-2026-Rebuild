@@ -18,6 +18,9 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
 import frc.robot.generated.TunerConstants;
+import frc.robot.subsystems.belt.Belt;
+import frc.robot.subsystems.belt.BeltIO;
+import frc.robot.subsystems.belt.BeltSimulationIO;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
@@ -41,6 +44,8 @@ public class RobotContainer {
 
   private final Intake intake;
 
+  private final Belt belt;
+
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
 
@@ -63,6 +68,8 @@ public class RobotContainer {
                 new ModuleIOTalonFX(TunerConstants.BackRight));
 
         intake = new Intake(new IntakeIO() {});
+
+        belt = new Belt(new BeltIO() {});
 
         // The ModuleIOTalonFXS implementation provides an example implementation for
         // TalonFXS controller connected to a CANdi with a PWM encoder. The
@@ -94,6 +101,8 @@ public class RobotContainer {
                 new ModuleIOSim(TunerConstants.BackRight));
 
         intake = new Intake(new IntakeSimulationIO());
+
+        belt = new Belt(new BeltSimulationIO());
         break;
 
       default:
@@ -107,6 +116,8 @@ public class RobotContainer {
                 new ModuleIO() {});
 
         intake = new Intake(new IntakeIO() {});
+
+        belt = new Belt(new BeltIO() {});
 
         break;
     }
@@ -174,6 +185,7 @@ public class RobotContainer {
                 .ignoringDisable(true));
 
     intake.setDefaultCommand(intake.setSpeedAndPositionCommand(0, 0));
+    belt.setDefaultCommand(belt.setSpeedRunCommand(1));
 
     controller.rightTrigger().whileTrue(intake.setSpeedAndPositionCommand(1, 1));
   }
