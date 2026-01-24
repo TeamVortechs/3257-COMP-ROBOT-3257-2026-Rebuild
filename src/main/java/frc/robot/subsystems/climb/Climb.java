@@ -2,7 +2,6 @@ package frc.robot.subsystems.climb;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ClimbConstants;
-
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
@@ -36,19 +35,19 @@ public class Climb extends SubsystemBase {
       return;
     }
 
-    if(automaticLeftSetpoint > ClimbConstants.MAX_POSITION_LEFT) {
+    if (automaticLeftSetpoint > ClimbConstants.MAX_POSITION_LEFT) {
       automaticLeftSetpoint = ClimbConstants.MAX_POSITION_LEFT;
     }
-    
-    if(automaticRightSetpoint > ClimbConstants.MAX_POSITION_RIGHT) {
+
+    if (automaticRightSetpoint > ClimbConstants.MAX_POSITION_RIGHT) {
       automaticRightSetpoint = ClimbConstants.MAX_POSITION_RIGHT;
     }
 
-    if(automaticLeftSetpoint < ClimbConstants.MIN_POSITION_LEFT) {
+    if (automaticLeftSetpoint < ClimbConstants.MIN_POSITION_LEFT) {
       automaticLeftSetpoint = ClimbConstants.MIN_POSITION_LEFT;
     }
 
-    if(automaticRightSetpoint < ClimbConstants.MIN_POSITION_RIGHT) {
+    if (automaticRightSetpoint < ClimbConstants.MIN_POSITION_RIGHT) {
       automaticRightSetpoint = ClimbConstants.MIN_POSITION_RIGHT;
     }
 
@@ -81,6 +80,7 @@ public class Climb extends SubsystemBase {
 
   /**
    * sets the climber to automatic and sets the positions
+   *
    * @param leftPosition
    * @param rightPosition
    */
@@ -88,11 +88,9 @@ public class Climb extends SubsystemBase {
     isManual = false;
     this.automaticLeftSetpoint = leftPosition;
     this.automaticRightSetpoint = rightPosition;
-  } 
+  }
 
-  /**
-   * makes the climber manual and stops the setpoint
-   */
+  /** makes the climber manual and stops the setpoint */
   public void stop() {
     climbIO.stop();
   }
