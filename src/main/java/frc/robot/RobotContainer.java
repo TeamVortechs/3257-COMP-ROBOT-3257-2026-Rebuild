@@ -33,6 +33,10 @@ import frc.robot.subsystems.feeder.FeederSimulationIO;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeIO;
 import frc.robot.subsystems.intake.IntakeSimulationIO;
+import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.shooter.ShooterIO;
+import frc.robot.subsystems.shooter.ShooterRotationManager;
+import frc.robot.subsystems.shooter.ShooterSimulationIO;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -50,6 +54,9 @@ public class RobotContainer {
   private final Belt belt;
 
   private final Feeder feeder;
+
+  private final Shooter shooter;
+  private final ShooterRotationManager shooterRotationManager;
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
@@ -77,6 +84,9 @@ public class RobotContainer {
         belt = new Belt(new BeltIO() {});
 
         feeder = new Feeder(new FeederIO() {});
+
+        shooterRotationManager = new ShooterRotationManager(() -> new Pose2d(), drive);
+        shooter = new Shooter(new ShooterIO() {}, () -> shooterRotationManager.getDistance());
 
         // The ModuleIOTalonFXS implementation provides an example implementation for
         // TalonFXS controller connected to a CANdi with a PWM encoder. The
@@ -112,6 +122,10 @@ public class RobotContainer {
         belt = new Belt(new BeltSimulationIO());
 
         feeder = new Feeder(new FeederSimulationIO());
+
+        shooterRotationManager = new ShooterRotationManager(() -> new Pose2d(), drive);
+        shooter =
+            new Shooter(new ShooterSimulationIO(), () -> shooterRotationManager.getDistance());
         break;
 
       default:
@@ -129,6 +143,9 @@ public class RobotContainer {
         belt = new Belt(new BeltIO() {});
 
         feeder = new Feeder(new FeederIO() {});
+
+        shooterRotationManager = new ShooterRotationManager(() -> new Pose2d(), drive);
+        shooter = new Shooter(new ShooterIO() {}, () -> shooterRotationManager.getDistance());
 
         break;
     }
@@ -198,7 +215,10 @@ public class RobotContainer {
     intake.setDefaultCommand(intake.setSpeedAndPositionCommand(0, 0));
     belt.setDefaultCommand(belt.setSpeedRunCommand(1));
     feeder.setDefaultCommand(feeder.setSpeedRunCommand(0));
+    shooter.setDefaultCommand(shooter.setManualSpeedRunCommand(0));
 
+
+    controller.rightBumper().whileTrue(shooter.setManualSpeedRunCommand(1));
     controller.rightTrigger().whileTrue(intake.setSpeedAndPositionCommand(1, 1));
   }
 
