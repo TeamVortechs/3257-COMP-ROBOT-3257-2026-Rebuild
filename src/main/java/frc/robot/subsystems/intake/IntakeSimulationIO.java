@@ -1,15 +1,11 @@
 package frc.robot.subsystems.intake;
 
-import static edu.wpi.first.units.Units.Radian;
-
-import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 
 public class IntakeSimulationIO {
-
 
   private final DCMotorSim rollerMotorsSim;
   private final DCMotorSim positionMotorsSim;
@@ -18,8 +14,6 @@ public class IntakeSimulationIO {
 
   private PIDController positionPIDController = new PIDController(0.9, 0, 0.1);
 
-
-    
   public IntakeSimulationIO() {
     // now this motor exists in advantage kit?
     this.rollerMotorsSim =
@@ -28,12 +22,12 @@ public class IntakeSimulationIO {
             DCMotor.getKrakenX60(1));
 
     this.positionMotorsSim =
-    new DCMotorSim(
-        LinearSystemId.createDCMotorSystem(DCMotor.getKrakenX60(1), 0.001, 1),
-        DCMotor.getKrakenX60(1));
+        new DCMotorSim(
+            LinearSystemId.createDCMotorSystem(DCMotor.getKrakenX60(1), 0.001, 1),
+            DCMotor.getKrakenX60(1));
   }
 
-    // updates the given inputs with new values(advantage kit stuff)
+  // updates the given inputs with new values(advantage kit stuff)
   public void updateInputs(IntakeIOInputsAutoLogged inputsAutoLogged) {
     inputsAutoLogged.rollerAmps = rollerMotorsSim.getCurrentDrawAmps();
     inputsAutoLogged.rollerVolts = rollerMotorsSim.getInputVoltage();
@@ -63,11 +57,10 @@ public class IntakeSimulationIO {
     rollerMotorsSim.setInputVoltage(volt);
   }
 
-  // sets the position of the arm. 
+  // sets the position of the arm.
   public void setTargetPosition(double position) {
     double currentAngle = positionMotorsSim.getAngularPositionRotations();
-    double inputVoltage =
-        positionPIDController.calculate(currentAngle, position);
+    double inputVoltage = positionPIDController.calculate(currentAngle, position);
     // System.out.println("Input volt: "+inputVoltage+" Target Angle: "+targetAngle);
     positionMotorsSim.setInputVoltage(inputVoltage);
     // System.out.println("Voltage being sent in PID Voltage");
@@ -102,6 +95,7 @@ public class IntakeSimulationIO {
   public boolean isMaxPosition() {
     return false;
   }
+
   public double getSpeed() {
     return 0;
   }

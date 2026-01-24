@@ -4,7 +4,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.util.VortechsUtil;
@@ -58,14 +57,13 @@ public class Intake extends SubsystemBase {
     currentSpeed = moduleIO.getSpeed();
     currentPosition = moduleIO.getPosition();
 
-    if(targetPosition > IntakeConstants.MAX_POSITION) {
+    if (targetPosition > IntakeConstants.MAX_POSITION) {
       targetPosition = IntakeConstants.MAX_POSITION;
     }
 
-    if(targetPosition < IntakeConstants.MIN_POSITION) {
+    if (targetPosition < IntakeConstants.MIN_POSITION) {
       targetPosition = IntakeConstants.MIN_POSITION;
     }
-
 
     isOnTarget = isOnTarget();
 
@@ -80,9 +78,7 @@ public class Intake extends SubsystemBase {
     targetPosition = position;
   }
 
-
-
-  /** sets the roller motors, 0-1*/
+  /** sets the roller motors, 0-1 */
   public void setRollers(double voltage) {
 
     // clamp speed to prevent exceeding limits
@@ -96,8 +92,6 @@ public class Intake extends SubsystemBase {
   public void holdPositionBrake() {
     moduleIO.stop();
   }
-
-
 
   // returns wether or not the elevaotr is on target
   public boolean isOnTarget() {
@@ -133,7 +127,6 @@ public class Intake extends SubsystemBase {
     return new RunCommand(() -> this.setRollers(speed.getAsDouble()), this);
   }
 
-
   // resets the encoders of the wrist
   public Command resetEncodersCommand() {
     return new InstantCommand(() -> this.resetEncoders());
@@ -149,5 +142,4 @@ public class Intake extends SubsystemBase {
   public Command requireSubsystemCommand() {
     return new InstantCommand(() -> {}, this);
   }
-
 }

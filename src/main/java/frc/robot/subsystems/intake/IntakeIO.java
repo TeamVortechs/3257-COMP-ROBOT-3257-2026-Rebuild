@@ -28,7 +28,6 @@ public interface IntakeIO {
 
     double position = 0;
     double targetPosition = 0;
-
   }
 
   // updates the given inputs with new values(advantage kit stuff)
@@ -48,7 +47,7 @@ public interface IntakeIO {
   // setters for motors
   public default void set(double volt) {}
 
-  // sets the position of the arm. 
+  // sets the position of the arm.
   public default void setTargetPosition(double position) {}
 
   public default double getTargetPosition() {
@@ -80,6 +79,7 @@ public interface IntakeIO {
   public default boolean isMaxPosition() {
     return false;
   }
+
   public default double getSpeed() {
     return 0;
   }
