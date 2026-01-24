@@ -22,12 +22,13 @@ public interface IntakeIO {
     double rollerVolts = 0;
     double rollerSpeed = 0;
 
-    double targetSpeed = 0;
+    double positionAmps = 0;
+    double positionVolts = 0;
+    double positionSpeed = 0;
 
     double position = 0;
     double targetPosition = 0;
 
-    String controlType = "none";
   }
 
   // updates the given inputs with new values(advantage kit stuff)
