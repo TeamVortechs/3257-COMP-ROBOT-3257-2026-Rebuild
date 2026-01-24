@@ -37,6 +37,11 @@ public interface ClimbIO {
    */
   public default void setServo(double position) {}
 
+
+  public default void setPositions(double leftPosition, double rightPosition) {
+
+  }
+
   /** stop the motors/servos, shutdown scenario? */
   public default void stop() {}
 }

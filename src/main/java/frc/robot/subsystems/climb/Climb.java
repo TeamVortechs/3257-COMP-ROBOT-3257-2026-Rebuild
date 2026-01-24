@@ -9,7 +9,14 @@ public class Climb extends SubsystemBase {
   private final ClimbIOInputsAutoLogged inputs = new ClimbIOInputsAutoLogged();
 
   @AutoLogOutput private boolean isLocked = true;
-  @AutoLogOutput private double targetPosition = 0.0;
+
+  @AutoLogOutput private boolean isManual = false;
+
+  @AutoLogOutput private double manualLeftSpeed = 0;
+  @AutoLogOutput private double manualRightSpeed = 0;
+
+  @AutoLogOutput private double automaticLeftSetpoint = 0;
+  @AutoLogOutput private double automaticRightSetpoint = 0;
 
   public Climb(ClimbIO climbIO) {
     this.climbIO = climbIO;
@@ -19,6 +26,19 @@ public class Climb extends SubsystemBase {
   public void periodic() {
     climbIO.updateInputs(inputs);
     Logger.processInputs("Climb", inputs);
+
+    if (isLocked) {
+      climbIO.stop();
+
+      setManualSpeeds(0, 0);
+      return;
+    }
+
+    if (isManual) {
+      climbIO.setSpeeds(0, 0);
+    } else {
+      climbIO.setPositions(automaticLeftSetpoint, automaticRightSetpoint);
+    }
   }
 
   /** set servo in degrees */
@@ -28,15 +48,33 @@ public class Climb extends SubsystemBase {
 
   /**
    * Manual control for both motors. Useful if the robot is tilting and you need to adjust one side.
+   * sets it to manual
    */
   public void setManualSpeeds(double left, double right) {
-    if (isLocked) {
-      climbIO.stop();
-      return;
-    }
+    // if (isLocked) {
+    //   climbIO.stop();
+    //   return;
+    // }
+
+    isManual = true;
+
     climbIO.setSpeeds(left, right);
   }
 
+  /**
+   * sets the climber to automatic and sets the positions
+   * @param leftPosition
+   * @param rightPosition
+   */
+  public void setPositions(double leftPosition, double rightPosition) {
+    isManual = false;
+    this.automaticLeftSetpoint = leftPosition;
+    this.automaticRightSetpoint = rightPosition;
+  } 
+
+  /**
+   * makes the climber manual and stops the setpoint
+   */
   public void stop() {
     climbIO.stop();
   }
