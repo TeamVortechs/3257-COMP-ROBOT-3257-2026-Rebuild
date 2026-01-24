@@ -27,6 +27,9 @@ import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
+import frc.robot.subsystems.feeder.Feeder;
+import frc.robot.subsystems.feeder.FeederIO;
+import frc.robot.subsystems.feeder.FeederSimulationIO;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeIO;
 import frc.robot.subsystems.intake.IntakeSimulationIO;
@@ -45,6 +48,8 @@ public class RobotContainer {
   private final Intake intake;
 
   private final Belt belt;
+
+  private final Feeder feeder;
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
@@ -70,6 +75,8 @@ public class RobotContainer {
         intake = new Intake(new IntakeIO() {});
 
         belt = new Belt(new BeltIO() {});
+
+        feeder = new Feeder(new FeederIO() {});
 
         // The ModuleIOTalonFXS implementation provides an example implementation for
         // TalonFXS controller connected to a CANdi with a PWM encoder. The
@@ -103,6 +110,8 @@ public class RobotContainer {
         intake = new Intake(new IntakeSimulationIO());
 
         belt = new Belt(new BeltSimulationIO());
+
+        feeder = new Feeder(new FeederSimulationIO());
         break;
 
       default:
@@ -118,6 +127,8 @@ public class RobotContainer {
         intake = new Intake(new IntakeIO() {});
 
         belt = new Belt(new BeltIO() {});
+
+        feeder = new Feeder(new FeederIO() {});
 
         break;
     }
@@ -186,6 +197,7 @@ public class RobotContainer {
 
     intake.setDefaultCommand(intake.setSpeedAndPositionCommand(0, 0));
     belt.setDefaultCommand(belt.setSpeedRunCommand(1));
+    feeder.setDefaultCommand(feeder.setSpeedRunCommand(0));
 
     controller.rightTrigger().whileTrue(intake.setSpeedAndPositionCommand(1, 1));
   }
@@ -201,5 +213,9 @@ public class RobotContainer {
 
   public Intake getIntake() {
     return intake;
+  }
+
+  public Feeder getFeeder() {
+    return feeder;
   }
 }
