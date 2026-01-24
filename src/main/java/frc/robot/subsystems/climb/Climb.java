@@ -1,6 +1,8 @@
 package frc.robot.subsystems.climb;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.ClimbConstants;
+
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
@@ -32,6 +34,22 @@ public class Climb extends SubsystemBase {
 
       setManualSpeeds(0, 0);
       return;
+    }
+
+    if(automaticLeftSetpoint > ClimbConstants.MAX_POSITION_LEFT) {
+      automaticLeftSetpoint = ClimbConstants.MAX_POSITION_LEFT;
+    }
+    
+    if(automaticRightSetpoint > ClimbConstants.MAX_POSITION_RIGHT) {
+      automaticRightSetpoint = ClimbConstants.MAX_POSITION_RIGHT;
+    }
+
+    if(automaticLeftSetpoint < ClimbConstants.MIN_POSITION_LEFT) {
+      automaticLeftSetpoint = ClimbConstants.MIN_POSITION_LEFT;
+    }
+
+    if(automaticRightSetpoint < ClimbConstants.MIN_POSITION_RIGHT) {
+      automaticRightSetpoint = ClimbConstants.MIN_POSITION_RIGHT;
     }
 
     if (isManual) {
