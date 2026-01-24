@@ -15,7 +15,7 @@ public class KickerSubsystem extends SubsystemBase {
     this.kicker = kicker;
     TalonFXConfigurator configs = kicker.getConfigurator();
     OpenLoopRampsConfigs loopConfigs =
-        new OpenLoopRampsConfigs().withDutyCycleOpenLoopRampPeriod(2.0);
+        new OpenLoopRampsConfigs().withDutyCycleOpenLoopRampPeriod(1.0);
     MotorOutputConfigs outputConfigs =
         new MotorOutputConfigs().withInverted(InvertedValue.Clockwise_Positive);
 
