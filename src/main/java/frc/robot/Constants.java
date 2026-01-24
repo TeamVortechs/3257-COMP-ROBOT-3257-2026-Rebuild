@@ -118,12 +118,15 @@ public final class Constants {
     public static final double MAX_POSITION_RIGHT = 0;
   }
 
-  public class CIntake {
+  public class IntakeConstants {
     // dummy values for now
     public static final double MAX_TARGET_SPEED = 100;
     public static final double MAX_MANUAL_SPEED = 100;
     public static final double POS_TOLERANCE = 0.2;
 
     public static final double POSITION_TOLERANCE = 0.1;
+
+    public static final double MAX_POSITION = 0;
+    public static final double MIN_POSITION = 0;
   }
 }

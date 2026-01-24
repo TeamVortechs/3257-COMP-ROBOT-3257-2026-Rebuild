@@ -6,7 +6,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Constants;
-import frc.robot.Constants.CIntake;
+import frc.robot.Constants.IntakeConstants;
 import frc.robot.util.VortechsUtil;
 import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.AutoLogOutput;
@@ -25,8 +25,6 @@ public class Intake extends SubsystemBase {
   @AutoLogOutput private boolean isOnTarget = false;
   @AutoLogOutput private double targetPosition;
   @AutoLogOutput private double currentPosition;
-
-  @AutoLogOutput private boolean manualOverride = false;
 
   @AutoLogOutput private double rollerPower;
   @AutoLogOutput private double currentSpeed;
@@ -60,27 +58,35 @@ public class Intake extends SubsystemBase {
     currentSpeed = moduleIO.getSpeed();
     currentPosition = moduleIO.getPosition();
 
-    // if manual override return
-    if (manualOverride) {
-      return;
+    if(targetPosition > IntakeConstants.MAX_POSITION) {
+      targetPosition = IntakeConstants.MAX_POSITION;
     }
+
+    if(targetPosition < IntakeConstants.MIN_POSITION) {
+      targetPosition = IntakeConstants.MIN_POSITION;
+    }
+
 
     isOnTarget = isOnTarget();
 
     // Clamp target speed to prevent exceeding limits
-    rollerPower = VortechsUtil.clamp(rollerPower, Constants.CIntake.MAX_TARGET_SPEED);
+    rollerPower = VortechsUtil.clamp(rollerPower, Constants.IntakeConstants.MAX_TARGET_SPEED);
 
+    moduleIO.setTargetPosition(targetPosition);
     moduleIO.set(rollerPower);
+  }
+
+  public void setPosition(double position) {
+    targetPosition = position;
   }
 
 
 
   /** sets the roller motors, 0-1*/
   public void setRollers(double voltage) {
-    manualOverride = true;
 
     // clamp speed to prevent exceeding limits
-    voltage = VortechsUtil.clamp(voltage, Constants.CIntake.MAX_MANUAL_SPEED);
+    voltage = VortechsUtil.clamp(voltage, Constants.IntakeConstants.MAX_MANUAL_SPEED);
 
     System.out.println("Above speed limit; rate limiting Intake speed.");
     moduleIO.set(voltage);
@@ -88,15 +94,9 @@ public class Intake extends SubsystemBase {
 
   /** Holds the current position using braking mode. */
   public void holdPositionBrake() {
-    manualOverride = true;
     moduleIO.stop();
   }
 
-  /** Emergency stop function that immediately disables motor output. */
-  public void emergencyStop() {
-    moduleIO.stop();
-    manualOverride = true;
-  }
 
 
   // returns wether or not the elevaotr is on target
@@ -104,7 +104,7 @@ public class Intake extends SubsystemBase {
 
     double diff = Math.abs(targetPosition - currentPosition);
 
-    return CIntake.POS_TOLERANCE > diff;
+    return IntakeConstants.POS_TOLERANCE > diff;
   }
 
   /** resets encoders to read 0 and resets PID (setting it to begin at current height) */
