@@ -75,7 +75,7 @@ public class VisualSimulator {
       ligament.setColor(colorSupplier.get());
     }
 
-    Logger.recordOutput(name, panel);
+    Logger.recordOutput("Simulation/" + name, panel);
   }
 
   // changing the position of a root node

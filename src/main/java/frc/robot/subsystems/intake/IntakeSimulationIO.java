@@ -5,7 +5,7 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 
-public class IntakeSimulationIO {
+public class IntakeSimulationIO implements IntakeIO {
 
   private final DCMotorSim rollerMotorsSim;
   private final DCMotorSim positionMotorsSim;
@@ -39,6 +39,9 @@ public class IntakeSimulationIO {
 
     inputsAutoLogged.position = positionMotorsSim.getAngularPositionRotations();
     inputsAutoLogged.targetPosition = targetPosition;
+
+    rollerMotorsSim.update(0.02);
+    positionMotorsSim.update(0.02);
   }
 
   // getters for motors
@@ -67,7 +70,7 @@ public class IntakeSimulationIO {
   }
 
   public double getTargetPosition() {
-    return 0;
+    return targetPosition;
   }
   // misc methods
 
@@ -89,7 +92,7 @@ public class IntakeSimulationIO {
 
   // gets the height of the arm in meters
   public double getPosition() {
-    return 0;
+    return positionMotorsSim.getAngularPositionRotations();
   }
 
   public boolean isMaxPosition() {
@@ -97,7 +100,7 @@ public class IntakeSimulationIO {
   }
 
   public double getSpeed() {
-    return 0;
+    return rollerMotorsSim.getAngularVelocityRadPerSec();
   }
 
   public boolean checkIfStalled() {

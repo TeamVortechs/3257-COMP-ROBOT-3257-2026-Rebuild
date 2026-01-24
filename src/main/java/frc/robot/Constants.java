@@ -126,7 +126,7 @@ public final class Constants {
 
     public static final double POSITION_TOLERANCE = 0.1;
 
-    public static final double MAX_POSITION = 0;
+    public static final double MAX_POSITION = 1;
     public static final double MIN_POSITION = 0;
   }
 }

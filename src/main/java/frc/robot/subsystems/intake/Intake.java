@@ -1,6 +1,7 @@
 package frc.robot.subsystems.intake;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -84,7 +85,6 @@ public class Intake extends SubsystemBase {
     // clamp speed to prevent exceeding limits
     voltage = VortechsUtil.clamp(voltage, Constants.IntakeConstants.MAX_MANUAL_SPEED);
 
-    System.out.println("Above speed limit; rate limiting Intake speed.");
     moduleIO.set(voltage);
   }
 
@@ -118,13 +118,23 @@ public class Intake extends SubsystemBase {
   // commands
 
   // sets the manual override speed of this command. Uses a regular double
-  public Command setManualOverrideCommand(double speed) {
+  public Command setRollerCommand(double speed) {
     return new RunCommand(() -> this.setRollers(speed), this);
   }
 
   // sets the manual override speed of this command. Uses a double supplier
-  public Command setManualOverrideCommand(DoubleSupplier speed) {
+  public Command setRollerCommand(DoubleSupplier speed) {
     return new RunCommand(() -> this.setRollers(speed.getAsDouble()), this);
+  }
+
+  public Command setPositionCommand(double position) {
+    return new RunCommand(() -> this.setPosition(position), this);
+  }
+
+  public Command setSpeedAndPositionCommand(double position, double speed) {
+    return Commands.parallel(
+        new RunCommand(() -> this.setPosition(position)),
+        new RunCommand(() -> this.setRollers(speed), this));
   }
 
   // resets the encoders of the wrist
