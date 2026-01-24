@@ -164,8 +164,8 @@ public class RobotContainer {
     ShooterSubsystem shooter = new ShooterSubsystem(new TalonFX(21, "rio"));
     KickerSubsystem kicker = new KickerSubsystem(new TalonFX(22, "rio"));
 
-    controller.rightTrigger().whileTrue(shooter.shootCmd(0.40));
-    controller.rightBumper().whileTrue(kicker.kickCmd(0.3));
+    controller.rightTrigger().whileTrue(shooter.shootCmd(0.42));
+    controller.rightBumper().whileTrue(kicker.kickCmd(0.35));
   }
 
   /**
