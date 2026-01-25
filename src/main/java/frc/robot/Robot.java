@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.feeder.Feeder;
 import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.util.simulation.SimulationManager;
 import frc.robot.util.simulation.VisualSimulator;
 import org.littletonrobotics.junction.LogFileUtil;
@@ -198,6 +199,26 @@ public class Robot extends LoggedRobot {
           return new Color8Bit(Color.kWhite);
         });
 
+    Shooter shooter = robotContainer.getShooter();
+
+        VisualSimulator shooterSim =
+        new VisualSimulator(
+            new Translation2d(-0.1, 0.8),
+            () -> -90,
+            () -> 0.25,
+            0.5,
+            new Color8Bit(Color.kAqua),
+            "shooter");
+
+    shooterSim.setColorSupplier(
+        () -> {
+          if (shooter.getSpeedTarget() > 0.5) {
+            return new Color8Bit(Color.kRed);
+          }
+          return new Color8Bit(Color.kWhite);
+        });
+
+    SimulationManager.addSimulationMechanism(shooterSim);
     SimulationManager.addSimulationMechanism(feederSim);
     SimulationManager.addSimulationMechanism(intakeSim);
   }

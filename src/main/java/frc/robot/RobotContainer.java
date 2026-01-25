@@ -238,4 +238,8 @@ public class RobotContainer {
   public Feeder getFeeder() {
     return feeder;
   }
+
+  public Shooter getShooter() {
+    return shooter;
+  }
 }
