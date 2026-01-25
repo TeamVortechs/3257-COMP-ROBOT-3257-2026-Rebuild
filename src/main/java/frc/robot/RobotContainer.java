@@ -217,7 +217,7 @@ public class RobotContainer {
     intake.setDefaultCommand(intake.setSpeedAndPositionCommand(0, 0));
     belt.setDefaultCommand(belt.setSpeedRunCommand(1));
     feeder.setDefaultCommand(feeder.setSpeedRunCommand(0));
-    shooter.setDefaultCommand(new ChargeShooterWhenNeededCommand(shooter, () -> drive.getPose()));
+    // shooter.setDefaultCommand(new ChargeShooterWhenNeededCommand(shooter, () -> drive.getPose()));
 
     Command aimTowardsTargetCommand =
         DriveCommands.joystickDriveAtAngle(
@@ -230,7 +230,7 @@ public class RobotContainer {
 
     
 
-    controller.leftTrigger().whileTrue(Commands.parallel(aimTowardsTargetCommand, shooter.setAutomaticCommandRun(), feedCommand));
+    // controller.leftTrigger().whileTrue(Commands.parallel(aimTowardsTargetCommand, shooter.setAutomaticCommandRun(), feedCommand));
   }
 
   /**
