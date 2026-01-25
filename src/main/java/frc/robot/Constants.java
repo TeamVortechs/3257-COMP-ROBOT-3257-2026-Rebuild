@@ -53,12 +53,12 @@ public final class Constants {
 
     // the time it takes between feeding and actual robot shoot. This is used to lead the robot
     // pose. Should be about 0.08 - 0.18 s
-    public static final double KRELEASE_POSE_PREDICTION_SEC = 0.08;
+    public static final double KRELEASE_POSE_PREDICTION_SEC = 0;
 
     // we should test by looking at values. this can also be a distance lookup table. This corrects
     // for robot speed by changing the target location. This constant is supposed ot emmulate fligth
     // time
-    public static final double KFLIGHT_COMPENSATION_SEC = 0.2;
+    public static final double KFLIGHT_COMPENSATION_SEC = 0;
 
     public static final double K_JOYSTICK_WHEN_SHOOTING = 0.5;
 

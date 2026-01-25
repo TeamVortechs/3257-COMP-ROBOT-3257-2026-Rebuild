@@ -201,7 +201,7 @@ public class Robot extends LoggedRobot {
 
     Shooter shooter = robotContainer.getShooter();
 
-        VisualSimulator shooterSim =
+    VisualSimulator shooterSim =
         new VisualSimulator(
             new Translation2d(-0.1, 0.8),
             () -> -90,

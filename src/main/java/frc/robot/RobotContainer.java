@@ -16,7 +16,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.commands.ChargeShooterWhenNeededCommand;
 import frc.robot.commands.DriveCommands;
+import frc.robot.commands.FeedWhenValidCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.belt.Belt;
 import frc.robot.subsystems.belt.BeltIO;
@@ -215,11 +217,20 @@ public class RobotContainer {
     intake.setDefaultCommand(intake.setSpeedAndPositionCommand(0, 0));
     belt.setDefaultCommand(belt.setSpeedRunCommand(1));
     feeder.setDefaultCommand(feeder.setSpeedRunCommand(0));
-    shooter.setDefaultCommand(shooter.setManualSpeedRunCommand(0));
+    shooter.setDefaultCommand(new ChargeShooterWhenNeededCommand(shooter, () -> drive.getPose()));
 
+    Command aimTowardsTargetCommand =
+        DriveCommands.joystickDriveAtAngle(
+            drive,
+            () -> -controller.getLeftY() * 0.7,
+            () -> -controller.getLeftX() * 0.7,
+            () -> shooterRotationManager.getHeading());
 
-    controller.rightBumper().whileTrue(shooter.setManualSpeedRunCommand(1));
-    controller.rightTrigger().whileTrue(intake.setSpeedAndPositionCommand(1, 1));
+    Command feedCommand = new FeedWhenValidCommand(feeder, controller, shooter, shooterRotationManager, drive, () -> controller.a().getAsBoolean());
+
+    
+
+    controller.leftTrigger().whileTrue(Commands.parallel(aimTowardsTargetCommand, shooter.setAutomaticCommandRun(), feedCommand));
   }
 
   /**
