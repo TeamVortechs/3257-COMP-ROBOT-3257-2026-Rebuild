@@ -24,6 +24,9 @@ import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.belt.Belt;
 import frc.robot.subsystems.belt.BeltIO;
 import frc.robot.subsystems.belt.BeltSimulationIO;
+import frc.robot.subsystems.climb.Climb;
+import frc.robot.subsystems.climb.ClimbIO;
+import frc.robot.subsystems.climb.ClimbSimulationIO;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
@@ -59,6 +62,9 @@ public class RobotContainer {
   private final Feeder feeder;
 
   private final Shooter shooter;
+
+  private final Climb climb;
+
   private final ShooterRotationManager shooterRotationManager;
 
   // Controller
@@ -90,6 +96,10 @@ public class RobotContainer {
 
         shooterRotationManager = new ShooterRotationManager(() -> new Pose2d(), drive);
         shooter = new Shooter(new ShooterIO() {}, () -> shooterRotationManager.getDistance());
+
+        climb = new Climb(new ClimbIO() {
+          
+        });
 
         // The ModuleIOTalonFXS implementation provides an example implementation for
         // TalonFXS controller connected to a CANdi with a PWM encoder. The
@@ -129,6 +139,9 @@ public class RobotContainer {
         shooterRotationManager = new ShooterRotationManager(() -> new Pose2d(), drive);
         shooter =
             new Shooter(new ShooterSimulationIO(), () -> shooterRotationManager.getDistance());
+
+        climb = new Climb(new ClimbSimulationIO());
+
         break;
 
       default:
@@ -149,6 +162,10 @@ public class RobotContainer {
 
         shooterRotationManager = new ShooterRotationManager(() -> new Pose2d(), drive);
         shooter = new Shooter(new ShooterIO() {}, () -> shooterRotationManager.getDistance());
+
+        climb = new Climb(new ClimbIO() {
+          
+        });
 
         break;
     }
@@ -219,6 +236,7 @@ public class RobotContainer {
     belt.setDefaultCommand(belt.setSpeedRunCommand(1));
     feeder.setDefaultCommand(feeder.setSpeedRunCommand(0));
     shooter.setDefaultCommand(new ChargeShooterWhenNeededCommand(shooter, () -> drive.getPose()));
+    climb.setDefaultCommand(climb.setPositionsRunCommand(0, 0));
 
     Command aimTowardsTargetCommand =
         DriveCommands.joystickDriveAtAngle(
@@ -246,6 +264,11 @@ public class RobotContainer {
         .whileTrue(
             Commands.parallel(
                 aimTowardsTargetCommand, shooter.setAutomaticCommandRun(), feedCommand));
+                
+    controller.leftBumper().whileTrue(climb.setSpeedsRunCommand(1, 0.5));
+
+    controller.a().onTrue(climb.setIsLockedCommand(() -> !climb.isLocked()));
+    
   }
 
   /**
