@@ -55,6 +55,9 @@ public class ClimbSimulationIO implements ClimbIO {
   }
 
   @Override
+  public void setPositions(double leftPosition, double rightPosition) {}
+
+  @Override
   public void setServo(double position) {
     this.servoPosition = position;
     servo.setAngle(position);

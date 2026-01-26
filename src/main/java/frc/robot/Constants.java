@@ -128,5 +128,8 @@ public final class Constants {
 
     public static final double MAX_POSITION = 1;
     public static final double MIN_POSITION = 0;
+
+    public static final double INTAKE_SPEED = 0.1;
+    public static final double INTAKE_POSITION = 0.5;
   }
 }

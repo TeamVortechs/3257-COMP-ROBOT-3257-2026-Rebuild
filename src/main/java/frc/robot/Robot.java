@@ -193,7 +193,7 @@ public class Robot extends LoggedRobot {
 
     feederSim.setColorSupplier(
         () -> {
-          if (feeder.getSpeed() > 0.5) {
+          if (feeder.getSpeed() > 0.05) {
             return new Color8Bit(Color.kRed);
           }
           return new Color8Bit(Color.kWhite);
