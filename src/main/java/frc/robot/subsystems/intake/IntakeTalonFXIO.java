@@ -6,7 +6,6 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
@@ -44,7 +43,8 @@ public class IntakeTalonFXIO implements IntakeIO {
     slot0Configs.kD = Constants.IntakeConstants.kD;
 
     var motionMagicConfigs = config.MotionMagic;
-    motionMagicConfigs.MotionMagicCruiseVelocity = Constants.IntakeConstants.MotionMagicCruiseVelocity;
+    motionMagicConfigs.MotionMagicCruiseVelocity =
+        Constants.IntakeConstants.MotionMagicCruiseVelocity;
     motionMagicConfigs.MotionMagicAcceleration = Constants.IntakeConstants.MotionMagicAcceleration;
     motionMagicConfigs.MotionMagicJerk = Constants.IntakeConstants.MotionMagicJerk;
 
@@ -131,7 +131,8 @@ public class IntakeTalonFXIO implements IntakeIO {
   }
 
   public boolean isMaxPosition() {
-    return false;
+    return Math.abs(getPosition() - getMaxPosition())
+        < Constants.IntakeConstants.POSITION_TOLERANCE;
   }
 
   public double getSpeed() {
