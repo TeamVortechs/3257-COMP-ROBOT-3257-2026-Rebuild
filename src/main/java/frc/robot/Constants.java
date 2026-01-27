@@ -68,6 +68,13 @@ public final class Constants {
     // the maximum allowed difference allowed between acceleraomter and encoders before it is
     // considered skid
     public static final double SKID_THRESHOLD = 0.5;
+
+    // CHANGE !!
+    public static final double kS = 0.1;
+    public static final double kV = 0.12;
+    public static final double kP = 0.11;
+    public static final double kI = 0;
+    public static final double kD = 0;
   }
 
   // copied directly from ShooterConstants
@@ -78,6 +85,13 @@ public final class Constants {
     public static final double RAMP_RATE_VOLTS_SYSID = 0.25;
     public static final double DYNAMIC_STEP_VOLTS_SYSID = 1;
     public static final double TOLERANCE = 0.1;
+
+    // CHANGE !!
+    public static final double kS = 0.1;
+    public static final double kV = 0.12;
+    public static final double kP = 0.11;
+    public static final double kI = 0;
+    public static final double kD = 0;
 
     // not real
     public static final int ID = 0;
@@ -128,5 +142,13 @@ public final class Constants {
 
     public static final double MAX_POSITION = 1;
     public static final double MIN_POSITION = 0;
+
+    // CHANGE !!
+    public static final double kS = 0.25;
+    public static final double kV = 0.12;
+    public static final double kA = 0.01;
+    public static final double kP = 12;
+    public static final double kI = 0;
+    public static final double kD = 0.1;
   }
 }
