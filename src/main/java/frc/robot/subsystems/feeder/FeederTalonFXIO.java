@@ -8,7 +8,6 @@ import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
@@ -36,7 +35,8 @@ public class FeederTalonFXIO implements FeederIO {
 
     var slot0Configs = new Slot0Configs();
     slot0Configs.kS = Constants.FeederConstants.kS; // Add 0.1 V output to overcome static friction
-    slot0Configs.kV = Constants.FeederConstants.kV; // A velocity target of 1 rps results in 0.12 V output
+    slot0Configs.kV =
+        Constants.FeederConstants.kV; // A velocity target of 1 rps results in 0.12 V output
     slot0Configs.kP = Constants.FeederConstants.kP; // An error of 1 rps results in 0.11 V output
     slot0Configs.kI = Constants.FeederConstants.kI; // no output for integrated error
     slot0Configs.kD = Constants.FeederConstants.kD; // no output for error derivative

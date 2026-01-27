@@ -55,11 +55,14 @@ public class ClimbSimulationIO implements ClimbIO {
 
     inputs.servoPosition = servoPosition;
 
-    if(!manual) {
-      leftMotorSim.setInputVoltage(positionPIDController.calculate(leftMotorSim.getAngularPositionRotations(), targetLeftPos));
-      rightMotorSim.setInputVoltage(positionPIDController.calculate(rightMotorSim.getAngularPositionRotations(), targetRightPos));
+    if (!manual) {
+      leftMotorSim.setInputVoltage(
+          positionPIDController.calculate(
+              leftMotorSim.getAngularPositionRotations(), targetLeftPos));
+      rightMotorSim.setInputVoltage(
+          positionPIDController.calculate(
+              rightMotorSim.getAngularPositionRotations(), targetRightPos));
     }
-
   }
 
   @Override
@@ -81,6 +84,16 @@ public class ClimbSimulationIO implements ClimbIO {
   public void setServo(double position) {
     this.servoPosition = position;
     servo.setAngle(position);
+  }
+
+  @Override
+  public void setLeftVoltage(double leftVoltage) {
+    leftMotorSim.setInputVoltage(leftVoltage);
+  }
+
+  @Override
+  public void setRightVoltage(double rightVoltage) {
+    rightMotorSim.setInputVoltage(rightVoltage);
   }
 
   @Override

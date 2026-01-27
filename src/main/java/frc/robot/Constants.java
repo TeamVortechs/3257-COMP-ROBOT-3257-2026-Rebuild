@@ -150,7 +150,7 @@ public final class Constants {
     public static final double kP = 12;
     public static final double kI = 0;
     public static final double kD = 0.1;
-    
+
     public static final double INTAKE_SPEED = 0.1;
     public static final double INTAKE_POSITION = 0.5;
   }

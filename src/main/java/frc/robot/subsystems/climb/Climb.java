@@ -1,13 +1,16 @@
 package frc.robot.subsystems.climb;
 
+import static edu.wpi.first.units.Units.Seconds;
+import static edu.wpi.first.units.Units.Volts;
+
+import com.ctre.phoenix6.SignalLogger;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.ClimbConstants;
-
 import java.util.function.BooleanSupplier;
-
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
@@ -83,7 +86,6 @@ public class Climb extends SubsystemBase {
 
     manualLeftSpeed = left;
     manualRightSpeed = right;
-
   }
 
   /**
@@ -121,5 +123,36 @@ public class Climb extends SubsystemBase {
 
   public Command setIsLockedCommand(BooleanSupplier isLocked) {
     return new InstantCommand(() -> setLocked(isLocked.getAsBoolean()), this);
+  }
+
+  // the constants here should probably be more and move but that's later when this is transferred
+  // to the right project
+  // add this to the robot class or this won't work: SignalLogger.setPath("/media/sda1/");
+  /**
+   * Gets the system identification routine for this specific subsystem
+   *
+   * @return the sysid routine
+   */
+  /** Build SysId Routine for the Left Motor */
+  public SysIdRoutine buildLeftSysIdRoutine() {
+    return new SysIdRoutine(
+        new SysIdRoutine.Config(
+            Volts.of(ClimbConstants.RAMP_RATE_VOLTS_SYSID).per(Seconds),
+            Volts.of(ClimbConstants.DYNAMIC_STEP_VOLTS_SYSID),
+            null,
+            (state) -> SignalLogger.writeString("leftState", state.toString())),
+        new SysIdRoutine.Mechanism((volts) -> climbIO.setLeftVoltage(volts.in(Volts)), null, this));
+  }
+
+  /** Build SysId Routine for the Right Motor */
+  public SysIdRoutine buildRightSysIdRoutine() {
+    return new SysIdRoutine(
+        new SysIdRoutine.Config(
+            Volts.of(ClimbConstants.RAMP_RATE_VOLTS_SYSID).per(Seconds),
+            Volts.of(ClimbConstants.DYNAMIC_STEP_VOLTS_SYSID),
+            null,
+            (state) -> SignalLogger.writeString("rightState", state.toString())),
+        new SysIdRoutine.Mechanism(
+            (volts) -> climbIO.setRightVoltage(volts.in(Volts)), null, this));
   }
 }

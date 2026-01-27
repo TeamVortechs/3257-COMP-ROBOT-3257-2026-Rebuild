@@ -3,12 +3,11 @@ package frc.robot.subsystems.intake;
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
-import com.ctre.phoenix6.controls.MotionMagicVoltage;
-
 import frc.robot.Constants;
 // CHANGE PID VALUES !!!!
 
@@ -60,8 +59,10 @@ public class IntakeTalonFXIO implements IntakeIO {
     positionSupplyCurrent = position.getSupplyCurrent();
 
     // Optimize CAN bus usage by refreshing these signals together
-    BaseStatusSignal.setUpdateFrequencyForAll(50, rollerVelocity, rollerMotorVoltage, rollerSupplyCurrent);
-    BaseStatusSignal.setUpdateFrequencyForAll(50, positionVelocity, positionMotorVoltage, positionSupplyCurrent);
+    BaseStatusSignal.setUpdateFrequencyForAll(
+        50, rollerVelocity, rollerMotorVoltage, rollerSupplyCurrent);
+    BaseStatusSignal.setUpdateFrequencyForAll(
+        50, positionVelocity, positionMotorVoltage, positionSupplyCurrent);
   }
 
   // updates the given inputs with new values(advantage kit stuff)
@@ -95,7 +96,7 @@ public class IntakeTalonFXIO implements IntakeIO {
   }
 
   // sets the position of the arm.
-  public void setTargetPosition(double position1) { //IMPORTANT -- POSITON1 NOT POSITION
+  public void setTargetPosition(double position1) { // IMPORTANT -- POSITON1 NOT POSITION
     final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
     // System.out.println("Input volt: "+inputVoltage+" Target Angle: "+targetAngle);
     position.setControl(m_request.withPosition(position1));
@@ -139,24 +140,6 @@ public class IntakeTalonFXIO implements IntakeIO {
     return false;
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // public class IntakeTalonFXIO implements IntakeIO {
 //   private final TalonFX motor;

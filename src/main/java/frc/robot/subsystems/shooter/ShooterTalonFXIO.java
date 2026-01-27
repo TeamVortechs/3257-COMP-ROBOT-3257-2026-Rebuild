@@ -8,11 +8,9 @@ import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
-
 import frc.robot.Constants;
 // CHANGE PID VALUES !!!!
 
@@ -39,7 +37,8 @@ public class ShooterTalonFXIO implements ShooterIO {
     config.CurrentLimits.SupplyCurrentLimitEnable = true;
     var slot0Configs = new Slot0Configs();
     slot0Configs.kS = Constants.ShooterConstants.kS; // Add 0.1 V output to overcome static friction
-    slot0Configs.kV = Constants.ShooterConstants.kV; // A velocity target of 1 rps results in 0.12 V output
+    slot0Configs.kV =
+        Constants.ShooterConstants.kV; // A velocity target of 1 rps results in 0.12 V output
     slot0Configs.kP = Constants.ShooterConstants.kP; // An error of 1 rps results in 0.11 V output
     slot0Configs.kI = Constants.ShooterConstants.kI; // no output for integrated error
     slot0Configs.kD = Constants.ShooterConstants.kD; // no output for error derivative
