@@ -5,9 +5,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ClimbConstants;
-
 import java.util.function.BooleanSupplier;
-
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
@@ -83,7 +81,6 @@ public class Climb extends SubsystemBase {
 
     manualLeftSpeed = left;
     manualRightSpeed = right;
-
   }
 
   /**

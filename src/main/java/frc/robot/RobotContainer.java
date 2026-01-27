@@ -97,9 +97,7 @@ public class RobotContainer {
         shooterRotationManager = new ShooterRotationManager(() -> new Pose2d(), drive);
         shooter = new Shooter(new ShooterIO() {}, () -> shooterRotationManager.getDistance());
 
-        climb = new Climb(new ClimbIO() {
-          
-        });
+        climb = new Climb(new ClimbIO() {});
 
         // The ModuleIOTalonFXS implementation provides an example implementation for
         // TalonFXS controller connected to a CANdi with a PWM encoder. The
@@ -163,9 +161,7 @@ public class RobotContainer {
         shooterRotationManager = new ShooterRotationManager(() -> new Pose2d(), drive);
         shooter = new Shooter(new ShooterIO() {}, () -> shooterRotationManager.getDistance());
 
-        climb = new Climb(new ClimbIO() {
-          
-        });
+        climb = new Climb(new ClimbIO() {});
 
         break;
     }
@@ -264,11 +260,10 @@ public class RobotContainer {
         .whileTrue(
             Commands.parallel(
                 aimTowardsTargetCommand, shooter.setAutomaticCommandRun(), feedCommand));
-                
+
     controller.leftBumper().whileTrue(climb.setSpeedsRunCommand(1, 0.5));
 
     controller.a().onTrue(climb.setIsLockedCommand(() -> !climb.isLocked()));
-    
   }
 
   /**

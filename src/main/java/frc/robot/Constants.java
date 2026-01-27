@@ -130,6 +130,15 @@ public final class Constants {
 
     public static final double MIN_POSITION_RIGHT = 0;
     public static final double MAX_POSITION_RIGHT = 0;
+
+    // CHANGE !!
+    public static final double kS = 0.1;
+    public static final double kV = 0.12;
+    public static final double kP = 0.11;
+    public static final double kI = 0;
+    public static final double kD = 0;
+
+    public static final int servoChannel = 1;
   }
 
   public class IntakeConstants {
@@ -150,7 +159,7 @@ public final class Constants {
     public static final double kP = 12;
     public static final double kI = 0;
     public static final double kD = 0.1;
-    
+
     public static final double INTAKE_SPEED = 0.1;
     public static final double INTAKE_POSITION = 0.5;
   }
