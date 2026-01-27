@@ -111,6 +111,8 @@ public final class Constants {
     public static final int ID = 6;
 
     public static final double FEED_POWER = 0.1;
+
+    public static final double TOLERANCE = 0.1;
   }
 
   // copied directly from BeltConstants

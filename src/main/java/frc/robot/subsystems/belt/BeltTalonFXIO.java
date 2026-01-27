@@ -9,6 +9,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
+import frc.robot.Constants;
 
 public class BeltTalonFXIO implements BeltIO {
   private final TalonFX motor;
@@ -74,6 +75,6 @@ public class BeltTalonFXIO implements BeltIO {
 
   @Override
   public boolean isOnTarget() {
-    return Math.abs(this.getSpeed() - (targetSpeed * 100)) < 5;
+    return Math.abs(this.getSpeed() - targetSpeed) < Constants.BeltConstants.TOLERANCE;
   }
 }
