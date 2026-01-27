@@ -122,7 +122,7 @@ public class IntakeTalonFXIO implements IntakeIO {
 
   // gets the highest possible height of the arm in radians
   public double getMaxPosition() {
-    return 0;
+    return Constants.IntakeConstants.MAX_POSITION;
   }
 
   // gets the height of the arm in meters
