@@ -87,6 +87,16 @@ public class ClimbSimulationIO implements ClimbIO {
   }
 
   @Override
+  public void setLeftVoltage(double leftVoltage) {
+    leftMotorSim.setInputVoltage(leftVoltage);
+  }
+
+  @Override
+  public void setRightVoltage(double rightVoltage) {
+    rightMotorSim.setInputVoltage(rightVoltage);
+  }
+
+  @Override
   public void stop() {
     leftMotorSim.setInputVoltage(0);
     rightMotorSim.setInputVoltage(0);
