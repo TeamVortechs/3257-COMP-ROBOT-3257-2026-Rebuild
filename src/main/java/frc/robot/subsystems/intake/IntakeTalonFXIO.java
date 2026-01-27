@@ -44,9 +44,9 @@ public class IntakeTalonFXIO implements IntakeIO {
     slot0Configs.kD = Constants.IntakeConstants.kD;
 
     var motionMagicConfigs = config.MotionMagic;
-    motionMagicConfigs.MotionMagicCruiseVelocity = 3;
-    motionMagicConfigs.MotionMagicAcceleration = 2.5;
-    motionMagicConfigs.MotionMagicJerk = 10;
+    motionMagicConfigs.MotionMagicCruiseVelocity = Constants.IntakeConstants.MotionMagicCruiseVelocity;
+    motionMagicConfigs.MotionMagicAcceleration = Constants.IntakeConstants.MotionMagicAcceleration;
+    motionMagicConfigs.MotionMagicJerk = Constants.IntakeConstants.MotionMagicJerk;
 
     roller.getConfigurator().apply(config);
     position.getConfigurator().apply(config);

@@ -166,5 +166,9 @@ public final class Constants {
 
     public static final double INTAKE_SPEED = 0.1;
     public static final double INTAKE_POSITION = 0.5;
+
+    public static final double MotionMagicCruiseVelocity = 3;
+    public static final double MotionMagicAcceleration = 2.5;
+    public static final double MotionMagicJerk = 10;
   }
 }
