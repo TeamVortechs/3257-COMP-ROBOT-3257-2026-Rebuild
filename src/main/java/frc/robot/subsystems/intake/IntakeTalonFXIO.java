@@ -85,11 +85,11 @@ public class IntakeTalonFXIO implements IntakeIO {
 
   // gets the height of the arm in meters
   public double getCurrent() {
-    return 0;
+    return rollerSupplyCurrent.getValueAsDouble();
   }
 
   public double getVoltage() {
-    return 0;
+    return rollerMotorVoltage.getValueAsDouble();
   }
 
   // setters for motors
