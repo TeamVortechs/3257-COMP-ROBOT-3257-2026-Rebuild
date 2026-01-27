@@ -16,17 +16,33 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.Constants.IntakeConstants;
+import frc.robot.commands.ChargeShooterWhenNeededCommand;
 import frc.robot.commands.DriveCommands;
+import frc.robot.commands.FeedWhenValidCommand;
 import frc.robot.generated.TunerConstants;
+import frc.robot.subsystems.belt.Belt;
+import frc.robot.subsystems.belt.BeltIO;
+import frc.robot.subsystems.belt.BeltSimulationIO;
+import frc.robot.subsystems.climb.Climb;
+import frc.robot.subsystems.climb.ClimbIO;
+import frc.robot.subsystems.climb.ClimbSimulationIO;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
+import frc.robot.subsystems.feeder.Feeder;
+import frc.robot.subsystems.feeder.FeederIO;
+import frc.robot.subsystems.feeder.FeederSimulationIO;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeIO;
 import frc.robot.subsystems.intake.IntakeSimulationIO;
+import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.shooter.ShooterIO;
+import frc.robot.subsystems.shooter.ShooterRotationManager;
+import frc.robot.subsystems.shooter.ShooterSimulationIO;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -40,6 +56,16 @@ public class RobotContainer {
   private final Drive drive;
 
   private final Intake intake;
+
+  private final Belt belt;
+
+  private final Feeder feeder;
+
+  private final Shooter shooter;
+
+  private final Climb climb;
+
+  private final ShooterRotationManager shooterRotationManager;
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
@@ -63,6 +89,17 @@ public class RobotContainer {
                 new ModuleIOTalonFX(TunerConstants.BackRight));
 
         intake = new Intake(new IntakeIO() {});
+
+        belt = new Belt(new BeltIO() {});
+
+        feeder = new Feeder(new FeederIO() {});
+
+        shooterRotationManager = new ShooterRotationManager(() -> new Pose2d(), drive);
+        shooter = new Shooter(new ShooterIO() {}, () -> shooterRotationManager.getDistance());
+
+        climb = new Climb(new ClimbIO() {
+          
+        });
 
         // The ModuleIOTalonFXS implementation provides an example implementation for
         // TalonFXS controller connected to a CANdi with a PWM encoder. The
@@ -94,6 +131,17 @@ public class RobotContainer {
                 new ModuleIOSim(TunerConstants.BackRight));
 
         intake = new Intake(new IntakeSimulationIO());
+
+        belt = new Belt(new BeltSimulationIO());
+
+        feeder = new Feeder(new FeederSimulationIO());
+
+        shooterRotationManager = new ShooterRotationManager(() -> new Pose2d(), drive);
+        shooter =
+            new Shooter(new ShooterSimulationIO(), () -> shooterRotationManager.getDistance());
+
+        climb = new Climb(new ClimbSimulationIO());
+
         break;
 
       default:
@@ -107,6 +155,17 @@ public class RobotContainer {
                 new ModuleIO() {});
 
         intake = new Intake(new IntakeIO() {});
+
+        belt = new Belt(new BeltIO() {});
+
+        feeder = new Feeder(new FeederIO() {});
+
+        shooterRotationManager = new ShooterRotationManager(() -> new Pose2d(), drive);
+        shooter = new Shooter(new ShooterIO() {}, () -> shooterRotationManager.getDistance());
+
+        climb = new Climb(new ClimbIO() {
+          
+        });
 
         break;
     }
@@ -174,8 +233,42 @@ public class RobotContainer {
                 .ignoringDisable(true));
 
     intake.setDefaultCommand(intake.setSpeedAndPositionCommand(0, 0));
+    belt.setDefaultCommand(belt.setSpeedRunCommand(1));
+    feeder.setDefaultCommand(feeder.setSpeedRunCommand(0));
+    shooter.setDefaultCommand(new ChargeShooterWhenNeededCommand(shooter, () -> drive.getPose()));
+    climb.setDefaultCommand(climb.setPositionsRunCommand(0, 0));
 
-    controller.rightTrigger().whileTrue(intake.setSpeedAndPositionCommand(1, 1));
+    Command aimTowardsTargetCommand =
+        DriveCommands.joystickDriveAtAngle(
+            drive,
+            () -> -controller.getLeftY() * 0.5,
+            () -> -controller.getLeftX() * 0.5,
+            () -> shooterRotationManager.getHeading());
+
+    Command feedCommand =
+        new FeedWhenValidCommand(
+            feeder,
+            controller,
+            shooter,
+            shooterRotationManager,
+            drive,
+            () -> controller.a().getAsBoolean());
+
+    controller
+        .rightTrigger()
+        .whileTrue(
+            intake.setSpeedAndPositionCommand(
+                IntakeConstants.INTAKE_POSITION, IntakeConstants.INTAKE_SPEED));
+    controller
+        .leftTrigger()
+        .whileTrue(
+            Commands.parallel(
+                aimTowardsTargetCommand, shooter.setAutomaticCommandRun(), feedCommand));
+                
+    controller.leftBumper().whileTrue(climb.setSpeedsRunCommand(1, 0.5));
+
+    controller.a().onTrue(climb.setIsLockedCommand(() -> !climb.isLocked()));
+    
   }
 
   /**
@@ -189,5 +282,13 @@ public class RobotContainer {
 
   public Intake getIntake() {
     return intake;
+  }
+
+  public Feeder getFeeder() {
+    return feeder;
+  }
+
+  public Shooter getShooter() {
+    return shooter;
   }
 }

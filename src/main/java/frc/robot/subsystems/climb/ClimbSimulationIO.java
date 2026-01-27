@@ -1,5 +1,6 @@
 package frc.robot.subsystems.climb;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj.Servo;
@@ -11,6 +12,13 @@ public class ClimbSimulationIO implements ClimbIO {
   private final DCMotorSim rightMotorSim;
   private Servo servo;
   private double servoPosition = 0.0;
+
+  private PIDController positionPIDController = new PIDController(0.1, 0, 0);
+
+  private boolean manual = true;
+
+  private double targetLeftPos = 0;
+  private double targetRightPos = 0;
 
   public ClimbSimulationIO() {
     // left and right, just like the real thing
@@ -46,12 +54,27 @@ public class ClimbSimulationIO implements ClimbIO {
     inputs.motorRightSpeed = rightMotorSim.getAngularVelocityRPM();
 
     inputs.servoPosition = servoPosition;
+
+    if(!manual) {
+      leftMotorSim.setInputVoltage(positionPIDController.calculate(leftMotorSim.getAngularPositionRotations(), targetLeftPos));
+      rightMotorSim.setInputVoltage(positionPIDController.calculate(rightMotorSim.getAngularPositionRotations(), targetRightPos));
+    }
+
   }
 
   @Override
   public void setSpeeds(double leftSpeed, double rightSpeed) {
     leftMotorSim.setInputVoltage(leftSpeed / 502.747);
     rightMotorSim.setInputVoltage(rightSpeed / 502.747);
+
+    manual = true;
+  }
+
+  @Override
+  public void setPositions(double leftPosition, double rightPosition) {
+    manual = false;
+    targetLeftPos = leftPosition;
+    targetRightPos = rightPosition;
   }
 
   @Override

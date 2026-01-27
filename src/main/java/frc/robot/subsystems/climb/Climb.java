@@ -1,7 +1,13 @@
 package frc.robot.subsystems.climb;
 
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ClimbConstants;
+
+import java.util.function.BooleanSupplier;
+
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
@@ -52,7 +58,7 @@ public class Climb extends SubsystemBase {
     }
 
     if (isManual) {
-      climbIO.setSpeeds(0, 0);
+      climbIO.setSpeeds(manualLeftSpeed, manualRightSpeed);
     } else {
       climbIO.setPositions(automaticLeftSetpoint, automaticRightSetpoint);
     }
@@ -75,7 +81,9 @@ public class Climb extends SubsystemBase {
 
     isManual = true;
 
-    climbIO.setSpeeds(left, right);
+    manualLeftSpeed = left;
+    manualRightSpeed = right;
+
   }
 
   /**
@@ -90,8 +98,28 @@ public class Climb extends SubsystemBase {
     this.automaticRightSetpoint = rightPosition;
   }
 
+  public void setLocked(boolean locked) {
+    isLocked = locked;
+  }
+
+  public boolean isLocked() {
+    return isLocked;
+  }
+
   /** makes the climber manual and stops the setpoint */
   public void stop() {
     climbIO.stop();
+  }
+
+  public Command setPositionsRunCommand(double leftPosition, double rightPosition) {
+    return new RunCommand(() -> setPositions(leftPosition, rightPosition), this);
+  }
+
+  public Command setSpeedsRunCommand(double leftPosition, double rightPosition) {
+    return new RunCommand(() -> setManualSpeeds(leftPosition, rightPosition), this);
+  }
+
+  public Command setIsLockedCommand(BooleanSupplier isLocked) {
+    return new InstantCommand(() -> setLocked(isLocked.getAsBoolean()), this);
   }
 }

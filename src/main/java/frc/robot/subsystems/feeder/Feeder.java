@@ -63,7 +63,7 @@ public class Feeder extends SubsystemBase {
    * @param speed the speed the flywheel will pid too
    */
   public void setSpeed(double speed) {
-    this.speed = speed;
+    this.targetSpeed = speed;
   }
 
   /**
@@ -71,6 +71,10 @@ public class Feeder extends SubsystemBase {
    *     calculated speed
    */
   public double getSpeedTarget() {
+    return targetSpeed;
+  }
+
+  public double getSpeed() {
     return speed;
   }
 
