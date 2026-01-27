@@ -3,15 +3,12 @@ package frc.robot.subsystems.climb;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
-import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
-import frc.robot.Constants;
 
 public class ClimbSimulationIO implements ClimbIO {
 
   private final DCMotorSim leftMotorSim;
   private final DCMotorSim rightMotorSim;
-  private Servo servo;
   private double servoPosition = 0.0;
 
   private PIDController positionPIDController = new PIDController(0.1, 0, 0);
@@ -32,9 +29,6 @@ public class ClimbSimulationIO implements ClimbIO {
         new DCMotorSim(
             LinearSystemId.createDCMotorSystem(DCMotor.getKrakenX60(1), 0.001, 1),
             DCMotor.getKrakenX60(1));
-
-    // this the servo FIX !!
-    // this.servo = new Servo(Constants.ClimbConstants.SimulationID);
   }
 
   @Override
@@ -84,7 +78,6 @@ public class ClimbSimulationIO implements ClimbIO {
   @Override
   public void setServo(double position) {
     this.servoPosition = position;
-    servo.setAngle(position);
   }
 
   @Override
