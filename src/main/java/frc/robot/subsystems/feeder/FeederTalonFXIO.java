@@ -90,9 +90,4 @@ public class FeederTalonFXIO implements FeederIO {
   public double getSpeed() {
     return velocity.getValueAsDouble();
   }
-
-  @Override
-  public boolean isOnTarget() {
-    return Math.abs(this.getSpeed() - (targetSpeed * 100)) < 5;
-  }
 }

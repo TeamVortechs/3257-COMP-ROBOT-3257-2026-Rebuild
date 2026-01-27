@@ -91,6 +91,6 @@ public class ShooterTalonFXIO implements ShooterIO {
 
   @Override
   public boolean isOnTarget() {
-    return Math.abs(this.getSpeed() - (targetSpeed * 100)) < 5;
+    return Math.abs(this.getSpeed() - targetSpeed) < Constants.ShooterConstants.TOLERANCE;
   }
 }
