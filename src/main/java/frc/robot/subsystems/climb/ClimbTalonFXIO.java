@@ -53,7 +53,8 @@ public class ClimbTalonFXIO implements ClimbIO {
 
     var slot0Configs = new Slot0Configs();
     slot0Configs.kS = Constants.ClimbConstants.kS; // Add 0.1 V output to overcome static friction
-    slot0Configs.kV = Constants.ClimbConstants.kV; // A velocity target of 1 rps results in 0.12 V output
+    slot0Configs.kV =
+        Constants.ClimbConstants.kV; // A velocity target of 1 rps results in 0.12 V output
     slot0Configs.kP = Constants.ClimbConstants.kP; // An error of 1 rps results in 0.11 V output
     slot0Configs.kI = Constants.ClimbConstants.kI; // no output for integrated error
     slot0Configs.kD = Constants.ClimbConstants.kD; // no output for error derivative

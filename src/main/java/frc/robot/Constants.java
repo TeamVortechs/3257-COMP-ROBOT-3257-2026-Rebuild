@@ -138,7 +138,9 @@ public final class Constants {
     public static final double kI = 0;
     public static final double kD = 0;
 
-    public static final int servoChannel = 1;
+    public static final int servoChannel = 9;
+
+    public static final int SimulationID = 1;
   }
 
   public class IntakeConstants {

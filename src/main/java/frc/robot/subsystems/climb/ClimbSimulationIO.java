@@ -5,6 +5,7 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
+import frc.robot.Constants;
 
 public class ClimbSimulationIO implements ClimbIO {
 
@@ -32,8 +33,8 @@ public class ClimbSimulationIO implements ClimbIO {
             LinearSystemId.createDCMotorSystem(DCMotor.getKrakenX60(1), 0.001, 1),
             DCMotor.getKrakenX60(1));
 
-    // this the servo
-    this.servo = new Servo(1);
+    // this the servo FIX !!
+    // this.servo = new Servo(Constants.ClimbConstants.SimulationID);
   }
 
   @Override
