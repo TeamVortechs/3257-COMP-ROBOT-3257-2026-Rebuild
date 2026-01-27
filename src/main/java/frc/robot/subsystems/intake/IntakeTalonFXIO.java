@@ -5,6 +5,8 @@ import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
@@ -108,15 +110,15 @@ public class IntakeTalonFXIO implements IntakeIO {
   }
   // misc methods
 
-  // rebuilds the pid constants of the motors
-  public void rebuildMotorsPID() {}
+  public void resetEncoders() {
+    position.setPosition(0);
+  }
 
-  /** Stops the motor immediately */
-  public void stop() {}
-
-  public void resetEncoders() {}
-
-  public void setBraked(boolean braked) {}
+  public void setBraked(boolean braked) {
+    TalonFXConfiguration config = new TalonFXConfiguration();
+    config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    position.getConfigurator().apply(config);
+  }
 
   // gets the highest possible height of the arm in radians
   public double getMaxPosition() {
