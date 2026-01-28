@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.commands.ChargeShooterWhenNeededCommand;
 import frc.robot.commands.DriveCommands;
@@ -69,6 +70,9 @@ public class RobotContainer {
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
+
+  //usign this for sys id so it doesn't conflict with anything
+private final CommandXboxController sysID_contorller = new CommandXboxController(3);
 
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
@@ -285,5 +289,22 @@ public class RobotContainer {
 
   public Shooter getShooter() {
     return shooter;
+  }
+
+    // this shoudl be in a helper method or somewhere in robot container
+  /**
+   *
+   * <p>y: dynamic forward a: dynamic backwards b: quasistatic forward x:
+   * quasistatic reverse
+   *
+   * @param controller the controller this binds to(recommended to use a high id controller to
+   *     prevent mishaps, id 2-3)
+   * @param sysIdRoutine the routine that this controller will activate
+   */
+  public void configureSysIdBindings(CommandXboxController controller, SysIdRoutine sysIdRoutine) {
+    controller.y().whileTrue(sysIdRoutine.dynamic(Direction.kForward));
+    controller.a().whileTrue(sysIdRoutine.dynamic(Direction.kReverse));
+    controller.b().whileTrue(sysIdRoutine.quasistatic(Direction.kForward));
+    controller.x().whileTrue(sysIdRoutine.quasistatic(Direction.kReverse));
   }
 }

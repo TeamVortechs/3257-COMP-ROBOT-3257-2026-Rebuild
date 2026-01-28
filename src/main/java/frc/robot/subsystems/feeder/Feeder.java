@@ -142,25 +142,10 @@ public class Feeder extends SubsystemBase {
                 (volts) -> feederIO.setVoltage(volts.in(Volts)), null, this));
     return m_SysIdRoutine;
   }
-
-  // this shoudl be in a helper method or somewhere in robot container
-  /**
-   * Binds the sys id routine to the controller so we can use it
-   *
-   * <p>pov up: dynamic forward pov down: dynamic backwards pov right: quasistatic forward pov left:
-   * quasistatic reverse
-   *
-   * @param controller the controller this binds to(recommended to use a high id controller to
-   *     prevent mishaps, id 2-3)
-   * @param sysIdRoutine the routine that this controller will activate
-   */
-  public void configureSysIdBindings(CommandXboxController controller, SysIdRoutine sysIdRoutine) {
-    controller.povUp().whileTrue(sysIdRoutine.dynamic(Direction.kForward));
-    controller.povDown().whileTrue(sysIdRoutine.dynamic(Direction.kReverse));
-    controller.povRight().whileTrue(sysIdRoutine.quasistatic(Direction.kForward));
-    controller.povLeft().whileTrue(sysIdRoutine.quasistatic(Direction.kReverse));
-  }
 }
+
+
+//IGNORE THIS!!!
 
 /*
  * two modes: supply a distance and have it wind up to that or

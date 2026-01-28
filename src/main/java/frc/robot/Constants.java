@@ -123,8 +123,8 @@ public final class Constants {
   public class ClimbConstants {
     public static final double CURRENT_LIMIT = 40.0;
     // used in Belt.java
-    public static final double RAMP_RATE_VOLTS_SYSID = 0.25;
-    public static final double DYNAMIC_STEP_VOLTS_SYSID = 1;
+    public static final double RAMP_RATE_VOLTS_SYSID = 0.1;
+    public static final double DYNAMIC_STEP_VOLTS_SYSID = 0.25;
 
     // not real
     public static final int ID = 6;
@@ -174,5 +174,12 @@ public final class Constants {
     public static final double MotionMagicCruiseVelocity = 3;
     public static final double MotionMagicAcceleration = 2.5;
     public static final double MotionMagicJerk = 10;
+
+    public static final double RAMP_RATE_VOLTS_ROLLER_SYSID = 0.25;
+    public static final double DYNAMIC_STEP_VOLTS_ROLLER_SYSID = 1;
+
+    //lower cus this has hardstops
+    public static final double RAMP_RATE_VOLTS_POSITION_SYSID = 0.1;
+    public static final double DYNAMIC_STEP_VOLTS_POSITION_SYSID = 0.25;
   }
 }

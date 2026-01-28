@@ -93,8 +93,12 @@ public class IntakeTalonFXIO implements IntakeIO {
   }
 
   // setters for motors
-  public void set(double volt) {
+  public void setRollerVoltage(double volt) {
     roller.setVoltage(volt);
+  }
+
+  public void setPositionVoltage(double volt) {
+    position.setVoltage(volt);
   }
 
   // sets the position of the arm.
