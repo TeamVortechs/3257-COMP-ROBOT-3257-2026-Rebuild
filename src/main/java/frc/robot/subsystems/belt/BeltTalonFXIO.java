@@ -28,7 +28,7 @@ public class BeltTalonFXIO implements BeltIO {
     TalonFXConfiguration config = new TalonFXConfiguration();
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-    config.CurrentLimits.SupplyCurrentLimit = 40.0; // Prevent breaker trips
+    config.CurrentLimits.SupplyCurrentLimit = Constants.BeltConstants.CURRENT_LIMIT; // Prevent breaker trips
     config.CurrentLimits.SupplyCurrentLimitEnable = true;
 
     motor.getConfigurator().apply(config);

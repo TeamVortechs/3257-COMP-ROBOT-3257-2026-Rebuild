@@ -81,6 +81,7 @@ public final class Constants {
 
   // copied directly from ShooterConstants
   public class FeederConstants {
+    public static final double CURRENT_LIMIT = 40.0;
     public static final double SIM_TOLERANCE = 0.5;
 
     // used in Shooter.java
@@ -104,6 +105,7 @@ public final class Constants {
   // copied off feeder constants
   // copied directly from ShooterConstants
   public class BeltConstants {
+    public static final double CURRENT_LIMIT = 40.0;
 
     // used in Belt.java
     public static final double RAMP_RATE_VOLTS_SYSID = 0.25;
