@@ -17,7 +17,7 @@ import edu.wpi.first.wpilibj.RobotBase;
 public final class Constants {
   public static final Mode simMode = Mode.SIM;
   public static final Mode currentMode = RobotBase.isReal() ? Mode.REAL : simMode;
-
+  public static final double FREQUENCY_HZ = 50;
   public static enum Mode {
     /** Running on a real robot. */
     REAL,
@@ -30,6 +30,8 @@ public final class Constants {
   }
 
   public class ShooterConstants {
+    public static final double CURRENT_LIMIT = 40.0;
+
     public static final double SIM_TOLERANCE = 0.5;
 
     // used in Shooter.java
@@ -117,7 +119,7 @@ public final class Constants {
 
   // copied directly from BeltConstants
   public class ClimbConstants {
-
+    public static final double CURRENT_LIMIT = 40.0;
     // used in Belt.java
     public static final double RAMP_RATE_VOLTS_SYSID = 0.25;
     public static final double DYNAMIC_STEP_VOLTS_SYSID = 1;

@@ -62,9 +62,9 @@ public class IntakeTalonFXIO implements IntakeIO {
 
     // Optimize CAN bus usage by refreshing these signals together
     BaseStatusSignal.setUpdateFrequencyForAll(
-        50, rollerVelocity, rollerMotorVoltage, rollerSupplyCurrent);
+        Constants.FREQUENCY_HZ, rollerVelocity, rollerMotorVoltage, rollerSupplyCurrent);
     BaseStatusSignal.setUpdateFrequencyForAll(
-        50, positionVelocity, positionMotorVoltage, positionSupplyCurrent);
+        Constants.FREQUENCY_HZ, positionVelocity, positionMotorVoltage, positionSupplyCurrent);
   }
 
   // updates the given inputs with new values(advantage kit stuff)

@@ -33,7 +33,7 @@ public class ShooterTalonFXIO implements ShooterIO {
     TalonFXConfiguration config = new TalonFXConfiguration();
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-    config.CurrentLimits.SupplyCurrentLimit = 40.0; // Prevent breaker trips
+    config.CurrentLimits.SupplyCurrentLimit = Constants.ShooterConstants.CURRENT_LIMIT; // Prevent breaker trips
     config.CurrentLimits.SupplyCurrentLimitEnable = true;
     var slot0Configs = new Slot0Configs();
     slot0Configs.kS = Constants.ShooterConstants.kS; // Add 0.1 V output to overcome static friction
@@ -53,7 +53,7 @@ public class ShooterTalonFXIO implements ShooterIO {
     supplyCurrent = motor.getSupplyCurrent();
 
     // Optimize CAN bus usage by refreshing these signals together
-    BaseStatusSignal.setUpdateFrequencyForAll(50, velocity, motorVoltage, supplyCurrent);
+    BaseStatusSignal.setUpdateFrequencyForAll(Constants.FREQUENCY_HZ, velocity, motorVoltage, supplyCurrent);
   }
 
   @Override

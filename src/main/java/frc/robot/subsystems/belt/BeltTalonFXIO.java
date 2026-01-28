@@ -39,7 +39,7 @@ public class BeltTalonFXIO implements BeltIO {
     supplyCurrent = motor.getSupplyCurrent();
 
     // Optimize CAN bus usage by refreshing these signals together
-    BaseStatusSignal.setUpdateFrequencyForAll(50, velocity, motorVoltage, supplyCurrent);
+    BaseStatusSignal.setUpdateFrequencyForAll(Constants.FREQUENCY_HZ, velocity, motorVoltage, supplyCurrent);
   }
 
   @Override
