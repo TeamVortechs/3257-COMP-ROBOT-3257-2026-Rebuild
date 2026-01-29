@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants.IntakeConstants;
+import frc.robot.Constants.Mode;
 import frc.robot.commands.ChargeShooterWhenNeededCommand;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.FeedWhenValidCommand;
@@ -216,6 +217,7 @@ public class RobotContainer {
 
     // Configure the button bindings
     configureButtonBindings();
+    registerNamedCommandsAuto(); // register named commands for auto (pathplanner)
   }
 
   /**
@@ -228,34 +230,34 @@ public class RobotContainer {
 
     // EVENT TRIGGERS
 
-    new EventTrigger("shoot").whileTrue(Commands.print("shoot"));
-    new EventTrigger("feeder station")
-        .whileTrue(Commands.print("at feeder station")); // first feeder station
-    new EventTrigger("shoot1l")
-        .whileTrue(Commands.print("shoot1l")); // first shoot from station 1 / left
-    new EventTrigger("shoot1m")
-        .whileTrue(Commands.print("shoot1m")); // first shoot from station 2 / middle
-    new EventTrigger("shoot1r")
-        .whileTrue(Commands.print("shoot1r")); // first shoot from station 3 / right
-    new EventTrigger("feeder station1")
-        .whileTrue(Commands.print("feeder station 1")); // first feeder station
-    new EventTrigger("shoot2")
-        .whileTrue(Commands.print("sfeeder shoot")); // shooting OTW from feeder station 1 to 2
-    new EventTrigger("feeder station2")
-        .whileTrue(
-            Commands.print(
-                "feeder station 2")); // second feeder station, the one where you open a gate
-    new EventTrigger("shoot 3")
-        .whileTrue(
-            Commands.print(
-                "feeder station 2 shoot")); // shooting in between feeder station 2 and climbing
-    new EventTrigger("climb").whileTrue(Commands.print("climbing")); // at climbing
-    new EventTrigger("climb and shoot")
-        .whileTrue(Commands.print("climb and shoot")); // at climbing and shoot
-    new EventTrigger("shootnew").whileTrue(Commands.print("shoot"));
-    new EventTrigger("get balls").whileTrue(Commands.print("getting balls"));
-    new EventTrigger("done getting balls").whileTrue(Commands.print("done getting balls"));
-    new EventTrigger("feeder-shoot2").whileTrue(Commands.print("feeder-shoot2"));
+    // new EventTrigger("shoot").whileTrue(Commands.print("shoot"));
+    // new EventTrigger("feeder station")
+    //     .whileTrue(Commands.print("at feeder station")); // first feeder station
+    // new EventTrigger("shoot1l")
+    //     .whileTrue(Commands.print("shoot1l")); // first shoot from station 1 / left
+    // new EventTrigger("shoot1m")
+    //     .whileTrue(Commands.print("shoot1m")); // first shoot from station 2 / middle
+    // new EventTrigger("shoot1r")
+    //     .whileTrue(Commands.print("shoot1r")); // first shoot from station 3 / right
+    // new EventTrigger("feeder station1")
+    //     .whileTrue(Commands.print("feeder station 1")); // first feeder station
+    // new EventTrigger("shoot2")
+    //     .whileTrue(Commands.print("sfeeder shoot")); // shooting OTW from feeder station 1 to 2
+    // new EventTrigger("feeder station2")
+    //     .whileTrue(
+    //         Commands.print(
+    //             "feeder station 2")); // second feeder station, the one where you open a gate
+    // new EventTrigger("shoot 3")
+    //     .whileTrue(
+    //         Commands.print(
+    //             "feeder station 2 shoot")); // shooting in between feeder station 2 and climbing
+    // new EventTrigger("climb").whileTrue(Commands.print("climbing")); // at climbing
+    // new EventTrigger("climb and shoot")
+    //     .whileTrue(Commands.print("climb and shoot")); // at climbing and shoot
+    // new EventTrigger("shootnew").whileTrue(Commands.print("shoot"));
+    // new EventTrigger("get balls").whileTrue(Commands.print("getting balls"));
+    // new EventTrigger("done getting balls").whileTrue(Commands.print("done getting balls"));
+    // new EventTrigger("feeder-shoot2").whileTrue(Commands.print("feeder-shoot2"));
 
     // Default command, normal field-relative drive
     drive.setDefaultCommand(
@@ -369,6 +371,18 @@ public class RobotContainer {
     return shooter;
   }
 
+  private void registerNamedCommandsAuto() {
+    boolean isReal = true;
+    if (Constants.currentMode == Mode.SIM) isReal = false;
+
+    addNamedCommand("climb", climb.setPositionsRunCommand(1, 1), isReal);
+    addNamedCommand("unclimb", climb.setPositionsRunCommand(0, 0), isReal);
+    addNamedCommand("start intake", intake.setSpeedAndPositionCommand(0, 0.25), isReal);
+    addNamedCommand("stop intake", intake.setSpeedAndPositionCommand(0, 0), isReal);
+    addNamedCommand("shoot", shooter.setManualSpeedCommandConsistentEnd(0.25), isReal);
+    addNamedCommand("unshoot", shooter.setManualSpeedCommandConsistentEnd(0), isReal);
+  }
+ 
   public void addNamedCommand(String commandName, Command command, boolean isReal) {
 
     if (isReal) {
