@@ -7,7 +7,10 @@
 
 package frc.robot;
 
+import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
+
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.events.EventTrigger;
 
@@ -18,6 +21,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
@@ -53,8 +57,8 @@ import frc.robot.subsystems.shooter.ShooterIO;
 import frc.robot.subsystems.shooter.ShooterRotationManager;
 import frc.robot.subsystems.shooter.ShooterSimulationIO;
 import frc.robot.subsystems.shooter.ShooterTalonFXIO;
-
-import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
+import frc.robot.commands.communication.ControllerVibrateCommand;
+import frc.robot.commands.communication.TellCommand;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -81,7 +85,7 @@ public class RobotContainer {
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
 
-  //usign this for sys id so it doesn't conflict with anything
+  // usign this for sys id so it doesn't conflict with anything
   @SuppressWarnings("unused")
   private final CommandXboxController sysID_contorller = new CommandXboxController(3);
 
@@ -103,16 +107,26 @@ public class RobotContainer {
                 new ModuleIOTalonFX(TunerConstants.BackLeft),
                 new ModuleIOTalonFX(TunerConstants.BackRight));
 
-        intake = new Intake(new IntakeTalonFXIO(Constants.IntakeConstants.ROLLER_CAN_ID, Constants.IntakeConstants.POSITION_CAN_ID));
+        intake =
+            new Intake(
+                new IntakeTalonFXIO(
+                    Constants.IntakeConstants.ROLLER_CAN_ID,
+                    Constants.IntakeConstants.POSITION_CAN_ID));
 
         belt = new Belt(new BeltTalonFXIO(Constants.BeltConstants.CAN_ID));
 
         feeder = new Feeder(new FeederTalonFXIO(Constants.FeederConstants.CAN_ID));
 
         shooterRotationManager = new ShooterRotationManager(() -> new Pose2d(), drive);
-        shooter = new Shooter(new ShooterTalonFXIO(Constants.ShooterConstants.CAN_ID), () -> shooterRotationManager.getDistance());
+        shooter =
+            new Shooter(
+                new ShooterTalonFXIO(Constants.ShooterConstants.CAN_ID),
+                () -> shooterRotationManager.getDistance());
 
-        climb = new Climb(new ClimbTalonFXIO(Constants.ClimbConstants.CAN_ID_LEFT, Constants.ClimbConstants.CAN_ID_RIGHT));
+        climb =
+            new Climb(
+                new ClimbTalonFXIO(
+                    Constants.ClimbConstants.CAN_ID_LEFT, Constants.ClimbConstants.CAN_ID_RIGHT));
 
         // The ModuleIOTalonFXS implementation provides an example implementation for
         // TalonFXS controller connected to a CANdi with a PWM encoder. The
@@ -212,7 +226,7 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
 
-        // EVENT TRIGGERS
+    // EVENT TRIGGERS
 
     new EventTrigger("shoot").whileTrue(Commands.print("shoot"));
     new EventTrigger("feeder station")
@@ -238,7 +252,6 @@ public class RobotContainer {
     new EventTrigger("climb").whileTrue(Commands.print("climbing")); // at climbing
     new EventTrigger("climb and shoot")
         .whileTrue(Commands.print("climb and shoot")); // at climbing and shoot
-    new EventTrigger("climb").whileTrue(Commands.print("climb"));
     new EventTrigger("shootnew").whileTrue(Commands.print("shoot"));
     new EventTrigger("get balls").whileTrue(Commands.print("getting balls"));
     new EventTrigger("done getting balls").whileTrue(Commands.print("done getting balls"));
@@ -356,11 +369,34 @@ public class RobotContainer {
     return shooter;
   }
 
-    // this shoudl be in a helper method or somewhere in robot container
+  public void addNamedCommand(String commandName, Command command, boolean isReal) {
+
+    if (isReal) {
+      NamedCommands.registerCommand(
+          commandName, command.andThen(new TellCommand("just ran " + commandName)));
+      //   new EventTrigger(commandName).onTrue(command);
+    } else {
+      // registers the named commands to print something out instead of actually running anything
+      NamedCommands.registerCommand(
+          commandName,
+          new TellCommand(commandName + " auto command")
+              .andThen(
+                  new ControllerVibrateCommand(1, controller).withDeadline(new WaitCommand(0.2)))
+              .alongWith(command));
+
+      //   new EventTrigger(commandName)
+      //       .onTrue(
+      //           new TellCommand(commandName + " auto event trigger command")
+      //               .andThen(
+      //                   new ControllerVibrateCommand(1, controller)
+      //                       .withDeadline(new WaitCommand(0.2)))
+      //               .andThen(new WaitCommand(0.3)));
+    }
+  }
+
+  // this shoudl be in a helper method or somewhere in robot container
   /**
-   *
-   * <p>y: dynamic forward a: dynamic backwards b: quasistatic forward x:
-   * quasistatic reverse
+   * y: dynamic forward a: dynamic backwards b: quasistatic forward x: quasistatic reverse
    *
    * @param controller the controller this binds to(recommended to use a high id controller to
    *     prevent mishaps, id 2-3)

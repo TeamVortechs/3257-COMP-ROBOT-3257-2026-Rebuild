@@ -18,6 +18,7 @@ public final class Constants {
   public static final Mode simMode = Mode.SIM;
   public static final Mode currentMode = RobotBase.isReal() ? Mode.REAL : simMode;
   public static final double FREQUENCY_HZ = 50;
+
   public static enum Mode {
     /** Running on a real robot. */
     REAL,
@@ -187,7 +188,7 @@ public final class Constants {
     public static final double RAMP_RATE_VOLTS_ROLLER_SYSID = 0.25;
     public static final double DYNAMIC_STEP_VOLTS_ROLLER_SYSID = 1;
 
-    //lower cus this has hardstops
+    // lower cus this has hardstops
     public static final double RAMP_RATE_VOLTS_POSITION_SYSID = 0.1;
     public static final double DYNAMIC_STEP_VOLTS_POSITION_SYSID = 0.25;
 

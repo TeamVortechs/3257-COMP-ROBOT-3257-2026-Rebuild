@@ -28,7 +28,8 @@ public class BeltTalonFXIO implements BeltIO {
     TalonFXConfiguration config = new TalonFXConfiguration();
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-    config.CurrentLimits.SupplyCurrentLimit = Constants.BeltConstants.CURRENT_LIMIT; // Prevent breaker trips
+    config.CurrentLimits.SupplyCurrentLimit =
+        Constants.BeltConstants.CURRENT_LIMIT; // Prevent breaker trips
     config.CurrentLimits.SupplyCurrentLimitEnable = true;
 
     motor.getConfigurator().apply(config);
@@ -39,7 +40,8 @@ public class BeltTalonFXIO implements BeltIO {
     supplyCurrent = motor.getSupplyCurrent();
 
     // Optimize CAN bus usage by refreshing these signals together
-    BaseStatusSignal.setUpdateFrequencyForAll(Constants.FREQUENCY_HZ, velocity, motorVoltage, supplyCurrent);
+    BaseStatusSignal.setUpdateFrequencyForAll(
+        Constants.FREQUENCY_HZ, velocity, motorVoltage, supplyCurrent);
   }
 
   @Override
