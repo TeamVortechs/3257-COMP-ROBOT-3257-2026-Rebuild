@@ -8,8 +8,12 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.events.EventTrigger;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -25,9 +29,11 @@ import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.belt.Belt;
 import frc.robot.subsystems.belt.BeltIO;
 import frc.robot.subsystems.belt.BeltSimulationIO;
+import frc.robot.subsystems.belt.BeltTalonFXIO;
 import frc.robot.subsystems.climb.Climb;
 import frc.robot.subsystems.climb.ClimbIO;
 import frc.robot.subsystems.climb.ClimbSimulationIO;
+import frc.robot.subsystems.climb.ClimbTalonFXIO;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
@@ -37,13 +43,17 @@ import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.feeder.Feeder;
 import frc.robot.subsystems.feeder.FeederIO;
 import frc.robot.subsystems.feeder.FeederSimulationIO;
+import frc.robot.subsystems.feeder.FeederTalonFXIO;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeIO;
 import frc.robot.subsystems.intake.IntakeSimulationIO;
+import frc.robot.subsystems.intake.IntakeTalonFXIO;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterIO;
 import frc.robot.subsystems.shooter.ShooterRotationManager;
 import frc.robot.subsystems.shooter.ShooterSimulationIO;
+import frc.robot.subsystems.shooter.ShooterTalonFXIO;
+
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -72,7 +82,8 @@ public class RobotContainer {
   private final CommandXboxController controller = new CommandXboxController(0);
 
   //usign this for sys id so it doesn't conflict with anything
-private final CommandXboxController sysID_contorller = new CommandXboxController(3);
+  @SuppressWarnings("unused")
+  private final CommandXboxController sysID_contorller = new CommandXboxController(3);
 
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
@@ -92,16 +103,16 @@ private final CommandXboxController sysID_contorller = new CommandXboxController
                 new ModuleIOTalonFX(TunerConstants.BackLeft),
                 new ModuleIOTalonFX(TunerConstants.BackRight));
 
-        intake = new Intake(new IntakeIO() {});
+        intake = new Intake(new IntakeTalonFXIO(Constants.IntakeConstants.ROLLER_CAN_ID, Constants.IntakeConstants.POSITION_CAN_ID));
 
-        belt = new Belt(new BeltIO() {});
+        belt = new Belt(new BeltTalonFXIO(Constants.BeltConstants.CAN_ID));
 
-        feeder = new Feeder(new FeederIO() {});
+        feeder = new Feeder(new FeederTalonFXIO(Constants.FeederConstants.CAN_ID));
 
         shooterRotationManager = new ShooterRotationManager(() -> new Pose2d(), drive);
-        shooter = new Shooter(new ShooterIO() {}, () -> shooterRotationManager.getDistance());
+        shooter = new Shooter(new ShooterTalonFXIO(Constants.ShooterConstants.CAN_ID), () -> shooterRotationManager.getDistance());
 
-        climb = new Climb(new ClimbIO() {});
+        climb = new Climb(new ClimbTalonFXIO(Constants.ClimbConstants.CAN_ID_LEFT, Constants.ClimbConstants.CAN_ID_RIGHT));
 
         // The ModuleIOTalonFXS implementation provides an example implementation for
         // TalonFXS controller connected to a CANdi with a PWM encoder. The
@@ -200,6 +211,39 @@ private final CommandXboxController sysID_contorller = new CommandXboxController
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+
+        // EVENT TRIGGERS
+
+    new EventTrigger("shoot").whileTrue(Commands.print("shoot"));
+    new EventTrigger("feeder station")
+        .whileTrue(Commands.print("at feeder station")); // first feeder station
+    new EventTrigger("shoot1l")
+        .whileTrue(Commands.print("shoot1l")); // first shoot from station 1 / left
+    new EventTrigger("shoot1m")
+        .whileTrue(Commands.print("shoot1m")); // first shoot from station 2 / middle
+    new EventTrigger("shoot1r")
+        .whileTrue(Commands.print("shoot1r")); // first shoot from station 3 / right
+    new EventTrigger("feeder station1")
+        .whileTrue(Commands.print("feeder station 1")); // first feeder station
+    new EventTrigger("shoot2")
+        .whileTrue(Commands.print("sfeeder shoot")); // shooting OTW from feeder station 1 to 2
+    new EventTrigger("feeder station2")
+        .whileTrue(
+            Commands.print(
+                "feeder station 2")); // second feeder station, the one where you open a gate
+    new EventTrigger("shoot 3")
+        .whileTrue(
+            Commands.print(
+                "feeder station 2 shoot")); // shooting in between feeder station 2 and climbing
+    new EventTrigger("climb").whileTrue(Commands.print("climbing")); // at climbing
+    new EventTrigger("climb and shoot")
+        .whileTrue(Commands.print("climb and shoot")); // at climbing and shoot
+    new EventTrigger("climb").whileTrue(Commands.print("climb"));
+    new EventTrigger("shootnew").whileTrue(Commands.print("shoot"));
+    new EventTrigger("get balls").whileTrue(Commands.print("getting balls"));
+    new EventTrigger("done getting balls").whileTrue(Commands.print("done getting balls"));
+    new EventTrigger("feeder-shoot2").whileTrue(Commands.print("feeder-shoot2"));
+
     // Default command, normal field-relative drive
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
@@ -276,7 +320,28 @@ private final CommandXboxController sysID_contorller = new CommandXboxController
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return autoChooser.get();
+    // return autoChooser.get();
+    String osName = System.getProperty("os.name").toLowerCase();
+    if (osName.contains("win")) {
+      // Windows
+      return autoChooser.get();
+    } else if (osName.contains("nix") || osName.contains("nux")) {
+      int station = DriverStation.getLocation().orElse(1);
+      switch (station) {
+          // switches paths easily on linux since no smart dashboard
+        case 1:
+          //   return new PathPlannerAuto("auto left feeder station");
+          return new PathPlannerAuto("get balls from middle (left)");
+        case 2:
+          return new PathPlannerAuto("auto middle feeder station2 twice, climb");
+        case 3:
+          return new PathPlannerAuto("auto right feeder station2 twice, climb");
+        default:
+          return new PathPlannerAuto("auto left feeder station");
+      }
+    } else {
+      return autoChooser.get();
+    }
   }
 
   public Intake getIntake() {

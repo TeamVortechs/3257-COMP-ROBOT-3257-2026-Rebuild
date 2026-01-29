@@ -77,6 +77,8 @@ public final class Constants {
     public static final double kP = 0.11;
     public static final double kI = 0;
     public static final double kD = 0;
+
+    public static final int CAN_ID = 5; // CHANGE !!
   }
 
   // copied directly from ShooterConstants
@@ -100,6 +102,8 @@ public final class Constants {
     public static final int ID = 0;
 
     public static final double FEED_POWER = 0.1;
+
+    public static final int CAN_ID = 4; // CHANGE !!
   }
 
   // copied off feeder constants
@@ -117,6 +121,8 @@ public final class Constants {
     public static final double FEED_POWER = 0.1;
 
     public static final double TOLERANCE = 0.1;
+
+    public static final int CAN_ID = 3; // CHANGE !!
   }
 
   // copied directly from BeltConstants
@@ -147,6 +153,9 @@ public final class Constants {
     public static final int servoChannel = 9;
 
     public static final int SimulationID = 1;
+
+    public static final int CAN_ID_LEFT = 6;
+    public static final int CAN_ID_RIGHT = 7;
   }
 
   public class IntakeConstants {
@@ -181,5 +190,8 @@ public final class Constants {
     //lower cus this has hardstops
     public static final double RAMP_RATE_VOLTS_POSITION_SYSID = 0.1;
     public static final double DYNAMIC_STEP_VOLTS_POSITION_SYSID = 0.25;
+
+    public static final int POSITION_CAN_ID = 1; // change !!
+    public static final int ROLLER_CAN_ID = 2;
   }
 }
