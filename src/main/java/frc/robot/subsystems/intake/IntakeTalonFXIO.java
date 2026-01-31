@@ -44,7 +44,8 @@ public class IntakeTalonFXIO implements IntakeIO {
     var motionMagicConfigs = config.MotionMagic;
     motionMagicConfigs.MotionMagicCruiseVelocity =
         Constants.IntakeConstants.MOTION_MAGIC_CRUISE_VELOCITY;
-    motionMagicConfigs.MotionMagicAcceleration = Constants.IntakeConstants.MOTION_MAGIC_ACCELERATION;
+    motionMagicConfigs.MotionMagicAcceleration =
+        Constants.IntakeConstants.MOTION_MAGIC_ACCELERATION;
     motionMagicConfigs.MotionMagicJerk = Constants.IntakeConstants.MOTION_MAGIC_JERK;
 
     roller.getConfigurator().apply(config);
@@ -104,7 +105,7 @@ public class IntakeTalonFXIO implements IntakeIO {
 
   // sets the position of the arm.
   public void setTargetPosition(double position1) { // IMPORTANT - POSITON1 NOT POSITION
-    
+
     // System.out.println("Input volt: "+inputVoltage+" Target Angle: "+targetAngle);
     position.setControl(mVoltageRequest.withPosition(position1));
     // System.out.println("Voltage being sent in PID Voltage");
@@ -134,9 +135,9 @@ public class IntakeTalonFXIO implements IntakeIO {
     return Constants.IntakeConstants.MAX_POSITION;
   }
 
-/**
- * @return gets the position of the arm in radians
- */
+  /**
+   * @return gets the position of the arm in radians
+   */
   public double getPosition() {
     return position.getRotorPosition().getValueAsDouble();
   }
@@ -145,12 +146,13 @@ public class IntakeTalonFXIO implements IntakeIO {
     return Math.abs(getPosition() - getMaxPosition())
         < Constants.IntakeConstants.POSITION_TOLERANCE;
   }
-  
+
   public double getSpeed() {
     return roller.getVelocity().getValueAsDouble();
   }
 
   public boolean checkIfStalled() {
-    return (roller.getMotorVoltage().getValueAsDouble() > Constants.IntakeConstants.ROLLER_STALLED_VOLTS);
+    return (roller.getMotorVoltage().getValueAsDouble()
+        > Constants.IntakeConstants.ROLLER_STALLED_VOLTS);
   }
 }

@@ -73,10 +73,9 @@ public interface IntakeIO {
     return 0;
   }
 
- /**
-  * 
-  * @return
-  */
+  /**
+   * @return
+   */
   public default double getPosition() {
     return 0;
   }

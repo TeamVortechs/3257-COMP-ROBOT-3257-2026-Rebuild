@@ -15,8 +15,12 @@ public interface ShooterIO {
   /** updates the inputs for advantage kit logging purposes */
   public default void updateInputs(ShooterIOInputsAutoLogged inputs) {}
 
+  /** set's rotations/sec of the motor, uses closed loop PID */
   public default void setSpeed(double speed) {}
 
+  /**
+   * @return returns rotations/sec
+   */
   public default double getSpeed() {
     return 0;
   }
