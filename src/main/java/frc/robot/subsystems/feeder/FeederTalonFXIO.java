@@ -22,6 +22,7 @@ public class FeederTalonFXIO implements FeederIO {
   private final StatusSignal<AngularVelocity> velocity;
   private final StatusSignal<Voltage> motorVoltage;
   private final StatusSignal<Current> supplyCurrent;
+  private final StatusSignal<Current> statorCurrent;
 
   private double targetSpeed = 0;
 
@@ -44,6 +45,7 @@ public class FeederTalonFXIO implements FeederIO {
     velocity = motor.getVelocity();
     motorVoltage = motor.getMotorVoltage();
     supplyCurrent = motor.getSupplyCurrent();
+    statorCurrent = motor.getStatorCurrent();
 
     // Optimize CAN bus usage by refreshing these signals together
     BaseStatusSignal.setUpdateFrequencyForAll(
@@ -57,7 +59,8 @@ public class FeederTalonFXIO implements FeederIO {
 
     inputs.speed = velocity.getValueAsDouble(); // Returns Rotations per Second
     inputs.voltage = motorVoltage.getValueAsDouble();
-    inputs.amps = supplyCurrent.getValueAsDouble();
+    inputs.supplyCurrentAmps = supplyCurrent.getValueAsDouble();
+    inputs.statorCurrentAmps = statorCurrent.getValueAsDouble();
     inputs.targetSpeed = targetSpeed;
 
     inputs.isOnTargetSpeed = isOnTargetSpeed();

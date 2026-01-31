@@ -7,7 +7,8 @@ public interface FeederIO {
   public static class FeederIOInputs {
     double speed;
     double targetSpeed;
-    double amps;
+    double supplyCurrentAmps;
+    double statorCurrentAmps;
     double voltage;
     boolean isOnTargetSpeed;
     boolean isBraked;
@@ -26,10 +27,18 @@ public interface FeederIO {
     return 0;
   }
 
+  /**
+   * @return wether or not the speed and target speed are within tolerance
+   */
   public default boolean isOnTargetSpeed() {
     return false;
   }
 
+  /**
+   * sets the voltage of the motor
+   *
+   * @param voltage
+   */
   public default void setVoltage(double voltage) {}
 
   public default void setBraked(boolean braked) {}

@@ -12,7 +12,7 @@ public class ShooterSparkIO implements ShooterIO {
   private boolean isOnTarget = false;
 
   public void updateInputs(ShooterIOInputsAutoLogged inputs) {
-    inputs.amps = m_motor.getOutputCurrent();
+    inputs.supplyCurrentAmps = m_motor.getOutputCurrent();
     inputs.voltage = m_motor.getBusVoltage();
     inputs.speed = m_encoder.getVelocity(); // in RPM
 
@@ -40,7 +40,7 @@ public class ShooterSparkIO implements ShooterIO {
     return m_encoder.getVelocity();
   }
 
-  public boolean isOnTarget() {
+  public boolean isOnTargetSpeed() {
     return Math.abs((getSpeed() - targetSpeed)) <= Constants.ShooterConstants.TOLERANCE;
   }
 

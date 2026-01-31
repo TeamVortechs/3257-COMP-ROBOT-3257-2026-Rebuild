@@ -13,7 +13,7 @@ public class FeederSparkIO implements FeederIO {
   }
 
   public void updateInputs(FeederIOInputsAutoLogged inputs) {
-    inputs.amps = m_motor.getOutputCurrent();
+    inputs.supplyCurrentAmps = m_motor.getOutputCurrent();
     inputs.voltage = m_motor.getBusVoltage();
     inputs.speed = 0;
 

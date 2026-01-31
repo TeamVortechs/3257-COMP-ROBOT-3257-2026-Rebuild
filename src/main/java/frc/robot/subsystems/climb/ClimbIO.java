@@ -8,8 +8,11 @@ public interface ClimbIO {
     public double motorLeftPosition = 0.0;
     public double motorRightPosition = 0.0;
 
-    public double motorLeftAmps = 0.0;
-    public double motorRightAmps = 0.0;
+    public double motorLeftCurrentSupplyAmps = 0.0;
+    public double motorRightCurrentSupplyAmps = 0.0;
+
+    public double motorLeftCurrentStatorAmps = 0;
+    public double motorRightCurrentStatorAmps = 0;
 
     public double motorLeftVolts = 0.0;
     public double motorRightVolts = 0.0;

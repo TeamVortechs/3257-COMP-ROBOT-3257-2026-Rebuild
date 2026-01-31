@@ -4,7 +4,6 @@ import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
@@ -17,6 +16,7 @@ public class BeltTalonFXIO implements BeltIO {
   private final StatusSignal<AngularVelocity> velocity;
   private final StatusSignal<Voltage> motorVoltage;
   private final StatusSignal<Current> supplyCurrent;
+  private final StatusSignal<Current> statorCurrent;
 
   private double targetSpeed = 0;
 
@@ -34,6 +34,7 @@ public class BeltTalonFXIO implements BeltIO {
     velocity = motor.getVelocity();
     motorVoltage = motor.getMotorVoltage();
     supplyCurrent = motor.getSupplyCurrent();
+    statorCurrent = motor.getStatorCurrent();
 
     // Optimize CAN bus usage by refreshing these signals together
     BaseStatusSignal.setUpdateFrequencyForAll(
@@ -47,16 +48,15 @@ public class BeltTalonFXIO implements BeltIO {
 
     inputs.speed = velocity.getValueAsDouble(); // Returns Rotations per Second
     inputs.voltage = motorVoltage.getValueAsDouble();
-    inputs.amps = supplyCurrent.getValueAsDouble();
-    inputs.targetSpeed = targetSpeed;
-
-    inputs.isOnTarget = isOnTarget();
+    inputs.supplyCurrentAmps = supplyCurrent.getValueAsDouble();
+    inputs.statorCurrentAmps = statorCurrent.getValueAsDouble();
+    inputs.targetOutput = targetSpeed;
 
     inputs.isBraked = isBraked;
   }
 
   @Override
-  public void setSpeed(double speed) {
+  public void setPercentMotorOutput(double speed) {
     targetSpeed = speed;
     motor.set(speed);
     // motor.setControl(new DutyCycleOut(speed));
@@ -71,22 +71,5 @@ public class BeltTalonFXIO implements BeltIO {
   @Override
   public double getSpeed() {
     return velocity.getValueAsDouble();
-  }
-
-  @Override
-  public boolean isOnTarget() {
-    return Math.abs(this.getSpeed() - targetSpeed) < Constants.BeltConstants.TOLERANCE;
-  }
-
-  @Override
-  public void setBraked(boolean braked) {
-    isBraked = braked;
-    TalonFXConfiguration config = new TalonFXConfiguration();
-    if (braked) {
-      config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    } else {
-      config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
-    }
-    motor.getConfigurator().apply(config);
   }
 }

@@ -21,6 +21,7 @@ public class ShooterTalonFXIO implements ShooterIO {
   private final StatusSignal<AngularVelocity> velocity;
   private final StatusSignal<Voltage> motorVoltage;
   private final StatusSignal<Current> supplyCurrent;
+  private final StatusSignal<Current> statorCurrent;
   private final VelocityVoltage mVelocityRequest;
   private double targetSpeed = 0;
 
@@ -43,6 +44,7 @@ public class ShooterTalonFXIO implements ShooterIO {
     velocity = motor.getVelocity();
     motorVoltage = motor.getMotorVoltage();
     supplyCurrent = motor.getSupplyCurrent();
+    statorCurrent = motor.getStatorCurrent();
 
     // Optimize CAN bus usage by refreshing these signals together
     BaseStatusSignal.setUpdateFrequencyForAll(
@@ -58,12 +60,15 @@ public class ShooterTalonFXIO implements ShooterIO {
 
     inputs.speed = velocity.getValueAsDouble(); // Returns Rotations per Second
     inputs.voltage = motorVoltage.getValueAsDouble();
-    inputs.amps = supplyCurrent.getValueAsDouble();
+    inputs.supplyCurrentAmps = supplyCurrent.getValueAsDouble();
+    inputs.statorCurrentAmps = statorCurrent.getValueAsDouble();
     inputs.targetSpeed = targetSpeed;
 
     inputs.isBraked = isBraked;
 
-    inputs.isOnTarget = isOnTarget();
+    inputs.isBraked = isBraked;
+
+    inputs.isOnTarget = isOnTargetSpeed();
   }
 
   @Override
@@ -87,7 +92,7 @@ public class ShooterTalonFXIO implements ShooterIO {
   }
 
   @Override
-  public boolean isOnTarget() {
+  public boolean isOnTargetSpeed() {
     return Math.abs(this.getSpeed() - targetSpeed) < Constants.ShooterConstants.TOLERANCE;
   }
 
