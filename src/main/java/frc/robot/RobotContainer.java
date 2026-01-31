@@ -67,6 +67,7 @@ import frc.robot.commands.communication.TellCommand;
  * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
  * subsystems, commands, and button mappings) should be declared here.
  */
+@SuppressWarnings("unused")
 public class RobotContainer {
   // Subsystems
   private final Drive drive;
@@ -373,14 +374,16 @@ public class RobotContainer {
 
   private void registerNamedCommandsAuto() {
     boolean isReal = true;
-    if (Constants.currentMode == Mode.SIM) isReal = false;
+    // if (Constants.currentMode == Mode.SIM) isReal = false;
 
-    addNamedCommand("climb", climb.setPositionsRunCommand(1, 1), isReal);
+    addNamedCommand("climb", climb.setPositionsRunCommand(Constants.ClimbConstants.MAX_POSITION_LEFT, Constants.ClimbConstants.MAX_POSITION_RIGHT), isReal);
     addNamedCommand("unclimb", climb.setPositionsRunCommand(0, 0), isReal);
-    addNamedCommand("start intake", intake.setSpeedAndPositionCommand(0, 0.25), isReal);
-    addNamedCommand("stop intake", intake.setSpeedAndPositionCommand(0, 0), isReal);
-    addNamedCommand("shoot", shooter.setManualSpeedCommandConsistentEnd(0.25), isReal);
+    addNamedCommand("start intake", intake.setSpeedAndPositionCommand(Constants.IntakeConstants.INTAKE_POSITION, Constants.IntakeConstants.INTAKE_SPEED), isReal);
+    addNamedCommand("stop intake", intake.setSpeedAndPositionCommand(Constants.IntakeConstants.MAX_POSITION, 0), isReal);
+    addNamedCommand("shoot", shooter.setAutomaticCommand(), isReal);
     addNamedCommand("unshoot", shooter.setManualSpeedCommandConsistentEnd(0), isReal);
+    addNamedCommand("feeder", feeder.setSpeedCommandConsistentEnd(Constants.FeederConstants.FEED_POWER), isReal);
+    addNamedCommand("unfeeder", feeder.setSpeedCommandConsistentEnd(0), isReal);
   }
  
   public void addNamedCommand(String commandName, Command command, boolean isReal) {

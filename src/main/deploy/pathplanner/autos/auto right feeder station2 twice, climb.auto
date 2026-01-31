@@ -29,6 +29,12 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "feeder"
+          }
+        },
+        {
           "type": "wait",
           "data": {
             "waitTime": 2.0
@@ -38,6 +44,12 @@
           "type": "named",
           "data": {
             "name": "unshoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "unfeeder"
           }
         },
         {
@@ -65,6 +77,12 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "feeder"
+          }
+        },
+        {
           "type": "wait",
           "data": {
             "waitTime": 2.0
@@ -74,6 +92,12 @@
           "type": "named",
           "data": {
             "name": "unshoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "unfeeder"
           }
         },
         {
