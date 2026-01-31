@@ -10,6 +10,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
+import edu.wpi.first.units.measure.Temperature;
 import edu.wpi.first.units.measure.Voltage;
 import frc.robot.Constants;
 // CHANGE PID VALUES !!!!
@@ -23,6 +24,9 @@ public class ShooterTalonFXIO implements ShooterIO {
   private final StatusSignal<Current> supplyCurrent;
   private final StatusSignal<Current> statorCurrent;
   private final VelocityVoltage mVelocityRequest;
+
+  private final StatusSignal<Temperature> temperatureCelsius;
+
   private double targetSpeed = 0;
 
   private boolean isBraked = true;
@@ -45,6 +49,7 @@ public class ShooterTalonFXIO implements ShooterIO {
     motorVoltage = motor.getMotorVoltage();
     supplyCurrent = motor.getSupplyCurrent();
     statorCurrent = motor.getStatorCurrent();
+    temperatureCelsius = motor.getDeviceTemp();
 
     // Optimize CAN bus usage by refreshing these signals together
     BaseStatusSignal.setUpdateFrequencyForAll(
@@ -70,6 +75,8 @@ public class ShooterTalonFXIO implements ShooterIO {
     inputs.isBraked = isBraked;
 
     inputs.isOnTarget = isOnTargetSpeed();
+
+    inputs.temperatureCelsius = temperatureCelsius.getValueAsDouble();
   }
 
   @Override

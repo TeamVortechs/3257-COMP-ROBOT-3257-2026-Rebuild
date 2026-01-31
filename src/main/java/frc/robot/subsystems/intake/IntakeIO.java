@@ -32,6 +32,10 @@ public interface IntakeIO {
     double targetPosition = 0;
 
     boolean isBraked = true;
+
+    double positionTemperatureCelsius = 0;
+    double rollerTemperatureCelsius = 0;
+
   }
 
   // updates the given inputs with new values(advantage kit stuff)

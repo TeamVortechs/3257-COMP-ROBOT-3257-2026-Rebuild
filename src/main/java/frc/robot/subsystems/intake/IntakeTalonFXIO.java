@@ -10,6 +10,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
+import edu.wpi.first.units.measure.Temperature;
 import edu.wpi.first.units.measure.Voltage;
 import frc.robot.Constants;
 // CHANGE PID VALUES !!!!
@@ -29,6 +30,10 @@ public class IntakeTalonFXIO implements IntakeIO {
   private final StatusSignal<Voltage> positionMotorVoltage;
   private final StatusSignal<Current> positionStatorCurrent;
   private final StatusSignal<Current> positionSupplyCurrent;
+
+  private final StatusSignal<Temperature> positionTemperatureCelsius;
+  private final StatusSignal<Temperature> rollerTemperatureCelsius;
+
 
   private final MotionMagicVoltage mVoltageRequest;
 
@@ -62,11 +67,15 @@ public class IntakeTalonFXIO implements IntakeIO {
     rollerMotorVoltage = roller.getMotorVoltage();
     rollerStatorCurrent = roller.getStatorCurrent();
     rollerSupplyCurrent = roller.getSupplyCurrent();
+    rollerTemperatureCelsius = roller.getDeviceTemp();
 
     positionVelocity = position.getVelocity();
     positionMotorVoltage = position.getMotorVoltage();
     positionStatorCurrent = position.getStatorCurrent();
     positionSupplyCurrent = position.getSupplyCurrent();
+    positionTemperatureCelsius = position.getDeviceTemp();
+
+    
 
     // Optimize CAN bus usage by refreshing these signals together
     BaseStatusSignal.setUpdateFrequencyForAll(
@@ -83,11 +92,13 @@ public class IntakeTalonFXIO implements IntakeIO {
     inputsAutoLogged.rollerAmpsSupply = rollerSupplyCurrent.getValueAsDouble();
     inputsAutoLogged.rollerVolts = rollerMotorVoltage.getValueAsDouble();
     inputsAutoLogged.rollerSpeed = rollerVelocity.getValueAsDouble();
+    inputsAutoLogged.rollerTemperatureCelsius = rollerTemperatureCelsius.getValueAsDouble();
 
     inputsAutoLogged.positionAmpsStator = positionStatorCurrent.getValueAsDouble();
     inputsAutoLogged.positionAmpsSupply = positionSupplyCurrent.getValueAsDouble();
     inputsAutoLogged.positionVolts = positionMotorVoltage.getValueAsDouble();
     inputsAutoLogged.positionSpeed = positionVelocity.getValueAsDouble();
+    inputsAutoLogged.positionTemperatureCelsius = positionTemperatureCelsius.getValueAsDouble();
 
     inputsAutoLogged.position = position.getRotorPosition().getValueAsDouble();
     inputsAutoLogged.targetPosition = targetPosition;

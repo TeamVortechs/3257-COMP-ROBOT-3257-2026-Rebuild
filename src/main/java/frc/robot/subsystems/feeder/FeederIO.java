@@ -12,6 +12,8 @@ public interface FeederIO {
     double voltage;
     boolean isOnTargetSpeed;
     boolean isBraked;
+    double temperatureCelsius;
+
   }
 
   /** updates the inputs for advantage kit logging purposes */

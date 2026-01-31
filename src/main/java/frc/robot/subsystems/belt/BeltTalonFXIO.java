@@ -8,6 +8,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
+import edu.wpi.first.units.measure.Temperature;
 import edu.wpi.first.units.measure.Voltage;
 import frc.robot.Constants;
 
@@ -19,6 +20,7 @@ public class BeltTalonFXIO implements BeltIO {
   private final StatusSignal<Voltage> motorVoltage;
   private final StatusSignal<Current> supplyCurrent;
   private final StatusSignal<Current> statorCurrent;
+  private final StatusSignal<Temperature> temperatureCelsius;
 
   private double targetSpeed = 0;
 
@@ -43,6 +45,8 @@ public class BeltTalonFXIO implements BeltIO {
         Constants.FREQUENCY_HZ, velocity, motorVoltage, supplyCurrent);
 
     isBraked = true;
+
+    temperatureCelsius = motor.getDeviceTemp();
   }
 
   @Override
@@ -56,6 +60,7 @@ public class BeltTalonFXIO implements BeltIO {
     inputs.statorCurrentAmps = statorCurrent.getValueAsDouble();
     inputs.targetOutput = targetSpeed;
 
+    inputs.temperatureCelsius = temperatureCelsius.getValueAsDouble();
     inputs.isBraked = isBraked;
   }
 

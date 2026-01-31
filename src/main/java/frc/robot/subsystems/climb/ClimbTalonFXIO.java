@@ -10,6 +10,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
+import edu.wpi.first.units.measure.Temperature;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.Servo;
 import frc.robot.Constants;
@@ -23,12 +24,15 @@ public class ClimbTalonFXIO implements ClimbIO {
   private final StatusSignal<Current> leftSupplyCurrent;
   private final StatusSignal<Current> leftStatorCurrent;
   private final StatusSignal<Angle> leftMotorPosition;
+  private final StatusSignal<Temperature> leftMotorTemperatureCelsius;
 
   private final StatusSignal<AngularVelocity> rightVelocity;
   private final StatusSignal<Voltage> rightMotorVoltage;
   private final StatusSignal<Current> rightSupplyCurrent;
   private final StatusSignal<Current> rightStatorCurrent;
   private final StatusSignal<Angle> rightMotorPosition;
+  private final StatusSignal<Temperature> rightMotorTemperatureCelsius;
+
   private Servo servo;
   private double servoPosition = 0.0;
 
@@ -94,7 +98,9 @@ public class ClimbTalonFXIO implements ClimbIO {
     // this the servo
     this.servo = new Servo(Constants.ClimbConstants.SERVO_ID);
 
-    isBraked = true;
+    leftMotorTemperatureCelsius = leftMotor.getDeviceTemp();
+    rightMotorTemperatureCelsius = rightMotor.getDeviceTemp();
+
   }
 
   @Override
@@ -117,6 +123,9 @@ public class ClimbTalonFXIO implements ClimbIO {
     inputs.servoPosition = servoPosition;
 
     inputs.isBraked = isBraked;
+
+    inputs.motorLeftTemperatureCelsius = leftMotorTemperatureCelsius.getValueAsDouble();
+    inputs.motorRightTemperatureCelsius = rightMotorTemperatureCelsius.getValueAsDouble();
 
     if (!manual) {
       // motor.set(speed);

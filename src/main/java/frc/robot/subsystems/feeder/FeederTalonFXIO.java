@@ -10,6 +10,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
+import edu.wpi.first.units.measure.Temperature;
 import edu.wpi.first.units.measure.Voltage;
 import frc.robot.Constants;
 
@@ -23,6 +24,8 @@ public class FeederTalonFXIO implements FeederIO {
   private final StatusSignal<Voltage> motorVoltage;
   private final StatusSignal<Current> supplyCurrent;
   private final StatusSignal<Current> statorCurrent;
+  private final StatusSignal<Temperature> temperatureCelsius;
+
 
   private double targetSpeed = 0;
 
@@ -47,6 +50,8 @@ public class FeederTalonFXIO implements FeederIO {
     supplyCurrent = motor.getSupplyCurrent();
     statorCurrent = motor.getStatorCurrent();
 
+    temperatureCelsius = motor.getDeviceTemp();
+
     // Optimize CAN bus usage by refreshing these signals together
     BaseStatusSignal.setUpdateFrequencyForAll(
         Constants.FREQUENCY_HZ, velocity, motorVoltage, supplyCurrent);
@@ -68,6 +73,8 @@ public class FeederTalonFXIO implements FeederIO {
     inputs.isOnTargetSpeed = isOnTargetSpeed();
 
     inputs.isBraked = isBraked;
+
+    inputs.temperatureCelsius = temperatureCelsius.getValueAsDouble();
   }
 
   @Override
