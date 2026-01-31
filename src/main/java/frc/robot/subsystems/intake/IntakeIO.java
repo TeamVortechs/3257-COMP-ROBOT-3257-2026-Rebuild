@@ -35,6 +35,7 @@ public interface IntakeIO {
   // updates the given inputs with new values(advantage kit stuff)
   /**
    * updates inputs for logging purposes
+   *
    * @param inputsAutoLogged
    */
   public default void updateInputs(IntakeIOInputsAutoLogged inputsAutoLogged) {}
@@ -43,6 +44,7 @@ public interface IntakeIO {
 
   /**
    * gets stator current going in the roller motor
+   *
    * @return gets stator current going in the motor in amps
    */
   public default double getCurrent() {
@@ -50,7 +52,6 @@ public interface IntakeIO {
   }
 
   /**
-   * 
    * @return voltage of the roller motor
    */
   public default double getVoltage() {
@@ -59,24 +60,28 @@ public interface IntakeIO {
 
   /**
    * sets roller voltage to param
+   *
    * @param volt
    */
   public default void setRollerVoltage(double volt) {}
 
   /**
    * set's position voltage to param
+   *
    * @param volt
    */
   public default void setPositionVoltage(double volt) {}
 
   /**
    * set's position of position motor
-   * @param position rotations 
+   *
+   * @param position rotations
    */
   public default void setTargetPosition(double position) {}
 
   /**
    * gets target position of the position motor
+   *
    * @return returns target pos of position motor
    */
   public default double getTargetPosition() {
@@ -84,30 +89,25 @@ public interface IntakeIO {
   }
   // misc methods
 
-  /**
-   * rebuilds the pid constants of the motors
-   * 
-   */
+  /** rebuilds the pid constants of the motors */
   public default void rebuildMotorsPID() {}
 
-  /** 
-   * Stops the motor immediately 
-   */
+  /** Stops the motor immediately */
   public default void stop() {}
-  
-  /**
-   * reset position encoder
-   */
+
+  /** reset position encoder */
   public default void resetEncoders() {}
 
   /**
    * brakes all motors if param is true, otherwise coasts if false
+   *
    * @param braked
    */
   public default void setBraked(boolean braked) {}
 
   /**
    * gets the highest possible height of the arm in radians
+   *
    * @return highest poss height of arm in radians
    */
   public default double getMaxPosition() {
@@ -116,6 +116,7 @@ public interface IntakeIO {
 
   /**
    * get position of the position motor
+   *
    * @return
    */
   public default double getPosition() {
@@ -124,6 +125,7 @@ public interface IntakeIO {
 
   /**
    * checks if position motor is within certain tolerance of the max position
+   *
    * @return
    */
   public default boolean isMaxPosition() {
@@ -139,8 +141,9 @@ public interface IntakeIO {
 
   /**
    * returns true if motor is stalled
-   * 
-   * does this by seeing if the requested volts is above a certain amnt
+   *
+   * <p>does this by seeing if the requested volts is above a certain amnt
+   *
    * @return
    */
   public default boolean checkIfStalled() {

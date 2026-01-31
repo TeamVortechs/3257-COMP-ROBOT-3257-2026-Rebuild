@@ -27,7 +27,6 @@ public interface ShooterIO {
   }
 
   /**
-   * 
    * @return returns true if speed is within certain tolerance of the target speed
    */
   public default boolean isOnTargetSpeed() {
@@ -36,6 +35,7 @@ public interface ShooterIO {
 
   /**
    * sets voltage of the motor(not percent output!)
+   *
    * @param voltage
    */
   public default void setVoltage(double voltage) {}

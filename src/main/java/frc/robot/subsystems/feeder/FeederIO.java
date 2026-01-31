@@ -27,7 +27,6 @@ public interface FeederIO {
   }
 
   /**
-   * 
    * @return wether or not the speed and target speed are within tolerance
    */
   public default boolean isOnTargetSpeed() {
@@ -36,6 +35,7 @@ public interface FeederIO {
 
   /**
    * sets the voltage of the motor
+   *
    * @param voltage
    */
   public default void setVoltage(double voltage) {}
