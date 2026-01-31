@@ -39,8 +39,8 @@ public class ClimbSimulationIO implements ClimbIO {
     inputs.motorLeftPosition = leftMotorSim.getAngularPositionRotations();
     inputs.motorRightPosition = rightMotorSim.getAngularPositionRotations();
 
-    inputs.motorLeftAmps = leftMotorSim.getCurrentDrawAmps();
-    inputs.motorRightAmps = rightMotorSim.getCurrentDrawAmps();
+    inputs.motorLeftCurrentSupplyAmps = leftMotorSim.getCurrentDrawAmps();
+    inputs.motorRightCurrentSupplyAmps = rightMotorSim.getCurrentDrawAmps();
 
     inputs.motorLeftVolts = leftMotorSim.getInputVoltage();
     inputs.motorRightVolts = rightMotorSim.getInputVoltage();

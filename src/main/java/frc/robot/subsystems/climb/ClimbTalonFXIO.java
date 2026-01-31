@@ -20,10 +20,13 @@ public class ClimbTalonFXIO implements ClimbIO {
   private final StatusSignal<AngularVelocity> leftVelocity;
   private final StatusSignal<Voltage> leftMotorVoltage;
   private final StatusSignal<Current> leftSupplyCurrent;
+  private final StatusSignal<Current> leftStatorCurrent;
   private final StatusSignal<Angle> leftMotorPosition;
+
   private final StatusSignal<AngularVelocity> rightVelocity;
   private final StatusSignal<Voltage> rightMotorVoltage;
   private final StatusSignal<Current> rightSupplyCurrent;
+  private final StatusSignal<Current> rightStatorCurrent;
   private final StatusSignal<Angle> rightMotorPosition;
   private Servo servo;
   private double servoPosition = 0.0;
@@ -62,11 +65,13 @@ public class ClimbTalonFXIO implements ClimbIO {
     leftVelocity = leftMotor.getVelocity();
     leftMotorVoltage = leftMotor.getMotorVoltage();
     leftSupplyCurrent = leftMotor.getSupplyCurrent();
+    leftStatorCurrent = leftMotor.getStatorCurrent();
     leftMotorPosition = leftMotor.getPosition();
 
     rightVelocity = rightMotor.getVelocity();
     rightMotorVoltage = rightMotor.getMotorVoltage();
     rightSupplyCurrent = rightMotor.getSupplyCurrent();
+    rightStatorCurrent = rightMotor.getStatorCurrent();
     rightMotorPosition = rightMotor.getPosition();
 
     // Optimize CAN bus usage by refreshing these signals together
@@ -92,8 +97,11 @@ public class ClimbTalonFXIO implements ClimbIO {
     inputs.motorLeftPosition = leftMotorPosition.getValueAsDouble();
     inputs.motorRightPosition = rightMotorPosition.getValueAsDouble();
 
-    inputs.motorLeftAmps = leftSupplyCurrent.getValueAsDouble();
-    inputs.motorRightAmps = rightSupplyCurrent.getValueAsDouble();
+    inputs.motorLeftCurrentSupplyAmps = leftSupplyCurrent.getValueAsDouble();
+    inputs.motorRightCurrentSupplyAmps = rightSupplyCurrent.getValueAsDouble();
+
+    inputs.motorLeftCurrentStatorAmps = leftStatorCurrent.getValueAsDouble();
+    inputs.motorRightCurrentStatorAmps = rightStatorCurrent.getValueAsDouble();
 
     inputs.motorLeftVolts = leftMotorVoltage.getValueAsDouble();
     inputs.motorRightVolts = rightMotorVoltage.getValueAsDouble();
