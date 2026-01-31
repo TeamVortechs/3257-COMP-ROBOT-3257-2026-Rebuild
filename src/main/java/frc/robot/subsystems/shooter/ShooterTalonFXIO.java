@@ -51,6 +51,7 @@ public class ShooterTalonFXIO implements ShooterIO {
         Constants.FREQUENCY_HZ, velocity, motorVoltage, supplyCurrent);
 
     mVelocityRequest = new VelocityVoltage(0).withSlot(0);
+    isBraked = true;
   }
 
   @Override

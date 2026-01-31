@@ -39,6 +39,8 @@ public class BeltTalonFXIO implements BeltIO {
     // Optimize CAN bus usage by refreshing these signals together
     BaseStatusSignal.setUpdateFrequencyForAll(
         Constants.FREQUENCY_HZ, velocity, motorVoltage, supplyCurrent);
+
+    isBraked = true;
   }
 
   @Override

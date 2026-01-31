@@ -50,6 +50,8 @@ public class FeederTalonFXIO implements FeederIO {
     // Optimize CAN bus usage by refreshing these signals together
     BaseStatusSignal.setUpdateFrequencyForAll(
         Constants.FREQUENCY_HZ, velocity, motorVoltage, supplyCurrent);
+
+    isBraked = true;
   }
 
   @Override

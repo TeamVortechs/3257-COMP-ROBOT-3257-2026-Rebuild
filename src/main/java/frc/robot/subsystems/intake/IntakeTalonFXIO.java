@@ -73,6 +73,8 @@ public class IntakeTalonFXIO implements IntakeIO {
         Constants.FREQUENCY_HZ, rollerVelocity, rollerMotorVoltage, rollerStatorCurrent);
     BaseStatusSignal.setUpdateFrequencyForAll(
         Constants.FREQUENCY_HZ, positionVelocity, positionMotorVoltage, positionStatorCurrent);
+
+    isBraked = true;
   }
 
   // updates the given inputs with new values(advantage kit stuff)

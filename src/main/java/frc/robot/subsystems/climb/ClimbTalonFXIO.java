@@ -93,6 +93,8 @@ public class ClimbTalonFXIO implements ClimbIO {
 
     // this the servo
     this.servo = new Servo(Constants.ClimbConstants.SERVO_ID);
+
+    isBraked = true;
   }
 
   @Override
