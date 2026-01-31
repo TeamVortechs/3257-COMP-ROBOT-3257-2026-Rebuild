@@ -22,10 +22,12 @@ public class IntakeTalonFXIO implements IntakeIO {
   // StatusSignals allow for high-frequency, synchronous data collection
   private final StatusSignal<AngularVelocity> rollerVelocity;
   private final StatusSignal<Voltage> rollerMotorVoltage;
+  private final StatusSignal<Current> rollerStatorCurrent;
   private final StatusSignal<Current> rollerSupplyCurrent;
 
   private final StatusSignal<AngularVelocity> positionVelocity;
   private final StatusSignal<Voltage> positionMotorVoltage;
+  private final StatusSignal<Current> positionStatorCurrent;
   private final StatusSignal<Current> positionSupplyCurrent;
 
   private final MotionMagicVoltage mVoltageRequest;
@@ -56,26 +58,30 @@ public class IntakeTalonFXIO implements IntakeIO {
     // Initialize signals for AdvantageKit
     rollerVelocity = roller.getVelocity();
     rollerMotorVoltage = roller.getMotorVoltage();
+    rollerStatorCurrent = roller.getStatorCurrent();
     rollerSupplyCurrent = roller.getSupplyCurrent();
 
     positionVelocity = position.getVelocity();
     positionMotorVoltage = position.getMotorVoltage();
+    positionStatorCurrent = position.getStatorCurrent();
     positionSupplyCurrent = position.getSupplyCurrent();
 
     // Optimize CAN bus usage by refreshing these signals together
     BaseStatusSignal.setUpdateFrequencyForAll(
-        Constants.FREQUENCY_HZ, rollerVelocity, rollerMotorVoltage, rollerSupplyCurrent);
+        Constants.FREQUENCY_HZ, rollerVelocity, rollerMotorVoltage, rollerStatorCurrent);
     BaseStatusSignal.setUpdateFrequencyForAll(
-        Constants.FREQUENCY_HZ, positionVelocity, positionMotorVoltage, positionSupplyCurrent);
+        Constants.FREQUENCY_HZ, positionVelocity, positionMotorVoltage, positionStatorCurrent);
   }
 
   // updates the given inputs with new values(advantage kit stuff)
   public void updateInputs(IntakeIOInputsAutoLogged inputsAutoLogged) {
-    inputsAutoLogged.rollerAmps = rollerSupplyCurrent.getValueAsDouble();
+    inputsAutoLogged.rollerAmpsStator = rollerStatorCurrent.getValueAsDouble();
+    inputsAutoLogged.rollerAmpsSupply = rollerSupplyCurrent.getValueAsDouble();
     inputsAutoLogged.rollerVolts = rollerMotorVoltage.getValueAsDouble();
     inputsAutoLogged.rollerSpeed = rollerVelocity.getValueAsDouble();
 
-    inputsAutoLogged.positionAmps = positionSupplyCurrent.getValueAsDouble();
+    inputsAutoLogged.positionAmpsStator = positionStatorCurrent.getValueAsDouble();
+    inputsAutoLogged.positionAmpsSupply = positionSupplyCurrent.getValueAsDouble();
     inputsAutoLogged.positionVolts = positionMotorVoltage.getValueAsDouble();
     inputsAutoLogged.positionSpeed = positionVelocity.getValueAsDouble();
 
@@ -85,9 +91,8 @@ public class IntakeTalonFXIO implements IntakeIO {
 
   // getters for motors
 
-  // gets the height of the arm in meters
   public double getCurrent() {
-    return rollerSupplyCurrent.getValueAsDouble();
+    return rollerStatorCurrent.getValueAsDouble();
   }
 
   public double getVoltage() {
@@ -105,7 +110,7 @@ public class IntakeTalonFXIO implements IntakeIO {
 
   // sets the position of the arm.
   public void setTargetPosition(double position1) { // IMPORTANT - POSITON1 NOT POSITION
-
+    targetPosition = position1;
     // System.out.println("Input volt: "+inputVoltage+" Target Angle: "+targetAngle);
     position.setControl(mVoltageRequest.withPosition(position1));
     // System.out.println("Voltage being sent in PID Voltage");

@@ -40,7 +40,7 @@ public class ShooterSparkIO implements ShooterIO {
     return m_encoder.getVelocity();
   }
 
-  public boolean isOnTarget() {
+  public boolean isOnTargetSpeed() {
     return Math.abs((getSpeed() - targetSpeed)) <= Constants.ShooterConstants.TOLERANCE;
   }
 

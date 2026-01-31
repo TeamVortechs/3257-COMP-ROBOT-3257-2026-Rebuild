@@ -58,7 +58,7 @@ public class ShooterTalonFXIO implements ShooterIO {
     inputs.amps = supplyCurrent.getValueAsDouble();
     inputs.targetSpeed = targetSpeed;
 
-    inputs.isOnTarget = isOnTarget();
+    inputs.isOnTarget = isOnTargetSpeed();
   }
 
   @Override
@@ -82,7 +82,7 @@ public class ShooterTalonFXIO implements ShooterIO {
   }
 
   @Override
-  public boolean isOnTarget() {
+  public boolean isOnTargetSpeed() {
     return Math.abs(this.getSpeed() - targetSpeed) < Constants.ShooterConstants.TOLERANCE;
   }
 }
