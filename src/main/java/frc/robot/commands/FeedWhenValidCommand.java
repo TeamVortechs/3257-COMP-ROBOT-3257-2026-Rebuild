@@ -162,7 +162,7 @@ public class FeedWhenValidCommand extends Command {
     seesAprilTag = true;
 
     // we don't have an accelerometer in sim
-    if (Constants.currentMode == Mode.SIM) {
+    if (Constants.CURR_MODE == Mode.SIM) {
       isNotSkidding = true;
     }
 

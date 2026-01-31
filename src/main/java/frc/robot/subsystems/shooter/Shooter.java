@@ -115,7 +115,7 @@ public class Shooter extends SubsystemBase {
    * @return wether the speed is the target speed
    */
   public boolean isOnTarget() {
-    return shooterIO.isOnTarget();
+    return shooterIO.isOnTargetSpeed();
   }
 
   // COMMANDS

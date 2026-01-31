@@ -7,6 +7,10 @@
 
 package frc.robot;
 
+import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj.RobotBase;
 
 /**
@@ -15,8 +19,8 @@ import edu.wpi.first.wpilibj.RobotBase;
  * (log replay from a file).
  */
 public final class Constants {
-  public static final Mode simMode = Mode.SIM;
-  public static final Mode currentMode = RobotBase.isReal() ? Mode.REAL : simMode;
+  public static final Mode SIM_MODE = Mode.SIM;
+  public static final Mode CURR_MODE = RobotBase.isReal() ? Mode.REAL : SIM_MODE;
   public static final double FREQUENCY_HZ = 50;
 
   public static enum Mode {
@@ -40,7 +44,7 @@ public final class Constants {
     public static final double DYNAMIC_STEP_VOLTS_SYSID = 1;
     public static final double TOLERANCE = 0.1;
 
-    public static final int ID = 1;
+    public static final int MOTOR_ID = 1;
 
     // this is higher rn cus it's in sim. We can model this as a linear function based on distance
     // if we're having trouble adjusting but right now I'm not cus it's a variable that mgiht not be
@@ -70,14 +74,31 @@ public final class Constants {
 
     // the maximum allowed difference allowed between acceleraomter and encoders before it is
     // considered skid
-    public static final double SKID_THRESHOLD = 0.5;
+    public static final double SKID_THRESHOLD = 5.0;
 
     // CHANGE !!
-    public static final double kS = 0.1;
-    public static final double kV = 0.12;
-    public static final double kP = 0.11;
-    public static final double kI = 0;
-    public static final double kD = 0;
+    public static final double KS = 0.1;
+    public static final double KV = 0.12;
+    public static final double KP = 0.11;
+    public static final double KI = 0;
+    public static final double KD = 0;
+
+    public static final TalonFXConfiguration CONFIG;
+    public static final Slot0Configs SLOT0CONFIGS;
+
+    static {
+      CONFIG = new TalonFXConfiguration();
+      SLOT0CONFIGS = new Slot0Configs();
+      CONFIG.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+      CONFIG.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+      CONFIG.CurrentLimits.SupplyCurrentLimit = Constants.ShooterConstants.CURRENT_LIMIT;
+      CONFIG.CurrentLimits.SupplyCurrentLimitEnable = true;
+      SLOT0CONFIGS.kS = Constants.ShooterConstants.KS;
+      SLOT0CONFIGS.kV = Constants.ShooterConstants.KV;
+      SLOT0CONFIGS.kP = Constants.ShooterConstants.KP;
+      SLOT0CONFIGS.kI = Constants.ShooterConstants.KI;
+      SLOT0CONFIGS.kD = Constants.ShooterConstants.KD;
+    }
   }
 
   // copied directly from ShooterConstants
@@ -88,19 +109,37 @@ public final class Constants {
     // used in Shooter.java
     public static final double RAMP_RATE_VOLTS_SYSID = 0.25;
     public static final double DYNAMIC_STEP_VOLTS_SYSID = 1;
-    public static final double TOLERANCE = 0.1;
+    public static final double POSITION_TOLERANCE = 0.1;
 
     // CHANGE !!
-    public static final double kS = 0.1;
-    public static final double kV = 0.12;
-    public static final double kP = 0.11;
-    public static final double kI = 0;
-    public static final double kD = 0;
+    public static final double KS = 0.1;
+    public static final double KV = 0.12;
+    public static final double KP = 0.11;
+    public static final double KI = 0;
+    public static final double KD = 0;
 
     // not real
-    public static final int ID = 0;
+    public static final int MOTOR_ID = 0;
 
     public static final double FEED_POWER = 0.1;
+
+    public static final Slot0Configs SLOT0CONFIGS;
+    public static final TalonFXConfiguration CONFIG;
+
+    static {
+      SLOT0CONFIGS = new Slot0Configs();
+      CONFIG = new TalonFXConfiguration();
+      SLOT0CONFIGS.kS = Constants.FeederConstants.KS;
+      SLOT0CONFIGS.kV = Constants.FeederConstants.KV;
+      SLOT0CONFIGS.kP = Constants.FeederConstants.KP;
+      SLOT0CONFIGS.kI = Constants.FeederConstants.KI;
+      SLOT0CONFIGS.kD = Constants.FeederConstants.KD;
+
+      CONFIG.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+      CONFIG.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+      CONFIG.CurrentLimits.SupplyCurrentLimit = Constants.FeederConstants.CURRENT_LIMIT;
+      CONFIG.CurrentLimits.SupplyCurrentLimitEnable = true;
+    }
   }
 
   // copied off feeder constants
@@ -116,6 +155,18 @@ public final class Constants {
     public static final int ID = 6;
 
     public static final double FEED_POWER = 0.1;
+
+    public static final double TOLERANCE = 0.1;
+
+    public static final TalonFXConfiguration CONFIG;
+
+    static {
+      CONFIG = new TalonFXConfiguration();
+      CONFIG.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+      CONFIG.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+      CONFIG.CurrentLimits.SupplyCurrentLimit = Constants.BeltConstants.CURRENT_LIMIT;
+      CONFIG.CurrentLimits.SupplyCurrentLimitEnable = true;
+    }
   }
 
   // copied directly from BeltConstants
@@ -126,7 +177,7 @@ public final class Constants {
     public static final double DYNAMIC_STEP_VOLTS_SYSID = 0.25;
 
     // not real
-    public static final int ID = 6;
+    public static final int SERVO_ID = 6;
 
     public static final double FEED_POWER = 0.1;
 
@@ -137,15 +188,33 @@ public final class Constants {
     public static final double MAX_POSITION_RIGHT = 0;
 
     // CHANGE !!
-    public static final double kS = 0.1;
-    public static final double kV = 0.12;
-    public static final double kP = 0.11;
-    public static final double kI = 0;
-    public static final double kD = 0;
+    public static final double KS = 0.1;
+    public static final double KV = 0.12;
+    public static final double KP = 0.11;
+    public static final double KI = 0;
+    public static final double KD = 0;
 
     public static final int servoChannel = 9;
 
     public static final int SimulationID = 1;
+
+    public static final TalonFXConfiguration CONFIG;
+    public static final Slot0Configs SLOT0CONFIGS;
+
+    static {
+      CONFIG = new TalonFXConfiguration();
+      CONFIG.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+      CONFIG.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+      CONFIG.CurrentLimits.SupplyCurrentLimit = Constants.ClimbConstants.CURRENT_LIMIT;
+      CONFIG.CurrentLimits.SupplyCurrentLimitEnable = true;
+
+      SLOT0CONFIGS = new Slot0Configs();
+      SLOT0CONFIGS.kS = Constants.ClimbConstants.KS;
+      SLOT0CONFIGS.kV = Constants.ClimbConstants.KV;
+      SLOT0CONFIGS.kP = Constants.ClimbConstants.KP;
+      SLOT0CONFIGS.kI = Constants.ClimbConstants.KI;
+      SLOT0CONFIGS.kD = Constants.ClimbConstants.KD;
+    }
   }
 
   public class IntakeConstants {
@@ -160,25 +229,39 @@ public final class Constants {
     public static final double MIN_POSITION = 0;
 
     // CHANGE !!
-    public static final double kS = 0.25;
-    public static final double kV = 0.12;
-    public static final double kA = 0.01;
-    public static final double kP = 12;
-    public static final double kI = 0;
-    public static final double kD = 0.1;
+    public static final double KS = 0.25;
+    public static final double KV = 0.12;
+    public static final double KA = 0.01;
+    public static final double KP = 12;
+    public static final double KI = 0;
+    public static final double KD = 0.1;
 
     public static final double INTAKE_SPEED = 0.1;
     public static final double INTAKE_POSITION = 0.5;
 
-    public static final double MotionMagicCruiseVelocity = 3;
-    public static final double MotionMagicAcceleration = 2.5;
-    public static final double MotionMagicJerk = 10;
+    public static final double MOTION_MAGIC_CRUISE_VELOCITY = 3;
+    public static final double MOTION_MAGIC_ACCELERATION = 2.5;
+    public static final double MOTION_MAGIC_JERK = 10;
 
     public static final double RAMP_RATE_VOLTS_ROLLER_SYSID = 0.25;
     public static final double DYNAMIC_STEP_VOLTS_ROLLER_SYSID = 1;
 
+    public static final double ROLLER_STALLED_VOLTS = 20.0;
     // lower cus this has hardstops
     public static final double RAMP_RATE_VOLTS_POSITION_SYSID = 0.1;
     public static final double DYNAMIC_STEP_VOLTS_POSITION_SYSID = 0.25;
+    public static final TalonFXConfiguration CONFIG;
+    public static final Slot0Configs SLOT0CONFIGS;
+
+    static {
+      CONFIG = new TalonFXConfiguration();
+      SLOT0CONFIGS = CONFIG.Slot0;
+      SLOT0CONFIGS.kS = Constants.IntakeConstants.KS;
+      SLOT0CONFIGS.kV = Constants.IntakeConstants.KV;
+      SLOT0CONFIGS.kA = Constants.IntakeConstants.KA;
+      SLOT0CONFIGS.kP = Constants.IntakeConstants.KP;
+      SLOT0CONFIGS.kI = Constants.IntakeConstants.KI;
+      SLOT0CONFIGS.kD = Constants.IntakeConstants.KD;
+    }
   }
 }

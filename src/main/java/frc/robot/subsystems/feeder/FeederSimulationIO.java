@@ -25,10 +25,10 @@ public class FeederSimulationIO implements FeederIO {
     inputs.voltage = rollerMotorsSim.getInputVoltage();
     inputs.speed = rollerMotorsSim.getAngularVelocityRPM();
 
-    isOnTarget = isOnTarget();
+    isOnTarget = isOnTargetSpeed();
 
     inputs.targetSpeed = targetSpeed;
-    inputs.isOnTarget = isOnTarget;
+    inputs.isOnTargetSpeed = isOnTarget;
 
     rollerMotorsSim.update(0.02);
   }
@@ -59,7 +59,7 @@ public class FeederSimulationIO implements FeederIO {
 
   // possibly completely unnecessary for feeder?
   @Override
-  public boolean isOnTarget() {
+  public boolean isOnTargetSpeed() {
     return Math.abs(getSpeed() - targetSpeed) < .05;
   }
 }

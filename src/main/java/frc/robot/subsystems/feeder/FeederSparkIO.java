@@ -17,10 +17,10 @@ public class FeederSparkIO implements FeederIO {
     inputs.voltage = m_motor.getBusVoltage();
     inputs.speed = 0;
 
-    isOnTarget = isOnTarget();
+    isOnTarget = isOnTargetSpeed();
 
     inputs.targetSpeed = targetSpeed;
-    inputs.isOnTarget = isOnTarget;
+    inputs.isOnTargetSpeed = isOnTarget;
   }
 
   /*
@@ -44,7 +44,7 @@ public class FeederSparkIO implements FeederIO {
   }
 
   @Override
-  public boolean isOnTarget() {
+  public boolean isOnTargetSpeed() {
     return Math.abs(getSpeed() - targetSpeed) < .05;
   }
 

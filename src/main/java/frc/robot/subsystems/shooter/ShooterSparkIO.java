@@ -6,7 +6,7 @@ import com.revrobotics.spark.SparkMax;
 import frc.robot.Constants;
 
 public class ShooterSparkIO implements ShooterIO {
-  final SparkMax m_motor = new SparkMax(Constants.ShooterConstants.ID, MotorType.kBrushed);
+  final SparkMax m_motor = new SparkMax(Constants.ShooterConstants.MOTOR_ID, MotorType.kBrushed);
   private RelativeEncoder m_encoder = m_motor.getEncoder();
   private double targetSpeed = 0;
   private boolean isOnTarget = false;
@@ -40,7 +40,7 @@ public class ShooterSparkIO implements ShooterIO {
     return m_encoder.getVelocity();
   }
 
-  public boolean isOnTarget() {
+  public boolean isOnTargetSpeed() {
     return Math.abs((getSpeed() - targetSpeed)) <= Constants.ShooterConstants.TOLERANCE;
   }
 

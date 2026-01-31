@@ -32,7 +32,7 @@ public class ShooterSimulationIO implements ShooterIO {
     inputs.voltage = rollerMotorsSim.getInputVoltage();
     inputs.speed = rollerMotorsSim.getAngularVelocityRPM();
 
-    isOnTarget = isOnTarget();
+    isOnTarget = isOnTargetSpeed();
 
     inputs.targetSpeed = targetSpeed;
     inputs.isOnTarget = isOnTarget;
@@ -65,7 +65,7 @@ public class ShooterSimulationIO implements ShooterIO {
   }
 
   @Override
-  public boolean isOnTarget() {
+  public boolean isOnTargetSpeed() {
     return Math.abs((getSpeed() - targetSpeed)) <= 0.5;
   }
 }

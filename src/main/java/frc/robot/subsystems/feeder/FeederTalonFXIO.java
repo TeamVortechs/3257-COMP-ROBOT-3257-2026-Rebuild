@@ -5,9 +5,8 @@ import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VelocityVoltage;
+import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.InvertedValue;
-import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
@@ -15,6 +14,8 @@ import frc.robot.Constants;
 
 public class FeederTalonFXIO implements FeederIO {
   private final TalonFX motor;
+
+  private final VelocityVoltage mVelocityRequest;
 
   // StatusSignals allow for high-frequency, synchronous data collection
   private final StatusSignal<AngularVelocity> velocity;
@@ -25,22 +26,12 @@ public class FeederTalonFXIO implements FeederIO {
 
   public FeederTalonFXIO(int canId) {
     motor = new TalonFX(canId);
+    mVelocityRequest = new VelocityVoltage(0).withSlot(0);
 
     // Basic Configuration
-    TalonFXConfiguration config = new TalonFXConfiguration();
-    config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-    config.CurrentLimits.SupplyCurrentLimit =
-        Constants.FeederConstants.CURRENT_LIMIT; // Prevent breaker trips
-    config.CurrentLimits.SupplyCurrentLimitEnable = true;
+    TalonFXConfiguration config = Constants.FeederConstants.CONFIG;
 
-    var slot0Configs = new Slot0Configs();
-    slot0Configs.kS = Constants.FeederConstants.kS; // Add 0.1 V output to overcome static friction
-    slot0Configs.kV =
-        Constants.FeederConstants.kV; // A velocity target of 1 rps results in 0.12 V output
-    slot0Configs.kP = Constants.FeederConstants.kP; // An error of 1 rps results in 0.11 V output
-    slot0Configs.kI = Constants.FeederConstants.kI; // no output for integrated error
-    slot0Configs.kD = Constants.FeederConstants.kD; // no output for error derivative
+    Slot0Configs slot0Configs = Constants.FeederConstants.SLOT0CONFIGS;
 
     motor.getConfigurator().apply(slot0Configs);
 
@@ -66,15 +57,15 @@ public class FeederTalonFXIO implements FeederIO {
     inputs.amps = supplyCurrent.getValueAsDouble();
     inputs.targetSpeed = targetSpeed;
 
-    inputs.isOnTarget = isOnTarget();
+    inputs.isOnTargetSpeed = isOnTargetSpeed();
   }
 
   @Override
   public void setSpeed(double speed) {
     targetSpeed = speed;
-    final VelocityVoltage m_request = new VelocityVoltage(0).withSlot(0);
+
     // motor.set(speed);
-    motor.setControl(m_request.withVelocity(speed));
+    motor.setControl(mVelocityRequest.withVelocity(speed));
     // motor.setControl(new DutyCycleOut(speed));
   }
 
@@ -84,12 +75,18 @@ public class FeederTalonFXIO implements FeederIO {
 
   @Override
   public void setVoltage(double voltage) {
-    motor.setVoltage(voltage);
+    // motor.setVoltage(voltage);
+    motor.setControl(new VoltageOut(voltage));
     // motor.setControl(new VoltageOut(voltage));
   }
 
   @Override
   public double getSpeed() {
     return velocity.getValueAsDouble();
+  }
+
+  @Override
+  public boolean isOnTargetSpeed() {
+    return Math.abs(getSpeed() - targetSpeed) < Constants.FeederConstants.POSITION_TOLERANCE;
   }
 }

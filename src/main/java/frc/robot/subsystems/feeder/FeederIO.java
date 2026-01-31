@@ -9,19 +9,23 @@ public interface FeederIO {
     double targetSpeed;
     double amps;
     double voltage;
-    boolean isOnTarget;
+    boolean isOnTargetSpeed;
   }
 
   /** updates the inputs for advantage kit logging purposes */
   public default void updateInputs(FeederIOInputsAutoLogged inputs) {}
-
+  /**
+   * @param speed sets speed in RPM
+   */
   public default void setSpeed(double speed) {}
-
+  /**
+   * @return returns speed in RPM
+   */
   public default double getSpeed() {
     return 0;
   }
 
-  public default boolean isOnTarget() {
+  public default boolean isOnTargetSpeed() {
     return false;
   }
 
