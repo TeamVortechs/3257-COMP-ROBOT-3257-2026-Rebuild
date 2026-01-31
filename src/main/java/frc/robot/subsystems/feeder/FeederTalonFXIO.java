@@ -5,6 +5,7 @@ import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VelocityVoltage;
+import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
@@ -14,7 +15,7 @@ import frc.robot.Constants;
 public class FeederTalonFXIO implements FeederIO {
   private final TalonFX motor;
 
-  final VelocityVoltage mVelocityRequest;
+  private final VelocityVoltage mVelocityRequest;
 
   // StatusSignals allow for high-frequency, synchronous data collection
   private final StatusSignal<AngularVelocity> velocity;
@@ -56,7 +57,7 @@ public class FeederTalonFXIO implements FeederIO {
     inputs.amps = supplyCurrent.getValueAsDouble();
     inputs.targetSpeed = targetSpeed;
 
-    inputs.isOnTarget = isOnTarget();
+    inputs.isOnTargetSpeed = isOnTargetSpeed();
   }
 
   @Override
@@ -74,12 +75,18 @@ public class FeederTalonFXIO implements FeederIO {
 
   @Override
   public void setVoltage(double voltage) {
-    motor.setVoltage(voltage);
+    // motor.setVoltage(voltage);
+    motor.setControl(new VoltageOut(voltage));
     // motor.setControl(new VoltageOut(voltage));
   }
 
   @Override
   public double getSpeed() {
     return velocity.getValueAsDouble();
+  }
+
+  @Override
+  public boolean isOnTargetSpeed(){
+    return Math.abs(getSpeed() - targetSpeed) < Constants.FeederConstants.POSITION_TOLERANCE;
   }
 }

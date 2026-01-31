@@ -17,7 +17,7 @@ import org.littletonrobotics.junction.Logger;
 public class Feeder extends SubsystemBase {
 
   // this shouldn't be here but it is for now because we're probably gonna move this
-  public static final double TOLERANCE = FeederConstants.TOLERANCE;
+  public static final double TOLERANCE = FeederConstants.POSITION_TOLERANCE;
 
   // just here for the logging, done like this so we can put it on a dashboard
   @AutoLogOutput(key = "Feeder/FeederSpeed")
@@ -80,7 +80,7 @@ public class Feeder extends SubsystemBase {
    * @return wether the speed is the target speed
    */
   public boolean isOnTarget() {
-    return feederIO.isOnTarget();
+    return feederIO.isOnTargetSpeed();
   }
 
   // COMMANDS

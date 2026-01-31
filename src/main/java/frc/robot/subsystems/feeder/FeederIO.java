@@ -9,7 +9,7 @@ public interface FeederIO {
     double targetSpeed;
     double amps;
     double voltage;
-    boolean isOnTarget;
+    boolean isOnTargetSpeed;
   }
 
   /** updates the inputs for advantage kit logging purposes */
@@ -27,7 +27,7 @@ public interface FeederIO {
     return 0;
   }
 
-  public default boolean isOnTarget() {
+  public default boolean isOnTargetSpeed() {
     return false;
   }
 

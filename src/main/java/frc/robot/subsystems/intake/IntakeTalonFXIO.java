@@ -5,6 +5,7 @@ import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -94,15 +95,15 @@ public class IntakeTalonFXIO implements IntakeIO {
 
   // setters for motors
   public void setRollerVoltage(double volt) {
-    roller.setVoltage(volt);
+    roller.setControl(new VoltageOut(volt));
   }
 
   public void setPositionVoltage(double volt) {
-    position.setVoltage(volt);
+    position.setControl(new VoltageOut(volt));
   }
 
   // sets the position of the arm.
-  public void setTargetPosition(double position1) { // IMPORTANT -- POSITON1 NOT POSITION
+  public void setTargetPosition(double position1) { // IMPORTANT - POSITON1 NOT POSITION
     
     // System.out.println("Input volt: "+inputVoltage+" Target Angle: "+targetAngle);
     position.setControl(mVoltageRequest.withPosition(position1));
@@ -150,6 +151,6 @@ public class IntakeTalonFXIO implements IntakeIO {
   }
 
   public boolean checkIfStalled() {
-    return false;
+    return (roller.getMotorVoltage().getValueAsDouble() > Constants.IntakeConstants.ROLLER_STALLED_VOLTS);
   }
 }

@@ -19,8 +19,8 @@ import edu.wpi.first.wpilibj.RobotBase;
  * (log replay from a file).
  */
 public final class Constants {
-  public static final Mode simMode = Mode.SIM;
-  public static final Mode currentMode = RobotBase.isReal() ? Mode.REAL : simMode;
+  public static final Mode SIM_MODE = Mode.SIM;
+  public static final Mode CURR_MODE = RobotBase.isReal() ? Mode.REAL : SIM_MODE;
   public static final double FREQUENCY_HZ = 50;
 
   public static enum Mode {
@@ -44,7 +44,7 @@ public final class Constants {
     public static final double DYNAMIC_STEP_VOLTS_SYSID = 1;
     public static final double TOLERANCE = 0.1;
 
-    public static final int ID = 1;
+    public static final int MOTOR_ID = 1;
 
     // this is higher rn cus it's in sim. We can model this as a linear function based on distance
     // if we're having trouble adjusting but right now I'm not cus it's a variable that mgiht not be
@@ -74,7 +74,7 @@ public final class Constants {
 
     // the maximum allowed difference allowed between acceleraomter and encoders before it is
     // considered skid
-    public static final double SKID_THRESHOLD = 0.5;
+    public static final double SKID_THRESHOLD = 5.0;
 
     // CHANGE !!
     public static final double KS = 0.1;
@@ -109,7 +109,7 @@ public final class Constants {
     // used in Shooter.java
     public static final double RAMP_RATE_VOLTS_SYSID = 0.25;
     public static final double DYNAMIC_STEP_VOLTS_SYSID = 1;
-    public static final double TOLERANCE = 0.1;
+    public static final double POSITION_TOLERANCE = 0.1;
 
     // CHANGE !!
     public static final double KS = 0.1;
@@ -119,7 +119,7 @@ public final class Constants {
     public static final double KD = 0;
 
     // not real
-    public static final int ID = 0;
+    public static final int MOTOR_ID = 0;
 
     public static final double FEED_POWER = 0.1;
 
@@ -176,7 +176,7 @@ public final class Constants {
     public static final double DYNAMIC_STEP_VOLTS_SYSID = 0.25;
 
     // not real
-    public static final int ID = 6;
+    public static final int SERVO_ID = 6;
 
     public static final double FEED_POWER = 0.1;
 
@@ -244,6 +244,7 @@ public final class Constants {
     public static final double RAMP_RATE_VOLTS_ROLLER_SYSID = 0.25;
     public static final double DYNAMIC_STEP_VOLTS_ROLLER_SYSID = 1;
 
+    public static final double ROLLER_STALLED_VOLTS = 20.0;
     // lower cus this has hardstops
     public static final double RAMP_RATE_VOLTS_POSITION_SYSID = 0.1;
     public static final double DYNAMIC_STEP_VOLTS_POSITION_SYSID = 0.25;

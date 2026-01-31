@@ -4,7 +4,9 @@ import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.VelocityVoltage;
+import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
@@ -70,8 +72,9 @@ public class ShooterTalonFXIO implements ShooterIO {
 
   @Override
   public void setVoltage(double voltage) {
-    motor.setVoltage(voltage);
-    // motor.setControl(new VoltageOut(voltage));
+    // motor.setVoltage(voltage);
+    motor.setControl(new VoltageOut(voltage));
+    // motor.setControl(new DutyCycleOut(voltage));
   }
 
   @Override

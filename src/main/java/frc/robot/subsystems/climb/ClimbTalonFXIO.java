@@ -83,7 +83,7 @@ public class ClimbTalonFXIO implements ClimbIO {
         rightMotorPosition);
 
     // this the servo
-    this.servo = new Servo(Constants.ClimbConstants.ID);
+    this.servo = new Servo(Constants.ClimbConstants.SERVO_ID);
   }
 
   @Override
