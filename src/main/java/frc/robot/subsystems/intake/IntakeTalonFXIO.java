@@ -32,7 +32,8 @@ public class IntakeTalonFXIO implements IntakeIO {
 
   private final MotionMagicVoltage mVoltageRequest;
 
-  private boolean isBraked = true;
+  private boolean isBrakedRoller = true;
+  private boolean isBrakedPosition = true;
   private double targetPosition = 0;
 
   public IntakeTalonFXIO(int canIdRoller, int canIdPosition) {
@@ -73,8 +74,6 @@ public class IntakeTalonFXIO implements IntakeIO {
         Constants.FREQUENCY_HZ, rollerVelocity, rollerMotorVoltage, rollerStatorCurrent);
     BaseStatusSignal.setUpdateFrequencyForAll(
         Constants.FREQUENCY_HZ, positionVelocity, positionMotorVoltage, positionStatorCurrent);
-
-    isBraked = true;
   }
 
   // updates the given inputs with new values(advantage kit stuff)
@@ -92,7 +91,8 @@ public class IntakeTalonFXIO implements IntakeIO {
     inputsAutoLogged.position = position.getRotorPosition().getValueAsDouble();
     inputsAutoLogged.targetPosition = targetPosition;
 
-    inputsAutoLogged.isBraked = isBraked;
+    inputsAutoLogged.isBrakedRoller = isBrakedRoller;
+    inputsAutoLogged.isBrakedPosition = isBrakedPosition;
   }
 
   // getters for motors
@@ -131,8 +131,19 @@ public class IntakeTalonFXIO implements IntakeIO {
     position.setPosition(0);
   }
 
-  public void setBraked(boolean braked) {
-    isBraked = braked;
+  public void setBrakedRoller(boolean braked) {
+    isBrakedRoller = braked;
+    TalonFXConfiguration config = new TalonFXConfiguration();
+    if (braked) {
+      config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    } else {
+      config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+    }
+    roller.getConfigurator().apply(config);
+  }
+
+  public void setBrakedPosition(boolean braked) {
+    isBrakedPosition = braked;
     TalonFXConfiguration config = new TalonFXConfiguration();
     if (braked) {
       config.MotorOutput.NeutralMode = NeutralModeValue.Brake;

@@ -31,7 +31,8 @@ public interface IntakeIO {
     double position = 0;
     double targetPosition = 0;
 
-    boolean isBraked = true;
+    boolean isBrakedRoller = true;
+    boolean isBrakedPosition = true;
   }
 
   // updates the given inputs with new values(advantage kit stuff)
@@ -106,6 +107,10 @@ public interface IntakeIO {
    * @param braked
    */
   public default void setBraked(boolean braked) {}
+
+  public default void setBrakedRoller(boolean braked) {}
+
+  public default void setBrakedPosition(boolean braked) {}
 
   /**
    * gets the highest possible height of the arm in radians
