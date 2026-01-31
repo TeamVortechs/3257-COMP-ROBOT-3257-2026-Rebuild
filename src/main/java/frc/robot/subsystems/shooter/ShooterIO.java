@@ -11,8 +11,8 @@ public interface ShooterIO {
     double statorCurrentAmps;
     double voltage;
     boolean isOnTarget;
-    boolean isBraked;
     double temperatureCelsius;
+    boolean isBraked = true;
   }
 
   /** updates the inputs for advantage kit logging purposes */

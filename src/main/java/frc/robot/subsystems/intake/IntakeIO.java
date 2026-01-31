@@ -36,6 +36,8 @@ public interface IntakeIO {
     double positionTemperatureCelsius = 0;
     double rollerTemperatureCelsius = 0;
 
+    boolean isBrakedRoller = true;
+    boolean isBrakedPosition = true;
   }
 
   // updates the given inputs with new values(advantage kit stuff)
@@ -110,6 +112,10 @@ public interface IntakeIO {
    * @param braked
    */
   public default void setBraked(boolean braked) {}
+
+  public default void setBrakedRoller(boolean braked) {}
+
+  public default void setBrakedPosition(boolean braked) {}
 
   /**
    * gets the highest possible height of the arm in radians
