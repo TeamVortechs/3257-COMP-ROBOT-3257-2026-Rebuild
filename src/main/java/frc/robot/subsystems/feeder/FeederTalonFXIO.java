@@ -26,7 +26,6 @@ public class FeederTalonFXIO implements FeederIO {
   private final StatusSignal<Current> statorCurrent;
   private final StatusSignal<Temperature> temperatureCelsius;
 
-
   private double targetSpeed = 0;
 
   private boolean isBraked = true;

@@ -100,7 +100,6 @@ public class ClimbTalonFXIO implements ClimbIO {
 
     leftMotorTemperatureCelsius = leftMotor.getDeviceTemp();
     rightMotorTemperatureCelsius = rightMotor.getDeviceTemp();
-
   }
 
   @Override

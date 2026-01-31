@@ -34,7 +34,6 @@ public class IntakeTalonFXIO implements IntakeIO {
   private final StatusSignal<Temperature> positionTemperatureCelsius;
   private final StatusSignal<Temperature> rollerTemperatureCelsius;
 
-
   private final MotionMagicVoltage mVoltageRequest;
 
   private boolean isBrakedRoller = true;
@@ -75,8 +74,6 @@ public class IntakeTalonFXIO implements IntakeIO {
     positionStatorCurrent = position.getStatorCurrent();
     positionSupplyCurrent = position.getSupplyCurrent();
     positionTemperatureCelsius = position.getDeviceTemp();
-
-    
 
     // Optimize CAN bus usage by refreshing these signals together
     BaseStatusSignal.setUpdateFrequencyForAll(
