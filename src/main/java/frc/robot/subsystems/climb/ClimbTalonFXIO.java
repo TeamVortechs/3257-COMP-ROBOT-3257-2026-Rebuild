@@ -38,6 +38,7 @@ public class ClimbTalonFXIO implements ClimbIO {
 
   private final PositionVoltage leftRequestVoltage;
   private final PositionVoltage rightRequestVoltage;
+
   public ClimbTalonFXIO(int canIdLeft, int canIdRight) {
     leftMotor = new TalonFX(canIdLeft);
     rightMotor = new TalonFX(canIdRight);

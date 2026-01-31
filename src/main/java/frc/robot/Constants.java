@@ -125,6 +125,7 @@ public final class Constants {
 
     public static final Slot0Configs SLOT0CONFIGS;
     public static final TalonFXConfiguration CONFIG;
+
     static {
       SLOT0CONFIGS = new Slot0Configs();
       CONFIG = new TalonFXConfiguration();
@@ -157,8 +158,8 @@ public final class Constants {
 
     public static final double TOLERANCE = 0.1;
 
-
     public static final TalonFXConfiguration CONFIG;
+
     static {
       CONFIG = new TalonFXConfiguration();
       CONFIG.MotorOutput.NeutralMode = NeutralModeValue.Brake;
@@ -199,6 +200,7 @@ public final class Constants {
 
     public static final TalonFXConfiguration CONFIG;
     public static final Slot0Configs SLOT0CONFIGS;
+
     static {
       CONFIG = new TalonFXConfiguration();
       CONFIG.MotorOutput.NeutralMode = NeutralModeValue.Brake;
@@ -250,6 +252,7 @@ public final class Constants {
     public static final double DYNAMIC_STEP_VOLTS_POSITION_SYSID = 0.25;
     public static final TalonFXConfiguration CONFIG;
     public static final Slot0Configs SLOT0CONFIGS;
+
     static {
       CONFIG = new TalonFXConfiguration();
       SLOT0CONFIGS = CONFIG.Slot0;
