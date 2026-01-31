@@ -14,9 +14,15 @@ public interface FeederIO {
 
   /** updates the inputs for advantage kit logging purposes */
   public default void updateInputs(FeederIOInputsAutoLogged inputs) {}
-
+  /**
+   * 
+   * @param speed sets speed in RPM
+   */
   public default void setSpeed(double speed) {}
-
+  /**
+   * 
+   * @return returns speed in RPM
+   */
   public default double getSpeed() {
     return 0;
   }

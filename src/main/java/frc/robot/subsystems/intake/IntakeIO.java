@@ -47,9 +47,7 @@ public interface IntakeIO {
   // setters for motors
   public default void setRollerVoltage(double volt) {}
 
-  public default void setPositionVoltage(double volt) {
-
-  }
+  public default void setPositionVoltage(double volt) {}
 
   // sets the position of the arm.
   public default void setTargetPosition(double position) {}
@@ -75,7 +73,10 @@ public interface IntakeIO {
     return 0;
   }
 
-  // gets the height of the arm in meters
+ /**
+  * 
+  * @return
+  */
   public default double getPosition() {
     return 0;
   }
@@ -84,6 +85,9 @@ public interface IntakeIO {
     return false;
   }
 
+  /**
+   * @return returns velocity of roller in rpm
+   */
   public default double getSpeed() {
     return 0;
   }

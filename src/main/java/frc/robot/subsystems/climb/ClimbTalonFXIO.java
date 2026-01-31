@@ -3,13 +3,9 @@ package frc.robot.subsystems.climb;
 // import edu.wpi.first.math.controller.PIDController;
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
-import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
-import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.InvertedValue;
-import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
@@ -40,24 +36,18 @@ public class ClimbTalonFXIO implements ClimbIO {
   private double targetLeftPos = 0;
   private double targetRightPos = 0;
 
+  private final PositionVoltage leftRequestVoltage;
+  private final PositionVoltage rightRequestVoltage;
   public ClimbTalonFXIO(int canIdLeft, int canIdRight) {
     leftMotor = new TalonFX(canIdLeft);
     rightMotor = new TalonFX(canIdRight);
 
+    leftRequestVoltage = new PositionVoltage(0).withSlot(0);
+    rightRequestVoltage = new PositionVoltage(0).withSlot(0);
     // Basic Configuration
-    TalonFXConfiguration config = new TalonFXConfiguration();
-    config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-    config.CurrentLimits.SupplyCurrentLimit = Constants.ClimbConstants.CURRENT_LIMIT; // Prevent breaker trips
-    config.CurrentLimits.SupplyCurrentLimitEnable = true;
+    TalonFXConfiguration config = Constants.ClimbConstants.CONFIG;
 
-    var slot0Configs = new Slot0Configs();
-    slot0Configs.kS = Constants.ClimbConstants.kS; // Add 0.1 V output to overcome static friction
-    slot0Configs.kV =
-        Constants.ClimbConstants.kV; // A velocity target of 1 rps results in 0.12 V output
-    slot0Configs.kP = Constants.ClimbConstants.kP; // An error of 1 rps results in 0.11 V output
-    slot0Configs.kI = Constants.ClimbConstants.kI; // no output for integrated error
-    slot0Configs.kD = Constants.ClimbConstants.kD; // no output for error derivative
+    var slot0Configs = Constants.ClimbConstants.SLOT0CONFIGS;
 
     leftMotor.getConfigurator().apply(slot0Configs);
 
@@ -80,9 +70,17 @@ public class ClimbTalonFXIO implements ClimbIO {
 
     // Optimize CAN bus usage by refreshing these signals together
     BaseStatusSignal.setUpdateFrequencyForAll(
-        Constants.FREQUENCY_HZ, leftVelocity, leftMotorVoltage, leftSupplyCurrent, leftMotorPosition);
+        Constants.FREQUENCY_HZ,
+        leftVelocity,
+        leftMotorVoltage,
+        leftSupplyCurrent,
+        leftMotorPosition);
     BaseStatusSignal.setUpdateFrequencyForAll(
-        Constants.FREQUENCY_HZ, rightVelocity, rightMotorVoltage, rightSupplyCurrent, rightMotorPosition);
+        Constants.FREQUENCY_HZ,
+        rightVelocity,
+        rightMotorVoltage,
+        rightSupplyCurrent,
+        rightMotorPosition);
 
     // this the servo
     this.servo = new Servo(Constants.ClimbConstants.ID);
@@ -105,13 +103,10 @@ public class ClimbTalonFXIO implements ClimbIO {
     inputs.servoPosition = servoPosition;
 
     if (!manual) {
-      final PositionVoltage leftRequest = new PositionVoltage(0).withSlot(0);
       // motor.set(speed);
-      leftMotor.setControl(leftRequest.withPosition(targetLeftPos));
-
-      final PositionVoltage rightRequest = new PositionVoltage(0).withSlot(0);
+      leftMotor.setControl(leftRequestVoltage.withPosition(targetLeftPos));
       // motor.set(speed);
-      leftMotor.setControl(rightRequest.withPosition(targetRightPos));
+      leftMotor.setControl(rightRequestVoltage.withPosition(targetRightPos));
       //
       // leftMotor.setVoltage(positionPIDController.calculate(leftMotorPosition.getValueAsDouble(),
       // targetLeftPos)); // CHANGE MAYBE
@@ -122,13 +117,10 @@ public class ClimbTalonFXIO implements ClimbIO {
 
   @Override
   public void setSpeeds(double leftSpeed, double rightSpeed) {
-    final VelocityVoltage leftRequest = new VelocityVoltage(0).withSlot(0);
     // motor.set(speed);
-    leftMotor.setControl(leftRequest.withVelocity(leftSpeed));
-
-    final VelocityVoltage rightRequest = new VelocityVoltage(0).withSlot(0);
+    leftMotor.setControl(leftRequestVoltage.withVelocity(leftSpeed));
     // motor.set(speed);
-    rightMotor.setControl(rightRequest.withVelocity(rightSpeed));
+    rightMotor.setControl(rightRequestVoltage.withVelocity(rightSpeed));
     // leftMotor.setVoltage(leftSpeed / 502.747);
     // rightMotor.setVoltage(rightSpeed / 502.747);
 

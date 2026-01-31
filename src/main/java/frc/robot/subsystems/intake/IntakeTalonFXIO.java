@@ -2,6 +2,7 @@ package frc.robot.subsystems.intake;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -26,30 +27,29 @@ public class IntakeTalonFXIO implements IntakeIO {
   private final StatusSignal<Voltage> positionMotorVoltage;
   private final StatusSignal<Current> positionSupplyCurrent;
 
+  private final MotionMagicVoltage mVoltageRequest;
   private double targetPosition = 0;
 
   public IntakeTalonFXIO(int canIdRoller, int canIdPosition) {
     roller = new TalonFX(canIdRoller);
     position = new TalonFX(canIdPosition);
 
+    mVoltageRequest = new MotionMagicVoltage(0);
+
     // Basic Configuration
-    TalonFXConfiguration config = new TalonFXConfiguration();
-    var slot0Configs = config.Slot0;
-    slot0Configs.kS = Constants.IntakeConstants.kS;
-    slot0Configs.kV = Constants.IntakeConstants.kV;
-    slot0Configs.kA = Constants.IntakeConstants.kA;
-    slot0Configs.kP = Constants.IntakeConstants.kP;
-    slot0Configs.kI = Constants.IntakeConstants.kI;
-    slot0Configs.kD = Constants.IntakeConstants.kD;
+    TalonFXConfiguration config = Constants.IntakeConstants.CONFIG;
+    Slot0Configs slot0Configs = Constants.IntakeConstants.SLOT0CONFIGS;
 
     var motionMagicConfigs = config.MotionMagic;
     motionMagicConfigs.MotionMagicCruiseVelocity =
-        Constants.IntakeConstants.MotionMagicCruiseVelocity;
-    motionMagicConfigs.MotionMagicAcceleration = Constants.IntakeConstants.MotionMagicAcceleration;
-    motionMagicConfigs.MotionMagicJerk = Constants.IntakeConstants.MotionMagicJerk;
+        Constants.IntakeConstants.MOTION_MAGIC_CRUISE_VELOCITY;
+    motionMagicConfigs.MotionMagicAcceleration = Constants.IntakeConstants.MOTION_MAGIC_ACCELERATION;
+    motionMagicConfigs.MotionMagicJerk = Constants.IntakeConstants.MOTION_MAGIC_JERK;
 
     roller.getConfigurator().apply(config);
     position.getConfigurator().apply(config);
+    roller.getConfigurator().apply(slot0Configs);
+    position.getConfigurator().apply(slot0Configs);
 
     // Initialize signals for AdvantageKit
     rollerVelocity = roller.getVelocity();
@@ -103,9 +103,9 @@ public class IntakeTalonFXIO implements IntakeIO {
 
   // sets the position of the arm.
   public void setTargetPosition(double position1) { // IMPORTANT -- POSITON1 NOT POSITION
-    final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
+    
     // System.out.println("Input volt: "+inputVoltage+" Target Angle: "+targetAngle);
-    position.setControl(m_request.withPosition(position1));
+    position.setControl(mVoltageRequest.withPosition(position1));
     // System.out.println("Voltage being sent in PID Voltage");
   }
 
@@ -120,7 +120,11 @@ public class IntakeTalonFXIO implements IntakeIO {
 
   public void setBraked(boolean braked) {
     TalonFXConfiguration config = new TalonFXConfiguration();
-    config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    if (braked) {
+      config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    } else {
+      config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+    }
     position.getConfigurator().apply(config);
   }
 
@@ -129,7 +133,9 @@ public class IntakeTalonFXIO implements IntakeIO {
     return Constants.IntakeConstants.MAX_POSITION;
   }
 
-  // gets the height of the arm in meters
+/**
+ * @return gets the position of the arm in radians
+ */
   public double getPosition() {
     return position.getRotorPosition().getValueAsDouble();
   }
@@ -138,9 +144,9 @@ public class IntakeTalonFXIO implements IntakeIO {
     return Math.abs(getPosition() - getMaxPosition())
         < Constants.IntakeConstants.POSITION_TOLERANCE;
   }
-
+  
   public double getSpeed() {
-    return roller.getRotorPosition().getValueAsDouble();
+    return roller.getVelocity().getValueAsDouble();
   }
 
   public boolean checkIfStalled() {

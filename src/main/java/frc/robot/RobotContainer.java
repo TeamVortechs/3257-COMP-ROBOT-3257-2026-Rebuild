@@ -71,8 +71,8 @@ public class RobotContainer {
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
 
-  //usign this for sys id so it doesn't conflict with anything
-private final CommandXboxController sysID_contorller = new CommandXboxController(3);
+  // usign this for sys id so it doesn't conflict with anything
+  private final CommandXboxController sysID_contorller = new CommandXboxController(3);
 
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
@@ -291,11 +291,9 @@ private final CommandXboxController sysID_contorller = new CommandXboxController
     return shooter;
   }
 
-    // this shoudl be in a helper method or somewhere in robot container
+  // this shoudl be in a helper method or somewhere in robot container
   /**
-   *
-   * <p>y: dynamic forward a: dynamic backwards b: quasistatic forward x:
-   * quasistatic reverse
+   * y: dynamic forward a: dynamic backwards b: quasistatic forward x: quasistatic reverse
    *
    * @param controller the controller this binds to(recommended to use a high id controller to
    *     prevent mishaps, id 2-3)
