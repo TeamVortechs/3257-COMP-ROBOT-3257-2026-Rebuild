@@ -11,7 +11,7 @@ public interface FeederIO {
     double statorCurrentAmps;
     double voltage;
     boolean isOnTargetSpeed;
-    boolean isBraked;
+    boolean isBraked = true;
   }
 
   /** updates the inputs for advantage kit logging purposes */

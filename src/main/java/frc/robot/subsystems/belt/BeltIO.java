@@ -10,7 +10,7 @@ public interface BeltIO {
     double supplyCurrentAmps;
     double statorCurrentAmps;
     double voltage;
-    boolean isBraked;
+    boolean isBraked = true;
   }
 
   /** updates the inputs for advantage kit logging purposes */
