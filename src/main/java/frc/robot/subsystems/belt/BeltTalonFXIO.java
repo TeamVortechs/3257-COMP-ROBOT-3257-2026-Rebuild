@@ -4,6 +4,8 @@ import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
@@ -73,5 +75,23 @@ public class BeltTalonFXIO implements BeltIO {
   @Override
   public double getSpeed() {
     return velocity.getValueAsDouble();
+  }
+
+  @Override
+  public void setBraked(boolean braked) {
+
+    isBraked = braked;
+    
+    NeutralModeValue neutralModeValue;
+
+    if(isBraked) {
+      neutralModeValue = NeutralModeValue.Brake;
+    } else {
+      neutralModeValue = NeutralModeValue.Coast;
+    }
+
+  
+    motor.setNeutralMode(neutralModeValue);
+
   }
 }
