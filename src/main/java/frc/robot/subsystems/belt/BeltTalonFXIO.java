@@ -18,6 +18,7 @@ public class BeltTalonFXIO implements BeltIO {
   private final StatusSignal<AngularVelocity> velocity;
   private final StatusSignal<Voltage> motorVoltage;
   private final StatusSignal<Current> supplyCurrent;
+  private final StatusSignal<Current> statorCurrent;
 
   private double targetSpeed = 0;
 
@@ -28,7 +29,8 @@ public class BeltTalonFXIO implements BeltIO {
     TalonFXConfiguration config = new TalonFXConfiguration();
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-    config.CurrentLimits.SupplyCurrentLimit = Constants.BeltConstants.CURRENT_LIMIT; // Prevent breaker trips
+    config.CurrentLimits.SupplyCurrentLimit =
+        Constants.BeltConstants.CURRENT_LIMIT; // Prevent breaker trips
     config.CurrentLimits.SupplyCurrentLimitEnable = true;
 
     motor.getConfigurator().apply(config);
@@ -37,9 +39,11 @@ public class BeltTalonFXIO implements BeltIO {
     velocity = motor.getVelocity();
     motorVoltage = motor.getMotorVoltage();
     supplyCurrent = motor.getSupplyCurrent();
+    statorCurrent = motor.getStatorCurrent();
 
     // Optimize CAN bus usage by refreshing these signals together
-    BaseStatusSignal.setUpdateFrequencyForAll(Constants.FREQUENCY_HZ, velocity, motorVoltage, supplyCurrent);
+    BaseStatusSignal.setUpdateFrequencyForAll(
+        Constants.FREQUENCY_HZ, velocity, motorVoltage, supplyCurrent);
   }
 
   @Override
@@ -49,14 +53,13 @@ public class BeltTalonFXIO implements BeltIO {
 
     inputs.speed = velocity.getValueAsDouble(); // Returns Rotations per Second
     inputs.voltage = motorVoltage.getValueAsDouble();
-    inputs.amps = supplyCurrent.getValueAsDouble();
-    inputs.targetSpeed = targetSpeed;
-
-    inputs.isOnTarget = isOnTarget();
+    inputs.supplyCurrentAmps = supplyCurrent.getValueAsDouble();
+    inputs.statorCurrentAmps = statorCurrent.getValueAsDouble();
+    inputs.targetOutput = targetSpeed;
   }
 
   @Override
-  public void setSpeed(double speed) {
+  public void setPercentMotorOutput(double speed) {
     targetSpeed = speed;
     motor.set(speed);
     // motor.setControl(new DutyCycleOut(speed));
@@ -71,10 +74,5 @@ public class BeltTalonFXIO implements BeltIO {
   @Override
   public double getSpeed() {
     return velocity.getValueAsDouble();
-  }
-
-  @Override
-  public boolean isOnTarget() {
-    return Math.abs(this.getSpeed() - targetSpeed) < Constants.BeltConstants.TOLERANCE;
   }
 }

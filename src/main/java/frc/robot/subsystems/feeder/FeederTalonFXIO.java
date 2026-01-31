@@ -30,7 +30,8 @@ public class FeederTalonFXIO implements FeederIO {
     TalonFXConfiguration config = new TalonFXConfiguration();
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-    config.CurrentLimits.SupplyCurrentLimit = Constants.FeederConstants.CURRENT_LIMIT; // Prevent breaker trips
+    config.CurrentLimits.SupplyCurrentLimit =
+        Constants.FeederConstants.CURRENT_LIMIT; // Prevent breaker trips
     config.CurrentLimits.SupplyCurrentLimitEnable = true;
 
     var slot0Configs = new Slot0Configs();
@@ -51,7 +52,8 @@ public class FeederTalonFXIO implements FeederIO {
     supplyCurrent = motor.getSupplyCurrent();
 
     // Optimize CAN bus usage by refreshing these signals together
-    BaseStatusSignal.setUpdateFrequencyForAll(Constants.FREQUENCY_HZ, velocity, motorVoltage, supplyCurrent);
+    BaseStatusSignal.setUpdateFrequencyForAll(
+        Constants.FREQUENCY_HZ, velocity, motorVoltage, supplyCurrent);
   }
 
   @Override

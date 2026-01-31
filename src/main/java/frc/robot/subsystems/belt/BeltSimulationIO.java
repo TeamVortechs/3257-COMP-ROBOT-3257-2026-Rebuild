@@ -8,7 +8,6 @@ public class BeltSimulationIO implements BeltIO {
   // the motor that spins the things to shoot balls?
   private final DCMotorSim rollerMotorsSim;
   private double targetSpeed = 0;
-  private boolean isOnTarget = false;
 
   public BeltSimulationIO() {
     // now this motor exists in advantage kit?
@@ -21,20 +20,17 @@ public class BeltSimulationIO implements BeltIO {
   // update inputs on roller motors
   @Override
   public void updateInputs(BeltIOInputsAutoLogged inputs) {
-    inputs.amps = rollerMotorsSim.getCurrentDrawAmps();
+    inputs.supplyCurrentAmps = rollerMotorsSim.getCurrentDrawAmps();
     inputs.voltage = rollerMotorsSim.getInputVoltage();
     inputs.speed = rollerMotorsSim.getAngularVelocityRPM();
 
-    isOnTarget = isOnTarget();
-
-    inputs.targetSpeed = targetSpeed;
-    inputs.isOnTarget = isOnTarget;
+    inputs.targetOutput = targetSpeed;
 
     rollerMotorsSim.update(0.02);
   }
 
   @Override
-  public void setSpeed(double speed) {
+  public void setPercentMotorOutput(double speed) {
     // no clue if this works... but it's in last years arm code, so i used the set voltage
 
     // rollerMotorsSim.setInputVoltage(speed * 12); // lol i hope that works
@@ -55,11 +51,5 @@ public class BeltSimulationIO implements BeltIO {
 
   public double getSpeed() {
     return rollerMotorsSim.getAngularVelocityRPM();
-  }
-
-  // possibly completely unnecessary for belt?
-  @Override
-  public boolean isOnTarget() {
-    return Math.abs(getSpeed() - targetSpeed) < .05;
   }
 }

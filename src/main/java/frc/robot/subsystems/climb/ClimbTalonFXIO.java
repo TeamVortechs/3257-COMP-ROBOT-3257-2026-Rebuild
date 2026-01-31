@@ -48,7 +48,8 @@ public class ClimbTalonFXIO implements ClimbIO {
     TalonFXConfiguration config = new TalonFXConfiguration();
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-    config.CurrentLimits.SupplyCurrentLimit = Constants.ClimbConstants.CURRENT_LIMIT; // Prevent breaker trips
+    config.CurrentLimits.SupplyCurrentLimit =
+        Constants.ClimbConstants.CURRENT_LIMIT; // Prevent breaker trips
     config.CurrentLimits.SupplyCurrentLimitEnable = true;
 
     var slot0Configs = new Slot0Configs();
@@ -80,9 +81,17 @@ public class ClimbTalonFXIO implements ClimbIO {
 
     // Optimize CAN bus usage by refreshing these signals together
     BaseStatusSignal.setUpdateFrequencyForAll(
-        Constants.FREQUENCY_HZ, leftVelocity, leftMotorVoltage, leftSupplyCurrent, leftMotorPosition);
+        Constants.FREQUENCY_HZ,
+        leftVelocity,
+        leftMotorVoltage,
+        leftSupplyCurrent,
+        leftMotorPosition);
     BaseStatusSignal.setUpdateFrequencyForAll(
-        Constants.FREQUENCY_HZ, rightVelocity, rightMotorVoltage, rightSupplyCurrent, rightMotorPosition);
+        Constants.FREQUENCY_HZ,
+        rightVelocity,
+        rightMotorVoltage,
+        rightSupplyCurrent,
+        rightMotorPosition);
 
     // this the servo
     this.servo = new Servo(Constants.ClimbConstants.ID);

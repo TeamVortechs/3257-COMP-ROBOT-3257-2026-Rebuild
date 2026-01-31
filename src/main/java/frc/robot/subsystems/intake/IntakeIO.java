@@ -47,9 +47,7 @@ public interface IntakeIO {
   // setters for motors
   public default void setRollerVoltage(double volt) {}
 
-  public default void setPositionVoltage(double volt) {
-
-  }
+  public default void setPositionVoltage(double volt) {}
 
   // sets the position of the arm.
   public default void setTargetPosition(double position) {}

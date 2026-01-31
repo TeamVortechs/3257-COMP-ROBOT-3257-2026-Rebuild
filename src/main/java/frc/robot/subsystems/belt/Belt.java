@@ -8,10 +8,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants.BeltConstants;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
@@ -24,9 +21,6 @@ public class Belt extends SubsystemBase {
 
   @AutoLogOutput(key = "Belt/BeltTargetSpeed")
   private double targetSpeed = 0;
-
-  @AutoLogOutput(key = "Belt/IsOnTarget")
-  private boolean isOnTarget = false;
 
   private BeltIO beltIO;
   private BeltIOInputsAutoLogged inputs;
@@ -49,9 +43,8 @@ public class Belt extends SubsystemBase {
 
     targetSpeed = getSpeedTarget();
     speed = beltIO.getSpeed();
-    isOnTarget = isOnTarget();
 
-    beltIO.setSpeed(targetSpeed);
+    beltIO.setPercentMotorOutput(targetSpeed);
   }
 
   // SUBSYSTEM METHODS
@@ -71,13 +64,6 @@ public class Belt extends SubsystemBase {
     return speed;
   }
 
-  /**
-   * @return wether the speed is the target speed
-   */
-  public boolean isOnTarget() {
-    return beltIO.isOnTarget();
-  }
-
   // COMMANDS
   /**
    * sets the manual speed of the flywheel then ends immediately
@@ -87,17 +73,6 @@ public class Belt extends SubsystemBase {
    */
   public Command setSpeedCommand(double speed) {
     return new InstantCommand(() -> this.setSpeed(speed), this);
-  }
-
-  /**
-   * sets the target speed command then ends when it reaches that speed
-   *
-   * @param speed the speed it gets set to
-   * @return the finished command
-   */
-  public Command setSpeedCommandConsistentEnd(double speed) {
-    return new InstantCommand(() -> this.setSpeed(speed), this)
-        .andThen(new WaitUntilCommand(() -> this.isOnTarget()));
   }
 
   /**
@@ -134,5 +109,4 @@ public class Belt extends SubsystemBase {
             new SysIdRoutine.Mechanism((volts) -> beltIO.setVoltage(volts.in(Volts)), null, this));
     return m_SysIdRoutine;
   }
-
 }

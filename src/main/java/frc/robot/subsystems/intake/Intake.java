@@ -1,5 +1,8 @@
 package frc.robot.subsystems.intake;
 
+import static edu.wpi.first.units.Units.Volts;
+
+import com.ctre.phoenix6.SignalLogger;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -8,17 +11,11 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
-import frc.robot.Constants.ClimbConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.util.VortechsUtil;
-
-import static edu.wpi.first.units.Units.Volts;
-
 import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
-
-import com.ctre.phoenix6.SignalLogger;
 
 /** Intake subsystem responsible for the intake rolling mechanism */
 public class Intake extends SubsystemBase {
@@ -161,8 +158,7 @@ public class Intake extends SubsystemBase {
     return new InstantCommand(() -> {}, this);
   }
 
-
-    // the constants here should probably be more and move but that's later when this is transferred
+  // the constants here should probably be more and move but that's later when this is transferred
   // to the right project
   // add this to the robot class or this won't work: SignalLogger.setPath("/media/sda1/");
   /**
@@ -178,7 +174,8 @@ public class Intake extends SubsystemBase {
             Volts.of(IntakeConstants.DYNAMIC_STEP_VOLTS_ROLLER_SYSID),
             null,
             (state) -> SignalLogger.writeString("intakeRollers", state.toString())),
-        new SysIdRoutine.Mechanism((volts) -> moduleIO.setRollerVoltage(volts.in(Volts)), null, this));
+        new SysIdRoutine.Mechanism(
+            (volts) -> moduleIO.setRollerVoltage(volts.in(Volts)), null, this));
   }
 
   /** Build SysId Routine for the Right Motor */
@@ -192,5 +189,4 @@ public class Intake extends SubsystemBase {
         new SysIdRoutine.Mechanism(
             (volts) -> moduleIO.setPositionVoltage(volts.in(Volts)), null, this));
   }
-
 }

@@ -6,24 +6,33 @@ public interface BeltIO {
   @AutoLog
   public static class BeltIOInputs {
     double speed;
-    double targetSpeed;
-    double amps;
+    double targetOutput;
+    double supplyCurrentAmps;
+    double statorCurrentAmps;
     double voltage;
-    boolean isOnTarget;
   }
 
   /** updates the inputs for advantage kit logging purposes */
   public default void updateInputs(BeltIOInputsAutoLogged inputs) {}
 
-  public default void setSpeed(double speed) {}
+  /**
+   * sets the speed as percentage of the battery voltage. From -1 to 1.
+   *
+   * @param speed
+   */
+  public default void setPercentMotorOutput(double speed) {}
 
+  /**
+   * @return the speed in rotations per second of the motor
+   */
   public default double getSpeed() {
     return 0;
   }
 
-  public default boolean isOnTarget() {
-    return false;
-  }
-
+  /**
+   * sets the voltage of the motor
+   *
+   * @param voltage
+   */
   public default void setVoltage(double voltage) {}
 }
