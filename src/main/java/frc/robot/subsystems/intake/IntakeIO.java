@@ -28,6 +28,8 @@ public interface IntakeIO {
 
     double position = 0;
     double targetPosition = 0;
+
+    boolean isBraked = true;
   }
 
   // updates the given inputs with new values(advantage kit stuff)

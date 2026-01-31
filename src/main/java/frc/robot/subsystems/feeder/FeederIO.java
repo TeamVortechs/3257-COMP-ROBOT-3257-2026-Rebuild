@@ -10,6 +10,7 @@ public interface FeederIO {
     double amps;
     double voltage;
     boolean isOnTargetSpeed;
+    boolean isBraked;
   }
 
   /** updates the inputs for advantage kit logging purposes */
@@ -30,4 +31,6 @@ public interface FeederIO {
   }
 
   public default void setVoltage(double voltage) {}
+
+  public default void setBraked(boolean braked) {}
 }

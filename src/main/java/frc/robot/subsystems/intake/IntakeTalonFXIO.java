@@ -29,6 +29,8 @@ public class IntakeTalonFXIO implements IntakeIO {
   private final StatusSignal<Current> positionSupplyCurrent;
 
   private final MotionMagicVoltage mVoltageRequest;
+
+  private boolean isBraked = true;
   private double targetPosition = 0;
 
   public IntakeTalonFXIO(int canIdRoller, int canIdPosition) {
@@ -81,6 +83,8 @@ public class IntakeTalonFXIO implements IntakeIO {
 
     inputsAutoLogged.position = position.getRotorPosition().getValueAsDouble();
     inputsAutoLogged.targetPosition = targetPosition;
+
+    inputsAutoLogged.isBraked = isBraked;
   }
 
   // getters for motors
@@ -121,6 +125,7 @@ public class IntakeTalonFXIO implements IntakeIO {
   }
 
   public void setBraked(boolean braked) {
+    isBraked = braked;
     TalonFXConfiguration config = new TalonFXConfiguration();
     if (braked) {
       config.MotorOutput.NeutralMode = NeutralModeValue.Brake;

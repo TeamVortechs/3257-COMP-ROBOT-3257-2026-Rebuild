@@ -7,6 +7,7 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
@@ -23,6 +24,8 @@ public class FeederTalonFXIO implements FeederIO {
   private final StatusSignal<Current> supplyCurrent;
 
   private double targetSpeed = 0;
+
+  private boolean isBraked = true;
 
   public FeederTalonFXIO(int canId) {
     motor = new TalonFX(canId);
@@ -58,6 +61,8 @@ public class FeederTalonFXIO implements FeederIO {
     inputs.targetSpeed = targetSpeed;
 
     inputs.isOnTargetSpeed = isOnTargetSpeed();
+
+    inputs.isBraked = isBraked;
   }
 
   @Override
@@ -88,5 +93,17 @@ public class FeederTalonFXIO implements FeederIO {
   @Override
   public boolean isOnTargetSpeed() {
     return Math.abs(getSpeed() - targetSpeed) < Constants.FeederConstants.POSITION_TOLERANCE;
+  }
+
+  @Override
+  public void setBraked(boolean braked) {
+    isBraked = braked;
+    TalonFXConfiguration config = new TalonFXConfiguration();
+    if (braked) {
+      config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    } else {
+      config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+    }
+    motor.getConfigurator().apply(config);
   }
 }

@@ -6,6 +6,7 @@ import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
@@ -38,6 +39,8 @@ public class ClimbTalonFXIO implements ClimbIO {
 
   private final PositionVoltage leftRequestVoltage;
   private final PositionVoltage rightRequestVoltage;
+
+  private boolean isBraked = true;
 
   public ClimbTalonFXIO(int canIdLeft, int canIdRight) {
     leftMotor = new TalonFX(canIdLeft);
@@ -103,6 +106,8 @@ public class ClimbTalonFXIO implements ClimbIO {
 
     inputs.servoPosition = servoPosition;
 
+    inputs.isBraked = isBraked;
+
     if (!manual) {
       // motor.set(speed);
       leftMotor.setControl(leftRequestVoltage.withPosition(targetLeftPos));
@@ -145,5 +150,18 @@ public class ClimbTalonFXIO implements ClimbIO {
   public void stop() {
     leftMotor.setVoltage(0);
     rightMotor.setVoltage(0);
+  }
+
+  @Override
+  public void setBraked(boolean braked) {
+    isBraked = braked;
+    TalonFXConfiguration config = new TalonFXConfiguration();
+    if (braked) {
+      config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    } else {
+      config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+    }
+    leftMotor.getConfigurator().apply(config);
+    rightMotor.getConfigurator().apply(config);
   }
 }

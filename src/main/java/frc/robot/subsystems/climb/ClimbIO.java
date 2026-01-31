@@ -18,6 +18,8 @@ public interface ClimbIO {
     public double motorRightSpeed = 0.0;
 
     public double servoPosition = 0.0;
+
+    public boolean isBraked = true;
   }
 
   public default void updateInputs(ClimbIOInputsAutoLogged inputs) {}
@@ -60,4 +62,6 @@ public interface ClimbIO {
   public default void setRightVoltage(double rightVoltage) {}
   /** stop the motors/servos, shutdown scenario? */
   public default void stop() {}
+
+  public default void setBraked(boolean braked) {}
 }

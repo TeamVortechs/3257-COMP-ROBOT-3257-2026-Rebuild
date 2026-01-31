@@ -10,6 +10,7 @@ public interface BeltIO {
     double amps;
     double voltage;
     boolean isOnTarget;
+    boolean isBraked;
   }
 
   /** updates the inputs for advantage kit logging purposes */
@@ -26,4 +27,6 @@ public interface BeltIO {
   }
 
   public default void setVoltage(double voltage) {}
+
+  public default void setBraked(boolean braked) {}
 }
