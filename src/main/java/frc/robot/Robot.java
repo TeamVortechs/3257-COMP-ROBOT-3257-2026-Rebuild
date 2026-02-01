@@ -78,26 +78,7 @@ public class Robot extends LoggedRobot {
     // and put our autonomous chooser on the dashboard.
 
     robotContainer = new RobotContainer();
-    Intake intake = robotContainer.getIntake();
 
-    VisualSimulator intakeSim =
-        new VisualSimulator(
-            new Translation2d(1, 0.25),
-            () -> -intake.getPosition() * 40,
-            () -> 0.25,
-            1,
-            new Color8Bit(Color.kAqua),
-            "intake");
-
-    intakeSim.setColorSupplier(
-        () -> {
-          if (intake.getRollerSpeed() > 1) {
-            return new Color8Bit(Color.kRed);
-          }
-          return new Color8Bit(Color.kWhite);
-        });
-
-    SimulationManager.addSimulationMechanism(intakeSim);
     addSimObjects();
   }
 
@@ -239,6 +220,15 @@ public class Robot extends LoggedRobot {
           return new Color8Bit(Color.kWhite);
         });
 
+    intakeSim.setColorSupplier(
+        () -> {
+          if (intake.getRollerSpeed() > 1) {
+            return new Color8Bit(Color.kRed);
+          }
+          return new Color8Bit(Color.kWhite);
+        });
+
+    SimulationManager.addSimulationMechanism(intakeSim);
     SimulationManager.addSimulationMechanism(shooterSim);
     SimulationManager.addSimulationMechanism(feederSim);
     SimulationManager.addSimulationMechanism(intakeSim);
