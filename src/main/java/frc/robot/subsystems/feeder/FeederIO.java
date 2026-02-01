@@ -21,7 +21,7 @@ public interface FeederIO {
   /**
    * @param speed sets speed in RPM
    */
-  public default void setSpeed(double speed) {}
+  public default void setPercentMotorOutput(double speed) {}
   /**
    * @return returns speed in RPM
    */

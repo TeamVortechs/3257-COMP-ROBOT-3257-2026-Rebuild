@@ -34,7 +34,7 @@ public class FeederSimulationIO implements FeederIO {
   }
 
   @Override
-  public void setSpeed(double speed) {
+  public void setPercentMotorOutput(double speed) {
     // no clue if this works... but it's in last years arm code, so i used the set voltage
 
     // rollerMotorsSim.setInputVoltage(speed * 12); // lol i hope that works

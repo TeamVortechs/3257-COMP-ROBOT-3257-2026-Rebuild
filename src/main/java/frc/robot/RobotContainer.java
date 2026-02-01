@@ -230,7 +230,7 @@ public class RobotContainer {
 
     intake.setDefaultCommand(intake.setSpeedAndPositionCommand(0, 0));
     belt.setDefaultCommand(belt.setPercentMotorOutputRunCommand(1));
-    feeder.setDefaultCommand(feeder.setSpeedRunCommand(0));
+    feeder.setDefaultCommand(feeder.setPercentMotorRunCommand(0));
     shooter.setDefaultCommand(new ChargeShooterWhenNeededCommand(shooter, () -> drive.getPose()));
     climb.setDefaultCommand(climb.setPositionsRunCommand(0, 0));
 

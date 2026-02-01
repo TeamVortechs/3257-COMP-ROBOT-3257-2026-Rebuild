@@ -26,7 +26,7 @@ public class FeederSparkIO implements FeederIO {
   /*
    * sets speed -1 to 1
    */
-  public void setSpeed(double speed) {
+  public void setPercentMotorOutput(double speed) {
     targetSpeed = speed;
     m_motor.set(speed);
   }

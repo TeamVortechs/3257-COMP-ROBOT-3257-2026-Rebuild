@@ -16,19 +16,6 @@ import org.littletonrobotics.junction.Logger;
 
 public class Feeder extends SubsystemBase {
 
-  // this shouldn't be here but it is for now because we're probably gonna move this
-  public static final double TOLERANCE = FeederConstants.POSITION_TOLERANCE;
-
-  // just here for the logging, done like this so we can put it on a dashboard
-  @AutoLogOutput(key = "Feeder/FeederSpeed")
-  private double speed = 0;
-
-  @AutoLogOutput(key = "Feeder/FeederTargetSpeed")
-  private double targetSpeed = 0;
-
-  @AutoLogOutput(key = "Feeder/IsOnTarget")
-  private boolean isOnTarget = false;
-
   private FeederIO feederIO;
   private FeederIOInputsAutoLogged inputs;
 
@@ -47,41 +34,17 @@ public class Feeder extends SubsystemBase {
 
     // calculate speed that automatically updates with distance
     // automaticSpeed = getSpeedFromDistance(distanceSupplier.getAsDouble());
-
-    targetSpeed = getSpeedTarget();
-    speed = feederIO.getSpeed();
-    isOnTarget = isOnTarget();
-
-    feederIO.setSpeed(targetSpeed);
   }
 
   // SUBSYSTEM METHODS
 
   /**
-   * @param speed the speed the flywheel will pid too
+   * @param speed the percentage of battery voltage the belts will take. -1 to 1
    */
-  public void setSpeed(double speed) {
-    this.targetSpeed = speed;
+  public void setPercentMotorOutput(double speed) {
+    feederIO.setPercentMotorOutput(speed);
   }
 
-  /**
-   * @return the target speed that the flywheel is pid'ing to. Can be the manual or the automatic
-   *     calculated speed
-   */
-  public double getSpeedTarget() {
-    return targetSpeed;
-  }
-
-  public double getSpeed() {
-    return speed;
-  }
-
-  /**
-   * @return wether the speed is the target speed
-   */
-  public boolean isOnTarget() {
-    return feederIO.isOnTargetSpeed();
-  }
 
   // COMMANDS
   /**
@@ -90,19 +53,8 @@ public class Feeder extends SubsystemBase {
    * @param speed the speed of the flywheel
    * @return the finished command
    */
-  public Command setSpeedCommand(double speed) {
-    return new InstantCommand(() -> this.setSpeed(speed));
-  }
-
-  /**
-   * sets the target speed command then ends when it reaches that speed
-   *
-   * @param speed the speed it gets set to
-   * @return the finished command
-   */
-  public Command setSpeedCommandConsistentEnd(double speed) {
-    return new InstantCommand(() -> this.setSpeed(speed))
-        .andThen(new WaitUntilCommand(() -> this.isOnTarget()));
+  public Command setPercentMotorCommand(double speed) {
+    return new InstantCommand(() -> this.setPercentMotorOutput(speed));
   }
 
   /**
@@ -111,8 +63,8 @@ public class Feeder extends SubsystemBase {
    * @param speed the speed of the flywheel
    * @return the finished command
    */
-  public Command setSpeedRunCommand(double speed) {
-    return Commands.run(() -> this.setSpeed(speed), this);
+  public Command setPercentMotorRunCommand(double speed) {
+    return Commands.run(() -> this.setPercentMotorOutput(speed), this);
   }
 
   // the constants here should probably be more and move but that's later when this is transferred

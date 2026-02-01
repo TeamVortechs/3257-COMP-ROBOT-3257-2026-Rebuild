@@ -77,7 +77,7 @@ public class FeederTalonFXIO implements FeederIO {
   }
 
   @Override
-  public void setSpeed(double speed) {
+  public void setPercentMotorOutput(double speed) {
     targetSpeed = speed;
 
     // motor.set(speed);

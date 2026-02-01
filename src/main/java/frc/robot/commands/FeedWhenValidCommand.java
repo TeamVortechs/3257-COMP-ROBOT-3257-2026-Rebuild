@@ -117,12 +117,12 @@ public class FeedWhenValidCommand extends Command {
     log();
 
     if (!isFeedable) {
-      feeder.setSpeed(0);
+      feeder.setPercentMotorOutput(0);
       controller.setRumble(RumbleType.kBothRumble, 0);
       return;
     }
 
-    feeder.setSpeed(FeederConstants.FEED_POWER);
+    feeder.setPercentMotorOutput(FeederConstants.FEED_POWER);
     // purely sim feedback
     controller.setRumble(RumbleType.kBothRumble, 0.1);
   }
@@ -130,7 +130,7 @@ public class FeedWhenValidCommand extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    feeder.setSpeed(0);
+    feeder.setPercentMotorOutput(0);
     controller.setRumble(RumbleType.kBothRumble, 0);
   }
 
