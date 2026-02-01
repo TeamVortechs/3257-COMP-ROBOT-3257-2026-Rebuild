@@ -29,14 +29,10 @@ public class IntakeTalonFXOnlyRollerIO implements IntakeIO {
 
   private final StatusSignal<Temperature> rollerTemperatureCelsius;
 
-  private final MotionMagicVoltage mVoltageRequest;
-
   private boolean isBrakedRoller = true;
 
   public IntakeTalonFXOnlyRollerIO(int canIdRoller, int canIdPosition) {
     roller = new TalonFX(canIdRoller);
-
-    mVoltageRequest = new MotionMagicVoltage(0);
 
     // Basic Configuration
     TalonFXConfiguration config = Constants.IntakeConstants.CONFIG;

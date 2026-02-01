@@ -45,6 +45,14 @@ public class Feeder extends SubsystemBase {
     feederIO.setPercentMotorOutput(speed);
   }
 
+  /**
+   * 
+   * @return speed in Rotations per second
+   */
+  public double getSpeed() {
+    return feederIO.getSpeed();
+  }
+
 
   // COMMANDS
   /**

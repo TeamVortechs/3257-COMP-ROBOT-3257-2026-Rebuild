@@ -231,7 +231,7 @@ public class RobotContainer {
     intake.setDefaultCommand(intake.setRollerVoltageAndPositionCommand(0, 0));
     belt.setDefaultCommand(belt.setPercentMotorOutputRunCommand(1));
     feeder.setDefaultCommand(feeder.setPercentMotorRunCommand(0));
-    shooter.setDefaultCommand(new ChargeShooterWhenNeededCommand(shooter, () -> drive.getPose()));
+    shooter.setDefaultCommand(new ChargeShooterWhenNeededCommand(shooter, () -> drive.isWithinShooterAutomaticChargingZone()));
     climb.setDefaultCommand(climb.setPositionsRunCommand(0, 0));
 
     Command aimTowardsTargetCommand =
