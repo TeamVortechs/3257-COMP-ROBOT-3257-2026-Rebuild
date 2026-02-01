@@ -65,9 +65,11 @@ public class ShooterRotationManager {
     // makes it so the robot will rotate towards where it is moving when driving to the pose
     // im not sure if this should be current or predicted drive, I'll ask
     Translation2d delta =
-        getEffectiveTarget().getTranslation().minus(drive.getPose().getTranslation());
+        getEffectiveTarget().getTranslation().minus(getPoseAtRelease().getTranslation());
 
     Rotation2d heading = new Rotation2d(delta.getX(), delta.getY());
+
+    heading = heading.plus(Rotation2d.fromDegrees(-90));
 
     getDistance();
 
