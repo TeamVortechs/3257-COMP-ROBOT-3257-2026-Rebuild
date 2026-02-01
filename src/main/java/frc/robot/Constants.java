@@ -57,6 +57,10 @@ public final class Constants {
     //find this
     public static final Pose2d GOAL_POSE = new Pose2d(4.622, 4.03, new Rotation2d());
 
+    //the zone where we choose to more agressively charge the shooter
+    public static final double X_POSE_TO_CHARGE = 5.5;
+
+
   }
 
   public class ShooterConstants {
@@ -79,7 +83,6 @@ public final class Constants {
     // speed intake/shooter boosts to
     public static final double INTAKE_SPEED = .5;
 
-    public static final double X_POSE_TO_CHARGE = 5.5;
     public static final double PERCENTAGE_OF_DISTANCE_WHEN_CHARGING = 0.6;
 
 

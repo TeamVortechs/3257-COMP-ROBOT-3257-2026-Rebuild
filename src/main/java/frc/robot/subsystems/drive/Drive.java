@@ -95,8 +95,8 @@ public class Drive extends SubsystemBase {
   /**
    * Defines skidding as if measuredChassisSpeeds(gotten from encoders) differ from built in acceleraomter(accurate with specific variance profile) above skid threshold.
    * 
-   * If you wish to make this method always return false for some logic just spike skid treshold
-   * @return
+   * @return If you wish to make this method always return false for some logic just spike skid treshold
+   * 
    */
   @AutoLogOutput
   public boolean isSkidding() {
@@ -109,6 +109,18 @@ public class Drive extends SubsystemBase {
             || Math.abs(accelerometerY - chassisY) > DriveConstants.SKID_THRESHOLD;
 
     return isSkidding;
+  }
+
+  /**
+   * @return wether or not the robot is in a zone where the shooter hsould be charged more agressively to reduce windup time
+   * 
+   */
+  @AutoLogOutput
+  public boolean isWithinShooterAutomaticChargingZone() {
+    double xPose = getPose().getX();
+
+    return xPose < DriveConstants.X_POSE_TO_CHARGE;
+    
   }
 
   /**
