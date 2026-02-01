@@ -305,6 +305,10 @@ public class RobotContainer {
     return shooter;
   }
 
+  public Drive getDrive() {
+    return drive;
+  }
+
   // this shoudl be in a helper method or somewhere in robot container
   /**
    * y: dynamic forward a: dynamic backwards b: quasistatic forward x: quasistatic reverse
