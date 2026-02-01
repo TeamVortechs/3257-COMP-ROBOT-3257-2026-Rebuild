@@ -1,12 +1,13 @@
-package frc.robot.subsystems.shooter;
+package frc.robot.subsystems.drive;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import frc.robot.Constants;
+import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ShooterConstants;
-import frc.robot.subsystems.drive.Drive;
+
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.AutoLogOutput;
 
@@ -34,14 +35,21 @@ public class ShooterRotationManager {
     this.drive = drive;
   }
 
-  // logs all of the values from this. Should be called repeatedly
-  public void log() {
+  // logs all of the values from this. 
+  private void log() {
     // all of these methods automatically log values
     currentRadians = drive.getRotation().getRadians();
     targetRadians = getHeading().getRadians();
     getDistance();
     getHeading();
     isOriented();
+  }
+
+  /**
+   * MUST BE CALLED REPEATEDLY. logs/calculates cached values
+   */
+  public void periodic() {
+    log();
   }
 
   /**
@@ -123,7 +131,7 @@ public class ShooterRotationManager {
     radiansDifference = error.getRadians();
 
     // it's possible we could make tolerance a function of distance if it is a limiting factor
-    onTarget = Math.abs(error.getRadians()) < Constants.ShooterConstants.ORIENTATION_TOLERANCE;
+    onTarget = Math.abs(error.getRadians()) < Constants.DriveConstants.ORIENTATION_TOLERANCE;
 
     return onTarget;
   }
@@ -147,7 +155,7 @@ public class ShooterRotationManager {
     // this scaling factor is a constnat we'll just need to test for. We can change it depending on
     // if the shot is compensation to much or not enough. We can also make it zero to remove it
 
-    double dt = ShooterConstants.KRELEASE_POSE_PREDICTION_SEC;
+    double dt = DriveConstants.KRELEASE_POSE_PREDICTION_SEC;
 
     Rotation2d predictedRot =
         firstPose.getRotation().plus(new Rotation2d(fieldSpeeds.omegaRadiansPerSecond * dt));
@@ -174,7 +182,7 @@ public class ShooterRotationManager {
     // this scaling factor is a constnat we'll just need to test for. We can change it depending on
     // if the shot is compensation to much or not enough. We can also make it zero to remove it
     // it is negative to make it minus in the final equation
-    double dt = ShooterConstants.KFLIGHT_COMPENSATION_SEC;
+    double dt = DriveConstants.KFLIGHT_COMPENSATION_SEC;
     Pose2d updatedTarget =
         new Pose2d(
             firstPose.getX() - fieldSpeeds.vxMetersPerSecond * dt,

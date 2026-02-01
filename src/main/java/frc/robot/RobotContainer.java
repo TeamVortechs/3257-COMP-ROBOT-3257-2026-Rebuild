@@ -34,6 +34,7 @@ import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
+import frc.robot.subsystems.drive.ShooterRotationManager;
 import frc.robot.subsystems.feeder.Feeder;
 import frc.robot.subsystems.feeder.FeederIO;
 import frc.robot.subsystems.feeder.FeederSimulationIO;
@@ -42,7 +43,6 @@ import frc.robot.subsystems.intake.IntakeIO;
 import frc.robot.subsystems.intake.IntakeSimulationIO;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterIO;
-import frc.robot.subsystems.shooter.ShooterRotationManager;
 import frc.robot.subsystems.shooter.ShooterSimulationIO;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
@@ -66,7 +66,6 @@ public class RobotContainer {
 
   private final Climb climb;
 
-  private final ShooterRotationManager shooterRotationManager;
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
@@ -98,8 +97,7 @@ public class RobotContainer {
 
         feeder = new Feeder(new FeederIO() {});
 
-        shooterRotationManager = new ShooterRotationManager(() -> new Pose2d(), drive);
-        shooter = new Shooter(new ShooterIO() {}, () -> shooterRotationManager.getDistance());
+        shooter = new Shooter(new ShooterIO() {}, () -> drive.getDistanceToGoal());
 
         climb = new Climb(new ClimbIO() {});
 
@@ -138,9 +136,8 @@ public class RobotContainer {
 
         feeder = new Feeder(new FeederSimulationIO());
 
-        shooterRotationManager = new ShooterRotationManager(() -> new Pose2d(), drive);
         shooter =
-            new Shooter(new ShooterSimulationIO(), () -> shooterRotationManager.getDistance());
+            new Shooter(new ShooterSimulationIO(), () -> drive.getDistanceToGoal());
 
         climb = new Climb(new ClimbSimulationIO());
 
@@ -162,8 +159,7 @@ public class RobotContainer {
 
         feeder = new Feeder(new FeederIO() {});
 
-        shooterRotationManager = new ShooterRotationManager(() -> new Pose2d(), drive);
-        shooter = new Shooter(new ShooterIO() {}, () -> shooterRotationManager.getDistance());
+        shooter = new Shooter(new ShooterIO() {}, () -> drive.getDistanceToGoal());
 
         climb = new Climb(new ClimbIO() {});
 
@@ -243,27 +239,27 @@ public class RobotContainer {
             drive,
             () -> -controller.getLeftY() * 0.5,
             () -> -controller.getLeftX() * 0.5,
-            () -> shooterRotationManager.getHeading());
+            () -> drive.getHeadingToGoal());
 
-    Command feedCommand =
-        new FeedWhenValidCommand(
-            feeder,
-            controller,
-            shooter,
-            shooterRotationManager,
-            drive,
-            () -> controller.a().getAsBoolean());
+    // Command feedCommand =
+    //     new FeedWhenValidCommand(
+    //         feeder,
+    //         controller,
+    //         shooter,
+    //         shooterRotationManager,
+    //         drive,
+    //         () -> controller.a().getAsBoolean());
 
     controller
         .rightTrigger()
         .whileTrue(
             intake.setSpeedAndPositionCommand(
                 IntakeConstants.INTAKE_POSITION, IntakeConstants.INTAKE_SPEED));
-    controller
-        .leftTrigger()
-        .whileTrue(
-            Commands.parallel(
-                aimTowardsTargetCommand, shooter.setAutomaticCommandRun(), feedCommand));
+    // controller
+    //     .leftTrigger()
+    //     .whileTrue(
+    //         Commands.parallel(
+    //             aimTowardsTargetCommand, shooter.setAutomaticCommandRun(), feedCommand));
 
     controller.leftBumper().whileTrue(climb.setSpeedsRunCommand(1, 0.5));
 

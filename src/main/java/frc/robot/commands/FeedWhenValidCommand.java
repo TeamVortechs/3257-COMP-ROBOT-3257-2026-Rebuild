@@ -10,9 +10,10 @@ import frc.robot.Constants.FeederConstants;
 import frc.robot.Constants.Mode;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.subsystems.drive.Drive;
+import frc.robot.subsystems.drive.ShooterRotationManager;
 import frc.robot.subsystems.feeder.Feeder;
 import frc.robot.subsystems.shooter.Shooter;
-import frc.robot.subsystems.shooter.ShooterRotationManager;
+
 import java.util.function.BooleanSupplier;
 import org.littletonrobotics.junction.Logger;
 
