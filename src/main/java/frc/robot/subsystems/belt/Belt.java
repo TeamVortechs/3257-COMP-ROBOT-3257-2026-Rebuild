@@ -41,9 +41,8 @@ public class Belt extends SubsystemBase {
   public void setPercentMotorOutput(double speed) {
     beltIO.setPercentMotorOutput(speed);
   }
-  
+
   /**
-   * 
    * @return speed in rotations per second
    */
   public double getSpeed() {

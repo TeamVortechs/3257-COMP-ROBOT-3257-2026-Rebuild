@@ -57,6 +57,8 @@ public final class Constants {
 
     // the zone where we choose to more agressively charge the shooter
     public static final double X_POSE_TO_CHARGE = 5.5;
+
+    public static final double K_JOYSTICK_WHEN_SHOOTING = 0.5;
   }
 
   public class ShooterConstants {
@@ -75,16 +77,13 @@ public final class Constants {
     // if we're having trouble adjusting but right now I'm not cus it's a variable that mgiht not be
     // necessary
 
-    public static final double DEFAULT_SPEED = .25; // speed intake/shooter run at default
+    public static final double DEFAULT_SPEED = 0; // speed shooter run at default
     // speed intake/shooter boosts to
     public static final double INTAKE_SPEED = .5;
 
     public static final double PERCENTAGE_OF_DISTANCE_WHEN_CHARGING = 0.6;
 
-    public static final double K_JOYSTICK_WHEN_SHOOTING = 0.5;
-
     // the time that the feeder waits before shooting once it is valis
-    public static final double VALIDITY_DEBOUNCE_TIME_SEC = 0.2;
 
     // CHANGE !!
     public static final double KS = 0.1;
@@ -113,6 +112,9 @@ public final class Constants {
 
   // copied directly from ShooterConstants
   public class FeederConstants {
+
+    public static final double VALIDITY_DEBOUNCE_TIME_SEC = 0.2;
+
     public static final double CURRENT_LIMIT = 40.0;
     public static final double SIM_TOLERANCE = 0.5;
 

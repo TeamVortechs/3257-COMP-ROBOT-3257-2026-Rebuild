@@ -17,8 +17,11 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.robot.Constants.BeltConstants;
+import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.FeederConstants;
 import frc.robot.Constants.IntakeConstants;
-import frc.robot.commands.ChargeShooterWhenNeededCommand;
+import frc.robot.Constants.ShooterConstants;
 import frc.robot.commands.DriveCommands;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.belt.Belt;
@@ -92,11 +95,16 @@ public class RobotContainer {
 
         belt = new Belt(new BeltIO() {});
 
-        feeder = new Feeder(new FeederIO() {});
-
-        shooter = new Shooter(new ShooterIO() {}, () -> drive.getDistanceToGoal());
+        shooter = new Shooter(new ShooterIO() {}, () -> drive.getDistanceToGoal(), () -> drive.isWithinShooterAutomaticChargingZone());
 
         climb = new Climb(new ClimbIO() {});
+
+        feeder =
+            new Feeder(
+                new FeederIO() {},
+                () -> drive.isPointingToGoal() && !drive.isSkidding(),
+                () -> shooter.isOnTarget(),
+                () -> true);
 
         // The ModuleIOTalonFXS implementation provides an example implementation for
         // TalonFXS controller connected to a CANdi with a PWM encoder. The
@@ -131,9 +139,14 @@ public class RobotContainer {
 
         belt = new Belt(new BeltSimulationIO());
 
-        feeder = new Feeder(new FeederSimulationIO());
+        shooter = new Shooter(new ShooterSimulationIO(), () -> drive.getDistanceToGoal(), () -> drive.isWithinShooterAutomaticChargingZone());
 
-        shooter = new Shooter(new ShooterSimulationIO(), () -> drive.getDistanceToGoal());
+        feeder =
+            new Feeder(
+                new FeederSimulationIO(),
+                () -> drive.isPointingToGoal() && !drive.isSkidding(),
+                () -> shooter.isOnTarget(),
+                () -> true);
 
         climb = new Climb(new ClimbSimulationIO());
 
@@ -153,9 +166,9 @@ public class RobotContainer {
 
         belt = new Belt(new BeltIO() {});
 
-        feeder = new Feeder(new FeederIO() {});
+        feeder = new Feeder(new FeederIO() {}, () -> false, () -> false, () -> false);
 
-        shooter = new Shooter(new ShooterIO() {}, () -> drive.getDistanceToGoal());
+        shooter = new Shooter(new ShooterIO() {}, () -> drive.getDistanceToGoal(), () -> drive.isWithinShooterAutomaticChargingZone());
 
         climb = new Climb(new ClimbIO() {});
 
@@ -225,39 +238,28 @@ public class RobotContainer {
                 .ignoringDisable(true));
 
     intake.setDefaultCommand(intake.setRollerVoltageAndPositionCommand(0, 0));
-    belt.setDefaultCommand(belt.setPercentMotorOutputRunCommand(1));
+    belt.setDefaultCommand(belt.setPercentMotorOutputRunCommand(BeltConstants.FEED_POWER));
     feeder.setDefaultCommand(feeder.setPercentMotorRunCommand(0));
-    shooter.setDefaultCommand(
-        new ChargeShooterWhenNeededCommand(
-            shooter, () -> drive.isWithinShooterAutomaticChargingZone()));
+    shooter.setDefaultCommand(shooter.automaticallyChargeWhenNeededRunCommand(ShooterConstants.PERCENTAGE_OF_DISTANCE_WHEN_CHARGING, ShooterConstants.DEFAULT_SPEED));
+
+
     climb.setDefaultCommand(climb.setPositionsRunCommand(0, 0));
 
     Command aimTowardsTargetCommand =
         DriveCommands.joystickDriveAtAngle(
             drive,
-            () -> -controller.getLeftY() * 0.5,
-            () -> -controller.getLeftX() * 0.5,
+            () -> -controller.getLeftY() * DriveConstants.K_JOYSTICK_WHEN_SHOOTING,
+            () -> -controller.getLeftX() * DriveConstants.K_JOYSTICK_WHEN_SHOOTING,
             () -> drive.getHeadingToGoal());
 
-    // Command feedCommand =
-    //     new FeedWhenValidCommand(
-    //         feeder,
-    //         controller,
-    //         shooter,
-    //         shooterRotationManager,
-    //         drive,
-    //         () -> controller.a().getAsBoolean());
+    controller.leftTrigger().whileTrue(Commands.parallel(aimTowardsTargetCommand, shooter.setAutomaticCommandRun(), feeder.feedWhenValidRunCommand(FeederConstants.FEED_POWER)));
 
     controller
         .rightTrigger()
         .whileTrue(
             intake.setRollerVoltageAndPositionCommand(
                 IntakeConstants.INTAKE_POSITION, IntakeConstants.INTAKE_SPEED));
-    // controller
-    //     .leftTrigger()
-    //     .whileTrue(
-    //         Commands.parallel(
-    //             aimTowardsTargetCommand, shooter.setAutomaticCommandRun(), feedCommand));
+
 
     controller.leftBumper().whileTrue(climb.setSpeedsRunCommand(1, 0.5));
 

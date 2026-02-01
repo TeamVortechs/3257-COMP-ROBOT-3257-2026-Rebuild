@@ -69,6 +69,7 @@ public class Drive extends SubsystemBase {
   /**
    * @return the needed rotation for the robot to rotate towards a goal I made it like this so we
    *     can use the joystick drive command from drive commands
+   *     compensates for robot movement
    */
   public Rotation2d getHeadingToGoal() {
     return shooterRotationManager.getHeading();
@@ -97,6 +98,12 @@ public class Drive extends SubsystemBase {
    */
   @AutoLogOutput
   public boolean isSkidding() {
+
+    // no acceleratomer in sim
+    if (Constants.CURR_MODE == Mode.SIM) {
+      return false;
+    }
+
     // slip test
     double chassisX = getChassisSpeeds().vxMetersPerSecond;
     double chassisY = getChassisSpeeds().vyMetersPerSecond;

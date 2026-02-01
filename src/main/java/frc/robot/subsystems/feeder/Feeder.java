@@ -4,12 +4,15 @@ import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.SignalLogger;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.FeederConstants;
+import java.util.function.BooleanSupplier;
+import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 public class Feeder extends SubsystemBase {
@@ -17,12 +20,36 @@ public class Feeder extends SubsystemBase {
   private FeederIO feederIO;
   private FeederIOInputsAutoLogged inputs;
 
+  private BooleanSupplier shooterOnVelocity;
+  private BooleanSupplier driveIsValid;
+
+  // I was advised not to add this by jason but john said we should. For now I'll add it so we don't
+  // have to add it later. We can just supply true in the constructor
+  private BooleanSupplier visionSeesTag;
+  private Timer debounceTimer;
+
+  // here so we can log it
+  @AutoLogOutput private double debounceTimerTime;
+
+  // caching this value and calculating it in periodic so we can log it for the driver
+  @AutoLogOutput private boolean isValidToFeed = false;
+
   /**
    * @param feederIO the hardware interface
    */
-  public Feeder(FeederIO feederIO) {
+  public Feeder(
+      FeederIO feederIO,
+      BooleanSupplier driveIsValid,
+      BooleanSupplier shooterOnVelocity,
+      BooleanSupplier visionSeesTag) {
     this.feederIO = feederIO;
     this.inputs = new FeederIOInputsAutoLogged();
+
+    this.driveIsValid = driveIsValid;
+    this.shooterOnVelocity = shooterOnVelocity;
+    this.visionSeesTag = visionSeesTag;
+
+    debounceTimer = new Timer();
   }
 
   @Override
@@ -30,8 +57,7 @@ public class Feeder extends SubsystemBase {
     feederIO.updateInputs(inputs);
     Logger.processInputs("feeder", inputs);
 
-    // calculate speed that automatically updates with distance
-    // automaticSpeed = getSpeedFromDistance(distanceSupplier.getAsDouble());
+    calculateValidityToFeed();
   }
 
   // SUBSYSTEM METHODS
@@ -50,25 +76,52 @@ public class Feeder extends SubsystemBase {
     return feederIO.getSpeed();
   }
 
+  // HELPER METHODS
+  private void calculateValidityToFeed() {
+    // this stuff should wait on debounce, probably not shooter on speed though
+    if (!driveIsValid.getAsBoolean() || !visionSeesTag.getAsBoolean()) {
+      debounceTimer.restart();
+    }
+
+    // just for logging
+    debounceTimerTime = debounceTimer.get();
+
+    isValidToFeed =
+        debounceTimer.hasElapsed(FeederConstants.VALIDITY_DEBOUNCE_TIME_SEC)
+            && shooterOnVelocity.getAsBoolean();
+  }
+
   // COMMANDS
   /**
    * sets the manual speed of the flywheel then ends immediately
    *
-   * @param speed the speed of the flywheel
+   * @param percentage the speed of the flywheel
    * @return the finished command
    */
-  public Command setPercentMotorCommand(double speed) {
-    return new InstantCommand(() -> this.setPercentMotorOutput(speed));
+  public Command setPercentMotorCommand(double percentage) {
+    return new InstantCommand(() -> this.setPercentMotorOutput(percentage));
   }
 
   /**
    * sets the manual speed of the flywheel, runs multiple times
    *
-   * @param speed the speed of the flywheel
+   * @param percentage the speed of the flywheel
    * @return the finished command
    */
-  public Command setPercentMotorRunCommand(double speed) {
-    return Commands.run(() -> this.setPercentMotorOutput(speed), this);
+  public Command setPercentMotorRunCommand(double percentage) {
+    return Commands.run(() -> this.setPercentMotorOutput(percentage), this);
+  }
+
+  public Command feedWhenValidRunCommand(double percentage) {
+    return Commands.run(
+        () -> {
+          if (isValidToFeed) {
+            this.setPercentMotorOutput(percentage);
+          } else {
+            this.setPercentMotorOutput(0);
+          }
+        },
+        this);
   }
 
   // the constants here should probably be more and move but that's later when this is transferred
