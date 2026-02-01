@@ -16,11 +16,6 @@ import org.littletonrobotics.junction.Logger;
 public class Belt extends SubsystemBase {
 
   // just here for the logging, done like this so we can put it on a dashboard
-  @AutoLogOutput(key = "Belt/BeltSpeed")
-  private double speed = 0;
-
-  @AutoLogOutput(key = "Belt/BeltTargetSpeed")
-  private double targetSpeed = 0;
 
   private BeltIO beltIO;
   private BeltIOInputsAutoLogged inputs;
@@ -38,13 +33,7 @@ public class Belt extends SubsystemBase {
     beltIO.updateInputs(inputs);
     Logger.processInputs("belt", inputs);
 
-    // calculate speed that automatically updates with distance
-    // automaticSpeed = getSpeedFromDistance(distanceSupplier.getAsDouble());
 
-    targetSpeed = getSpeedTarget();
-    speed = beltIO.getSpeed();
-
-    beltIO.setPercentMotorOutput(targetSpeed);
   }
 
   // SUBSYSTEM METHODS
@@ -52,17 +41,10 @@ public class Belt extends SubsystemBase {
   /**
    * @param speed the speed the motor will pid too
    */
-  public void setSpeed(double speed) {
-    this.speed = speed;
+  public void setPercentMotorOutput(double speed) {
+    beltIO.setPercentMotorOutput(speed);
   }
 
-  /**
-   * @return the target speed that the flywheel is pid'ing to. Can be the manual or the automatic
-   *     calculated speed
-   */
-  public double getSpeedTarget() {
-    return speed;
-  }
 
   // COMMANDS
   /**
@@ -71,8 +53,8 @@ public class Belt extends SubsystemBase {
    * @param speed the speed of the flywheel
    * @return the finished command
    */
-  public Command setSpeedCommand(double speed) {
-    return new InstantCommand(() -> this.setSpeed(speed), this);
+  public Command setPercentMotorOutputCommand(double speed) {
+    return new InstantCommand(() -> this.setPercentMotorOutput(speed), this);
   }
 
   /**
@@ -81,8 +63,8 @@ public class Belt extends SubsystemBase {
    * @param speed the speed of the flywheel
    * @return the finished command
    */
-  public Command setSpeedRunCommand(double speed) {
-    return Commands.run(() -> this.setSpeed(speed), this);
+  public Command setPercentMotorOutputRunCommand(double speed) {
+    return Commands.run(() -> this.setPercentMotorOutput(speed), this);
   }
 
   // the constants here should probably be more and move but that's later when this is transferred
