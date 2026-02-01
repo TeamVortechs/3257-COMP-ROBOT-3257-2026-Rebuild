@@ -14,6 +14,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.RobotBase;
+import frc.robot.generated.TunerConstants;
 
 /**
  * This class defines the runtime mode used by AdvantageKit. The mode is always "real" when running
@@ -59,6 +60,20 @@ public final class Constants {
     public static final double X_POSE_TO_CHARGE = 5.5;
 
     public static final double K_JOYSTICK_WHEN_SHOOTING = 0.5;
+
+    // from our library
+    public static final double ODOMETRY_FREQUENCY =
+        TunerConstants.kCANBus.isNetworkFD() ? 250.0 : 100.0;
+    public static final double DRIVE_BASE_RADIUS =
+        Math.max(
+            Math.max(
+                Math.hypot(TunerConstants.FrontLeft.LocationX, TunerConstants.FrontLeft.LocationY),
+                Math.hypot(
+                    TunerConstants.FrontRight.LocationX, TunerConstants.FrontRight.LocationY)),
+            Math.max(
+                Math.hypot(TunerConstants.BackLeft.LocationX, TunerConstants.BackLeft.LocationY),
+                Math.hypot(
+                    TunerConstants.BackRight.LocationX, TunerConstants.BackRight.LocationY)));
   }
 
   public class ShooterConstants {

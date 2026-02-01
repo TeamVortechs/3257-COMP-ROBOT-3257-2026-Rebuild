@@ -95,7 +95,11 @@ public class RobotContainer {
 
         belt = new Belt(new BeltIO() {});
 
-        shooter = new Shooter(new ShooterIO() {}, () -> drive.getDistanceToGoal(), () -> drive.isWithinShooterAutomaticChargingZone());
+        shooter =
+            new Shooter(
+                new ShooterIO() {},
+                () -> drive.getDistanceToGoal(),
+                () -> drive.isWithinShooterAutomaticChargingZone());
 
         climb = new Climb(new ClimbIO() {});
 
@@ -139,7 +143,11 @@ public class RobotContainer {
 
         belt = new Belt(new BeltSimulationIO());
 
-        shooter = new Shooter(new ShooterSimulationIO(), () -> drive.getDistanceToGoal(), () -> drive.isWithinShooterAutomaticChargingZone());
+        shooter =
+            new Shooter(
+                new ShooterSimulationIO(),
+                () -> drive.getDistanceToGoal(),
+                () -> drive.isWithinShooterAutomaticChargingZone());
 
         feeder =
             new Feeder(
@@ -168,7 +176,11 @@ public class RobotContainer {
 
         feeder = new Feeder(new FeederIO() {}, () -> false, () -> false, () -> false);
 
-        shooter = new Shooter(new ShooterIO() {}, () -> drive.getDistanceToGoal(), () -> drive.isWithinShooterAutomaticChargingZone());
+        shooter =
+            new Shooter(
+                new ShooterIO() {},
+                () -> drive.getDistanceToGoal(),
+                () -> drive.isWithinShooterAutomaticChargingZone());
 
         climb = new Climb(new ClimbIO() {});
 
@@ -240,8 +252,9 @@ public class RobotContainer {
     intake.setDefaultCommand(intake.setRollerVoltageAndPositionCommand(0, 0));
     belt.setDefaultCommand(belt.setPercentMotorOutputRunCommand(BeltConstants.FEED_POWER));
     feeder.setDefaultCommand(feeder.setPercentMotorRunCommand(0));
-    shooter.setDefaultCommand(shooter.automaticallyChargeWhenNeededRunCommand(ShooterConstants.PERCENTAGE_OF_DISTANCE_WHEN_CHARGING, ShooterConstants.DEFAULT_SPEED));
-
+    shooter.setDefaultCommand(
+        shooter.automaticallyChargeWhenNeededRunCommand(
+            ShooterConstants.PERCENTAGE_OF_DISTANCE_WHEN_CHARGING, ShooterConstants.DEFAULT_SPEED));
 
     climb.setDefaultCommand(climb.setPositionsRunCommand(0, 0));
 
@@ -252,14 +265,19 @@ public class RobotContainer {
             () -> -controller.getLeftX() * DriveConstants.K_JOYSTICK_WHEN_SHOOTING,
             () -> drive.getHeadingToGoal());
 
-    controller.leftTrigger().whileTrue(Commands.parallel(aimTowardsTargetCommand, shooter.setAutomaticCommandRun(), feeder.feedWhenValidRunCommand(FeederConstants.FEED_POWER)));
+    controller
+        .leftTrigger()
+        .whileTrue(
+            Commands.parallel(
+                aimTowardsTargetCommand,
+                shooter.setAutomaticCommandRun(),
+                feeder.feedWhenValidRunCommand(FeederConstants.FEED_POWER)));
 
     controller
         .rightTrigger()
         .whileTrue(
             intake.setRollerVoltageAndPositionCommand(
                 IntakeConstants.INTAKE_POSITION, IntakeConstants.INTAKE_SPEED));
-
 
     controller.leftBumper().whileTrue(climb.setSpeedsRunCommand(1, 0.5));
 

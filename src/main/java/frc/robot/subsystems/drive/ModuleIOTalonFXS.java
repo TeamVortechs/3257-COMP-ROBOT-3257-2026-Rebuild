@@ -33,6 +33,7 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import frc.robot.Constants;
+import frc.robot.Constants.DriveConstants;
 import frc.robot.generated.TunerConstants;
 import java.util.Queue;
 
@@ -175,7 +176,7 @@ public class ModuleIOTalonFXS implements ModuleIO {
 
     // Configure periodic frames
     BaseStatusSignal.setUpdateFrequencyForAll(
-        Drive.ODOMETRY_FREQUENCY, drivePosition, turnPosition);
+        DriveConstants.ODOMETRY_FREQUENCY, drivePosition, turnPosition);
     BaseStatusSignal.setUpdateFrequencyForAll(
         Constants.FREQUENCY_HZ,
         driveVelocity,

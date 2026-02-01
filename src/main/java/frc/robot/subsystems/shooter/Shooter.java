@@ -13,7 +13,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.ShooterConstants;
-
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.AutoLogOutput;
@@ -56,7 +55,10 @@ public class Shooter extends SubsystemBase {
    * @param shooterIO the hardware interface
    * @param distanceSupplierMeters the distance supplier for when it goes automatic
    */
-  public Shooter(ShooterIO shooterIO, DoubleSupplier distanceSupplierMeters, BooleanSupplier withinAutomaticChargingZone) {
+  public Shooter(
+      ShooterIO shooterIO,
+      DoubleSupplier distanceSupplierMeters,
+      BooleanSupplier withinAutomaticChargingZone) {
     this.distanceSupplier = distanceSupplierMeters;
     this.shooterIO = shooterIO;
     this.inputs = new ShooterIOInputsAutoLogged();
@@ -180,18 +182,18 @@ public class Shooter extends SubsystemBase {
         .andThen(new WaitUntilCommand(() -> this.isOnTarget()));
   }
 
-  public Command automaticallyChargeWhenNeededRunCommand(double automaticPercentage, double speedWhenNotInZone) {
-    return new RunCommand(() -> {
-
-      if(withinAutomaticChargingZone.getAsBoolean()) {
-        setAutomatic(automaticPercentage);
-      } else {
-        setManualSpeed(speedWhenNotInZone);
-      }
-
-    }, this);
+  public Command automaticallyChargeWhenNeededRunCommand(
+      double automaticPercentage, double speedWhenNotInZone) {
+    return new RunCommand(
+        () -> {
+          if (withinAutomaticChargingZone.getAsBoolean()) {
+            setAutomatic(automaticPercentage);
+          } else {
+            setManualSpeed(speedWhenNotInZone);
+          }
+        },
+        this);
   }
-
 
   // HELPER METHODS
   /**
