@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants;
+import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.FeederConstants;
 import frc.robot.Constants.Mode;
 import frc.robot.Constants.ShooterConstants;
@@ -152,8 +153,8 @@ public class FeedWhenValidCommand extends Command {
     accelerometerY = accelerometer.getY();
 
     isNotSkidding =
-        Math.abs(accelerometerX - chassisX) < ShooterConstants.SKID_THRESHOLD
-            && Math.abs(accelerometerY - chassisY) < ShooterConstants.SKID_THRESHOLD;
+        Math.abs(accelerometerX - chassisX) < DriveConstants.SKID_THRESHOLD
+            && Math.abs(accelerometerY - chassisY) < DriveConstants.SKID_THRESHOLD;
 
     // we can also check for jerk here
     // not adding skid/slip test here because this is sim
