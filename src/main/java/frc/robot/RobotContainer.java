@@ -228,7 +228,7 @@ public class RobotContainer {
                     drive)
                 .ignoringDisable(true));
 
-    intake.setDefaultCommand(intake.setSpeedAndPositionCommand(0, 0));
+    intake.setDefaultCommand(intake.setRollerVoltageAndPositionCommand(0, 0));
     belt.setDefaultCommand(belt.setPercentMotorOutputRunCommand(1));
     feeder.setDefaultCommand(feeder.setPercentMotorRunCommand(0));
     shooter.setDefaultCommand(new ChargeShooterWhenNeededCommand(shooter, () -> drive.getPose()));
@@ -253,7 +253,7 @@ public class RobotContainer {
     controller
         .rightTrigger()
         .whileTrue(
-            intake.setSpeedAndPositionCommand(
+            intake.setRollerVoltageAndPositionCommand(
                 IntakeConstants.INTAKE_POSITION, IntakeConstants.INTAKE_SPEED));
     // controller
     //     .leftTrigger()

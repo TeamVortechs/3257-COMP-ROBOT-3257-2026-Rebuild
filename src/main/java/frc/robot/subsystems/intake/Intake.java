@@ -26,13 +26,6 @@ public class Intake extends SubsystemBase {
   // useful for a flexible hardware interface and for advantage kit logging
   private final IntakeIO moduleIO;
 
-  // these are for advantage kit state logging and/or for keeping track of key variables
-  @AutoLogOutput private boolean isOnTarget = false;
-  @AutoLogOutput private double targetPosition;
-  @AutoLogOutput private double currentPosition;
-
-  @AutoLogOutput private double rollerPower;
-  @AutoLogOutput private double currentSpeed;
 
   /**
    * Constructor for the Intake subsystem.
@@ -43,7 +36,6 @@ public class Intake extends SubsystemBase {
   public Intake(IntakeIO moduleIO) {
     this.moduleIO = moduleIO;
 
-    currentSpeed = moduleIO.getSpeed();
   }
 
   @Override
@@ -60,8 +52,11 @@ public class Intake extends SubsystemBase {
       return;
     }
 
-    currentSpeed = moduleIO.getSpeed();
-    currentPosition = moduleIO.getPosition();
+    // Clamp target speed to prevent exceeding limits
+
+  }
+
+  public void setPosition(double targetPosition) {
 
     if (targetPosition > IntakeConstants.MAX_POSITION) {
       targetPosition = IntakeConstants.MAX_POSITION;
@@ -71,21 +66,11 @@ public class Intake extends SubsystemBase {
       targetPosition = IntakeConstants.MIN_POSITION;
     }
 
-    isOnTarget = isOnTarget();
-
-    // Clamp target speed to prevent exceeding limits
-    rollerPower = VortechsUtil.clamp(rollerPower, Constants.IntakeConstants.MAX_TARGET_SPEED);
-
     moduleIO.setTargetPosition(targetPosition);
-    moduleIO.setRollerVoltage(rollerPower);
   }
 
-  public void setPosition(double position) {
-    targetPosition = position;
-  }
-
-  /** sets the roller motors, 0-1 */
-  public void setRollers(double voltage) {
+  /** sets the roller motors, -1-1 */
+  public void setRollersVoltage(double voltage) {
 
     // clamp speed to prevent exceeding limits
     voltage = VortechsUtil.clamp(voltage, Constants.IntakeConstants.MAX_MANUAL_SPEED);
@@ -101,7 +86,7 @@ public class Intake extends SubsystemBase {
   // returns wether or not the elevaotr is on target
   public boolean isOnTarget() {
 
-    double diff = Math.abs(targetPosition - currentPosition);
+    double diff = Math.abs(moduleIO.getTargetPosition() - moduleIO.getPosition());
 
     return IntakeConstants.POS_TOLERANCE > diff;
   }
@@ -117,29 +102,29 @@ public class Intake extends SubsystemBase {
   }
 
   public double getPosition() {
-    return currentPosition;
+    return moduleIO.getPosition();
   }
 
   // commands
 
   // sets the manual override speed of this command. Uses a regular double
-  public Command setRollerCommand(double speed) {
-    return new RunCommand(() -> this.setRollers(speed), this);
+  public Command setRollerVoltageCommand(double speed) {
+    return new RunCommand(() -> this.setRollersVoltage(speed), this);
   }
 
   // sets the manual override speed of this command. Uses a double supplier
-  public Command setRollerCommand(DoubleSupplier speed) {
-    return new RunCommand(() -> this.setRollers(speed.getAsDouble()), this);
+  public Command setRollerVoltageCommand(DoubleSupplier speed) {
+    return new RunCommand(() -> this.setRollersVoltage(speed.getAsDouble()), this);
   }
 
   public Command setPositionCommand(double position) {
     return new RunCommand(() -> this.setPosition(position), this);
   }
 
-  public Command setSpeedAndPositionCommand(double position, double speed) {
+  public Command setRollerVoltageAndPositionCommand(double position, double voltage) {
     return Commands.parallel(
         new RunCommand(() -> this.setPosition(position)),
-        new RunCommand(() -> this.setRollers(speed), this));
+        new RunCommand(() -> this.setRollersVoltage(voltage), this));
   }
 
   // resets the encoders of the wrist
