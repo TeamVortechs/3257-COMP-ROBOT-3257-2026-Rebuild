@@ -14,7 +14,7 @@ import edu.wpi.first.units.measure.Voltage;
 import frc.robot.Constants;
 // CHANGE PID VALUES !!!!
 
-// only uses the roller motor for the prototype robot. This is not meant to be used on the final
+// only uses the roller motor for the prototype robot without positon motor. This is not meant to be used on the final
 // robot
 public class IntakeTalonFXOnlyRollerIO implements IntakeIO {
 
