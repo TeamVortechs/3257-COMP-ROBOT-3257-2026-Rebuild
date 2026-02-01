@@ -4,7 +4,6 @@ import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -15,7 +14,8 @@ import edu.wpi.first.units.measure.Voltage;
 import frc.robot.Constants;
 // CHANGE PID VALUES !!!!
 
-//only uses the roller motor for the prototype robot. This is not meant to be used on the final robot
+// only uses the roller motor for the prototype robot. This is not meant to be used on the final
+// robot
 public class IntakeTalonFXOnlyRollerIO implements IntakeIO {
 
   private final TalonFX roller;
@@ -25,7 +25,6 @@ public class IntakeTalonFXOnlyRollerIO implements IntakeIO {
   private final StatusSignal<Voltage> rollerMotorVoltage;
   private final StatusSignal<Current> rollerStatorCurrent;
   private final StatusSignal<Current> rollerSupplyCurrent;
-
 
   private final StatusSignal<Temperature> rollerTemperatureCelsius;
 
@@ -54,7 +53,6 @@ public class IntakeTalonFXOnlyRollerIO implements IntakeIO {
     rollerStatorCurrent = roller.getStatorCurrent();
     rollerSupplyCurrent = roller.getSupplyCurrent();
     rollerTemperatureCelsius = roller.getDeviceTemp();
-
 
     // Optimize CAN bus usage by refreshing these signals together
     BaseStatusSignal.setUpdateFrequencyForAll(
@@ -87,11 +85,9 @@ public class IntakeTalonFXOnlyRollerIO implements IntakeIO {
     roller.setControl(new VoltageOut(volt));
   }
 
-  public void setPositionVoltage(double volt) {
-  }
+  public void setPositionVoltage(double volt) {}
 
   public void setTargetPosition(double position1) { // IMPORTANT - POSITON1 NOT POSITION
-
   }
 
   public double getTargetPosition() {
@@ -99,8 +95,7 @@ public class IntakeTalonFXOnlyRollerIO implements IntakeIO {
   }
   // misc methods
 
-  public void resetEncoders() {
-  }
+  public void resetEncoders() {}
 
   public void setBrakedRoller(boolean braked) {
     isBrakedRoller = braked;
@@ -113,8 +108,7 @@ public class IntakeTalonFXOnlyRollerIO implements IntakeIO {
     roller.getConfigurator().apply(config);
   }
 
-  public void setBrakedPosition(boolean braked) {
-  }
+  public void setBrakedPosition(boolean braked) {}
 
   // gets the highest possible height of the arm in radians
   public double getMaxPosition() {

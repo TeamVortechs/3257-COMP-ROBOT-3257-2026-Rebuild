@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.BeltConstants;
-import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 public class Belt extends SubsystemBase {
@@ -32,8 +31,6 @@ public class Belt extends SubsystemBase {
   public void periodic() {
     beltIO.updateInputs(inputs);
     Logger.processInputs("belt", inputs);
-
-
   }
 
   // SUBSYSTEM METHODS
@@ -44,7 +41,6 @@ public class Belt extends SubsystemBase {
   public void setPercentMotorOutput(double speed) {
     beltIO.setPercentMotorOutput(speed);
   }
-
 
   // COMMANDS
   /**

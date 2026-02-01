@@ -20,7 +20,6 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.commands.ChargeShooterWhenNeededCommand;
 import frc.robot.commands.DriveCommands;
-import frc.robot.commands.FeedWhenValidCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.belt.Belt;
 import frc.robot.subsystems.belt.BeltIO;
@@ -34,7 +33,6 @@ import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
-import frc.robot.subsystems.drive.ShooterRotationManager;
 import frc.robot.subsystems.feeder.Feeder;
 import frc.robot.subsystems.feeder.FeederIO;
 import frc.robot.subsystems.feeder.FeederSimulationIO;
@@ -65,7 +63,6 @@ public class RobotContainer {
   private final Shooter shooter;
 
   private final Climb climb;
-
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
@@ -136,8 +133,7 @@ public class RobotContainer {
 
         feeder = new Feeder(new FeederSimulationIO());
 
-        shooter =
-            new Shooter(new ShooterSimulationIO(), () -> drive.getDistanceToGoal());
+        shooter = new Shooter(new ShooterSimulationIO(), () -> drive.getDistanceToGoal());
 
         climb = new Climb(new ClimbSimulationIO());
 
@@ -231,7 +227,9 @@ public class RobotContainer {
     intake.setDefaultCommand(intake.setRollerVoltageAndPositionCommand(0, 0));
     belt.setDefaultCommand(belt.setPercentMotorOutputRunCommand(1));
     feeder.setDefaultCommand(feeder.setPercentMotorRunCommand(0));
-    shooter.setDefaultCommand(new ChargeShooterWhenNeededCommand(shooter, () -> drive.isWithinShooterAutomaticChargingZone()));
+    shooter.setDefaultCommand(
+        new ChargeShooterWhenNeededCommand(
+            shooter, () -> drive.isWithinShooterAutomaticChargingZone()));
     climb.setDefaultCommand(climb.setPositionsRunCommand(0, 0));
 
     Command aimTowardsTargetCommand =

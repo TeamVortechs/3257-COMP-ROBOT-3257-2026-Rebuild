@@ -13,7 +13,6 @@ import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.ShooterRotationManager;
 import frc.robot.subsystems.feeder.Feeder;
 import frc.robot.subsystems.shooter.Shooter;
-
 import java.util.function.BooleanSupplier;
 import org.littletonrobotics.junction.Logger;
 

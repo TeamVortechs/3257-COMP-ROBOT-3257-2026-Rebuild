@@ -14,7 +14,6 @@ import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.util.VortechsUtil;
 import java.util.function.DoubleSupplier;
-import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 /** Intake subsystem responsible for the intake rolling mechanism */
@@ -26,7 +25,6 @@ public class Intake extends SubsystemBase {
   // useful for a flexible hardware interface and for advantage kit logging
   private final IntakeIO moduleIO;
 
-
   /**
    * Constructor for the Intake subsystem.
    *
@@ -35,7 +33,6 @@ public class Intake extends SubsystemBase {
    */
   public Intake(IntakeIO moduleIO) {
     this.moduleIO = moduleIO;
-
   }
 
   @Override

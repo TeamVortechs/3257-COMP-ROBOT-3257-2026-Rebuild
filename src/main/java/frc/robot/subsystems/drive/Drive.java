@@ -33,8 +33,8 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.Alert;
-import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 import edu.wpi.first.wpilibj.Alert.AlertType;
+import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -43,7 +43,6 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.Mode;
-import frc.robot.Constants.ShooterConstants;
 import frc.robot.generated.TunerConstants;
 import frc.robot.util.LocalADStarAK;
 import java.util.concurrent.locks.Lock;
@@ -57,27 +56,25 @@ public class Drive extends SubsystemBase {
    * Code I added(Ben). Putting this here so it's easier to know when we change the drive later
    */
 
-  //puttign this in container because it's already like this and when we change drive it'll be good to have it easily changed. Also it's probably more readable this way
+  // puttign this in container because it's already like this and when we change drive it'll be good
+  // to have it easily changed. Also it's probably more readable this way
   private ShooterRotationManager shooterRotationManager;
 
   private BuiltInAccelerometer accelerometer;
 
-  //caching values here so they can be logged
-  @AutoLogOutput
-  private double accelerometerX;
-  @AutoLogOutput
-  private double accelerometerY;  
+  // caching values here so they can be logged
+  @AutoLogOutput private double accelerometerX;
+  @AutoLogOutput private double accelerometerY;
 
   /**
-   * @return the needed rotation for the robot to rotate towards a goal
-   * I made it like this so we can use the joystick drive command from drive commands
+   * @return the needed rotation for the robot to rotate towards a goal I made it like this so we
+   *     can use the joystick drive command from drive commands
    */
   public Rotation2d getHeadingToGoal() {
     return shooterRotationManager.getHeading();
   }
 
   /**
-   * 
    * @return the distance from the robot to the goal
    */
   public double getDistanceToGoal() {
@@ -85,7 +82,6 @@ public class Drive extends SubsystemBase {
   }
 
   /**
-   * 
    * @return wether or not the shooter is pointing towards the goal within tolerance
    */
   public boolean isPointingToGoal() {
@@ -93,14 +89,15 @@ public class Drive extends SubsystemBase {
   }
 
   /**
-   * Defines skidding as if measuredChassisSpeeds(gotten from encoders) differ from built in acceleraomter(accurate with specific variance profile) above skid threshold.
-   * 
-   * @return If you wish to make this method always return false for some logic just spike skid treshold
-   * 
+   * Defines skidding as if measuredChassisSpeeds(gotten from encoders) differ from built in
+   * acceleraomter(accurate with specific variance profile) above skid threshold.
+   *
+   * @return If you wish to make this method always return false for some logic just spike skid
+   *     treshold
    */
   @AutoLogOutput
   public boolean isSkidding() {
-        // slip test
+    // slip test
     double chassisX = getChassisSpeeds().vxMetersPerSecond;
     double chassisY = getChassisSpeeds().vyMetersPerSecond;
 
@@ -112,19 +109,20 @@ public class Drive extends SubsystemBase {
   }
 
   /**
-   * @return wether or not the robot is in a zone where the shooter hsould be charged more agressively to reduce windup time
-   * 
+   * @return wether or not the robot is in a zone where the shooter hsould be charged more
+   *     agressively to reduce windup time
    */
   @AutoLogOutput
   public boolean isWithinShooterAutomaticChargingZone() {
     double xPose = getPose().getX();
 
     return xPose < DriveConstants.X_POSE_TO_CHARGE;
-    
   }
 
   /**
-   * This is really ugly. I'm putting this in my own periodic so we can easily add this logic into the cdoe when we change the drive code.
+   * This is really ugly. I'm putting this in my own periodic so we can easily add this logic into
+   * the cdoe when we change the drive code.
+   *
    * @return
    */
   public void benPeriodic() {
@@ -132,13 +130,7 @@ public class Drive extends SubsystemBase {
     accelerometerX = accelerometer.getX();
 
     shooterRotationManager.periodic();
-
   }
-  
-
-
-
-
 
   // TunerConstants doesn't include these constants, so they are declared locally
   static final double ODOMETRY_FREQUENCY = TunerConstants.kCANBus.isNetworkFD() ? 250.0 : 100.0;
@@ -239,8 +231,8 @@ public class Drive extends SubsystemBase {
             new SysIdRoutine.Mechanism(
                 (voltage) -> runCharacterization(voltage.in(Volts)), null, this));
 
-
-    shooterRotationManager = new ShooterRotationManager(() -> Constants.DriveConstants.GOAL_POSE, this);
+    shooterRotationManager =
+        new ShooterRotationManager(() -> Constants.DriveConstants.GOAL_POSE, this);
     accelerometer = new BuiltInAccelerometer();
   }
 

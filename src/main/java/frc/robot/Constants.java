@@ -11,7 +11,6 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -40,7 +39,7 @@ public final class Constants {
   public class DriveConstants {
 
     public static final double ORIENTATION_TOLERANCE = .1;
-        // the time it takes between feeding and actual robot shoot. This is used to lead the robot
+    // the time it takes between feeding and actual robot shoot. This is used to lead the robot
     // pose. Should be about 0.08 - 0.18 s
     public static final double KRELEASE_POSE_PREDICTION_SEC = 0;
 
@@ -53,14 +52,11 @@ public final class Constants {
     // considered skid
     public static final double SKID_THRESHOLD = 5.0;
 
-    
-    //find this
+    // find this
     public static final Pose2d GOAL_POSE = new Pose2d(4.622, 4.03, new Rotation2d());
 
-    //the zone where we choose to more agressively charge the shooter
+    // the zone where we choose to more agressively charge the shooter
     public static final double X_POSE_TO_CHARGE = 5.5;
-
-
   }
 
   public class ShooterConstants {
@@ -85,12 +81,10 @@ public final class Constants {
 
     public static final double PERCENTAGE_OF_DISTANCE_WHEN_CHARGING = 0.6;
 
-
     public static final double K_JOYSTICK_WHEN_SHOOTING = 0.5;
 
     // the time that the feeder waits before shooting once it is valis
     public static final double VALIDITY_DEBOUNCE_TIME_SEC = 0.2;
-
 
     // CHANGE !!
     public static final double KS = 0.1;

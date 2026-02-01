@@ -1,13 +1,9 @@
 package frc.robot.commands;
 
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.subsystems.shooter.Shooter;
-
 import java.util.function.BooleanSupplier;
-import java.util.function.Supplier;
-import org.littletonrobotics.junction.Logger;
 
 /*
 Names
@@ -47,7 +43,6 @@ public class ChargeShooterWhenNeededCommand extends Command {
       // if it's not in zone it shoudl be pretty small to conserve poewr
       shooter.setManualSpeed(ShooterConstants.DEFAULT_SPEED);
     }
-
   }
 
   // Called once the command ends or is interrupted.

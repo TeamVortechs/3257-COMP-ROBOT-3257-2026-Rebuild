@@ -6,8 +6,6 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
-import frc.robot.Constants.ShooterConstants;
-
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.AutoLogOutput;
 
@@ -35,7 +33,7 @@ public class ShooterRotationManager {
     this.drive = drive;
   }
 
-  // logs all of the values from this. 
+  // logs all of the values from this.
   private void log() {
     // all of these methods automatically log values
     currentRadians = drive.getRotation().getRadians();
@@ -45,9 +43,7 @@ public class ShooterRotationManager {
     isOriented();
   }
 
-  /**
-   * MUST BE CALLED REPEATEDLY. logs/calculates cached values
-   */
+  /** MUST BE CALLED REPEATEDLY. logs/calculates cached values */
   public void periodic() {
     log();
   }
