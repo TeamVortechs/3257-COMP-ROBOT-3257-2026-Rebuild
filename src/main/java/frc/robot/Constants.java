@@ -7,13 +7,17 @@
 
 package frc.robot;
 
+import java.util.function.Supplier;
+
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.generated.TunerConstants;
 
 /**
@@ -54,7 +58,17 @@ public final class Constants {
     public static final double SKID_THRESHOLD = 5.0;
 
     // find this
-    public static final Pose2d GOAL_POSE = new Pose2d(4.622, 4.03, new Rotation2d());
+    public static final Pose2d GOAL_POSE_BLUE = new Pose2d(4.622, 4.03, new Rotation2d());
+    public static final Pose2d GOAL_POSE_RED = new Pose2d(11.917, 4.030, new Rotation2d());
+
+    //this is ugly but all it does is return target pose based on the team
+    public static final Supplier<Pose2d> GOAL_POSE = () -> {
+      if(DriverStation.getAlliance().get() == Alliance.Blue) {
+        return GOAL_POSE_BLUE;
+      } else {
+        return GOAL_POSE_RED;
+      } 
+    };
 
     // the zone where we choose to more agressively charge the shooter
     public static final double X_POSE_TO_CHARGE = 5.5;

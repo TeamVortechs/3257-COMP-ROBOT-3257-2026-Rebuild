@@ -227,13 +227,15 @@ public class RobotContainer {
 
     // Lock to 0° when A button is held
     controller
-        .a()
+        .rightStick()
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
                 drive,
                 () -> -controller.getLeftY(),
                 () -> -controller.getLeftX(),
-                () -> Rotation2d.kZero));
+                () -> Rotation2d.fromDegrees(45)));
+
+
 
     // Switch to X pattern when X button is pressed
     controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));

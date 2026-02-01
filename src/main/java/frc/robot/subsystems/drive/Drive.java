@@ -229,7 +229,7 @@ public class Drive extends SubsystemBase {
                 (voltage) -> runCharacterization(voltage.in(Volts)), null, this));
 
     shooterRotationManager =
-        new ShooterRotationManager(() -> Constants.DriveConstants.GOAL_POSE, this);
+        new ShooterRotationManager(Constants.DriveConstants.GOAL_POSE, this);
     accelerometer = new BuiltInAccelerometer();
   }
 
