@@ -89,8 +89,18 @@ public final class Constants {
         passing_goals_storage.add(new Pose2d(1, 1, new Rotation2d()));
       }
 
-      //add flip logic here
-      
+      //add flip logic here 
+      int xToFlip = 5;
+      int yToFlip = 5;
+      int x;
+      int y;
+      if (DriverStation.getAlliance().get() == Alliance.Blue) {
+        x = xToFlip * -1;
+        y = yToFlip * -1;
+      } else {
+        x = xToFlip;
+        y = yToFlip;
+      }
 
       return passing_goals_storage;
     }
