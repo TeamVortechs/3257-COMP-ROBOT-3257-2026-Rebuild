@@ -17,7 +17,6 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.RobotBase;
 import frc.robot.generated.TunerConstants;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
@@ -82,31 +81,35 @@ public final class Constants {
     public static final Pose2d GOAL_POSE_BLUE = new Pose2d(4.622, 4.03, new Rotation2d());
     public static final Pose2d GOAL_POSE_RED = new Pose2d(11.917, 4.030, new Rotation2d());
 
-    private static final List<Pose2d> passing_goals_storage = null;
-    private static final List<String> passing_goals_name_storage = null;
+    private static List<Pose2d> passing_goals_storage = null;
+    private static List<String> passing_goals_name_storage = null;
 
     public static final List<String> PASSING_GOALS_NAMES() {
-      if(passing_goals_name_storage == null) {
+
+      if (passing_goals_name_storage == null) {
+        passing_goals_name_storage = new ArrayList<>();
         passing_goals_name_storage.add("pose 1");
         passing_goals_name_storage.add("pose 2");
+        passing_goals_name_storage.add("pose_3");
       }
 
       return passing_goals_name_storage;
     }
 
     public static final List<Pose2d> PASSING_GOALS() {
-      if(passing_goals_storage == null) {
+
+      if (passing_goals_storage == null) {
+        passing_goals_storage = new ArrayList<>();
         passing_goals_storage.add(new Pose2d());
         passing_goals_storage.add(new Pose2d(1, 1, new Rotation2d()));
+        passing_goals_storage.add(new Pose2d(2, 2, new Rotation2d()));
       }
 
-      //add flip logic here
-      
+      // add flip logic here
 
       return passing_goals_storage;
     }
-    
-  
+
     // this is ugly but all it does is return target pose based on the team
     public static final Supplier<Pose2d> GOAL_POSE =
         () -> {

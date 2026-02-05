@@ -70,6 +70,7 @@ public class RobotContainer {
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
+  private final CommandXboxController operatorController = new CommandXboxController(1);
 
   // usign this for sys id so it doesn't conflict with anything
   private final CommandXboxController sysID_contorller = new CommandXboxController(3);
@@ -285,6 +286,9 @@ public class RobotContainer {
     controller.a().onTrue(climb.setIsLockedCommand(() -> !climb.isLocked()));
 
     controller.b().whileTrue(new PathfindToPoseCommand(drive, () -> new Pose2d(), true));
+
+    operatorController.rightBumper().toggleOnTrue(drive.iteratePassingCommand(true));
+    operatorController.leftBumper().toggleOnTrue(drive.iteratePassingCommand(false));
   }
 
   /**

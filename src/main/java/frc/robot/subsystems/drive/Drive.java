@@ -59,6 +59,7 @@ public class Drive extends SubsystemBase {
   // puttign this in container because it's already like this and when we change drive it'll be good
   // to have it easily changed. Also it's probably more readable this way
   private ShooterRotationManager shooterRotationManager;
+  private GoalPoseManager goalPoseManager;
 
   private BuiltInAccelerometer accelerometer;
 
@@ -125,6 +126,10 @@ public class Drive extends SubsystemBase {
     return xPose < DriveConstants.X_POSE_TO_CHARGE;
   }
 
+  public Command iteratePassingCommand(boolean forward) {
+    return goalPoseManager.iteratePassingPoseCommand(forward);
+  }
+
   /**
    * This is really ugly. I'm putting this in my own periodic so we can easily add this logic into
    * the cdoe when we change the drive code.
@@ -136,6 +141,7 @@ public class Drive extends SubsystemBase {
     accelerometerX = accelerometer.getX();
 
     shooterRotationManager.periodic();
+    goalPoseManager.periodic();
   }
 
   // TunerConstants doesn't include these constants, so they are declared locally
@@ -228,7 +234,9 @@ public class Drive extends SubsystemBase {
             new SysIdRoutine.Mechanism(
                 (voltage) -> runCharacterization(voltage.in(Volts)), null, this));
 
-    shooterRotationManager = new ShooterRotationManager(Constants.DriveConstants.GOAL_POSE, this);
+    goalPoseManager = new GoalPoseManager();
+    shooterRotationManager =
+        new ShooterRotationManager(() -> goalPoseManager.getTargetPose(false), this);
     accelerometer = new BuiltInAccelerometer();
   }
 
