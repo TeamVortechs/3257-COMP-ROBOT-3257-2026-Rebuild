@@ -106,6 +106,17 @@ public final class Constants {
       }
 
       // add flip logic here
+      double xToFlip = 5;
+      double yToFlip = 5;
+      double x;
+      double y;
+      if (DriverStation.getAlliance().get() == Alliance.Blue) {
+        x = 2 * 8.5 - xToFlip;
+        y = 2 * 4 - yToFlip;
+      } else {
+        x = xToFlip;
+        y = yToFlip;
+      }
 
       return passing_goals_storage;
     }
