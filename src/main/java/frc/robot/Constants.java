@@ -104,8 +104,8 @@ public final class Constants {
       double x;
       double y;
       if (DriverStation.getAlliance().get() == Alliance.Blue) {
-        x = 8.5 - Math.abs(8.5 - xToFlip);
-        y = 4 + Math.abs(4 - yToFlip);
+        x = 2 * 8.5 - xToFlip;
+        y = 2 * 4 - yToFlip;
       } else {
         x = xToFlip;
         y = yToFlip;
