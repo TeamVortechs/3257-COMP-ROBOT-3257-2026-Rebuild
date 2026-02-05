@@ -83,6 +83,17 @@ public final class Constants {
     public static final Pose2d GOAL_POSE_RED = new Pose2d(11.917, 4.030, new Rotation2d());
 
     private static final List<Pose2d> passing_goals_storage = null;
+    private static final List<String> passing_goals_name_storage = null;
+
+    public static final List<String> PASSING_GOALS_NAMES() {
+      if(passing_goals_name_storage == null) {
+        passing_goals_name_storage.add("pose 1");
+        passing_goals_name_storage.add("pose 2");
+      }
+
+      return passing_goals_name_storage;
+    }
+
     public static final List<Pose2d> PASSING_GOALS() {
       if(passing_goals_storage == null) {
         passing_goals_storage.add(new Pose2d());
