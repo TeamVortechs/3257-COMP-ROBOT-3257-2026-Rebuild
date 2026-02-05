@@ -17,8 +17,6 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.RobotBase;
 import frc.robot.generated.TunerConstants;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -86,7 +84,7 @@ public final class Constants {
     private static final List<String> passing_goals_name_storage = null;
 
     public static final List<String> PASSING_GOALS_NAMES() {
-      if(passing_goals_name_storage == null) {
+      if (passing_goals_name_storage == null) {
         passing_goals_name_storage.add("pose 1");
         passing_goals_name_storage.add("pose 2");
       }
@@ -95,19 +93,19 @@ public final class Constants {
     }
 
     public static final List<Pose2d> PASSING_GOALS() {
-      if(passing_goals_storage == null) {
+      if (passing_goals_storage == null) {
         passing_goals_storage.add(new Pose2d());
         passing_goals_storage.add(new Pose2d(1, 1, new Rotation2d()));
       }
 
-      //add flip logic here 
-      int xToFlip = 5;
-      int yToFlip = 5;
-      int x;
-      int y;
+      // add flip logic here
+      double xToFlip = 5;
+      double yToFlip = 5;
+      double x;
+      double y;
       if (DriverStation.getAlliance().get() == Alliance.Blue) {
-        x = xToFlip * -1;
-        y = yToFlip * -1;
+        x = 8.5 - Math.abs(8.5 - xToFlip);
+        y = 4 + Math.abs(4 - yToFlip);
       } else {
         x = xToFlip;
         y = yToFlip;
@@ -115,8 +113,7 @@ public final class Constants {
 
       return passing_goals_storage;
     }
-    
-  
+
     // this is ugly but all it does is return target pose based on the team
     public static final Supplier<Pose2d> GOAL_POSE =
         () -> {
