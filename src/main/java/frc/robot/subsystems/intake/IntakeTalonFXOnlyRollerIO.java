@@ -88,7 +88,7 @@ public class IntakeTalonFXOnlyRollerIO implements IntakeIO {
 
   public void setPositionVoltage(double volt) {}
 
-  public void setTargetPosition(double position1) { // IMPORTANT - POSITON1 NOT POSITION
+  public void setPositionControl(double position1) { // IMPORTANT - POSITON1 NOT POSITION
   }
 
   public double getTargetPosition() {

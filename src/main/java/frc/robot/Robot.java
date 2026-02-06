@@ -227,7 +227,7 @@ public class Robot extends LoggedRobot {
 
     shooterSim.setColorSupplier(
         () -> {
-          if (shooter.getSpeedTarget() > 0.5) {
+          if (shooter.getSpeed() > 0.5) {
             return new Color8Bit(Color.kRed);
           }
           return new Color8Bit(Color.kWhite);

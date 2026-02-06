@@ -63,7 +63,7 @@ public class IntakeSimulationIO implements IntakeIO {
   }
 
   // sets the position of the arm.
-  public void setTargetPosition(double position) {
+  public void setPositionControl(double position) {
     double currentAngle = positionMotorsSim.getAngularPositionRotations();
     double inputVoltage = positionPIDController.calculate(currentAngle, position);
     // System.out.println("Input volt: "+inputVoltage+" Target Angle: "+targetAngle);

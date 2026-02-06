@@ -156,3 +156,9 @@ public class Climb extends SubsystemBase {
             (volts) -> climbIO.setRightVoltage(volts.in(Volts)), null, this));
   }
 }
+
+/*
+ * have one command that runs a manual climb
+ * 
+ * have one command that's automatic that runs to a position
+ */

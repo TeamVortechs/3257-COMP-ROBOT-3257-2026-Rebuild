@@ -26,22 +26,8 @@ public class Shooter extends SubsystemBase {
   private DoubleSupplier distanceSupplier;
 
   // just here for the logging
-  @AutoLogOutput private double automaticSpeed = 0;
-  @AutoLogOutput private double scaledAutomaticSpeed = 0;
-  @AutoLogOutput private double automaticSpeedScalar = 1;
 
-  @AutoLogOutput private boolean isManual = true;
-  @AutoLogOutput private double manualSpeed = 0;
 
-  // autologged like this so it can go on our dashboard
-  @AutoLogOutput(key = "Shooter/ShooterTargetSpeed")
-  private double targetSpeed = 0;
-
-  @AutoLogOutput(key = "Shooter/ShooterSpeed")
-  private double speed = 0;
-
-  @AutoLogOutput(key = "Shooter/ShooterIsOnTarget")
-  private boolean isOnTarget = false;
 
   private ShooterIO shooterIO;
   private ShooterIOInputsAutoLogged inputs;
@@ -76,48 +62,33 @@ public class Shooter extends SubsystemBase {
     Logger.processInputs("shooter", inputs);
 
     // calculate speed that automatically updates with distance
-    automaticSpeed = getSpeedFromDistance(distanceSupplier.getAsDouble());
-    scaledAutomaticSpeed = automaticSpeed * automaticSpeedScalar;
 
-    targetSpeed = getSpeedTarget();
-    shooterIO.setSpeed(targetSpeed);
-
-    speed = shooterIO.getSpeed();
-
-    isOnTarget = isOnTarget();
   }
 
   // SUBSYSTEM METHODS
 
-  /**
-   * Sets the robot to use the distance supplier to determine shooting speed, the scalar determines
-   * what scale of automatic speed to use
-   */
-  public void setAutomatic(double scalar) {
-    isManual = false;
-    this.automaticSpeedScalar = scalar;
-  }
+  public void setAutomaticSpeed(double scalar) {
+    double automaticSpeed = getSpeedFromDistance(distanceSupplier.getAsDouble());
+    double automaticSpeedScaled = scalar * automaticSpeed;
+    
 
-  /** Sets the robot to use the distance supplier to determine shooting speed, sclar of 1 */
-  public void setAutomatic() {
-    setAutomatic(1);
+    shooterIO.setSpeed(automaticSpeedScaled);
+
+    Logger.recordOutput("Shooter/AutomaticSpeedScalar", scalar);
+    Logger.recordOutput("Shooter/AutomaticSpeedPreScaled", automaticSpeed);
+    Logger.recordOutput("Shooter/AutomaticSpeedScaled", automaticSpeedScaled);
+    
   }
 
   /**
    * @param speed the speed the flywheel will pid too
    */
   public void setManualSpeed(double speed) {
-    this.isManual = true;
-    this.manualSpeed = speed;
+    shooterIO.setSpeed(speed);
   }
 
-  /**
-   * @return the target speed that the flywheel is pid'ing to. Can be the manual or the automatic
-   *     calculated speed
-   */
-  public double getSpeedTarget() {
-    if (isManual) return manualSpeed;
-    return scaledAutomaticSpeed;
+  public double getSpeed() {
+    return shooterIO.getSpeed();
   }
 
   /**
@@ -149,45 +120,23 @@ public class Shooter extends SubsystemBase {
   }
 
   /**
-   * sets the target speed command then ends when it reaches that speed
-   *
-   * @param speed the speed it gets set to
-   * @return the finished command
-   */
-  public Command setManualSpeedCommandConsistentEnd(double speed) {
-    return new InstantCommand(() -> this.setManualSpeed(speed), this)
-        .andThen(new WaitUntilCommand(() -> this.isOnTarget()));
-  }
-
-  /**
    * returns a command that revs up to shoot at the distance and ends immediately
    *
    * @return
    */
-  public Command setAutomaticCommand() {
-    return new InstantCommand(() -> this.setAutomatic(), this);
-  }
-
   public Command setAutomaticCommandRun() {
-    return Commands.run(() -> this.setAutomatic(), this);
+    return new RunCommand(() -> {
+      setAutomaticSpeed(1);
+    }, this);
   }
 
-  /**
-   * returns a command that revs up to shoot at the distance then ends when it reaches that point
-   *
-   * @return
-   */
-  public Command setAutomaticCommandConsistentEnd() {
-    return new InstantCommand(() -> this.setAutomatic(), this)
-        .andThen(new WaitUntilCommand(() -> this.isOnTarget()));
-  }
 
   public Command automaticallyChargeWhenNeededRunCommand(
       double automaticPercentage, double speedWhenNotInZone) {
     return new RunCommand(
         () -> {
           if (withinAutomaticChargingZone.getAsBoolean()) {
-            setAutomatic(automaticPercentage);
+            setAutomaticSpeed(automaticPercentage);
           } else {
             setManualSpeed(speedWhenNotInZone);
           }

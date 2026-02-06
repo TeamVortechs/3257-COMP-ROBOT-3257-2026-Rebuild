@@ -112,6 +112,12 @@ public class Feeder extends SubsystemBase {
     return Commands.run(() -> this.setPercentMotorOutput(percentage), this);
   }
 
+  /**
+   * feeds when the drive, limelight, and shooter are ontarget
+   * 
+   * @param percentage the percentage of battery to supply to the feeder
+   * @return the command
+   */
   public Command feedWhenValidRunCommand(double percentage) {
     return Commands.run(
         () -> {

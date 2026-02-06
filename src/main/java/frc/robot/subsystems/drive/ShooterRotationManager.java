@@ -9,6 +9,10 @@ import frc.robot.Constants.DriveConstants;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.AutoLogOutput;
 
+
+/**
+ * change this so it only logs hwen it's getting consumed
+ */
 /*
  * THIS CODE IS REALLY BAD, FOR NOW IT'S GONNA STAY LIKE THIS.
  */

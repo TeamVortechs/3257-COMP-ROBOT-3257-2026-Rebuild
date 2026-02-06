@@ -63,24 +63,20 @@ public class Intake extends SubsystemBase {
       targetPosition = IntakeConstants.MIN_POSITION;
     }
 
-    moduleIO.setTargetPosition(targetPosition);
+    moduleIO.setPositionControl(targetPosition);
   }
 
   /** sets the roller motors, -1-1 */
   public void setRollersVoltage(double voltage) {
 
-    // clamp speed to prevent exceeding limits
-    voltage = VortechsUtil.clamp(voltage, Constants.IntakeConstants.MAX_MANUAL_SPEED);
-
     moduleIO.setRollerVoltage(voltage);
   }
 
   /** Holds the current position using braking mode. */
-  public void holdPositionBrake() {
+  public void stop() {
     moduleIO.stop();
   }
 
-  // returns wether or not the elevaotr is on target
   public boolean isOnTarget() {
 
     double diff = Math.abs(moduleIO.getTargetPosition() - moduleIO.getPosition());

@@ -123,7 +123,7 @@ public class IntakeTalonFXIO implements IntakeIO {
   }
 
   // sets the position of the arm.
-  public void setTargetPosition(double position1) { // IMPORTANT - POSITON1 NOT POSITION
+  public void setPositionControl(double position1) { // IMPORTANT - POSITON1 NOT POSITION
     targetPosition = position1;
     // System.out.println("Input volt: "+inputVoltage+" Target Angle: "+targetAngle);
     position.setControl(mVoltageRequest.withPosition(position1));

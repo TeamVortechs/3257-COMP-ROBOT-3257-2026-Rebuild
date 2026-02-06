@@ -85,7 +85,7 @@ public interface IntakeIO {
    *
    * @param position rotations
    */
-  public default void setTargetPosition(double position) {}
+  public default void setPositionControl(double position) {}
 
   /**
    * gets target position of the position motor
