@@ -7,8 +7,6 @@
 
 package frc.robot;
 
-import java.util.function.Supplier;
-
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -16,9 +14,10 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.RobotBase;
 import frc.robot.generated.TunerConstants;
+import java.util.function.Supplier;
 
 /**
  * This class defines the runtime mode used by AdvantageKit. The mode is always "real" when running
@@ -43,6 +42,25 @@ public final class Constants {
 
   public class DriveConstants {
 
+    public static final double transKp = 2;
+    public static final double transKi = 0;
+    public static final double transKd = 0;
+
+    public static final double transTopSpeed = 1.5;
+    public static final double transAccMax = 2;
+
+    // rot const
+    public static final double rotKp = 1.7;
+    public static final double rotKi = 0;
+    public static final double rotKd = 0;
+
+    public static final double rotTopSpeed = 100;
+    public static final double rotAccMax = 110;
+
+    // tolerances
+    public static final double rotationTolerance = 0.1;
+    public static final double translationTolerance = 0.01;
+
     public static final double ORIENTATION_TOLERANCE = .1;
     // the time it takes between feeding and actual robot shoot. This is used to lead the robot
     // pose. Should be about 0.08 - 0.18 s
@@ -61,14 +79,15 @@ public final class Constants {
     public static final Pose2d GOAL_POSE_BLUE = new Pose2d(4.622, 4.03, new Rotation2d());
     public static final Pose2d GOAL_POSE_RED = new Pose2d(11.917, 4.030, new Rotation2d());
 
-    //this is ugly but all it does is return target pose based on the team
-    public static final Supplier<Pose2d> GOAL_POSE = () -> {
-      if(DriverStation.getAlliance().get() == Alliance.Blue) {
-        return GOAL_POSE_BLUE;
-      } else {
-        return GOAL_POSE_RED;
-      } 
-    };
+    // this is ugly but all it does is return target pose based on the team
+    public static final Supplier<Pose2d> GOAL_POSE =
+        () -> {
+          if (DriverStation.getAlliance().get() == Alliance.Blue) {
+            return GOAL_POSE_BLUE;
+          } else {
+            return GOAL_POSE_RED;
+          }
+        };
 
     // the zone where we choose to more agressively charge the shooter
     public static final double X_POSE_TO_CHARGE = 5.5;

@@ -23,6 +23,7 @@ import frc.robot.Constants.FeederConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.commands.DriveCommands;
+import frc.robot.commands.PathfindToPoseCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.belt.Belt;
 import frc.robot.subsystems.belt.BeltIO;
@@ -235,8 +236,6 @@ public class RobotContainer {
                 () -> -controller.getLeftX(),
                 () -> Rotation2d.fromDegrees(45)));
 
-
-
     // Switch to X pattern when X button is pressed
     controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
 
@@ -284,6 +283,8 @@ public class RobotContainer {
     controller.leftBumper().whileTrue(climb.setSpeedsRunCommand(1, 0.5));
 
     controller.a().onTrue(climb.setIsLockedCommand(() -> !climb.isLocked()));
+
+    controller.b().whileTrue(new PathfindToPoseCommand(drive, () -> new Pose2d(), true));
   }
 
   /**
