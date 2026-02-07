@@ -78,6 +78,8 @@ public final class Constants {
     // considered skid
     public static final double SKID_THRESHOLD = 5.0;
 
+    public static final Translation2d CENTER_POINT = new Translation2d(8.27, 4.115);
+
     // find this
     public static final Pose2d GOAL_POSE_BLUE = new Pose2d(4.622, 4.03, new Rotation2d());
     public static final Pose2d GOAL_POSE_RED = new Pose2d(11.917, 4.030, new Rotation2d());
@@ -117,9 +119,7 @@ public final class Constants {
         for (int i = 0; i < PASSING_GOALS_STORAGE.size(); i++) {
           PASSING_GOALS_STORAGE.set(
               i,
-              PASSING_GOALS_STORAGE
-                  .get(i)
-                  .rotateAround(new Translation2d(8.27, 4.115), Rotation2d.fromDegrees(180)));
+              PASSING_GOALS_STORAGE.get(i).rotateAround(CENTER_POINT, Rotation2d.fromDegrees(180)));
         }
         SWICH_PASSING_GOALS = false;
       }
@@ -139,6 +139,7 @@ public final class Constants {
 
     // the zone where we choose to more agressively charge the shooter
     public static final double X_POSE_TO_CHARGE = 5.5;
+    public static final double X_POSE_TO_PASS = 5.5;
 
     public static final double K_JOYSTICK_WHEN_SHOOTING = 0.5;
     public static final double K_JOYSTICK_WHEN_PASSING = 0.5;

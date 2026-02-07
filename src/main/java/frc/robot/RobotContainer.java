@@ -10,20 +10,18 @@ package frc.robot;
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants.BeltConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.FeederConstants;
-import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.PathfindToPoseCommand;
@@ -76,19 +74,13 @@ public class RobotContainer {
   private final CommandXboxController operatorController = new CommandXboxController(1);
 
   // usign this for sys id so it doesn't conflict with anything
+  @SuppressWarnings("unused")
   private final CommandXboxController sysID_contorller = new CommandXboxController(3);
 
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
 
   private static void flipAllPoses() {
-    // System.out.println("flipAllPoses called!");
-    // final List<Pose2d> passing_goals_storage = Constants.DriveConstants.PASSING_GOALS();
-    // for (int i = 0; i < passing_goals_storage.size(); i++) {
-    //     passing_goals_storage.set(i, passing_goals_storage.get(i).rotateAround(new
-    // Translation2d(8.27, 4.115),Rotation2d.fromDegrees(180)));
-    //     System.out.println("  [" + i + "]: " + passing_goals_storage.get(i));
-    // }
     Constants.DriveConstants.SWICH_PASSING_GOALS = true;
     Constants.DriveConstants.PASSING_GOALS();
   }
@@ -163,7 +155,7 @@ public class RobotContainer {
         shooter =
             new Shooter(
                 new ShooterSimulationIO(),
-                () -> drive.getDistanceToGoal(),
+                () -> drive.getDistanceToTarget(),
                 () -> drive.isWithinShooterAutomaticChargingZone());
 
         feeder =
@@ -277,6 +269,7 @@ public class RobotContainer {
 
     climb.setDefaultCommand(climb.setPositionsRunCommand(0, 0));
 
+    @SuppressWarnings("unused")
     Command aimTowardsTargetCommand =
         DriveCommands.joystickDriveAtAngle(
             drive,
@@ -284,6 +277,7 @@ public class RobotContainer {
             () -> -controller.getLeftX() * DriveConstants.K_JOYSTICK_WHEN_SHOOTING,
             () -> drive.getHeadingToGoal());
 
+    @SuppressWarnings("unused")
     Command aimTowardsPassingCommand =
         DriveCommands.joystickDriveAtAngle(
             drive,
@@ -291,22 +285,53 @@ public class RobotContainer {
             () -> -controller.getLeftX() * DriveConstants.K_JOYSTICK_WHEN_PASSING,
             () -> drive.getHeadingToPassing());
 
-    controller.x().whileTrue(aimTowardsPassingCommand);
+    Command shootCommand =
+        Commands.parallel(
+            DriveCommands.joystickDriveAtAngle(
+                drive,
+                () -> -controller.getLeftY() * DriveConstants.K_JOYSTICK_WHEN_SHOOTING,
+                () -> -controller.getLeftX() * DriveConstants.K_JOYSTICK_WHEN_SHOOTING,
+                () -> drive.getHeadingToGoal()),
+            shooter.setAutomaticCommandRun(),
+            feeder.feedWhenValidRunCommand(FeederConstants.FEED_POWER));
+
+    Command
+        passCommand = // messy, cant put aimTowardsPassingCommand in this :( commands that have been
+            // composed can not be put in a composing ocmmand or something
+            Commands.parallel(
+                DriveCommands.joystickDriveAtAngle(
+                    drive,
+                    () -> -controller.getLeftY() * DriveConstants.K_JOYSTICK_WHEN_PASSING,
+                    () -> -controller.getLeftX() * DriveConstants.K_JOYSTICK_WHEN_PASSING,
+                    () -> drive.getHeadingToPassing()),
+                shooter.setAutomaticCommandRun(),
+                feeder.feedWhenValidRunCommand(FeederConstants.FEED_POWER));
+                
     controller.y().toggleOnTrue(drive.iteratePassingCommand(true));
 
-    controller
-        .leftTrigger()
-        .whileTrue(
-            Commands.parallel(
-                aimTowardsTargetCommand,
-                shooter.setAutomaticCommandRun(),
-                feeder.feedWhenValidRunCommand(FeederConstants.FEED_POWER)));
+    controller.leftTrigger().whileTrue(shootCommand);
 
     controller
         .rightTrigger()
         .whileTrue(
-            intake.setRollerVoltageAndPositionCommand(
-                IntakeConstants.INTAKE_POSITION, IntakeConstants.INTAKE_SPEED));
+            new ConditionalCommand(
+                Commands.parallel(
+                    DriveCommands.joystickDriveAtAngle(
+                        drive,
+                        () -> -controller.getLeftY() * DriveConstants.K_JOYSTICK_WHEN_SHOOTING,
+                        () -> -controller.getLeftX() * DriveConstants.K_JOYSTICK_WHEN_SHOOTING,
+                        () -> drive.getHeadingToGoal()),
+                    shooter.setAutomaticCommandRun(),
+                    feeder.feedWhenValidRunCommand(FeederConstants.FEED_POWER)),
+                Commands.parallel(
+                    DriveCommands.joystickDriveAtAngle(
+                        drive,
+                        () -> -controller.getLeftY() * DriveConstants.K_JOYSTICK_WHEN_PASSING,
+                        () -> -controller.getLeftX() * DriveConstants.K_JOYSTICK_WHEN_PASSING,
+                        () -> drive.getHeadingToPassing()),
+                    shooter.setAutomaticCommandRun(),
+                    feeder.feedWhenValidRunCommand(FeederConstants.FEED_POWER)),
+                () -> !drive.isWithinPassingZone()));
 
     controller.leftBumper().whileTrue(climb.setSpeedsRunCommand(1, 0.5));
 
@@ -316,6 +341,7 @@ public class RobotContainer {
 
     operatorController.rightBumper().toggleOnTrue(drive.iteratePassingCommand(true));
     operatorController.leftBumper().toggleOnTrue(drive.iteratePassingCommand(false));
+    operatorController.rightTrigger().whileTrue(Commands.parallel());
   }
 
   /**

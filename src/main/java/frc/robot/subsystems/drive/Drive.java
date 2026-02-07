@@ -97,6 +97,10 @@ public class Drive extends SubsystemBase {
     return shooterRotationManager.getDistance();
   }
 
+  public double getDistanceToTarget() {
+    return shooterRotationManager.getDistance();
+  }
+
   /**
    * @return wether or not the shooter is pointing towards the goal within tolerance
    */
@@ -136,9 +140,29 @@ public class Drive extends SubsystemBase {
    */
   @AutoLogOutput
   public boolean isWithinShooterAutomaticChargingZone() {
-    double xPose = getPose().getX();
+    return isWithinZone(DriveConstants.X_POSE_TO_CHARGE, false);
+  }
 
-    return xPose < DriveConstants.X_POSE_TO_CHARGE;
+  @AutoLogOutput
+  public boolean isWithinPassingZone() {
+    return isWithinZone(DriveConstants.X_POSE_TO_PASS, true);
+  }
+
+  private boolean isWithinZone(double x, boolean wantsCenter) {
+    double xPose = getPose().getX();
+    if (DriverStation.getAlliance().get() == Alliance.Blue) {
+      if (!wantsCenter) {
+        return xPose < x;
+      } else {
+        return xPose > x;
+      }
+    } else {
+      if (!wantsCenter) {
+        return xPose > (2 * DriveConstants.CENTER_POINT.getX() - x);
+      } else {
+        return xPose < (2 * DriveConstants.CENTER_POINT.getX() - x);
+      }
+    }
   }
 
   public Command iteratePassingCommand(boolean forward) {
