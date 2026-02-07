@@ -1,5 +1,6 @@
 package frc.robot.subsystems.drive;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -61,6 +62,14 @@ public class ShooterRotationManager {
     return distance;
   }
 
+  public double getRotationFeedbackOverride() {
+    PIDController thetaController = new PIDController(1.0, 0, 0); // dummy pid loop for theta
+    double targetRadians = this.getHeading().getRadians();
+    double currentRadians = drive.getPose().getRotation().getRadians();
+
+    double rotationSpeed = thetaController.calculate(currentRadians, targetRadians);
+    return rotationSpeed;
+  }
   /**
    * Get the heading from robot pose to target pose(FIELD CENTRIC)
    *

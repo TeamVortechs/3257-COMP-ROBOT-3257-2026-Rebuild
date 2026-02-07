@@ -38,6 +38,7 @@ import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
@@ -138,6 +139,18 @@ public class Drive extends SubsystemBase {
     shooterRotationManager.periodic();
   }
 
+  public Command overrideRotationCommand() {
+    return new InstantCommand(() -> overrideRotationFeedback());
+  }
+
+  public Command removeRotationOverrideCommand() {
+    return new InstantCommand(() -> PPHolonomicDriveController.clearFeedbackOverrides());
+  }
+
+  private void overrideRotationFeedback() {
+    PPHolonomicDriveController.overrideRotationFeedback(
+        () -> shooterRotationManager.getRotationFeedbackOverride());
+  }
   // TunerConstants doesn't include these constants, so they are declared locally
 
   // PathPlanner config constants

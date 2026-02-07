@@ -58,8 +58,6 @@ public class Feeder extends SubsystemBase {
     Logger.processInputs("feeder", inputs);
 
     calculateValidityToFeed();
-
-    
   }
 
   // SUBSYSTEM METHODS
@@ -132,12 +130,9 @@ public class Feeder extends SubsystemBase {
         this);
   }
 
-
-  /**
-   * can swap this for the other command in auto
-   */
+  /** can swap this for the other command in auto */
   public Command feedWhenShooterIsRevvedCommand(double percentage) {
-        return Commands.run(
+    return Commands.run(
         () -> {
           if (shooterOnVelocity.getAsBoolean()) {
             this.setPercentMotorOutput(percentage);
