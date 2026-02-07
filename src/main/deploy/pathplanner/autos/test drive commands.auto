@@ -5,9 +5,21 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "driveOverrideRotation"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "test drive named commands"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "driveResetOverrides"
           }
         }
       ]

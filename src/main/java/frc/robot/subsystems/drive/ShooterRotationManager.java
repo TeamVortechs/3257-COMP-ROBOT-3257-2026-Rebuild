@@ -62,13 +62,15 @@ public class ShooterRotationManager {
     return distance;
   }
 
+  PIDController thetaController = new PIDController(5.0, 0, 0); // dummy pid loop for theta
+
   public double getRotationFeedbackOverride() {
-    PIDController thetaController = new PIDController(1.0, 0, 0); // dummy pid loop for theta
     double targetRadians = this.getHeading().getRadians();
     double currentRadians = drive.getPose().getRotation().getRadians();
 
     double rotationSpeed = thetaController.calculate(currentRadians, targetRadians);
     return rotationSpeed;
+    // return .1;
   }
   /**
    * Get the heading from robot pose to target pose(FIELD CENTRIC)

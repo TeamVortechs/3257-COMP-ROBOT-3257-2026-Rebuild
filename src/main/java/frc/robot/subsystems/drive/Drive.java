@@ -140,16 +140,20 @@ public class Drive extends SubsystemBase {
   }
 
   public Command overrideRotationCommand() {
+    System.out.println("override rotation command");
     return new InstantCommand(() -> overrideRotationFeedback());
   }
 
   public Command removeRotationOverrideCommand() {
+    System.out.println("reset rotation command");
     return new InstantCommand(() -> PPHolonomicDriveController.clearFeedbackOverrides());
   }
 
   private void overrideRotationFeedback() {
     PPHolonomicDriveController.overrideRotationFeedback(
-        () -> shooterRotationManager.getRotationFeedbackOverride());
+        () -> 100.0
+        // shooterRotationManager.getRotationFeedbackOverride()
+        );
   }
   // TunerConstants doesn't include these constants, so they are declared locally
 
@@ -209,14 +213,16 @@ public class Drive extends SubsystemBase {
     // Start odometry thread
     PhoenixOdometryThread.getInstance().start();
 
+    PPHolonomicDriveController pathplannerController =
+        new PPHolonomicDriveController(
+            new PIDConstants(5.0, 0.0, 0.0), new PIDConstants(7, 0.0, 0.0));
     // Configure AutoBuilder for PathPlanner
     AutoBuilder.configure(
         this::getPose,
         this::setPose,
         this::getChassisSpeeds,
         this::runVelocity,
-        new PPHolonomicDriveController(
-            new PIDConstants(5.0, 0.0, 0.0), new PIDConstants(7, 0.0, 0.0)),
+        pathplannerController,
         PP_CONFIG,
         () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
         this);
