@@ -12,6 +12,7 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.events.EventTrigger;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -353,14 +354,16 @@ public class RobotContainer {
     boolean isReal = true;
     // if (Constants.currentMode == Mode.SIM) isReal = false;
 
-    addNamedCommand("climb", climb.setPositionsRunCommand(Constants.ClimbConstants.MAX_POSITION_LEFT, Constants.ClimbConstants.MAX_POSITION_RIGHT), isReal);
-    addNamedCommand("unclimb", climb.setPositionsRunCommand(0, 0), isReal);
-    addNamedCommand("start intake", intake.setSpeedAndPositionCommand(Constants.IntakeConstants.INTAKE_POSITION, Constants.IntakeConstants.INTAKE_SPEED), isReal);
-    addNamedCommand("stop intake", intake.setSpeedAndPositionCommand(Constants.IntakeConstants.MAX_POSITION, 0), isReal);
-    addNamedCommand("shoot", shooter.setAutomaticCommand(), isReal);
-    addNamedCommand("unshoot", shooter.setManualSpeedCommandConsistentEnd(0), isReal);
-    addNamedCommand("feeder", feeder.setSpeedCommandConsistentEnd(Constants.FeederConstants.FEED_POWER), isReal);
-    addNamedCommand("unfeeder", feeder.setSpeedCommandConsistentEnd(0), isReal);
+    //feed commands
+    addNamedCommand("feedStart", feeder.setPercentMotorRunCommand(FeederConstants.FEED_POWER), isReal);
+    addNamedCommand("feedWhenValid", feeder.feedWhenValidRunCommand(FeederConstants.FEED_POWER), isReal);
+    addNamedCommand("feedStop", feeder.setPercentMotorRunCommand(0), isReal);
+
+    addNamedCommand("beltStart", belt.setPercentMotorOutputRunCommand(BeltConstants.FEED_POWER), isReal);
+    addNamedCommand("beltStop", belt.setPercentMotorOutputRunCommand(0), isReal);
+
+    addNamedCommand("intakeStart", intake.setRollerVoltageAndPositionCommand(IntakeConstants.INTAKE_POSITION, IntakeConstants.INTAKE_SPEED), isReal);
+    addNamedCommand("intakeStop", intake.setRollerVoltageAndPositionCommand(0, 0), isReal);
   }
  
   public void addNamedCommand(String commandName, Command command, boolean isReal) {
