@@ -10,6 +10,8 @@ package frc.robot;
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -290,6 +292,7 @@ public class RobotContainer {
             () -> drive.getHeadingToPassing());
 
     controller.x().whileTrue(aimTowardsPassingCommand);
+    controller.y().toggleOnTrue(drive.iteratePassingCommand(true));
 
     controller
         .leftTrigger()

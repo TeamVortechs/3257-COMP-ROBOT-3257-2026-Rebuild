@@ -85,7 +85,7 @@ public final class Constants {
     private static List<Pose2d> PASSING_GOALS_STORAGE = null;
     private static List<String> PASSING_GOALS_NAME_STORAGE = null;
 
-    public static boolean SWICH_PASSING_GOALS = false;
+    public static boolean SWICH_PASSING_GOALS = true;
 
     public static final List<String> PASSING_GOALS_NAMES() {
 
@@ -121,7 +121,7 @@ public final class Constants {
                   .get(i)
                   .rotateAround(new Translation2d(8.27, 4.115), Rotation2d.fromDegrees(180)));
         }
-        SWICH_PASSING_GOALS = true;
+        SWICH_PASSING_GOALS = false;
       }
 
       return PASSING_GOALS_STORAGE;
