@@ -10,9 +10,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;
-import frc.robot.util.VortechsUtil;
 import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.Logger;
 

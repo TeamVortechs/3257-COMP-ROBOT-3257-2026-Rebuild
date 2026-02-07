@@ -114,7 +114,7 @@ public class Feeder extends SubsystemBase {
 
   /**
    * feeds when the drive, limelight, and shooter are ontarget
-   * 
+   *
    * @param percentage the percentage of battery to supply to the feeder
    * @return the command
    */

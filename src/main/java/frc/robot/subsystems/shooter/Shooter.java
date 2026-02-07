@@ -10,12 +10,10 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.ShooterConstants;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
-import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 public class Shooter extends SubsystemBase {
@@ -26,8 +24,6 @@ public class Shooter extends SubsystemBase {
   private DoubleSupplier distanceSupplier;
 
   // just here for the logging
-
-
 
   private ShooterIO shooterIO;
   private ShooterIOInputsAutoLogged inputs;
@@ -70,14 +66,12 @@ public class Shooter extends SubsystemBase {
   public void setAutomaticSpeed(double scalar) {
     double automaticSpeed = getSpeedFromDistance(distanceSupplier.getAsDouble());
     double automaticSpeedScaled = scalar * automaticSpeed;
-    
 
     shooterIO.setSpeed(automaticSpeedScaled);
 
     Logger.recordOutput("Shooter/AutomaticSpeedScalar", scalar);
     Logger.recordOutput("Shooter/AutomaticSpeedPreScaled", automaticSpeed);
     Logger.recordOutput("Shooter/AutomaticSpeedScaled", automaticSpeedScaled);
-    
   }
 
   /**
@@ -125,11 +119,12 @@ public class Shooter extends SubsystemBase {
    * @return
    */
   public Command setAutomaticCommandRun() {
-    return new RunCommand(() -> {
-      setAutomaticSpeed(1);
-    }, this);
+    return new RunCommand(
+        () -> {
+          setAutomaticSpeed(1);
+        },
+        this);
   }
-
 
   public Command automaticallyChargeWhenNeededRunCommand(
       double automaticPercentage, double speedWhenNotInZone) {
