@@ -44,7 +44,6 @@ import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.Mode;
 import frc.robot.generated.TunerConstants;
-import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.util.LocalADStarAK;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -87,14 +86,14 @@ public class Drive extends SubsystemBase {
    */
   public double getDistanceToGoal() {
 
-    //makes the goal pose manager switch to the shooter setting
+    // makes the goal pose manager switch to the shooter setting
     goalPoseManager.setIsPassing(false);
     return shooterRotationManager.getDistance();
   }
 
   public double getDistanceToPassing() {
     ///
-        goalPoseManager.setIsPassing(true);
+    goalPoseManager.setIsPassing(true);
     return shooterRotationManager.getDistance();
   }
 

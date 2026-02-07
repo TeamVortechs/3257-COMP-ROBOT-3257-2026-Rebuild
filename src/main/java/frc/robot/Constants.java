@@ -114,10 +114,14 @@ public final class Constants {
       // double x;
       // double y;
       if (SWICH_PASSING_GOALS) {
-      for (int i = 0; i < PASSING_GOALS_STORAGE.size(); i++) {
-        PASSING_GOALS_STORAGE.set(i, PASSING_GOALS_STORAGE.get(i).rotateAround(new Translation2d(8.27, 4.115),Rotation2d.fromDegrees(180)));
-      }
-      SWICH_PASSING_GOALS = true;
+        for (int i = 0; i < PASSING_GOALS_STORAGE.size(); i++) {
+          PASSING_GOALS_STORAGE.set(
+              i,
+              PASSING_GOALS_STORAGE
+                  .get(i)
+                  .rotateAround(new Translation2d(8.27, 4.115), Rotation2d.fromDegrees(180)));
+        }
+        SWICH_PASSING_GOALS = true;
       }
 
       return PASSING_GOALS_STORAGE;
@@ -137,6 +141,7 @@ public final class Constants {
     public static final double X_POSE_TO_CHARGE = 5.5;
 
     public static final double K_JOYSTICK_WHEN_SHOOTING = 0.5;
+    public static final double K_JOYSTICK_WHEN_PASSING = 0.5;
 
     // from our library
     public static final double ODOMETRY_FREQUENCY =

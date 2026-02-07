@@ -10,7 +10,6 @@ package frc.robot;
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -48,10 +47,6 @@ import frc.robot.subsystems.intake.IntakeSimulationIO;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterIO;
 import frc.robot.subsystems.shooter.ShooterSimulationIO;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -88,13 +83,12 @@ public class RobotContainer {
     // System.out.println("flipAllPoses called!");
     // final List<Pose2d> passing_goals_storage = Constants.DriveConstants.PASSING_GOALS();
     // for (int i = 0; i < passing_goals_storage.size(); i++) {
-    //     passing_goals_storage.set(i, passing_goals_storage.get(i).rotateAround(new Translation2d(8.27, 4.115),Rotation2d.fromDegrees(180)));
+    //     passing_goals_storage.set(i, passing_goals_storage.get(i).rotateAround(new
+    // Translation2d(8.27, 4.115),Rotation2d.fromDegrees(180)));
     //     System.out.println("  [" + i + "]: " + passing_goals_storage.get(i));
     // }
     Constants.DriveConstants.SWICH_PASSING_GOALS = true;
     Constants.DriveConstants.PASSING_GOALS();
-
-
   }
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -287,6 +281,15 @@ public class RobotContainer {
             () -> -controller.getLeftY() * DriveConstants.K_JOYSTICK_WHEN_SHOOTING,
             () -> -controller.getLeftX() * DriveConstants.K_JOYSTICK_WHEN_SHOOTING,
             () -> drive.getHeadingToGoal());
+
+    Command aimTowardsPassingCommand =
+        DriveCommands.joystickDriveAtAngle(
+            drive,
+            () -> -controller.getLeftY() * DriveConstants.K_JOYSTICK_WHEN_PASSING,
+            () -> -controller.getLeftX() * DriveConstants.K_JOYSTICK_WHEN_PASSING,
+            () -> drive.getHeadingToPassing());
+
+    controller.x().whileTrue(aimTowardsPassingCommand);
 
     controller
         .leftTrigger()
