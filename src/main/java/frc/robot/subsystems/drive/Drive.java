@@ -44,6 +44,7 @@ import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.Mode;
 import frc.robot.generated.TunerConstants;
+import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.util.LocalADStarAK;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -72,6 +73,12 @@ public class Drive extends SubsystemBase {
    *     can use the joystick drive command from drive commands compensates for robot movement
    */
   public Rotation2d getHeadingToGoal() {
+    goalPoseManager.setIsPassing(false);
+    return shooterRotationManager.getHeading();
+  }
+
+  public Rotation2d getHeadingToPassing() {
+    goalPoseManager.setIsPassing(true);
     return shooterRotationManager.getHeading();
   }
 
@@ -79,6 +86,15 @@ public class Drive extends SubsystemBase {
    * @return the distance from the robot to the goal
    */
   public double getDistanceToGoal() {
+
+    //makes the goal pose manager switch to the shooter setting
+    goalPoseManager.setIsPassing(false);
+    return shooterRotationManager.getDistance();
+  }
+
+  public double getDistanceToPassing() {
+    ///
+        goalPoseManager.setIsPassing(true);
     return shooterRotationManager.getDistance();
   }
 
@@ -236,7 +252,7 @@ public class Drive extends SubsystemBase {
 
     goalPoseManager = new GoalPoseManager();
     shooterRotationManager =
-        new ShooterRotationManager(() -> goalPoseManager.getTargetPose(false), this);
+        new ShooterRotationManager(() -> goalPoseManager.getTargetPose(), this);
     accelerometer = new BuiltInAccelerometer();
   }
 

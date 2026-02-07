@@ -10,6 +10,8 @@ public class GoalPoseManager {
   private int indexOfPassingPose;
   private int maxIndexOfPassingPose = DriveConstants.PASSING_GOALS().size();
 
+  private boolean isPassing = false;
+
   // operations
   public void iteratePassingPose(boolean forwards) {
 
@@ -30,8 +32,7 @@ public class GoalPoseManager {
 
   public void periodic() {
     Logger.recordOutput("GoalPoseManager/PassingPoseName", getPassingPoseName());
-    Logger.recordOutput("GoalPoseManager/targetPoseShooting", getTargetPose(false));
-    Logger.recordOutput("GoalPoseManager/targetPosePassing", getTargetPose(true));
+    Logger.recordOutput("GoalPoseManager/targetPose", getTargetPose());
   }
 
   // getters
@@ -39,13 +40,17 @@ public class GoalPoseManager {
     return DriveConstants.PASSING_GOALS_NAMES().get(indexOfPassingPose);
   }
 
-  public Pose2d getTargetPose(boolean isPassing) {
+  public Pose2d getTargetPose() {
 
     if (isPassing) {
       return DriveConstants.PASSING_GOALS().get(indexOfPassingPose);
     } else {
       return DriveConstants.GOAL_POSE.get();
     }
+  }
+
+  public void setIsPassing(boolean isPassing) {
+    this.isPassing = isPassing;
   }
 
   // commands

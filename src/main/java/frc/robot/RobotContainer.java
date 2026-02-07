@@ -91,7 +91,7 @@ public class RobotContainer {
     //     passing_goals_storage.set(i, passing_goals_storage.get(i).rotateAround(new Translation2d(8.27, 4.115),Rotation2d.fromDegrees(180)));
     //     System.out.println("  [" + i + "]: " + passing_goals_storage.get(i));
     // }
-    Constants.DriveConstants.spin = true;
+    Constants.DriveConstants.SWICH_PASSING_GOALS = true;
     Constants.DriveConstants.PASSING_GOALS();
 
 

@@ -82,30 +82,30 @@ public final class Constants {
     public static final Pose2d GOAL_POSE_BLUE = new Pose2d(4.622, 4.03, new Rotation2d());
     public static final Pose2d GOAL_POSE_RED = new Pose2d(11.917, 4.030, new Rotation2d());
 
-    private static List<Pose2d> passing_goals_storage = null;
-    private static List<String> passing_goals_name_storage = null;
+    private static List<Pose2d> PASSING_GOALS_STORAGE = null;
+    private static List<String> PASSING_GOALS_NAME_STORAGE = null;
 
-    public static boolean spin = false;
+    public static boolean SWICH_PASSING_GOALS = false;
 
     public static final List<String> PASSING_GOALS_NAMES() {
 
-      if (passing_goals_name_storage == null) {
-        passing_goals_name_storage = new ArrayList<>();
-        passing_goals_name_storage.add("pose 1");
-        passing_goals_name_storage.add("pose 2");
-        passing_goals_name_storage.add("pose_3");
+      if (PASSING_GOALS_NAME_STORAGE == null) {
+        PASSING_GOALS_NAME_STORAGE = new ArrayList<>();
+        PASSING_GOALS_NAME_STORAGE.add("pose 1");
+        PASSING_GOALS_NAME_STORAGE.add("pose 2");
+        PASSING_GOALS_NAME_STORAGE.add("pose_3");
       }
 
-      return passing_goals_name_storage;
+      return PASSING_GOALS_NAME_STORAGE;
     }
 
     public static final List<Pose2d> PASSING_GOALS() {
 
-      if (passing_goals_storage == null) {
-        passing_goals_storage = new ArrayList<>();
-        passing_goals_storage.add(new Pose2d());
-        passing_goals_storage.add(new Pose2d(1, 1, new Rotation2d()));
-        passing_goals_storage.add(new Pose2d(2, 2, new Rotation2d()));
+      if (PASSING_GOALS_STORAGE == null) {
+        PASSING_GOALS_STORAGE = new ArrayList<>();
+        PASSING_GOALS_STORAGE.add(new Pose2d());
+        PASSING_GOALS_STORAGE.add(new Pose2d(1, 1, new Rotation2d()));
+        PASSING_GOALS_STORAGE.add(new Pose2d(2, 2, new Rotation2d()));
       }
 
       // add flip logic here
@@ -113,14 +113,14 @@ public final class Constants {
       // double yToFlip = 5;
       // double x;
       // double y;
-      if (spin) {
-      for (int i = 0; i < passing_goals_storage.size(); i++) {
-        passing_goals_storage.set(i, passing_goals_storage.get(i).rotateAround(new Translation2d(8.27, 4.115),Rotation2d.fromDegrees(180)));
+      if (SWICH_PASSING_GOALS) {
+      for (int i = 0; i < PASSING_GOALS_STORAGE.size(); i++) {
+        PASSING_GOALS_STORAGE.set(i, PASSING_GOALS_STORAGE.get(i).rotateAround(new Translation2d(8.27, 4.115),Rotation2d.fromDegrees(180)));
       }
-      spin = true;
+      SWICH_PASSING_GOALS = true;
       }
 
-      return passing_goals_storage;
+      return PASSING_GOALS_STORAGE;
     }
 
     // this is ugly but all it does is return target pose based on the team
