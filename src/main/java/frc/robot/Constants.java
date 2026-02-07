@@ -13,6 +13,7 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -84,6 +85,8 @@ public final class Constants {
     private static List<Pose2d> passing_goals_storage = null;
     private static List<String> passing_goals_name_storage = null;
 
+    public static boolean spin = false;
+
     public static final List<String> PASSING_GOALS_NAMES() {
 
       if (passing_goals_name_storage == null) {
@@ -106,16 +109,15 @@ public final class Constants {
       }
 
       // add flip logic here
-      double xToFlip = 5;
-      double yToFlip = 5;
-      double x;
-      double y;
-      if (DriverStation.getAlliance().get() == Alliance.Blue) {
-        x = 2 * 8.5 - xToFlip;
-        y = 2 * 4 - yToFlip;
-      } else {
-        x = xToFlip;
-        y = yToFlip;
+      // double xToFlip = 5;
+      // double yToFlip = 5;
+      // double x;
+      // double y;
+      if (spin) {
+      for (int i = 0; i < passing_goals_storage.size(); i++) {
+        passing_goals_storage.set(i, passing_goals_storage.get(i).rotateAround(new Translation2d(8.27, 4.115),Rotation2d.fromDegrees(180)));
+      }
+      spin = true;
       }
 
       return passing_goals_storage;

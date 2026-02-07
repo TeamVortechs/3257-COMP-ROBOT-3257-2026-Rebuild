@@ -10,8 +10,10 @@ package frc.robot;
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -46,6 +48,10 @@ import frc.robot.subsystems.intake.IntakeSimulationIO;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterIO;
 import frc.robot.subsystems.shooter.ShooterSimulationIO;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -77,6 +83,19 @@ public class RobotContainer {
 
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
+
+  private static void flipAllPoses() {
+    // System.out.println("flipAllPoses called!");
+    // final List<Pose2d> passing_goals_storage = Constants.DriveConstants.PASSING_GOALS();
+    // for (int i = 0; i < passing_goals_storage.size(); i++) {
+    //     passing_goals_storage.set(i, passing_goals_storage.get(i).rotateAround(new Translation2d(8.27, 4.115),Rotation2d.fromDegrees(180)));
+    //     System.out.println("  [" + i + "]: " + passing_goals_storage.get(i));
+    // }
+    Constants.DriveConstants.spin = true;
+    Constants.DriveConstants.PASSING_GOALS();
+
+
+  }
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -188,6 +207,8 @@ public class RobotContainer {
 
         break;
     }
+
+    SmartDashboard.putData("Flip Poses", Commands.runOnce(() -> flipAllPoses()));
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
