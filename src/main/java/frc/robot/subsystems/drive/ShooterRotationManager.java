@@ -25,6 +25,7 @@ public class ShooterRotationManager {
   @AutoLogOutput private boolean onTarget = false;
   @AutoLogOutput private Pose2d unFilteredTargetPose = new Pose2d();
   @AutoLogOutput private Pose2d unFilteredCurrentPose = new Pose2d();
+  private PIDController thetaController; // dummy pid loop for theta
 
   /**
    * @param targetPose the pose of the area we want to shoot too
@@ -33,6 +34,9 @@ public class ShooterRotationManager {
   public ShooterRotationManager(Supplier<Pose2d> targetPose, Drive drive) {
     this.targetPose = targetPose;
     this.drive = drive;
+
+    thetaController = new PIDController(5.0, 0, 0);
+    thetaController.enableContinuousInput(-Math.PI, Math.PI);
   }
 
   // logs all of the values from this.
@@ -62,9 +66,8 @@ public class ShooterRotationManager {
     return distance;
   }
 
-  PIDController thetaController = new PIDController(5.0, 0, 0); // dummy pid loop for theta
-
   public double getRotationFeedbackOverride() {
+
     double targetRadians = this.getHeading().getRadians();
     double currentRadians = drive.getPose().getRotation().getRadians();
 

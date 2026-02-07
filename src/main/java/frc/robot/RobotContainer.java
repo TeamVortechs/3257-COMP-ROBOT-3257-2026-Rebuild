@@ -10,6 +10,7 @@ package frc.robot;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.events.EventTrigger;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -369,15 +370,20 @@ public class RobotContainer {
     addNamedCommand("shooterAutomatic", shooter.setAutomaticCommandRun(), isReal);
 
     addNamedCommand("driveOverrideRotation", drive.overrideRotationCommand(), isReal);
+    // new EventTrigger("driveOverrideRotation").onTrue(drive.overrideRotationCommand());
+
     addNamedCommand("driveResetOverrides", drive.removeRotationOverrideCommand(), isReal);
+    // new EventTrigger("driveResetOverrides").onTrue(drive.removeRotationOverrideCommand());
   }
 
   public void addNamedCommand(String commandName, Command command, boolean isReal) {
 
     if (isReal) {
       NamedCommands.registerCommand(
-          commandName, command.andThen(new TellCommand("just ran " + commandName)));
-      //   new EventTrigger(commandName).onTrue(command);
+          // commandName, command.andThen(new TellCommand("just ran " + commandName)));
+          commandName, command);
+
+      new EventTrigger(commandName + "Event").onTrue(command);
     } else {
       // registers the named commands to print something out instead of actually running anything
       NamedCommands.registerCommand(

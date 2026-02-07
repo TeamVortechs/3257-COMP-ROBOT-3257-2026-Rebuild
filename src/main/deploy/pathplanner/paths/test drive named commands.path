@@ -8,8 +8,56 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.25,
-        "y": 7.0
+        "x": 1.8426699022375408,
+        "y": 7.1942864903642425
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 6.452754919499106,
+        "y": 3.0371377459749542
+      },
+      "prevControl": {
+        "x": 7.751977229724552,
+        "y": 3.398032832148689
+      },
+      "nextControl": {
+        "x": 4.7004114490161,
+        "y": 2.5503756708407868
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 5.949767441860465,
+        "y": 7.320644007155635
+      },
+      "prevControl": {
+        "x": 7.914159167399885,
+        "y": 7.573205837512778
+      },
+      "nextControl": {
+        "x": 3.9853757163210473,
+        "y": 7.068082176798492
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 3.4510554561717353,
+        "y": 3.7186046511627904
+      },
+      "prevControl": {
+        "x": 2.133699740276807,
+        "y": 4.17681533495233
+      },
+      "nextControl": {
+        "x": 6.809713774597495,
+        "y": 2.5503756708407863
       },
       "isLocked": false,
       "linkedName": null
@@ -33,26 +81,16 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "driveOverrideRotation",
-      "waypointRelativePos": 0.0850340136054422,
+      "name": "driveOverrideRotationEvent",
+      "waypointRelativePos": 0.32380952380952377,
       "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "driveOverrideRotation"
-        }
-      }
+      "command": null
     },
     {
-      "name": "driveResetOverrides",
-      "waypointRelativePos": 0.8979591836734685,
+      "name": "driveResetOverridesEvent",
+      "waypointRelativePos": 3.5333333333333288,
       "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "driveResetOverrides"
-        }
-      }
+      "command": null
     }
   ],
   "globalConstraints": {

@@ -140,7 +140,7 @@ public class Drive extends SubsystemBase {
   }
 
   public Command overrideRotationCommand() {
-    System.out.println("override rotation command");
+    // System.out.println("override rotation command");
     return new InstantCommand(() -> overrideRotationFeedback());
   }
 
@@ -150,10 +150,12 @@ public class Drive extends SubsystemBase {
   }
 
   private void overrideRotationFeedback() {
+    System.out.println("override rotation command");
+
     PPHolonomicDriveController.overrideRotationFeedback(
-        () -> 100.0
-        // shooterRotationManager.getRotationFeedbackOverride()
-        );
+        () ->
+            // 100.0
+            shooterRotationManager.getRotationFeedbackOverride());
   }
   // TunerConstants doesn't include these constants, so they are declared locally
 
