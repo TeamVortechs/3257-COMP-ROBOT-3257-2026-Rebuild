@@ -364,6 +364,10 @@ public class RobotContainer {
 
     addNamedCommand("intakeStart", intake.setRollerVoltageAndPositionCommand(IntakeConstants.INTAKE_POSITION, IntakeConstants.INTAKE_SPEED), isReal);
     addNamedCommand("intakeStop", intake.setRollerVoltageAndPositionCommand(0, 0), isReal);
+
+    addNamedCommand("shooterStop", shooter.setManualSpeedRunCommand(0), isReal);
+    addNamedCommand("shooterPreset1", shooter.setManualSpeedRunCommand(1), isReal);
+    addNamedCommand("shooterAutomatic", shooter.setAutomaticCommandRun(), isReal);
   }
  
   public void addNamedCommand(String commandName, Command command, boolean isReal) {
