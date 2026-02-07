@@ -171,13 +171,6 @@ public final class Constants {
     public static final double DYNAMIC_STEP_VOLTS_SYSID = 1;
     public static final double POSITION_TOLERANCE = 0.1;
 
-    // CHANGE !!
-    public static final double KS = 0.1;
-    public static final double KV = 0.12;
-    public static final double KP = 0.11;
-    public static final double KI = 0;
-    public static final double KD = 0;
-
     // not real
     public static final int MOTOR_ID = 0;
 
@@ -189,11 +182,6 @@ public final class Constants {
     static {
       SLOT0CONFIGS = new Slot0Configs();
       CONFIG = new TalonFXConfiguration();
-      SLOT0CONFIGS.kS = Constants.FeederConstants.KS;
-      SLOT0CONFIGS.kV = Constants.FeederConstants.KV;
-      SLOT0CONFIGS.kP = Constants.FeederConstants.KP;
-      SLOT0CONFIGS.kI = Constants.FeederConstants.KI;
-      SLOT0CONFIGS.kD = Constants.FeederConstants.KD;
 
       CONFIG.MotorOutput.NeutralMode = NeutralModeValue.Brake;
       CONFIG.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
@@ -310,18 +298,23 @@ public final class Constants {
     // lower cus this has hardstops
     public static final double RAMP_RATE_VOLTS_POSITION_SYSID = 0.1;
     public static final double DYNAMIC_STEP_VOLTS_POSITION_SYSID = 0.25;
-    public static final TalonFXConfiguration CONFIG;
+    public static final TalonFXConfiguration ROLLER_CONFIG;
     public static final Slot0Configs SLOT0CONFIGS;
 
     static {
-      CONFIG = new TalonFXConfiguration();
-      SLOT0CONFIGS = CONFIG.Slot0;
+      SLOT0CONFIGS = new Slot0Configs();
       SLOT0CONFIGS.kS = Constants.IntakeConstants.KS;
       SLOT0CONFIGS.kV = Constants.IntakeConstants.KV;
       SLOT0CONFIGS.kA = Constants.IntakeConstants.KA;
       SLOT0CONFIGS.kP = Constants.IntakeConstants.KP;
       SLOT0CONFIGS.kI = Constants.IntakeConstants.KI;
       SLOT0CONFIGS.kD = Constants.IntakeConstants.KD;
+
+      ROLLER_CONFIG = new TalonFXConfiguration();
+      ROLLER_CONFIG.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+      ROLLER_CONFIG.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+      ROLLER_CONFIG.CurrentLimits.SupplyCurrentLimit = Constants.ClimbConstants.CURRENT_LIMIT;
+      ROLLER_CONFIG.CurrentLimits.SupplyCurrentLimitEnable = true;
     }
   }
 }

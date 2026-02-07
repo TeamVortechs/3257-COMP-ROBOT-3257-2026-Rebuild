@@ -2,7 +2,6 @@ package frc.robot.subsystems.intake;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
-import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -35,8 +34,7 @@ public class IntakeTalonFXOnlyRollerIO implements IntakeIO {
     roller = new TalonFX(canIdRoller);
 
     // Basic Configuration
-    TalonFXConfiguration config = Constants.IntakeConstants.CONFIG;
-    Slot0Configs slot0Configs = Constants.IntakeConstants.SLOT0CONFIGS;
+    TalonFXConfiguration config = Constants.IntakeConstants.ROLLER_CONFIG;
 
     var motionMagicConfigs = config.MotionMagic;
     motionMagicConfigs.MotionMagicCruiseVelocity =
@@ -46,7 +44,6 @@ public class IntakeTalonFXOnlyRollerIO implements IntakeIO {
     motionMagicConfigs.MotionMagicJerk = Constants.IntakeConstants.MOTION_MAGIC_JERK;
 
     roller.getConfigurator().apply(config);
-    roller.getConfigurator().apply(slot0Configs);
 
     // Initialize signals for AdvantageKit
     rollerVelocity = roller.getVelocity();

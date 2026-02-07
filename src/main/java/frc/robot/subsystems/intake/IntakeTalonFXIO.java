@@ -47,7 +47,7 @@ public class IntakeTalonFXIO implements IntakeIO {
     mVoltageRequest = new MotionMagicVoltage(0);
 
     // Basic Configuration
-    TalonFXConfiguration config = Constants.IntakeConstants.CONFIG;
+    TalonFXConfiguration config = Constants.IntakeConstants.ROLLER_CONFIG;
     Slot0Configs slot0Configs = Constants.IntakeConstants.SLOT0CONFIGS;
 
     var motionMagicConfigs = config.MotionMagic;
