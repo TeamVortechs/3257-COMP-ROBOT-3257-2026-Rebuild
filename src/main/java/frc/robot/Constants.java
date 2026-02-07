@@ -119,7 +119,7 @@ public final class Constants {
     public static final double DYNAMIC_STEP_VOLTS_SYSID = 1;
     public static final double TOLERANCE = 0.1;
 
-    public static final int MOTOR_ID = 1;
+    public static final int MOTOR_ID = 24;
 
     // this is higher rn cus it's in sim. We can model this as a linear function based on distance
     // if we're having trouble adjusting but right now I'm not cus it's a variable that mgiht not be
@@ -130,8 +130,6 @@ public final class Constants {
     public static final double INTAKE_SPEED = .5;
 
     public static final double PERCENTAGE_OF_DISTANCE_WHEN_CHARGING = 0.6;
-
-    public static final int SHOOTER_ID = 24;
 
     // the time that the feeder waits before shooting once it is valis
 
@@ -149,7 +147,7 @@ public final class Constants {
       CONFIG = new TalonFXConfiguration();
       SLOT0CONFIGS = new Slot0Configs();
       CONFIG.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-      CONFIG.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+      CONFIG.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
       CONFIG.CurrentLimits.SupplyCurrentLimit = Constants.ShooterConstants.CURRENT_LIMIT;
       CONFIG.CurrentLimits.SupplyCurrentLimitEnable = true;
       SLOT0CONFIGS.kS = Constants.ShooterConstants.KS;
@@ -176,7 +174,7 @@ public final class Constants {
     public static final double POSITION_TOLERANCE = 0.1;
 
     // not real
-    public static final int MOTOR_ID = 0;
+    public static final int MOTOR_ID = 23;
 
     public static final double FEED_POWER = 0.1;
 
@@ -288,7 +286,7 @@ public final class Constants {
     public static final double KI = 0;
     public static final double KD = 0.1;
 
-    public static final double INTAKE_SPEED = 0.1;
+    public static final double INTAKE_VOLTS = 8;
     public static final double INTAKE_POSITION = 0.5;
 
     public static final double MOTION_MAGIC_CRUISE_VELOCITY = 3;
@@ -319,7 +317,7 @@ public final class Constants {
 
       ROLLER_CONFIG = new TalonFXConfiguration();
       ROLLER_CONFIG.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-      ROLLER_CONFIG.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+      ROLLER_CONFIG.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
       ROLLER_CONFIG.CurrentLimits.SupplyCurrentLimit = Constants.ClimbConstants.CURRENT_LIMIT;
       ROLLER_CONFIG.CurrentLimits.SupplyCurrentLimitEnable = true;
     }

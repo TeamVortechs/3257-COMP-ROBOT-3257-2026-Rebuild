@@ -95,7 +95,7 @@ public class RobotContainer {
         intake =
             new Intake(
                 new IntakeTalonFXOnlyRollerIO(
-                    Constants.IntakeConstants.ROLLER_ID, IntakeConstants.POSITION_ID));
+                    IntakeConstants.ROLLER_ID, IntakeConstants.POSITION_ID) {});
 
         belt = new Belt(new BeltIO() {});
 
@@ -109,7 +109,7 @@ public class RobotContainer {
 
         feeder =
             new Feeder(
-                new FeederTalonFXIO(FeederConstants.MOTOR_ID),
+                new FeederTalonFXIO(FeederConstants.MOTOR_ID) {},
                 () -> drive.isPointingToGoal() && !drive.isSkidding(),
                 () -> shooter.isOnTarget(),
                 () -> true);
@@ -254,6 +254,14 @@ public class RobotContainer {
                 .ignoringDisable(true));
 
     intake.setDefaultCommand(intake.setRollerVoltageAndPositionCommand(0, 0));
+
+    controller
+        .leftTrigger()
+        .whileTrue(intake.setRollerVoltageCommand(IntakeConstants.INTAKE_VOLTS));
+
+    controller.rightTrigger().whileTrue(feeder.setPercentMotorRunCommand(0.2));
+
+    controller.rightBumper().whileTrue(shooter.setManualSpeedCommand(5));
     // belt.setDefaultCommand(belt.setPercentMotorOutputRunCommand(BeltConstants.FEED_POWER));
     feeder.setDefaultCommand(feeder.setPercentMotorRunCommand(0));
     shooter.setDefaultCommand(shooter.setManualSpeedRunCommand(0));

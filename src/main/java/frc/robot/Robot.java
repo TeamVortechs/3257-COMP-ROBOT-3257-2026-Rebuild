@@ -83,7 +83,7 @@ public class Robot extends LoggedRobot {
 
     robotContainer = new RobotContainer();
 
-    addSimObjects();
+    // addSimObjects();
     field2d = new Field2d();
   }
 
@@ -101,7 +101,7 @@ public class Robot extends LoggedRobot {
     // the Command-based framework to work.
     CommandScheduler.getInstance().run();
 
-    SimulationManager.updateSim();
+    // SimulationManager.updateSim();
     ;
     // Return to non-RT thread priority (do not modify the first argument)
     // Threads.setCurrentThreadPriority(false, 10);
