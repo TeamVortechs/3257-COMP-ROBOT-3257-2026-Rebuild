@@ -141,24 +141,30 @@ public class IntakeTalonFXIO implements IntakeIO {
 
   public void setBrakedRoller(boolean braked) {
     isBrakedRoller = braked;
-    TalonFXConfiguration config = new TalonFXConfiguration();
+
+    NeutralModeValue neutralModeValue;
+
     if (braked) {
-      config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+      neutralModeValue = NeutralModeValue.Brake;
     } else {
-      config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+      neutralModeValue = NeutralModeValue.Coast;
     }
-    roller.getConfigurator().apply(config);
+
+    roller.setNeutralMode(neutralModeValue);
   }
 
   public void setBrakedPosition(boolean braked) {
     isBrakedPosition = braked;
-    TalonFXConfiguration config = new TalonFXConfiguration();
+
+    NeutralModeValue neutralModeValue;
+
     if (braked) {
-      config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+      neutralModeValue = NeutralModeValue.Brake;
     } else {
-      config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+      neutralModeValue = NeutralModeValue.Coast;
     }
-    position.getConfigurator().apply(config);
+
+    roller.setNeutralMode(neutralModeValue);
   }
 
   // gets the highest possible height of the arm in radians

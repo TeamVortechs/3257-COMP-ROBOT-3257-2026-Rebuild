@@ -173,13 +173,16 @@ public class ClimbTalonFXIO implements ClimbIO {
   @Override
   public void setBraked(boolean braked) {
     isBraked = braked;
-    TalonFXConfiguration config = new TalonFXConfiguration();
+
+    NeutralModeValue neutralModeValue;
+
     if (braked) {
-      config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+      neutralModeValue = NeutralModeValue.Brake;
     } else {
-      config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+      neutralModeValue = NeutralModeValue.Coast;
     }
-    leftMotor.getConfigurator().apply(config);
-    rightMotor.getConfigurator().apply(config);
+
+    leftMotor.setNeutralMode(neutralModeValue);
+    rightMotor.setNeutralMode(neutralModeValue);
   }
 }

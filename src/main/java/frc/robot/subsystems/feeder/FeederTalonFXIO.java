@@ -109,12 +109,15 @@ public class FeederTalonFXIO implements FeederIO {
   @Override
   public void setBraked(boolean braked) {
     isBraked = braked;
-    TalonFXConfiguration config = new TalonFXConfiguration();
+
+    NeutralModeValue neutralModeValue;
+
     if (braked) {
-      config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+      neutralModeValue = NeutralModeValue.Brake;
     } else {
-      config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+      neutralModeValue = NeutralModeValue.Coast;
     }
-    motor.getConfigurator().apply(config);
+
+    motor.setNeutralMode(neutralModeValue);
   }
 }
