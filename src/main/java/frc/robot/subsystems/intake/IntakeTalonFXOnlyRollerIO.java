@@ -97,13 +97,16 @@ public class IntakeTalonFXOnlyRollerIO implements IntakeIO {
 
   public void setBrakedRoller(boolean braked) {
     isBrakedRoller = braked;
-    TalonFXConfiguration config = new TalonFXConfiguration();
+
+    NeutralModeValue neutralModeValue;
+
     if (braked) {
-      config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+      neutralModeValue = NeutralModeValue.Brake;
     } else {
-      config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+      neutralModeValue = NeutralModeValue.Coast;
     }
-    roller.getConfigurator().apply(config);
+
+    roller.setNeutralMode(neutralModeValue);
   }
 
   public void setBrakedPosition(boolean braked) {}

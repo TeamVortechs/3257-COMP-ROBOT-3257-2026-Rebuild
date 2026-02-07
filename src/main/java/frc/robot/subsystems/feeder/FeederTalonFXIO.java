@@ -8,6 +8,7 @@ import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Temperature;
@@ -109,12 +110,15 @@ public class FeederTalonFXIO implements FeederIO {
   @Override
   public void setBraked(boolean braked) {
     isBraked = braked;
-    TalonFXConfiguration config = new TalonFXConfiguration();
+
+    NeutralModeValue neutralModeValue;
+
     if (braked) {
-      config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+      neutralModeValue = NeutralModeValue.Brake;
     } else {
-      config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+      neutralModeValue = NeutralModeValue.Coast;
     }
-    motor.getConfigurator().apply(config);
+
+    motor.setNeutralMode(neutralModeValue);
   }
 }
