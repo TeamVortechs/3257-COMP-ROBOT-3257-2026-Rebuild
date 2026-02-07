@@ -69,6 +69,7 @@ public class RobotContainer {
   private final Climb climb;
 
   // Controller
+
   private final CommandXboxController controller = new CommandXboxController(0);
 
   // usign this for sys id so it doesn't conflict with anything
@@ -263,8 +264,8 @@ public class RobotContainer {
 
     controller.rightBumper().whileTrue(shooter.setManualSpeedRunCommand(90));
 
-    configureSysIdBindings(sysID_controller,shooter.BuildSysIdRoutine());
-    
+    configureSysIdBindings(sysID_controller, shooter.BuildSysIdRoutine());
+
     // belt.setDefaultCommand(belt.setPercentMotorOutputRunCommand(BeltConstants.FEED_POWER));
     feeder.setDefaultCommand(feeder.setPercentMotorRunCommand(0));
     shooter.setDefaultCommand(shooter.setManualSpeedRunCommand(0));

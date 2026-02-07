@@ -4,7 +4,6 @@ import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -15,6 +14,7 @@ import edu.wpi.first.units.measure.Temperature;
 import edu.wpi.first.units.measure.Voltage;
 import frc.robot.Constants;
 // CHANGE PID VALUES !!!!
+import frc.robot.Constants.ShooterConstants;
 
 public class ShooterTalonFXIO implements ShooterIO {
   private final TalonFX motor;
@@ -44,6 +44,8 @@ public class ShooterTalonFXIO implements ShooterIO {
     motor.getConfigurator().apply(config);
 
     motor.getConfigurator().apply(slot0Configs);
+
+    motor.getConfigurator().apply(ShooterConstants.CLOSE_LOOP_RAMP_CONFIG);
 
     // Initialize signals for AdvantageKit
     velocity = motor.getVelocity();

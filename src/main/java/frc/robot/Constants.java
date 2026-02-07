@@ -7,6 +7,7 @@
 
 package frc.robot;
 
+import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -115,8 +116,8 @@ public final class Constants {
     public static final double SIM_TOLERANCE = 0.5;
 
     // used in Shooter.java
-    public static final double RAMP_RATE_VOLTS_SYSID = 0.25;
-    public static final double DYNAMIC_STEP_VOLTS_SYSID = 1;
+    public static final double RAMP_RATE_VOLTS_SYSID = 5;
+    public static final double DYNAMIC_STEP_VOLTS_SYSID = 3;
     public static final double TOLERANCE = 0.1;
 
     public static final int MOTOR_ID = 24;
@@ -142,11 +143,16 @@ public final class Constants {
 
     public static final TalonFXConfiguration CONFIG;
     public static final Slot0Configs SLOT0CONFIGS;
+    public static final ClosedLoopRampsConfigs CLOSE_LOOP_RAMP_CONFIG;
 
     static {
       CONFIG = new TalonFXConfiguration();
       SLOT0CONFIGS = new Slot0Configs();
-      CONFIG.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+      CLOSE_LOOP_RAMP_CONFIG = new ClosedLoopRampsConfigs();
+
+      CLOSE_LOOP_RAMP_CONFIG.VoltageClosedLoopRampPeriod = 40.0;
+
+      CONFIG.MotorOutput.NeutralMode = NeutralModeValue.Coast;
       CONFIG.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
       CONFIG.CurrentLimits.SupplyCurrentLimit = Constants.ShooterConstants.CURRENT_LIMIT;
       CONFIG.CurrentLimits.SupplyCurrentLimitEnable = true;
@@ -212,7 +218,7 @@ public final class Constants {
 
     static {
       CONFIG = new TalonFXConfiguration();
-      CONFIG.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+      CONFIG.MotorOutput.NeutralMode = NeutralModeValue.Coast;
       CONFIG.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
       CONFIG.CurrentLimits.SupplyCurrentLimit = Constants.BeltConstants.CURRENT_LIMIT;
       CONFIG.CurrentLimits.SupplyCurrentLimitEnable = true;
@@ -316,7 +322,7 @@ public final class Constants {
       SLOT0CONFIGS.kD = Constants.IntakeConstants.KD;
 
       ROLLER_CONFIG = new TalonFXConfiguration();
-      ROLLER_CONFIG.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+      ROLLER_CONFIG.MotorOutput.NeutralMode = NeutralModeValue.Coast;
       ROLLER_CONFIG.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
       ROLLER_CONFIG.CurrentLimits.SupplyCurrentLimit = Constants.ClimbConstants.CURRENT_LIMIT;
       ROLLER_CONFIG.CurrentLimits.SupplyCurrentLimitEnable = true;

@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.ClimbConstants;
 import java.util.function.BooleanSupplier;
 import org.littletonrobotics.junction.AutoLogOutput;
-import org.littletonrobotics.junction.Logger;
 
 public class Climb extends SubsystemBase {
   private final ClimbIO climbIO;
@@ -34,8 +33,8 @@ public class Climb extends SubsystemBase {
 
   @Override
   public void periodic() {
-    climbIO.updateInputs(inputs);
-    Logger.processInputs("Climb", inputs);
+    // climbIO.updateInputs(inputs);
+    // Logger.processInputs("Climb", inputs);
 
     if (isLocked) {
       climbIO.stop();

@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.BeltConstants;
-import org.littletonrobotics.junction.Logger;
 
 public class Belt extends SubsystemBase {
 
@@ -29,8 +28,8 @@ public class Belt extends SubsystemBase {
 
   @Override
   public void periodic() {
-    beltIO.updateInputs(inputs);
-    Logger.processInputs("belt", inputs);
+    // beltIO.updateInputs(inputs);
+    // Logger.processInputs("belt", inputs);
   }
 
   // SUBSYSTEM METHODS

@@ -81,6 +81,10 @@ public class Shooter extends SubsystemBase {
     shooterIO.setSpeed(speed);
   }
 
+  public void setVoltage(double voltage) {
+    shooterIO.setVoltage(voltage);
+  }
+
   public double getSpeed() {
     return shooterIO.getSpeed();
   }
@@ -111,6 +115,10 @@ public class Shooter extends SubsystemBase {
    */
   public Command setManualSpeedRunCommand(double speed) {
     return Commands.run(() -> this.setManualSpeed(speed), this);
+  }
+
+  public Command setVoltageRunCommand(double voltage) {
+    return Commands.run(() -> this.setVoltage(voltage), this);
   }
 
   /**
