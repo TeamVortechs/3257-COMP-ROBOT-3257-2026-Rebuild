@@ -7,13 +7,21 @@
 
 package frc.robot;
 
+import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
+
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.events.EventTrigger;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
@@ -21,6 +29,7 @@ import frc.robot.Constants.BeltConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.FeederConstants;
 import frc.robot.Constants.IntakeConstants;
+import frc.robot.Constants.Mode;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.PathfindToPoseCommand;
@@ -28,9 +37,11 @@ import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.belt.Belt;
 import frc.robot.subsystems.belt.BeltIO;
 import frc.robot.subsystems.belt.BeltSimulationIO;
+import frc.robot.subsystems.belt.BeltTalonFXIO;
 import frc.robot.subsystems.climb.Climb;
 import frc.robot.subsystems.climb.ClimbIO;
 import frc.robot.subsystems.climb.ClimbSimulationIO;
+import frc.robot.subsystems.climb.ClimbTalonFXIO;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
@@ -40,13 +51,17 @@ import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.feeder.Feeder;
 import frc.robot.subsystems.feeder.FeederIO;
 import frc.robot.subsystems.feeder.FeederSimulationIO;
+import frc.robot.subsystems.feeder.FeederTalonFXIO;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeIO;
 import frc.robot.subsystems.intake.IntakeSimulationIO;
+import frc.robot.subsystems.intake.IntakeTalonFXIO;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterIO;
 import frc.robot.subsystems.shooter.ShooterSimulationIO;
-import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
+import frc.robot.subsystems.shooter.ShooterTalonFXIO;
+import frc.robot.commands.communication.ControllerVibrateCommand;
+import frc.robot.commands.communication.TellCommand;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -54,6 +69,7 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
  * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
  * subsystems, commands, and button mappings) should be declared here.
  */
+@SuppressWarnings("unused")
 public class RobotContainer {
   // Subsystems
   private final Drive drive;
@@ -72,6 +88,7 @@ public class RobotContainer {
   private final CommandXboxController controller = new CommandXboxController(0);
 
   // usign this for sys id so it doesn't conflict with anything
+  @SuppressWarnings("unused")
   private final CommandXboxController sysID_contorller = new CommandXboxController(3);
 
   // Dashboard inputs
@@ -92,7 +109,8 @@ public class RobotContainer {
                 new ModuleIOTalonFX(TunerConstants.BackLeft),
                 new ModuleIOTalonFX(TunerConstants.BackRight));
 
-        intake = new Intake(new IntakeIO() {});
+        intake =
+            new Intake(new IntakeIO() {});
 
         belt = new Belt(new BeltIO() {});
 
@@ -104,12 +122,9 @@ public class RobotContainer {
 
         climb = new Climb(new ClimbIO() {});
 
-        feeder =
-            new Feeder(
-                new FeederIO() {},
-                () -> drive.isPointingToGoal() && !drive.isSkidding(),
-                () -> shooter.isOnTarget(),
-                () -> true);
+        feeder = new Feeder(new FeederIO() {
+          
+        }, () -> drive.isPointingToGoal() && !drive.isSkidding(), () -> shooter.isOnTarget(), () -> true);
 
         // The ModuleIOTalonFXS implementation provides an example implementation for
         // TalonFXS controller connected to a CANdi with a PWM encoder. The
@@ -209,6 +224,7 @@ public class RobotContainer {
 
     // Configure the button bindings
     configureButtonBindings();
+    registerNamedCommandsAuto(); // register named commands for auto (pathplanner)
   }
 
   /**
@@ -293,7 +309,28 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return autoChooser.get();
+    // return autoChooser.get();
+    String osName = System.getProperty("os.name").toLowerCase();
+    if (osName.contains("win")) {
+      // Windows
+      return autoChooser.get();
+    } else if (osName.contains("nix") || osName.contains("nux")) {
+      int station = DriverStation.getLocation().orElse(1);
+      switch (station) {
+          // switches paths easily on linux since no smart dashboard
+        case 1:
+          //   return new PathPlannerAuto("auto left feeder station");
+          return new PathPlannerAuto("get balls from middle (left)");
+        case 2:
+          return new PathPlannerAuto("auto middle feeder station2 twice, climb");
+        case 3:
+          return new PathPlannerAuto("auto right feeder station2 twice, climb");
+        default:
+          return new PathPlannerAuto("auto left feeder station");
+      }
+    } else {
+      return autoChooser.get();
+    }
   }
 
   public Intake getIntake() {
@@ -310,6 +347,45 @@ public class RobotContainer {
 
   public Drive getDrive() {
     return drive;
+  }
+
+  private void registerNamedCommandsAuto() {
+    boolean isReal = true;
+    // if (Constants.currentMode == Mode.SIM) isReal = false;
+
+    addNamedCommand("climb", climb.setPositionsRunCommand(Constants.ClimbConstants.MAX_POSITION_LEFT, Constants.ClimbConstants.MAX_POSITION_RIGHT), isReal);
+    addNamedCommand("unclimb", climb.setPositionsRunCommand(0, 0), isReal);
+    addNamedCommand("start intake", intake.setSpeedAndPositionCommand(Constants.IntakeConstants.INTAKE_POSITION, Constants.IntakeConstants.INTAKE_SPEED), isReal);
+    addNamedCommand("stop intake", intake.setSpeedAndPositionCommand(Constants.IntakeConstants.MAX_POSITION, 0), isReal);
+    addNamedCommand("shoot", shooter.setAutomaticCommand(), isReal);
+    addNamedCommand("unshoot", shooter.setManualSpeedCommandConsistentEnd(0), isReal);
+    addNamedCommand("feeder", feeder.setSpeedCommandConsistentEnd(Constants.FeederConstants.FEED_POWER), isReal);
+    addNamedCommand("unfeeder", feeder.setSpeedCommandConsistentEnd(0), isReal);
+  }
+ 
+  public void addNamedCommand(String commandName, Command command, boolean isReal) {
+
+    if (isReal) {
+      NamedCommands.registerCommand(
+          commandName, command.andThen(new TellCommand("just ran " + commandName)));
+      //   new EventTrigger(commandName).onTrue(command);
+    } else {
+      // registers the named commands to print something out instead of actually running anything
+      NamedCommands.registerCommand(
+          commandName,
+          new TellCommand(commandName + " auto command")
+              .andThen(
+                  new ControllerVibrateCommand(1, controller).withDeadline(new WaitCommand(0.2)))
+              .alongWith(command));
+
+      //   new EventTrigger(commandName)
+      //       .onTrue(
+      //           new TellCommand(commandName + " auto event trigger command")
+      //               .andThen(
+      //                   new ControllerVibrateCommand(1, controller)
+      //                       .withDeadline(new WaitCommand(0.2)))
+      //               .andThen(new WaitCommand(0.3)));
+    }
   }
 
   // this shoudl be in a helper method or somewhere in robot container

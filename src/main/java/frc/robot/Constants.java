@@ -313,6 +313,9 @@ public final class Constants {
     public static final TalonFXConfiguration CONFIG;
     public static final Slot0Configs SLOT0CONFIGS;
 
+    public static int INTAKE_ROLLER_MOTOR_ID = 21;
+    public static int INTAKE_POSITION_MOTOR_ID = 22;
+
     static {
       CONFIG = new TalonFXConfiguration();
       SLOT0CONFIGS = CONFIG.Slot0;
