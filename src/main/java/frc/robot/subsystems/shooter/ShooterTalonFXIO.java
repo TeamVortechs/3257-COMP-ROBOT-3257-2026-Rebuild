@@ -14,7 +14,6 @@ import edu.wpi.first.units.measure.Temperature;
 import edu.wpi.first.units.measure.Voltage;
 import frc.robot.Constants;
 // CHANGE PID VALUES !!!!
-import frc.robot.Constants.ShooterConstants;
 
 public class ShooterTalonFXIO implements ShooterIO {
   private final TalonFX motor;
