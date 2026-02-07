@@ -17,13 +17,10 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
-import frc.robot.Constants.BeltConstants;
-import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.FeederConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.commands.DriveCommands;
-import frc.robot.commands.PathfindToPoseCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.belt.Belt;
 import frc.robot.subsystems.belt.BeltIO;
@@ -40,12 +37,15 @@ import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.feeder.Feeder;
 import frc.robot.subsystems.feeder.FeederIO;
 import frc.robot.subsystems.feeder.FeederSimulationIO;
+import frc.robot.subsystems.feeder.FeederTalonFXIO;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeIO;
 import frc.robot.subsystems.intake.IntakeSimulationIO;
+import frc.robot.subsystems.intake.IntakeTalonFXOnlyRollerIO;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterIO;
 import frc.robot.subsystems.shooter.ShooterSimulationIO;
+import frc.robot.subsystems.shooter.ShooterTalonFXIO;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -92,13 +92,16 @@ public class RobotContainer {
                 new ModuleIOTalonFX(TunerConstants.BackLeft),
                 new ModuleIOTalonFX(TunerConstants.BackRight));
 
-        intake = new Intake(new IntakeIO() {});
+        intake =
+            new Intake(
+                new IntakeTalonFXOnlyRollerIO(
+                    Constants.IntakeConstants.ROLLER_ID, IntakeConstants.POSITION_ID));
 
         belt = new Belt(new BeltIO() {});
 
         shooter =
             new Shooter(
-                new ShooterIO() {},
+                new ShooterTalonFXIO(ShooterConstants.MOTOR_ID),
                 () -> drive.getDistanceToGoal(),
                 () -> drive.isWithinShooterAutomaticChargingZone());
 
@@ -106,7 +109,7 @@ public class RobotContainer {
 
         feeder =
             new Feeder(
-                new FeederIO() {},
+                new FeederTalonFXIO(FeederConstants.MOTOR_ID),
                 () -> drive.isPointingToGoal() && !drive.isSkidding(),
                 () -> shooter.isOnTarget(),
                 () -> true);
@@ -251,40 +254,38 @@ public class RobotContainer {
                 .ignoringDisable(true));
 
     intake.setDefaultCommand(intake.setRollerVoltageAndPositionCommand(0, 0));
-    belt.setDefaultCommand(belt.setPercentMotorOutputRunCommand(BeltConstants.FEED_POWER));
+    // belt.setDefaultCommand(belt.setPercentMotorOutputRunCommand(BeltConstants.FEED_POWER));
     feeder.setDefaultCommand(feeder.setPercentMotorRunCommand(0));
-    shooter.setDefaultCommand(
-        shooter.automaticallyChargeWhenNeededRunCommand(
-            ShooterConstants.PERCENTAGE_OF_DISTANCE_WHEN_CHARGING, ShooterConstants.DEFAULT_SPEED));
+    shooter.setDefaultCommand(shooter.setManualSpeedRunCommand(0));
 
-    climb.setDefaultCommand(climb.setPositionsRunCommand(0, 0));
+    // climb.setDefaultCommand(climb.setPositionsRunCommand(0, 0));
 
-    Command aimTowardsTargetCommand =
-        DriveCommands.joystickDriveAtAngle(
-            drive,
-            () -> -controller.getLeftY() * DriveConstants.K_JOYSTICK_WHEN_SHOOTING,
-            () -> -controller.getLeftX() * DriveConstants.K_JOYSTICK_WHEN_SHOOTING,
-            () -> drive.getHeadingToGoal());
+    // Command aimTowardsTargetCommand =
+    //     DriveCommands.joystickDriveAtAngle(
+    //         drive,
+    //         () -> -controller.getLeftY() * DriveConstants.K_JOYSTICK_WHEN_SHOOTING,
+    //         () -> -controller.getLeftX() * DriveConstants.K_JOYSTICK_WHEN_SHOOTING,
+    //         () -> drive.getHeadingToGoal());
 
-    controller
-        .leftTrigger()
-        .whileTrue(
-            Commands.parallel(
-                aimTowardsTargetCommand,
-                shooter.setAutomaticCommandRun(),
-                feeder.feedWhenValidRunCommand(FeederConstants.FEED_POWER)));
+    // controller
+    //     .leftTrigger()
+    //     .whileTrue(
+    //         Commands.parallel(
+    //             aimTowardsTargetCommand,
+    //             shooter.setAutomaticCommandRun(),
+    //             feeder.feedWhenValidRunCommand(FeederConstants.FEED_POWER)));
 
-    controller
-        .rightTrigger()
-        .whileTrue(
-            intake.setRollerVoltageAndPositionCommand(
-                IntakeConstants.INTAKE_POSITION, IntakeConstants.INTAKE_SPEED));
+    // controller
+    //     .rightTrigger()
+    //     .whileTrue(
+    //         intake.setRollerVoltageAndPositionCommand(
+    //             IntakeConstants.INTAKE_POSITION, IntakeConstants.INTAKE_SPEED));
 
-    controller.leftBumper().whileTrue(climb.setSpeedsRunCommand(1, 0.5));
+    // controller.leftBumper().whileTrue(climb.setSpeedsRunCommand(1, 0.5));
 
-    controller.a().onTrue(climb.setIsLockedCommand(() -> !climb.isLocked()));
+    // controller.a().onTrue(climb.setIsLockedCommand(() -> !climb.isLocked()));
 
-    controller.b().whileTrue(new PathfindToPoseCommand(drive, () -> new Pose2d(), true));
+    // controller.b().whileTrue(new PathfindToPoseCommand(drive, () -> new Pose2d(), true));
   }
 
   /**

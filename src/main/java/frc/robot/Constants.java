@@ -131,6 +131,8 @@ public final class Constants {
 
     public static final double PERCENTAGE_OF_DISTANCE_WHEN_CHARGING = 0.6;
 
+    public static final int SHOOTER_ID = 24;
+
     // the time that the feeder waits before shooting once it is valis
 
     // CHANGE !!
@@ -165,6 +167,8 @@ public final class Constants {
 
     public static final double CURRENT_LIMIT = 40.0;
     public static final double SIM_TOLERANCE = 0.5;
+
+    public static final double FEEDER_ID = 23;
 
     // used in Shooter.java
     public static final double RAMP_RATE_VOLTS_SYSID = 0.25;
@@ -293,6 +297,9 @@ public final class Constants {
 
     public static final double RAMP_RATE_VOLTS_ROLLER_SYSID = 0.25;
     public static final double DYNAMIC_STEP_VOLTS_ROLLER_SYSID = 1;
+
+    public static final int ROLLER_ID = 21;
+    public static final int POSITION_ID = 22;
 
     public static final double ROLLER_STALLED_VOLTS = 20.0;
     // lower cus this has hardstops
