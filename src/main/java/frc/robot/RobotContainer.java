@@ -259,9 +259,9 @@ public class RobotContainer {
         .leftTrigger()
         .whileTrue(intake.setRollerVoltageCommand(IntakeConstants.INTAKE_VOLTS));
 
-    controller.rightTrigger().whileTrue(feeder.setPercentMotorRunCommand(0.2));
+    controller.rightTrigger().whileTrue(feeder.setPercentMotorRunCommand(0.4));
 
-    controller.rightBumper().whileTrue(shooter.setManualSpeedCommand(5));
+    controller.rightBumper().whileTrue(shooter.setManualSpeedRunCommand(90));
     // belt.setDefaultCommand(belt.setPercentMotorOutputRunCommand(BeltConstants.FEED_POWER));
     feeder.setDefaultCommand(feeder.setPercentMotorRunCommand(0));
     shooter.setDefaultCommand(shooter.setManualSpeedRunCommand(0));

@@ -134,9 +134,9 @@ public final class Constants {
     // the time that the feeder waits before shooting once it is valis
 
     // CHANGE !!
-    public static final double KS = 0.1;
-    public static final double KV = 0.12;
-    public static final double KP = 0.11;
+    public static final double KS = 0.0;
+    public static final double KV = 0.0;
+    public static final double KP = 0.7;
     public static final double KI = 0;
     public static final double KD = 0;
 
@@ -147,7 +147,7 @@ public final class Constants {
       CONFIG = new TalonFXConfiguration();
       SLOT0CONFIGS = new Slot0Configs();
       CONFIG.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-      CONFIG.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+      CONFIG.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
       CONFIG.CurrentLimits.SupplyCurrentLimit = Constants.ShooterConstants.CURRENT_LIMIT;
       CONFIG.CurrentLimits.SupplyCurrentLimitEnable = true;
       SLOT0CONFIGS.kS = Constants.ShooterConstants.KS;
@@ -186,7 +186,7 @@ public final class Constants {
       CONFIG = new TalonFXConfiguration();
 
       CONFIG.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-      CONFIG.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+      CONFIG.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
       CONFIG.CurrentLimits.SupplyCurrentLimit = Constants.FeederConstants.CURRENT_LIMIT;
       CONFIG.CurrentLimits.SupplyCurrentLimitEnable = true;
     }
