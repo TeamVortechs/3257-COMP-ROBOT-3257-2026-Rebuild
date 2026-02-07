@@ -7,6 +7,7 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
@@ -173,13 +174,16 @@ public class ClimbTalonFXIO implements ClimbIO {
   @Override
   public void setBraked(boolean braked) {
     isBraked = braked;
-    TalonFXConfiguration config = new TalonFXConfiguration();
+
+    NeutralModeValue neutralModeValue;
+
     if (braked) {
-      config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+      neutralModeValue = NeutralModeValue.Brake;
     } else {
-      config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+      neutralModeValue = NeutralModeValue.Coast;
     }
-    leftMotor.getConfigurator().apply(config);
-    rightMotor.getConfigurator().apply(config);
+
+    leftMotor.setNeutralMode(neutralModeValue);
+    rightMotor.setNeutralMode(neutralModeValue);
   }
 }
