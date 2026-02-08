@@ -72,10 +72,15 @@ public class RobotContainer {
 
   // Controller
 
+  @SuppressWarnings("unused")
   private final CommandXboxController controller = new CommandXboxController(0);
+
+  @SuppressWarnings("unused")
   private final CommandXboxController operatorController = new CommandXboxController(1);
 
-  // usign this for sys id so it doesn't conflict with anything
+  @SuppressWarnings("unused")
+  private final CommandXboxController testController = new CommandXboxController(2);
+
   @SuppressWarnings("unused")
   private final CommandXboxController sysID_controller = new CommandXboxController(3);
 
@@ -265,6 +270,7 @@ public class RobotContainer {
                     drive)
                 .ignoringDisable(true));
 
+    // intake
     intake.setDefaultCommand(intake.setRollerVoltageAndPositionCommand(0, 0));
 
     controller
@@ -273,7 +279,7 @@ public class RobotContainer {
 
     controller.rightTrigger().whileTrue(feeder.setPercentMotorRunCommand(0.4));
 
-    // controller.rightBumper().whileTrue(shooter.setManualSpeedRunCommand(70));
+    controller.rightBumper().whileTrue(shooter.setManualSpeedRunCommand(70));
     controller.leftBumper().whileTrue(shooter.setAutomaticCommandRun());
 
     configureSysIdBindings(sysID_controller, shooter.BuildSysIdRoutine());
@@ -286,30 +292,20 @@ public class RobotContainer {
 
     @SuppressWarnings("unused")
     Command aimTowardsTargetCommand =
-        drive.joystickDriveAtAngle(
+        drive.joystickDriveAtTarget(
             drive,
             () -> -controller.getLeftY() * DriveConstants.K_JOYSTICK_WHEN_SHOOTING,
             () -> -controller.getLeftX() * DriveConstants.K_JOYSTICK_WHEN_SHOOTING);
 
-    controller
-        .rightBumper()
-        .whileTrue(
-            Commands.parallel(
-                aimTowardsTargetCommand,
-                shooter.setAutomaticCommandRun(),
-                feeder.feedWhenValidRunCommand(FeederConstants.FEED_POWER)));
-
     // controller
-    //     .rightTrigger()
+    //     .povUp()
     //     .whileTrue(
-    //         intake.setRollerVoltageAndPositionCommand(
-    //             IntakeConstants.INTAKE_POSITION, IntakeConstants.INTAKE_SPEED));
+    //         Commands.parallel(
+    //             aimTowardsTargetCommand,
+    //             shooter.setAutomaticCommandRun(),
+    //             feeder.feedWhenValidRunCommand(FeederConstants.FEED_POWER)));
 
-    // controller.leftBumper().whileTrue(climb.setSpeedsRunCommand(1, 0.5));
-
-    // controller.a().onTrue(climb.setIsLockedCommand(() -> !climb.isLocked()));
-
-    // controller.b().whileTrue(new PathfindToPoseCommand(drive, () -> new Pose2d(), true));
+    // controller.povRight().toggleOnTrue(drive.iteratePassingCommand(true));
   }
 
   /**

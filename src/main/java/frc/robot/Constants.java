@@ -12,7 +12,6 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -35,6 +34,10 @@ public final class Constants {
   public static final Mode SIM_MODE = Mode.SIM;
   public static final Mode CURR_MODE = RobotBase.isReal() ? Mode.REAL : SIM_MODE;
   public static final double FREQUENCY_HZ = 50;
+
+  public static final double HIGH_PRIORITY_FREQUENCY_HZ = 50;
+  public static final double MEDIUM_PRIORITY_FREQUENCY_HZ = 10;
+  public static final double LOW_PRIORITY_FREQUENCY_HZ = 2;
 
   public static enum Mode {
     /** Running on a real robot. */
@@ -69,7 +72,6 @@ public final class Constants {
     public static final double translationTolerance = 0.01;
 
     public static final ProfiledPIDController ANGLE_CONTROLLER;
-
 
     public static final double ORIENTATION_TOLERANCE = .1;
     // the time it takes between feeding and actual robot shoot. This is used to lead the robot
@@ -175,15 +177,14 @@ public final class Constants {
                 Math.hypot(
                     TunerConstants.BackRight.LocationX, TunerConstants.BackRight.LocationY)));
 
-
-        static {
-          ANGLE_CONTROLLER =
-            new ProfiledPIDController(
-            ANGLE_KP,
-            0.0,
-            ANGLE_KD,
-            new TrapezoidProfile.Constraints(ANGLE_MAX_VELOCITY, ANGLE_MAX_ACCELERATION));
-            ANGLE_CONTROLLER.enableContinuousInput(-Math.PI, Math.PI);
+    static {
+      ANGLE_CONTROLLER =
+          new ProfiledPIDController(
+              ANGLE_KP,
+              0.0,
+              ANGLE_KD,
+              new TrapezoidProfile.Constraints(ANGLE_MAX_VELOCITY, ANGLE_MAX_ACCELERATION));
+      ANGLE_CONTROLLER.enableContinuousInput(-Math.PI, Math.PI);
     }
   }
 
