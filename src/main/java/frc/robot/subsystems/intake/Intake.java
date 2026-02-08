@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.IntakeConstants;
 import java.util.function.DoubleSupplier;
-
 import org.littletonrobotics.junction.Logger;
 
 /** Intake subsystem responsible for the intake rolling mechanism */
