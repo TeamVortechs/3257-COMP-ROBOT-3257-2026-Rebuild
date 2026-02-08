@@ -13,6 +13,8 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.IntakeConstants;
 import java.util.function.DoubleSupplier;
 
+import org.littletonrobotics.junction.Logger;
+
 /** Intake subsystem responsible for the intake rolling mechanism */
 public class Intake extends SubsystemBase {
 
@@ -34,8 +36,8 @@ public class Intake extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // moduleIO.updateInputs(inputs);
-    // Logger.processInputs("Intake", inputs);
+    moduleIO.updateInputs(inputs);
+    Logger.processInputs("Intake", inputs);
 
     // check to see if the module is stalling; if so, then stop the motors and cancel the next
     // movement

@@ -93,7 +93,7 @@ public final class Constants {
     // the zone where we choose to more agressively charge the shooter
     public static final double X_POSE_TO_CHARGE = 5.5;
 
-    public static final double K_JOYSTICK_WHEN_SHOOTING = 0.5;
+    public static final double K_JOYSTICK_WHEN_SHOOTING = 1;
 
     // from our library
     public static final double ODOMETRY_FREQUENCY =
@@ -118,7 +118,7 @@ public final class Constants {
     // used in Shooter.java
     public static final double RAMP_RATE_VOLTS_SYSID = 5;
     public static final double DYNAMIC_STEP_VOLTS_SYSID = 3;
-    public static final double TOLERANCE = 0.1;
+    public static final double TOLERANCE = 5;
 
     public static final int MOTOR_ID = 24;
 
@@ -136,10 +136,11 @@ public final class Constants {
 
     // CHANGE !!
     public static final double KS = 0.0;
-    public static final double KV = 0.0;
-    public static final double KP = 0.7;
-    public static final double KI = 0;
-    public static final double KD = 0;
+    public static final double KV = 0.12559;
+    public static final double KP = 0.14947;
+    public static final double KI = 0.0;
+    public static final double KD = 0.0;
+    public static final double KA = 0.038169;
 
     public static final TalonFXConfiguration CONFIG;
     public static final Slot0Configs SLOT0CONFIGS;
@@ -149,9 +150,6 @@ public final class Constants {
       CONFIG = new TalonFXConfiguration();
       SLOT0CONFIGS = new Slot0Configs();
       CLOSE_LOOP_RAMP_CONFIG = new ClosedLoopRampsConfigs();
-
-      CLOSE_LOOP_RAMP_CONFIG.VoltageClosedLoopRampPeriod = 40.0;
-
       CONFIG.MotorOutput.NeutralMode = NeutralModeValue.Coast;
       CONFIG.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
       CONFIG.CurrentLimits.SupplyCurrentLimit = Constants.ShooterConstants.CURRENT_LIMIT;
@@ -161,6 +159,13 @@ public final class Constants {
       SLOT0CONFIGS.kP = Constants.ShooterConstants.KP;
       SLOT0CONFIGS.kI = Constants.ShooterConstants.KI;
       SLOT0CONFIGS.kD = Constants.ShooterConstants.KD;
+      SLOT0CONFIGS.kA = Constants.ShooterConstants.KA;
+
+      var motionMagicConfigs = CONFIG.MotionMagic;
+      motionMagicConfigs.MotionMagicCruiseVelocity = 100; // Target cruise velocity of 80 rps
+      motionMagicConfigs.MotionMagicAcceleration =
+          20; // Target acceleration of 160 rps/s (0.5 seconds)
+      motionMagicConfigs.MotionMagicJerk = 1600; // Target jerk of 1600 rps/s/s (0.1 seconds)
     }
   }
 

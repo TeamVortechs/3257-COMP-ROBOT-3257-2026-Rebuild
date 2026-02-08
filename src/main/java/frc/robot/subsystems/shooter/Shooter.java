@@ -47,7 +47,11 @@ public class Shooter extends SubsystemBase {
 
     this.distToSpeedTable = new InterpolatingDoubleTreeMap();
     // TO DO: populate distToSpeedTable with real valeus
-    this.speedToTableInit(10.0, 10.0); // dummy val
+    this.speedToTableInit(3.2004, 75); // dummy val
+    this.speedToTableInit(2.8956, 70);
+    this.speedToTableInit(2.5654, 65);
+    this.speedToTableInit(2.159, 60);
+    this.speedToTableInit(1.8034, 62.5);
 
     this.withinAutomaticChargingZone = withinAutomaticChargingZone;
   }
@@ -157,11 +161,11 @@ public class Shooter extends SubsystemBase {
   private double getSpeedFromDistance(double distance) {
 
     // dummy value for now
-    return distance;
+    // return distance;
 
     // commented otu for now becaues this is flat since we don't have values, I want something we
     // can debug from
-    // return this.distToSpeedTable.get(distance);
+    return this.distToSpeedTable.get(distance);
   }
 
   /**

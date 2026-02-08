@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.FeederConstants;
 import java.util.function.BooleanSupplier;
 import org.littletonrobotics.junction.AutoLogOutput;
+import org.littletonrobotics.junction.Logger;
 
 public class Feeder extends SubsystemBase {
 
@@ -53,8 +54,8 @@ public class Feeder extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // feederIO.updateInputs(inputs);
-    // Logger.processInputs("feeder", inputs);
+    feederIO.updateInputs(inputs);
+    Logger.processInputs("feeder", inputs);
 
     calculateValidityToFeed();
   }

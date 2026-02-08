@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.FeederConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.ShooterConstants;
@@ -70,6 +71,7 @@ public class RobotContainer {
 
   // Controller
 
+  
   private final CommandXboxController controller = new CommandXboxController(0);
 
   // usign this for sys id so it doesn't conflict with anything
@@ -262,7 +264,8 @@ public class RobotContainer {
 
     controller.rightTrigger().whileTrue(feeder.setPercentMotorRunCommand(0.4));
 
-    controller.rightBumper().whileTrue(shooter.setManualSpeedRunCommand(90));
+    // controller.rightBumper().whileTrue(shooter.setManualSpeedRunCommand(70));
+    controller.leftBumper().whileTrue(shooter.setAutomaticCommandRun());
 
     configureSysIdBindings(sysID_controller, shooter.BuildSysIdRoutine());
 
@@ -272,20 +275,20 @@ public class RobotContainer {
 
     // climb.setDefaultCommand(climb.setPositionsRunCommand(0, 0));
 
-    // Command aimTowardsTargetCommand =
-    //     DriveCommands.joystickDriveAtAngle(
-    //         drive,
-    //         () -> -controller.getLeftY() * DriveConstants.K_JOYSTICK_WHEN_SHOOTING,
-    //         () -> -controller.getLeftX() * DriveConstants.K_JOYSTICK_WHEN_SHOOTING,
-    //         () -> drive.getHeadingToGoal());
+    Command aimTowardsTargetCommand =
+        DriveCommands.joystickDriveAtAngle(
+            drive,
+            () -> -controller.getLeftY() * DriveConstants.K_JOYSTICK_WHEN_SHOOTING,
+            () -> -controller.getLeftX() * DriveConstants.K_JOYSTICK_WHEN_SHOOTING,
+            () -> drive.getHeadingToGoal());
 
-    // controller
-    //     .leftTrigger()
-    //     .whileTrue(
-    //         Commands.parallel(
-    //             aimTowardsTargetCommand,
-    //             shooter.setAutomaticCommandRun(),
-    //             feeder.feedWhenValidRunCommand(FeederConstants.FEED_POWER)));
+    controller
+        .rightBumper()
+        .whileTrue(
+            Commands.parallel(
+                aimTowardsTargetCommand,
+                shooter.setAutomaticCommandRun(),
+                feeder.feedWhenValidRunCommand(FeederConstants.FEED_POWER)));
 
     // controller
     //     .rightTrigger()
