@@ -42,6 +42,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
@@ -254,6 +255,22 @@ public class Drive extends SubsystemBase {
     goalPoseManager.periodic();
   }
 
+  public Command overrideRotationCommand() {
+    // System.out.println("override rotation command");
+    return new InstantCommand(() -> overrideRotationFeedback());
+  }
+
+  public Command removeRotationOverrideCommand() {
+    return new InstantCommand(() -> PPHolonomicDriveController.clearFeedbackOverrides());
+  }
+
+  private void overrideRotationFeedback() {
+
+    PPHolonomicDriveController.overrideRotationFeedback(
+        () ->
+            // 100.0
+            shooterRotationManager.getRotationFeedbackOverride());
+  }
   // TunerConstants doesn't include these constants, so they are declared locally
 
   // PathPlanner config constants
@@ -312,14 +329,16 @@ public class Drive extends SubsystemBase {
     // Start odometry thread
     PhoenixOdometryThread.getInstance().start();
 
+    PPHolonomicDriveController pathplannerController =
+        new PPHolonomicDriveController(
+            new PIDConstants(5.0, 0.0, 0.0), new PIDConstants(7, 0.0, 0.0));
     // Configure AutoBuilder for PathPlanner
     AutoBuilder.configure(
         this::getPose,
         this::setPose,
         this::getChassisSpeeds,
         this::runVelocity,
-        new PPHolonomicDriveController(
-            new PIDConstants(5.0, 0.0, 0.0), new PIDConstants(7, 0.0, 0.0)),
+        pathplannerController,
         PP_CONFIG,
         () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
         this);

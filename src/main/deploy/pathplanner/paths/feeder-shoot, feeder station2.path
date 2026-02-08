@@ -1,0 +1,61 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 1.670444434691011,
+        "y": 4.943313685042135
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.9411829792837076,
+        "y": 0.6892034322331444
+      },
+      "isLocked": false,
+      "linkedName": "feeder-shoot"
+    },
+    {
+      "anchor": {
+        "x": 0.47714071278089865,
+        "y": 0.6359792837078646
+      },
+      "prevControl": {
+        "x": 0.47969262880668173,
+        "y": 0.8859662588177638
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "feeder station2"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "feeder station2",
+      "waypointRelativePos": 1.0,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0.0
+  },
+  "reversed": false,
+  "folder": null,
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": -18.22
+  },
+  "useDefaultConstraints": true
+}

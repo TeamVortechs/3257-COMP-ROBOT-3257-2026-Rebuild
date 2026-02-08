@@ -1,11 +1,16 @@
 package frc.robot.subsystems.drive;
 
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.IntakeConstants;
+import frc.robot.commands.DriveCommands;
+
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.AutoLogOutput;
 
@@ -24,6 +29,8 @@ public class ShooterRotationManager {
   @AutoLogOutput private boolean onTarget = false;
   @AutoLogOutput private Pose2d unFilteredTargetPose = new Pose2d();
   @AutoLogOutput private Pose2d unFilteredCurrentPose = new Pose2d();
+
+  private ProfiledPIDController angle_controller = DriveConstants.ANGLE_CONTROLLER;
 
   /**
    * @param targetPose the pose of the area we want to shoot too
@@ -61,6 +68,15 @@ public class ShooterRotationManager {
     return distance;
   }
 
+  public double getRotationFeedbackOverride() {
+
+    double targetRadians = this.getHeading().getRadians();
+    double currentRadians = drive.getPose().getRotation().getRadians();
+
+    double rotationSpeed = angle_controller.calculate(currentRadians, targetRadians);
+    return rotationSpeed;
+    // return .1;
+  }
   /**
    * Get the heading from robot pose to target pose(FIELD CENTRIC)
    *

@@ -130,6 +130,19 @@ public class Feeder extends SubsystemBase {
         this);
   }
 
+  /** can swap this for the other command in auto */
+  public Command feedWhenShooterIsRevvedCommand(double percentage) {
+    return Commands.run(
+        () -> {
+          if (shooterOnVelocity.getAsBoolean()) {
+            this.setPercentMotorOutput(percentage);
+          } else {
+            this.setPercentMotorOutput(0);
+          }
+        },
+        this);
+  }
+
   // the constants here should probably be more and move but that's later when this is transferred
   // to the right project
   // add this to the robot class or this won't work: SignalLogger.setPath("/media/sda1/");

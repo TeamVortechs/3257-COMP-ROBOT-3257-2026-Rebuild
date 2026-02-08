@@ -8,21 +8,29 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.events.EventTrigger;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.robot.Constants.BeltConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.FeederConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.commands.DriveCommands;
+import frc.robot.commands.communication.ControllerVibrateCommand;
+import frc.robot.commands.communication.TellCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.belt.Belt;
 import frc.robot.subsystems.belt.BeltIO;
@@ -56,6 +64,7 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
  * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
  * subsystems, commands, and button mappings) should be declared here.
  */
+@SuppressWarnings("unused")
 public class RobotContainer {
   // Subsystems
   private final Drive drive;
@@ -229,6 +238,7 @@ public class RobotContainer {
 
     // Configure the button bindings
     configureButtonBindings();
+    registerNamedCommandsAuto(); // register named commands for auto (pathplanner)
   }
 
   /**
@@ -314,7 +324,28 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return autoChooser.get();
+    // return autoChooser.get();
+    String osName = System.getProperty("os.name").toLowerCase();
+    if (osName.contains("win")) {
+      // Windows
+      return autoChooser.get();
+    } else if (osName.contains("nix") || osName.contains("nux")) {
+      int station = DriverStation.getLocation().orElse(1);
+      switch (station) {
+          // switches paths easily on linux since no smart dashboard
+        case 1:
+          //   return new PathPlannerAuto("auto left feeder station");
+          return new PathPlannerAuto("get balls from middle (left)");
+        case 2:
+          return new PathPlannerAuto("auto middle feeder station2 twice, climb");
+        case 3:
+          return new PathPlannerAuto("auto right feeder station2 twice, climb");
+        default:
+          return new PathPlannerAuto("auto left feeder station");
+      }
+    } else {
+      return autoChooser.get();
+    }
   }
 
   public Intake getIntake() {
@@ -331,6 +362,66 @@ public class RobotContainer {
 
   public Drive getDrive() {
     return drive;
+  }
+
+  private void registerNamedCommandsAuto() {
+    boolean isReal = true;
+    // if (Constants.currentMode == Mode.SIM) isReal = false;
+
+    // feed commands
+    addNamedCommand(
+        "feedStart", feeder.setPercentMotorRunCommand(FeederConstants.FEED_POWER), isReal);
+    addNamedCommand(
+        "feedWhenValid", feeder.feedWhenValidRunCommand(FeederConstants.FEED_POWER), isReal);
+    addNamedCommand("feedStop", feeder.setPercentMotorRunCommand(0), isReal);
+
+    addNamedCommand(
+        "beltStart", belt.setPercentMotorOutputRunCommand(BeltConstants.FEED_POWER), isReal);
+    addNamedCommand("beltStop", belt.setPercentMotorOutputRunCommand(0), isReal);
+
+    addNamedCommand(
+        "intakeStart",
+        intake.setRollerVoltageAndPositionCommand(
+            IntakeConstants.INTAKE_POSITION, IntakeConstants.INTAKE_VOLTS),
+        isReal);
+    addNamedCommand("intakeStop", intake.setRollerVoltageAndPositionCommand(0, 0), isReal);
+
+    addNamedCommand("shooterStop", shooter.setManualSpeedRunCommand(0), isReal);
+    addNamedCommand("shooterPreset1", shooter.setManualSpeedRunCommand(1), isReal);
+    addNamedCommand("shooterAutomatic", shooter.setAutomaticCommandRun(), isReal);
+
+    addNamedCommand("driveOverrideRotation", drive.overrideRotationCommand(), isReal);
+    // new EventTrigger("driveOverrideRotation").onTrue(drive.overrideRotationCommand());
+
+    addNamedCommand("driveResetOverrides", drive.removeRotationOverrideCommand(), isReal);
+    // new EventTrigger("driveResetOverrides").onTrue(drive.removeRotationOverrideCommand());
+  }
+
+  public void addNamedCommand(String commandName, Command command, boolean isReal) {
+
+    if (isReal) {
+      NamedCommands.registerCommand(
+          // commandName, command.andThen(new TellCommand("just ran " + commandName)));
+          commandName, command);
+
+      new EventTrigger(commandName + "Event").onTrue(command);
+    } else {
+      // registers the named commands to print something out instead of actually running anything
+      NamedCommands.registerCommand(
+          commandName,
+          new TellCommand(commandName + " auto command")
+              .andThen(
+                  new ControllerVibrateCommand(1, controller).withDeadline(new WaitCommand(0.2)))
+              .alongWith(command));
+
+      //   new EventTrigger(commandName)
+      //       .onTrue(
+      //           new TellCommand(commandName + " auto event trigger command")
+      //               .andThen(
+      //                   new ControllerVibrateCommand(1, controller)
+      //                       .withDeadline(new WaitCommand(0.2)))
+      //               .andThen(new WaitCommand(0.3)));
+    }
   }
 
   // this shoudl be in a helper method or somewhere in robot container

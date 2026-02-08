@@ -76,12 +76,12 @@ public final class Constants {
     public static final double ORIENTATION_TOLERANCE = .1;
     // the time it takes between feeding and actual robot shoot. This is used to lead the robot
     // pose. Should be about 0.08 - 0.18 s
-    public static final double KRELEASE_POSE_PREDICTION_SEC = 0;
+    public static final double KRELEASE_POSE_PREDICTION_SEC = 0; // to change .5
 
     // we should test by looking at values. this can also be a distance lookup table. This corrects
     // for robot speed by changing the target location. This constant is supposed ot emmulate fligth
     // time
-    public static final double KFLIGHT_COMPENSATION_SEC = 0;
+    public static final double KFLIGHT_COMPENSATION_SEC = 0; // to change .5
 
     // the maximum allowed difference allowed between acceleraomter and encoders before it is
     // considered skid
@@ -394,6 +394,9 @@ public final class Constants {
     public static final double DYNAMIC_STEP_VOLTS_POSITION_SYSID = 0.25;
     public static final TalonFXConfiguration ROLLER_CONFIG;
     public static final Slot0Configs SLOT0CONFIGS;
+
+    public static int INTAKE_ROLLER_MOTOR_ID = 21;
+    public static int INTAKE_POSITION_MOTOR_ID = 22;
 
     static {
       SLOT0CONFIGS = new Slot0Configs();
