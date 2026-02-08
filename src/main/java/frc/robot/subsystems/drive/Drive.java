@@ -142,7 +142,7 @@ public class Drive extends SubsystemBase {
   }
 
   private static final double DEADBAND = DriveConstants.DEADBAND;
-  
+
   private Supplier<Rotation2d> rotationSupplier =
       () -> {
         if (isWithinPassingZone()) {
@@ -157,7 +157,6 @@ public class Drive extends SubsystemBase {
 
     // Create PID controller
     ProfiledPIDController angleController = DriveConstants.ANGLE_CONTROLLER;
-    angleController.enableContinuousInput(-Math.PI, Math.PI);
 
     // Construct command
     return Commands.run(
