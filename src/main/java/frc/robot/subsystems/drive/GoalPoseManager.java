@@ -18,7 +18,6 @@ public class GoalPoseManager {
     Logger.recordOutput("GoalPoseManager/PassingPoseName", getPassingPoseName());
     Logger.recordOutput("GoalPoseManager/targetPose", getTargetPose());
     Logger.recordOutput("GoalPoseManager/isPassing", isPassing);
-
   }
 
   // operations

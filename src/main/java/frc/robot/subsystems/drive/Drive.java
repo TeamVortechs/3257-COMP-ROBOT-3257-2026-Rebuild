@@ -250,8 +250,6 @@ public class Drive extends SubsystemBase {
   public void benPeriodic() {
     accelerometerY = accelerometer.getY();
     accelerometerX = accelerometer.getX();
-
-    shooterRotationManager.periodic();
   }
 
   public Command overrideRotationCommand() {
@@ -364,7 +362,12 @@ public class Drive extends SubsystemBase {
 
     goalPoseManager = new GoalPoseManager();
     shooterRotationManager =
-        new ShooterRotationManager(() -> goalPoseManager.getTargetPose(), this);
+        new ShooterRotationManager(
+            () -> goalPoseManager.getTargetPose(),
+            this,
+            DriveConstants.SHOOTER_ROTATION_MANAGER_LOGGING_FREQUENCY);
+    shooterRotationManager.startLogThread();
+
     accelerometer = new BuiltInAccelerometer();
   }
 

@@ -5,10 +5,12 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.Notifier;
 import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.AutoLogOutput;
+import org.littletonrobotics.junction.Logger;
 
 /** change this so it only logs hwen it's getting consumed */
 /*
@@ -18,38 +20,41 @@ public class ShooterRotationManager {
   private Supplier<Pose2d> targetPose;
   private Drive drive;
 
-  @AutoLogOutput private double distance = 0;
-  @AutoLogOutput private double currentRadians;
-  @AutoLogOutput private double targetRadians;
-  @AutoLogOutput private double radiansDifference;
-  @AutoLogOutput private boolean onTarget = false;
-  @AutoLogOutput private Pose2d unFilteredTargetPose = new Pose2d();
-  @AutoLogOutput private Pose2d unFilteredCurrentPose = new Pose2d();
-
   private ProfiledPIDController angle_controller = DriveConstants.ANGLE_CONTROLLER;
+
+  private final Notifier logger;
 
   /**
    * @param targetPose the pose of the area we want to shoot too
    * @param drive the pose of the robot
    */
-  public ShooterRotationManager(Supplier<Pose2d> targetPose, Drive drive) {
+  public ShooterRotationManager(Supplier<Pose2d> targetPose, Drive drive, double loggingFrequency) {
     this.targetPose = targetPose;
     this.drive = drive;
+
+    // set up logging
+    logger =
+        new Notifier(
+            () -> {
+              log();
+            });
   }
 
-  // logs all of the values from this.
+  public void startLogThread() {
+    logger.startPeriodic(1 / DriveConstants.SHOOTER_ROTATION_MANAGER_LOGGING_FREQUENCY);
+  }
+
+  /*
+   * Logs all values, should be called a small amount of times per second
+   */
   private void log() {
     // all of these methods automatically log values
-    currentRadians = drive.getRotation().getRadians();
-    targetRadians = getHeading().getRadians();
-    getDistance();
-    getHeading();
-    isOriented();
-  }
 
-  /** MUST BE CALLED REPEATEDLY. logs/calculates cached values */
-  public void periodic() {
-    log();
+    // logs is oriented, also calls get heaidng, not needed rn cus this is called in feeder
+    // isOriented();
+
+    // logs distance
+    getDistance();
   }
 
   /**
@@ -58,8 +63,12 @@ public class ShooterRotationManager {
    * @return the distance in meters
    */
   public double getDistance() {
-    distance =
+    double distance =
         getEffectiveTarget().getTranslation().getDistance(getPoseAtRelease().getTranslation());
+
+
+    // logs so we have good logging of this when it's important
+    Logger.recordOutput("ShooterRotationManager/Distance", distance);
 
     return distance;
   }
@@ -70,6 +79,9 @@ public class ShooterRotationManager {
     double currentRadians = drive.getPose().getRotation().getRadians();
 
     double rotationSpeed = angle_controller.calculate(currentRadians, targetRadians);
+
+    Logger.recordOutput("ShooterRotationManager/RotationFeedbackOverride", rotationSpeed);
+
     return rotationSpeed;
     // return .1;
   }
@@ -86,44 +98,9 @@ public class ShooterRotationManager {
 
     Rotation2d heading = new Rotation2d(delta.getX(), delta.getY());
 
-    heading = heading.plus(Rotation2d.fromDegrees(-90));
-
-    getDistance();
+    Logger.recordOutput("ShooterRotationManager/TargetHeading", heading);
 
     return heading;
-  }
-
-  /**
-   * Robot relative rotation to make the object point towards the target pose
-   *
-   * @return robot relative rotation
-   */
-  public Rotation2d getRobotRelativeRotation() {
-    Rotation2d heading = getHeading();
-    Rotation2d robotRotation = getPoseAtRelease().getRotation();
-
-    return heading.minus(robotRotation);
-  }
-
-  /**
-   * converts the rotation to an encoder value on the motor so we can rotate it towards it(MAYBE
-   * MOVE INTO MOTOR CLASS)
-   *
-   * @param rotation the rotation
-   * @return the encoder value to aim towards in the PID loop
-   */
-  public static double convertRotationToMotorVal(Rotation2d rotation) {
-    return 0;
-  }
-
-  /**
-   * converts the distance into arm elevation to shoot towards it
-   *
-   * @param distance the distance in meters
-   * @return the arm encoder value to aim towards
-   */
-  public static double convertDistToShooterAngle(double distance) {
-    return 0;
   }
 
   /**
@@ -137,12 +114,13 @@ public class ShooterRotationManager {
     // im not sure if this should be current or predicted drive, I'll ask
     Rotation2d error = getHeading().minus(drive.getRotation());
 
-    radiansDifference = error.getRadians();
+    // System.out.println("logging is oritented in shooter rot manager");
 
     // it's possible we could make tolerance a function of distance if it is a limiting factor
-    onTarget = Math.abs(error.getRadians()) < Constants.DriveConstants.ORIENTATION_TOLERANCE;
+    boolean onTarget =
+        Math.abs(error.getRadians()) < Constants.DriveConstants.ORIENTATION_TOLERANCE;
 
-    // Logger.recordOutput("ShooterRotationManager/HeadingDiff", error.getRadians());
+    Logger.recordOutput("ShooterRotationManager/IsOriented", onTarget);
 
     return onTarget;
   }
@@ -156,9 +134,6 @@ public class ShooterRotationManager {
   @AutoLogOutput
   public Pose2d getPoseAtRelease() {
     Pose2d firstPose = drive.getPose();
-
-    // logs the unfiltered pose so we can see the difference
-    unFilteredCurrentPose = firstPose;
 
     ChassisSpeeds fieldSpeeds =
         ChassisSpeeds.fromRobotRelativeSpeeds(drive.getChassisSpeeds(), drive.getRotation());
@@ -177,15 +152,14 @@ public class ShooterRotationManager {
             firstPose.getY() + fieldSpeeds.vyMetersPerSecond * dt,
             predictedRot);
 
+    Logger.recordOutput("ShooterRotationManager/PoseAtRelease", updatedPose);
+
     return updatedPose;
   }
 
   @AutoLogOutput
   public Pose2d getEffectiveTarget() {
     Pose2d firstPose = targetPose.get();
-
-    // logs the unfiltered pose so we can see the difference
-    unFilteredTargetPose = firstPose;
 
     ChassisSpeeds fieldSpeeds =
         ChassisSpeeds.fromRobotRelativeSpeeds(drive.getChassisSpeeds(), drive.getRotation());
@@ -200,6 +174,21 @@ public class ShooterRotationManager {
             firstPose.getY() - fieldSpeeds.vyMetersPerSecond * dt,
             firstPose.getRotation());
 
+    Logger.recordOutput("ShooterRotationManager/EffectiveTarget", updatedTarget);
+
     return updatedTarget;
   }
 }
+
+/**
+ * ts is only useful if we get a turret later
+ *
+ * <p>public Rotation2d getRobotRelativeRotation() { Rotation2d heading = getHeading(); Rotation2d
+ * robotRotation = getPoseAtRelease().getRotation();
+ *
+ * <p>return heading.minus(robotRotation); }
+ *
+ * <p>public static double convertRotationToMotorVal(Rotation2d rotation) { return 0; }
+ *
+ * <p>public static double convertDistToShooterAngle(double distance) { return 0; }
+ */

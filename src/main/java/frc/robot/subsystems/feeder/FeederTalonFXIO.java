@@ -13,6 +13,7 @@ import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Temperature;
 import edu.wpi.first.units.measure.Voltage;
 import frc.robot.Constants;
+import frc.robot.Constants.FeederConstants;
 
 public class FeederTalonFXIO implements FeederIO {
   private final TalonFX motor;
@@ -53,7 +54,7 @@ public class FeederTalonFXIO implements FeederIO {
 
     // Optimize CAN bus usage by refreshing these signals together
     BaseStatusSignal.setUpdateFrequencyForAll(
-        Constants.FREQUENCY_HZ, velocity, motorVoltage, supplyCurrent);
+        FeederConstants.SUBSYSTEM_LOGGING_FREQUENCY_HERTZ, velocity, motorVoltage, supplyCurrent, statorCurrent, temperatureCelsius);
 
     isBraked = true;
   }

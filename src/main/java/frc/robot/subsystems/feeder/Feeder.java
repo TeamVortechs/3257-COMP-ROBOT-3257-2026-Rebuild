@@ -4,6 +4,7 @@ import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.SignalLogger;
+import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -12,7 +13,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.FeederConstants;
 import java.util.function.BooleanSupplier;
-import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 public class Feeder extends SubsystemBase {
@@ -28,12 +28,11 @@ public class Feeder extends SubsystemBase {
   private BooleanSupplier visionSeesTag;
   private Timer debounceTimer;
 
+  private final Notifier hardwareLogger;
+  private final Notifier validityLogger;
+
   // here so we can log it
-  @AutoLogOutput private double debounceTimerTime;
-
   // caching this value and calculating it in periodic so we can log it for the driver
-  @AutoLogOutput private boolean isValidToFeed = false;
-
   /**
    * @param feederIO the hardware interface
    */
@@ -50,15 +49,26 @@ public class Feeder extends SubsystemBase {
     this.visionSeesTag = visionSeesTag;
 
     debounceTimer = new Timer();
+
+    hardwareLogger =
+        new Notifier(
+            () -> {
+              feederIO.updateInputs(inputs);
+              Logger.processInputs("feeder", inputs);
+            });
+
+    validityLogger =
+        new Notifier(
+            () -> {
+              calculateValidityToFeed();
+            });
+
+    hardwareLogger.startPeriodic(1/FeederConstants.SUBSYSTEM_LOGGING_FREQUENCY_HERTZ);
+    validityLogger.startPeriodic(1/FeederConstants.VALIDITY_LOGGING_FREQUENCY_HERTZ);
   }
 
   @Override
-  public void periodic() {
-    feederIO.updateInputs(inputs);
-    Logger.processInputs("feeder", inputs);
-
-    calculateValidityToFeed();
-  }
+  public void periodic() {}
 
   // SUBSYSTEM METHODS
 
@@ -77,18 +87,22 @@ public class Feeder extends SubsystemBase {
   }
 
   // HELPER METHODS
-  private void calculateValidityToFeed() {
+  private boolean calculateValidityToFeed() {
     // this stuff should wait on debounce, probably not shooter on speed though
     if (!driveIsValid.getAsBoolean() || !visionSeesTag.getAsBoolean()) {
       debounceTimer.restart();
     }
 
-    // just for logging
-    debounceTimerTime = debounceTimer.get();
+    // logging part:
 
-    isValidToFeed =
+    boolean isValid =
         debounceTimer.hasElapsed(FeederConstants.VALIDITY_DEBOUNCE_TIME_SEC)
             && shooterOnVelocity.getAsBoolean();
+
+    Logger.recordOutput("Feeder/IsValidToFeed", isValid);
+    Logger.recordOutput("DebounceTime", debounceTimer.get());
+
+    return isValid;
   }
 
   // COMMANDS
@@ -121,7 +135,7 @@ public class Feeder extends SubsystemBase {
   public Command feedWhenValidRunCommand(double percentage) {
     return Commands.run(
         () -> {
-          if (isValidToFeed) {
+          if (calculateValidityToFeed()) {
             this.setPercentMotorOutput(percentage);
           } else {
             this.setPercentMotorOutput(0);

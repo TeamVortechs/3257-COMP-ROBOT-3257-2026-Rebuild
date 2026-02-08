@@ -39,7 +39,7 @@ public final class Constants {
   public static final double HIGH_PRIORITY_FREQUENCY_HZ = 50;
   public static final double MEDIUM_PRIORITY_FREQUENCY_HZ = 25;
   public static final double LOW_PRIORITY_FREQUENCY_HZ = 10;
-  public static final double VERY_LOW_PRIORITY_FREQUENCY_HZ = 2;
+  public static final double VERY_LOW_PRIORITY_FREQUENCY_HZ = 4;
 
   public static enum Mode {
     /** Running on a real robot. */
@@ -53,6 +53,9 @@ public final class Constants {
   }
 
   public class DriveConstants {
+
+    public static final double SHOOTER_ROTATION_MANAGER_LOGGING_FREQUENCY =
+        Constants.VERY_LOW_PRIORITY_FREQUENCY_HZ;
 
     public static final double transKp = 2;
     public static final double transKi = 0;
@@ -251,6 +254,9 @@ public final class Constants {
 
   // copied directly from ShooterConstants
   public class FeederConstants {
+
+    public static final double VALIDITY_LOGGING_FREQUENCY_HERTZ = VERY_LOW_PRIORITY_FREQUENCY_HZ;
+    public static final double SUBSYSTEM_LOGGING_FREQUENCY_HERTZ = MEDIUM_PRIORITY_FREQUENCY_HZ;
 
     public static final double VALIDITY_DEBOUNCE_TIME_SEC = 0.2;
 
