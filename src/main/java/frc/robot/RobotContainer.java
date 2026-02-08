@@ -15,7 +15,6 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
@@ -271,67 +270,61 @@ public class RobotContainer {
 
     @SuppressWarnings("unused")
     Command aimTowardsTargetCommand =
-        DriveCommands.joystickDriveAtAngle(
+        drive.joystickDriveAtAngle(
             drive,
             () -> -controller.getLeftY() * DriveConstants.K_JOYSTICK_WHEN_SHOOTING,
-            () -> -controller.getLeftX() * DriveConstants.K_JOYSTICK_WHEN_SHOOTING,
-            () -> drive.getHeadingToGoal());
+            () -> -controller.getLeftX() * DriveConstants.K_JOYSTICK_WHEN_SHOOTING);
 
     @SuppressWarnings("unused")
     Command aimTowardsPassingCommand =
-        DriveCommands.joystickDriveAtAngle(
+        drive.joystickDriveAtAngle(
             drive,
             () -> -controller.getLeftY() * DriveConstants.K_JOYSTICK_WHEN_PASSING,
-            () -> -controller.getLeftX() * DriveConstants.K_JOYSTICK_WHEN_PASSING,
-            () -> drive.getHeadingToPassing());
+            () -> -controller.getLeftX() * DriveConstants.K_JOYSTICK_WHEN_PASSING);
 
     Command shootCommand =
         Commands.parallel(
-            DriveCommands.joystickDriveAtAngle(
+            drive.joystickDriveAtAngle(
                 drive,
                 () -> -controller.getLeftY() * DriveConstants.K_JOYSTICK_WHEN_SHOOTING,
-                () -> -controller.getLeftX() * DriveConstants.K_JOYSTICK_WHEN_SHOOTING,
-                () -> drive.getHeadingToGoal()),
+                () -> -controller.getLeftX() * DriveConstants.K_JOYSTICK_WHEN_SHOOTING),
             shooter.setAutomaticCommandRun(),
             feeder.feedWhenValidRunCommand(FeederConstants.FEED_POWER));
 
-    Command
-        passCommand = // messy, cant put aimTowardsPassingCommand in this :( commands that have been
-            // composed can not be put in a composing ocmmand or something
-            Commands.parallel(
-                DriveCommands.joystickDriveAtAngle(
-                    drive,
-                    () -> -controller.getLeftY() * DriveConstants.K_JOYSTICK_WHEN_PASSING,
-                    () -> -controller.getLeftX() * DriveConstants.K_JOYSTICK_WHEN_PASSING,
-                    () -> drive.getHeadingToPassing()),
-                shooter.setAutomaticCommandRun(),
-                feeder.feedWhenValidRunCommand(FeederConstants.FEED_POWER));
-                
+    // Command
+    //     passCommand = // messy, cant put aimTowardsPassingCommand in this :( commands that have
+    // been
+    //         // composed can not be put in a composing ocmmand or something
+    //         Commands.parallel(
+    //             drive.joystickDriveAtAngle(
+    //                 drive,
+    //                 () -> -controller.getLeftY() * DriveConstants.K_JOYSTICK_WHEN_PASSING,
+    //                 () -> -controller.getLeftX() * DriveConstants.K_JOYSTICK_WHEN_PASSING),
+    //             shooter.setAutomaticCommandRun(),
+    //             feeder.feedWhenValidRunCommand(FeederConstants.FEED_POWER));
+
     controller.y().toggleOnTrue(drive.iteratePassingCommand(true));
 
     controller.leftTrigger().whileTrue(shootCommand);
 
-    controller
-        .rightTrigger()
-        .whileTrue(
-            new ConditionalCommand(
-                Commands.parallel(
-                    DriveCommands.joystickDriveAtAngle(
-                        drive,
-                        () -> -controller.getLeftY() * DriveConstants.K_JOYSTICK_WHEN_SHOOTING,
-                        () -> -controller.getLeftX() * DriveConstants.K_JOYSTICK_WHEN_SHOOTING,
-                        () -> drive.getHeadingToGoal()),
-                    shooter.setAutomaticCommandRun(),
-                    feeder.feedWhenValidRunCommand(FeederConstants.FEED_POWER)),
-                Commands.parallel(
-                    DriveCommands.joystickDriveAtAngle(
-                        drive,
-                        () -> -controller.getLeftY() * DriveConstants.K_JOYSTICK_WHEN_PASSING,
-                        () -> -controller.getLeftX() * DriveConstants.K_JOYSTICK_WHEN_PASSING,
-                        () -> drive.getHeadingToPassing()),
-                    shooter.setAutomaticCommandRun(),
-                    feeder.feedWhenValidRunCommand(FeederConstants.FEED_POWER)),
-                () -> !drive.isWithinPassingZone()));
+    controller.rightTrigger().whileTrue(shootCommand);
+    // .whileTrue(
+    //     new ConditionalCommand(
+    //         Commands.parallel(
+    //             drive.joystickDriveAtAngle(
+    //                 drive,
+    //                 () -> -controller.getLeftY() * DriveConstants.K_JOYSTICK_WHEN_SHOOTING,
+    //                 () -> -controller.getLeftX() * DriveConstants.K_JOYSTICK_WHEN_SHOOTING),
+    //             shooter.setAutomaticCommandRun(),
+    //             feeder.feedWhenValidRunCommand(FeederConstants.FEED_POWER)),
+    //         Commands.parallel(
+    //             drive.joystickDriveAtAngle(
+    //                 drive,
+    //                 () -> -controller.getLeftY() * DriveConstants.K_JOYSTICK_WHEN_PASSING,
+    //                 () -> -controller.getLeftX() * DriveConstants.K_JOYSTICK_WHEN_PASSING),
+    //             shooter.setAutomaticCommandRun(),
+    //             feeder.feedWhenValidRunCommand(FeederConstants.FEED_POWER)),
+    //         () -> !drive.isWithinPassingZone()));
 
     controller.leftBumper().whileTrue(climb.setSpeedsRunCommand(1, 0.5));
 
@@ -341,7 +334,6 @@ public class RobotContainer {
 
     operatorController.rightBumper().toggleOnTrue(drive.iteratePassingCommand(true));
     operatorController.leftBumper().toggleOnTrue(drive.iteratePassingCommand(false));
-    operatorController.rightTrigger().whileTrue(Commands.parallel());
   }
 
   /**

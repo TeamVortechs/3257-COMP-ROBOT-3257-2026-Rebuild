@@ -32,15 +32,17 @@ import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
 public class DriveCommands {
-  private static final double DEADBAND = 0.1;
-  private static final double ANGLE_KP = 5.0;
-  private static final double ANGLE_KD = 0.4;
-  private static final double ANGLE_MAX_VELOCITY = 8.0;
-  private static final double ANGLE_MAX_ACCELERATION = 20.0;
-  private static final double FF_START_DELAY = 2.0; // Secs
-  private static final double FF_RAMP_RATE = 0.1; // Volts/Sec
-  private static final double WHEEL_RADIUS_MAX_VELOCITY = 0.25; // Rad/Sec
-  private static final double WHEEL_RADIUS_RAMP_RATE = 0.05; // Rad/Sec^2
+  private static final double DEADBAND = DriveConstants.DEADBAND;
+  private static final double ANGLE_KP = DriveConstants.ANGLE_KP;
+  private static final double ANGLE_KD = DriveConstants.ANGLE_KD;
+  private static final double ANGLE_MAX_VELOCITY = DriveConstants.ANGLE_MAX_VELOCITY;
+  private static final double ANGLE_MAX_ACCELERATION = DriveConstants.ANGLE_MAX_ACCELERATION;
+  private static final double FF_START_DELAY = DriveConstants.FF_START_DELAY; // Secs
+  private static final double FF_RAMP_RATE = DriveConstants.FF_RAMP_RATE; // Volts/Sec
+  private static final double WHEEL_RADIUS_MAX_VELOCITY =
+      DriveConstants.WHEEL_RADIUS_MAX_VELOCITY; // Rad/Sec
+  private static final double WHEEL_RADIUS_RAMP_RATE =
+      DriveConstants.WHEEL_RADIUS_RAMP_RATE; // Rad/Sec^2
 
   private DriveCommands() {}
 
