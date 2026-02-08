@@ -33,11 +33,13 @@ import java.util.function.Supplier;
 public final class Constants {
   public static final Mode SIM_MODE = Mode.SIM;
   public static final Mode CURR_MODE = RobotBase.isReal() ? Mode.REAL : SIM_MODE;
+
   public static final double FREQUENCY_HZ = 50;
 
   public static final double HIGH_PRIORITY_FREQUENCY_HZ = 50;
-  public static final double MEDIUM_PRIORITY_FREQUENCY_HZ = 10;
-  public static final double LOW_PRIORITY_FREQUENCY_HZ = 2;
+  public static final double MEDIUM_PRIORITY_FREQUENCY_HZ = 25;
+  public static final double LOW_PRIORITY_FREQUENCY_HZ = 10;
+  public static final double VERY_LOW_PRIORITY_FREQUENCY_HZ = 2;
 
   public static enum Mode {
     /** Running on a real robot. */
@@ -284,6 +286,9 @@ public final class Constants {
   // copied off feeder constants
   // copied directly from ShooterConstants
   public class BeltConstants {
+
+    public static double FREQUENCY_HZ = Constants.LOW_PRIORITY_FREQUENCY_HZ;
+
     public static final double CURRENT_LIMIT = 40.0;
 
     // used in Belt.java
