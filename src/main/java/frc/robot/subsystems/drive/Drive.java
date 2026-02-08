@@ -19,10 +19,13 @@ import com.pathplanner.lib.util.PathPlannerLogging;
 import edu.wpi.first.hal.FRCNetComm.tInstances;
 import edu.wpi.first.hal.FRCNetComm.tResourceType;
 import edu.wpi.first.hal.HAL;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -32,12 +35,14 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
@@ -47,6 +52,8 @@ import frc.robot.generated.TunerConstants;
 import frc.robot.util.LocalADStarAK;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
@@ -59,6 +66,7 @@ public class Drive extends SubsystemBase {
   // puttign this in container because it's already like this and when we change drive it'll be good
   // to have it easily changed. Also it's probably more readable this way
   private ShooterRotationManager shooterRotationManager;
+  private GoalPoseManager goalPoseManager;
 
   private BuiltInAccelerometer accelerometer;
 
@@ -71,6 +79,12 @@ public class Drive extends SubsystemBase {
    *     can use the joystick drive command from drive commands compensates for robot movement
    */
   public Rotation2d getHeadingToGoal() {
+    goalPoseManager.setIsPassing(false);
+    return shooterRotationManager.getHeading();
+  }
+
+  public Rotation2d getHeadingToPassing() {
+    goalPoseManager.setIsPassing(true);
     return shooterRotationManager.getHeading();
   }
 
@@ -78,6 +92,19 @@ public class Drive extends SubsystemBase {
    * @return the distance from the robot to the goal
    */
   public double getDistanceToGoal() {
+
+    // makes the goal pose manager switch to the shooter setting
+    goalPoseManager.setIsPassing(false);
+    return shooterRotationManager.getDistance();
+  }
+
+  public double getDistanceToPassing() {
+    ///
+    goalPoseManager.setIsPassing(true);
+    return shooterRotationManager.getDistance();
+  }
+
+  public double getDistanceToTarget() {
     return shooterRotationManager.getDistance();
   }
 
@@ -114,15 +141,105 @@ public class Drive extends SubsystemBase {
     return isSkidding;
   }
 
+  private static final double DEADBAND = DriveConstants.DEADBAND;
+  
+  private Supplier<Rotation2d> rotationSupplier =
+      () -> {
+        if (isWithinPassingZone()) {
+          return getHeadingToPassing();
+        } else {
+          return getHeadingToGoal();
+        }
+      };
+
+  public Command joystickDriveAtAngle(
+      Drive drive, DoubleSupplier xSupplier, DoubleSupplier ySupplier) {
+
+    // Create PID controller
+    ProfiledPIDController angleController = DriveConstants.ANGLE_CONTROLLER;
+    angleController.enableContinuousInput(-Math.PI, Math.PI);
+
+    // Construct command
+    return Commands.run(
+            () -> {
+              // Get linear velocity
+              Translation2d linearVelocity =
+                  getLinearVelocityFromJoysticks(xSupplier.getAsDouble(), ySupplier.getAsDouble());
+
+              // Calculate angular speed
+              double omega =
+                  angleController.calculate(
+                      drive.getRotation().getRadians(), rotationSupplier.get().getRadians());
+
+              // Convert to field relative speeds & send command
+              ChassisSpeeds speeds =
+                  new ChassisSpeeds(
+                      linearVelocity.getX() * drive.getMaxLinearSpeedMetersPerSec(),
+                      linearVelocity.getY() * drive.getMaxLinearSpeedMetersPerSec(),
+                      omega);
+              boolean isFlipped =
+                  DriverStation.getAlliance().isPresent()
+                      && DriverStation.getAlliance().get() == Alliance.Red;
+              drive.runVelocity(
+                  ChassisSpeeds.fromFieldRelativeSpeeds(
+                      speeds,
+                      isFlipped
+                          ? drive.getRotation().plus(new Rotation2d(Math.PI))
+                          : drive.getRotation()));
+            },
+            drive)
+
+        // Reset PID controller when command starts
+        .beforeStarting(() -> angleController.reset(drive.getRotation().getRadians()));
+  }
+
+  private static Translation2d getLinearVelocityFromJoysticks(double x, double y) {
+    // Apply deadband
+    double linearMagnitude = MathUtil.applyDeadband(Math.hypot(x, y), DEADBAND);
+    Rotation2d linearDirection = new Rotation2d(Math.atan2(y, x));
+
+    // Square magnitude for more precise control
+    linearMagnitude = linearMagnitude * linearMagnitude;
+
+    // Return new linear velocity
+    return new Pose2d(Translation2d.kZero, linearDirection)
+        .transformBy(new Transform2d(linearMagnitude, 0.0, Rotation2d.kZero))
+        .getTranslation();
+  }
+
   /**
    * @return wether or not the robot is in a zone where the shooter hsould be charged more
    *     agressively to reduce windup time
    */
   @AutoLogOutput
   public boolean isWithinShooterAutomaticChargingZone() {
-    double xPose = getPose().getX();
+    return isWithinZone(DriveConstants.X_POSE_TO_CHARGE, false);
+  }
 
-    return xPose < DriveConstants.X_POSE_TO_CHARGE;
+  @AutoLogOutput
+  public boolean isWithinPassingZone() {
+    return isWithinZone(DriveConstants.X_POSE_TO_PASS, true);
+  }
+
+  private boolean isWithinZone(double x, boolean wantsCenter) {
+    double xPose = getPose().getX();
+    if (DriverStation.getAlliance().get() == Alliance.Blue) {
+      if (!wantsCenter) {
+        return xPose < x;
+      } else {
+        return xPose > x;
+      }
+    } else {
+      if (!wantsCenter) {
+        return xPose > (2 * DriveConstants.CENTER_POINT.getX() - x);
+      } else {
+        return xPose < (2 * DriveConstants.CENTER_POINT.getX() - x);
+      }
+    }
+  }
+
+  public Command iteratePassingCommand(boolean forward) {
+    return goalPoseManager.iteratePassingPoseCommand(forward);
   }
 
   /**
@@ -136,6 +253,7 @@ public class Drive extends SubsystemBase {
     accelerometerX = accelerometer.getX();
 
     shooterRotationManager.periodic();
+    goalPoseManager.periodic();
   }
 
   // TunerConstants doesn't include these constants, so they are declared locally
@@ -228,7 +346,9 @@ public class Drive extends SubsystemBase {
             new SysIdRoutine.Mechanism(
                 (voltage) -> runCharacterization(voltage.in(Volts)), null, this));
 
-    shooterRotationManager = new ShooterRotationManager(Constants.DriveConstants.GOAL_POSE, this);
+    goalPoseManager = new GoalPoseManager();
+    shooterRotationManager =
+        new ShooterRotationManager(() -> goalPoseManager.getTargetPose(), this);
     accelerometer = new BuiltInAccelerometer();
   }
 

@@ -12,6 +12,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -72,12 +73,19 @@ public class RobotContainer {
   // Controller
 
   private final CommandXboxController controller = new CommandXboxController(0);
+  private final CommandXboxController operatorController = new CommandXboxController(1);
 
   // usign this for sys id so it doesn't conflict with anything
+  @SuppressWarnings("unused")
   private final CommandXboxController sysID_controller = new CommandXboxController(3);
 
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
+
+  private static void flipAllPoses() {
+    Constants.DriveConstants.SWICH_PASSING_GOALS = true;
+    Constants.DriveConstants.PASSING_GOALS();
+  }
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -152,7 +160,7 @@ public class RobotContainer {
         shooter =
             new Shooter(
                 new ShooterSimulationIO(),
-                () -> drive.getDistanceToGoal(),
+                () -> drive.getDistanceToTarget(),
                 () -> drive.isWithinShooterAutomaticChargingZone());
 
         feeder =
@@ -192,6 +200,8 @@ public class RobotContainer {
 
         break;
     }
+
+    SmartDashboard.putData("Flip Poses", Commands.runOnce(() -> flipAllPoses()));
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
@@ -274,12 +284,12 @@ public class RobotContainer {
 
     // climb.setDefaultCommand(climb.setPositionsRunCommand(0, 0));
 
+    @SuppressWarnings("unused")
     Command aimTowardsTargetCommand =
-        DriveCommands.joystickDriveAtAngle(
+        drive.joystickDriveAtAngle(
             drive,
             () -> -controller.getLeftY() * DriveConstants.K_JOYSTICK_WHEN_SHOOTING,
-            () -> -controller.getLeftX() * DriveConstants.K_JOYSTICK_WHEN_SHOOTING,
-            () -> drive.getHeadingToGoal());
+            () -> -controller.getLeftX() * DriveConstants.K_JOYSTICK_WHEN_SHOOTING);
 
     controller
         .rightBumper()

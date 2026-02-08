@@ -12,12 +12,18 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.RobotBase;
 import frc.robot.generated.TunerConstants;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Supplier;
 
 /**
@@ -62,6 +68,9 @@ public final class Constants {
     public static final double rotationTolerance = 0.1;
     public static final double translationTolerance = 0.01;
 
+    public static final ProfiledPIDController ANGLE_CONTROLLER;
+
+
     public static final double ORIENTATION_TOLERANCE = .1;
     // the time it takes between feeding and actual robot shoot. This is used to lead the robot
     // pose. Should be about 0.08 - 0.18 s
@@ -76,9 +85,64 @@ public final class Constants {
     // considered skid
     public static final double SKID_THRESHOLD = 5.0;
 
+    public static final double DEADBAND = 0.1;
+    public static final double ANGLE_KP = 5.0;
+    public static final double ANGLE_KD = 0.4;
+    public static final double ANGLE_MAX_ACCELERATION = 20.0;
+    public static final double ANGLE_MAX_VELOCITY = 8.0;
+    public static final double FF_START_DELAY = 2.0; // Secs
+    public static final double FF_RAMP_RATE = 0.1; // Volts/Sec
+    public static final double WHEEL_RADIUS_MAX_VELOCITY = 0.25; // Rad/Sec
+    public static final double WHEEL_RADIUS_RAMP_RATE = 0.05; // Rad/Sec^2
+
+    public static final Translation2d CENTER_POINT = new Translation2d(8.27, 4.115);
+
     // find this
     public static final Pose2d GOAL_POSE_BLUE = new Pose2d(4.622, 4.03, new Rotation2d());
     public static final Pose2d GOAL_POSE_RED = new Pose2d(11.917, 4.030, new Rotation2d());
+
+    private static List<Pose2d> PASSING_GOALS_STORAGE = null;
+    private static List<String> PASSING_GOALS_NAME_STORAGE = null;
+
+    public static boolean SWICH_PASSING_GOALS = true;
+
+    public static final List<String> PASSING_GOALS_NAMES() {
+
+      if (PASSING_GOALS_NAME_STORAGE == null) {
+        PASSING_GOALS_NAME_STORAGE = new ArrayList<>();
+        PASSING_GOALS_NAME_STORAGE.add("pose 1");
+        PASSING_GOALS_NAME_STORAGE.add("pose 2");
+        PASSING_GOALS_NAME_STORAGE.add("pose_3");
+      }
+
+      return PASSING_GOALS_NAME_STORAGE;
+    }
+
+    public static final List<Pose2d> PASSING_GOALS() {
+
+      if (PASSING_GOALS_STORAGE == null) {
+        PASSING_GOALS_STORAGE = new ArrayList<>();
+        PASSING_GOALS_STORAGE.add(new Pose2d());
+        PASSING_GOALS_STORAGE.add(new Pose2d(1, 1, new Rotation2d()));
+        PASSING_GOALS_STORAGE.add(new Pose2d(2, 2, new Rotation2d()));
+      }
+
+      // add flip logic here
+      // double xToFlip = 5;
+      // double yToFlip = 5;
+      // double x;
+      // double y;
+      if (SWICH_PASSING_GOALS) {
+        for (int i = 0; i < PASSING_GOALS_STORAGE.size(); i++) {
+          PASSING_GOALS_STORAGE.set(
+              i,
+              PASSING_GOALS_STORAGE.get(i).rotateAround(CENTER_POINT, Rotation2d.fromDegrees(180)));
+        }
+        SWICH_PASSING_GOALS = false;
+      }
+
+      return PASSING_GOALS_STORAGE;
+    }
 
     // this is ugly but all it does is return target pose based on the team
     public static final Supplier<Pose2d> GOAL_POSE =
@@ -92,8 +156,10 @@ public final class Constants {
 
     // the zone where we choose to more agressively charge the shooter
     public static final double X_POSE_TO_CHARGE = 5.5;
+    public static final double X_POSE_TO_PASS = 5.5;
 
     public static final double K_JOYSTICK_WHEN_SHOOTING = 1;
+    public static final double K_JOYSTICK_WHEN_PASSING = 1;
 
     // from our library
     public static final double ODOMETRY_FREQUENCY =
@@ -108,6 +174,17 @@ public final class Constants {
                 Math.hypot(TunerConstants.BackLeft.LocationX, TunerConstants.BackLeft.LocationY),
                 Math.hypot(
                     TunerConstants.BackRight.LocationX, TunerConstants.BackRight.LocationY)));
+
+
+        static {
+          ANGLE_CONTROLLER =
+            new ProfiledPIDController(
+            ANGLE_KP,
+            0.0,
+            ANGLE_KD,
+            new TrapezoidProfile.Constraints(ANGLE_MAX_VELOCITY, ANGLE_MAX_ACCELERATION));
+            ANGLE_CONTROLLER.enableContinuousInput(-Math.PI, Math.PI);
+    }
   }
 
   public class ShooterConstants {

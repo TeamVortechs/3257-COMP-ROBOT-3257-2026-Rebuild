@@ -130,6 +130,8 @@ public class ShooterRotationManager {
     // it's possible we could make tolerance a function of distance if it is a limiting factor
     onTarget = Math.abs(error.getRadians()) < Constants.DriveConstants.ORIENTATION_TOLERANCE;
 
+    // Logger.recordOutput("ShooterRotationManager/HeadingDiff", error.getRadians());
+
     return onTarget;
   }
 
