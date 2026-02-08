@@ -71,7 +71,6 @@ public class RobotContainer {
 
   // Controller
 
-  
   private final CommandXboxController controller = new CommandXboxController(0);
 
   // usign this for sys id so it doesn't conflict with anything
