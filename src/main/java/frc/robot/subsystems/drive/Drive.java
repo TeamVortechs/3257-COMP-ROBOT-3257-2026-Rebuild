@@ -252,7 +252,6 @@ public class Drive extends SubsystemBase {
     accelerometerX = accelerometer.getX();
 
     shooterRotationManager.periodic();
-    goalPoseManager.periodic();
   }
 
   public Command overrideRotationCommand() {

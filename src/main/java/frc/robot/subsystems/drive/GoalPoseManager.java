@@ -4,14 +4,22 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Constants.DriveConstants;
-import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 public class GoalPoseManager {
   private int indexOfPassingPose;
   private int maxIndexOfPassingPose = DriveConstants.PASSING_GOALS().size();
 
-  @AutoLogOutput private boolean isPassing = false;
+  // not autologged bc we only log it on the setter
+  private boolean isPassing = false;
+
+  public GoalPoseManager() {
+    // start the log
+    Logger.recordOutput("GoalPoseManager/PassingPoseName", getPassingPoseName());
+    Logger.recordOutput("GoalPoseManager/targetPose", getTargetPose());
+    Logger.recordOutput("GoalPoseManager/isPassing", isPassing);
+
+  }
 
   // operations
   public void iteratePassingPose(boolean forwards) {
@@ -29,9 +37,7 @@ public class GoalPoseManager {
         indexOfPassingPose = maxIndexOfPassingPose - 1;
       }
     }
-  }
 
-  public void periodic() {
     Logger.recordOutput("GoalPoseManager/PassingPoseName", getPassingPoseName());
     Logger.recordOutput("GoalPoseManager/targetPose", getTargetPose());
   }
@@ -50,8 +56,10 @@ public class GoalPoseManager {
     }
   }
 
+  // logging it here bc this hte only place we log it at
   public void setIsPassing(boolean isPassing) {
     this.isPassing = isPassing;
+    Logger.recordOutput("GoalPoseManager/isPassing", isPassing);
   }
 
   // commands

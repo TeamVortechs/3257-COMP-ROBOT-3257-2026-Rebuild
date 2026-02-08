@@ -4,7 +4,6 @@ import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.SignalLogger;
-
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -30,18 +29,19 @@ public class Belt extends SubsystemBase {
     this.beltIO = beltIO;
     this.inputs = new BeltIOInputsAutoLogged();
 
-    //set up logging
-    logger = new Notifier(() -> {
-      beltIO.updateInputs(inputs);
-      Logger.processInputs("belt", inputs);
-    });
+    // set up logging
+    logger =
+        new Notifier(
+            () -> {
+              beltIO.updateInputs(inputs);
+              Logger.processInputs("belt", inputs);
+            });
 
-    logger.startPeriodic(1/BeltConstants.FREQUENCY_HZ);
+    logger.startPeriodic(1 / BeltConstants.FREQUENCY_HZ);
   }
 
   @Override
-  public void periodic() {
-  }
+  public void periodic() {}
 
   // SUBSYSTEM METHODS
 

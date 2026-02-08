@@ -289,7 +289,7 @@ public class RobotContainer {
 
     controller.rightTrigger().whileTrue(feeder.setPercentMotorRunCommand(0.4));
 
-    controller.rightBumper().whileTrue(shooter.setManualSpeedRunCommand(70));
+    // controller.rightBumper().whileTrue(shooter.setManualSpeedRunCommand(70));
     controller.leftBumper().whileTrue(shooter.setAutomaticCommandRun());
 
     controller.povDown().whileTrue(belt.setPercentMotorOutputCommand(0.5));
@@ -307,15 +307,15 @@ public class RobotContainer {
             () -> -controller.getLeftY() * DriveConstants.K_JOYSTICK_WHEN_SHOOTING,
             () -> -controller.getLeftX() * DriveConstants.K_JOYSTICK_WHEN_SHOOTING);
 
-    // controller
-    //     .povUp()
-    //     .whileTrue(
-    //         Commands.parallel(
-    //             aimTowardsTargetCommand,
-    //             shooter.setAutomaticCommandRun(),
-    //             feeder.feedWhenValidRunCommand(FeederConstants.FEED_POWER)));
+    controller
+        .rightBumper()
+        .whileTrue(
+            Commands.parallel(
+                aimTowardsTargetCommand,
+                shooter.setAutomaticCommandRun(),
+                feeder.feedWhenValidRunCommand(FeederConstants.FEED_POWER)));
 
-    // controller.povRight().toggleOnTrue(drive.iteratePassingCommand(true));
+    controller.povRight().toggleOnTrue(drive.iteratePassingCommand(true));
   }
 
   /**
