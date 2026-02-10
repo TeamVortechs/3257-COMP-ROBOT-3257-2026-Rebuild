@@ -57,6 +57,8 @@ public final class Constants {
     public static final double SHOOTER_ROTATION_MANAGER_LOGGING_FREQUENCY =
         Constants.VERY_LOW_PRIORITY_FREQUENCY_HZ;
 
+    public static final double FREQUENCY_UPDATE_ACC =
+        20.00; // how many times per sec should we log accelerometer
     public static final double transKp = 2;
     public static final double transKi = 0;
     public static final double transKd = 0;
@@ -194,6 +196,8 @@ public final class Constants {
   }
 
   public class ShooterConstants {
+    public static final double FREQUENCY_HZ = Constants.LOW_PRIORITY_FREQUENCY_HZ;
+
     public static final double CURRENT_LIMIT = 40.0;
 
     public static final double SIM_TOLERANCE = 0.5;
@@ -321,6 +325,8 @@ public final class Constants {
 
   // copied directly from BeltConstants
   public class ClimbConstants {
+    public static final double FREQUENCY_HZ = Constants.VERY_LOW_PRIORITY_FREQUENCY_HZ;
+
     public static final double CURRENT_LIMIT = 40.0;
     // used in Belt.java
     public static final double RAMP_RATE_VOLTS_SYSID = 0.1;
@@ -368,6 +374,8 @@ public final class Constants {
   }
 
   public class IntakeConstants {
+    public static final double FREQUENCY_HZ = Constants.LOW_PRIORITY_FREQUENCY_HZ;
+
     // dummy values for now
     public static final double MAX_TARGET_SPEED = 100;
     public static final double MAX_MANUAL_SPEED = 100;

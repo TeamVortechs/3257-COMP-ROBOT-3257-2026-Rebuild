@@ -66,7 +66,6 @@ public class ShooterRotationManager {
     double distance =
         getEffectiveTarget().getTranslation().getDistance(getPoseAtRelease().getTranslation());
 
-
     // logs so we have good logging of this when it's important
     Logger.recordOutput("ShooterRotationManager/Distance", distance);
 

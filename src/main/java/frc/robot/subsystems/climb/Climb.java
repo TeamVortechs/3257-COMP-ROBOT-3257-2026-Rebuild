@@ -4,6 +4,7 @@ import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.SignalLogger;
+import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -16,7 +17,9 @@ import org.littletonrobotics.junction.Logger;
 
 public class Climb extends SubsystemBase {
   private final ClimbIO climbIO;
-  private final ClimbIOInputsAutoLogged inputs = new ClimbIOInputsAutoLogged();
+  private final ClimbIOInputsAutoLogged inputs;
+
+  private final Notifier logger;
 
   @AutoLogOutput private boolean isLocked = true;
 
@@ -30,13 +33,21 @@ public class Climb extends SubsystemBase {
 
   public Climb(ClimbIO climbIO) {
     this.climbIO = climbIO;
+    this.inputs = new ClimbIOInputsAutoLogged();
+
+    // set up logging
+    logger =
+        new Notifier(
+            () -> {
+              climbIO.updateInputs(inputs);
+              Logger.processInputs("climb", inputs);
+            });
+
+    logger.startPeriodic(1 / ClimbConstants.FREQUENCY_HZ);
   }
 
   @Override
   public void periodic() {
-    climbIO.updateInputs(inputs);
-    Logger.processInputs("Climb", inputs);
-
     if (isLocked) {
       climbIO.stop();
 

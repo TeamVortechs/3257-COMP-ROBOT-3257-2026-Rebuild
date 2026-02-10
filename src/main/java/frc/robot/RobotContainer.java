@@ -35,9 +35,6 @@ import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.belt.Belt;
 import frc.robot.subsystems.belt.BeltIO;
 import frc.robot.subsystems.belt.BeltSimulationIO;
-import frc.robot.subsystems.climb.Climb;
-import frc.robot.subsystems.climb.ClimbIO;
-import frc.robot.subsystems.climb.ClimbSimulationIO;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
@@ -77,7 +74,7 @@ public class RobotContainer {
 
   private final Shooter shooter;
 
-  private final Climb climb;
+  // private final Climb climb;
 
   // Controller
 
@@ -129,7 +126,7 @@ public class RobotContainer {
                 () -> drive.getDistanceToGoal(),
                 () -> drive.isWithinShooterAutomaticChargingZone());
 
-        climb = new Climb(new ClimbIO() {});
+        // climb = new Climb(new ClimbIO() {});
 
         feeder =
             new Feeder(
@@ -184,7 +181,7 @@ public class RobotContainer {
                 () -> shooter.isOnTarget(),
                 () -> true);
 
-        climb = new Climb(new ClimbSimulationIO());
+        // climb = new Climb(new ClimbSimulationIO());
 
         break;
 
@@ -210,7 +207,7 @@ public class RobotContainer {
                 () -> drive.getDistanceToGoal(),
                 () -> drive.isWithinShooterAutomaticChargingZone());
 
-        climb = new Climb(new ClimbIO() {});
+        // climb = new Climb(new ClimbIO() {});
 
         break;
     }

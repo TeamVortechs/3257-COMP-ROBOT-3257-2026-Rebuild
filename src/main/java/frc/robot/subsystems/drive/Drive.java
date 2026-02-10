@@ -40,6 +40,7 @@ import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -71,8 +72,11 @@ public class Drive extends SubsystemBase {
   private BuiltInAccelerometer accelerometer;
 
   // caching values here so they can be logged
-  @AutoLogOutput private double accelerometerX;
-  @AutoLogOutput private double accelerometerY;
+  // @AutoLogOutput private double accelerometerX;
+  // @AutoLogOutput private double accelerometerY;
+
+  private double accelerometerX;
+  private double accelerometerY;
 
   /**
    * @return the needed rotation for the robot to rotate towards a goal I made it like this so we
@@ -308,6 +312,8 @@ public class Drive extends SubsystemBase {
   private SwerveDrivePoseEstimator poseEstimator =
       new SwerveDrivePoseEstimator(kinematics, rawGyroRotation, lastModulePositions, Pose2d.kZero);
 
+  public final Notifier logger;
+
   public Drive(
       GyroIO gyroIO,
       ModuleIO flModuleIO,
@@ -369,6 +375,16 @@ public class Drive extends SubsystemBase {
     shooterRotationManager.startLogThread();
 
     accelerometer = new BuiltInAccelerometer();
+    logger =
+        new Notifier(
+            () -> {
+              accelerometerY = accelerometer.getY();
+              accelerometerX = accelerometer.getX();
+              Logger.recordOutput("Drive/accelerometerX", accelerometerX);
+              Logger.recordOutput("Drive/accelerometerY", accelerometerY);
+            });
+
+    logger.startPeriodic(1 / DriveConstants.FREQUENCY_UPDATE_ACC);
   }
 
   @Override
@@ -429,7 +445,7 @@ public class Drive extends SubsystemBase {
     // Update gyro alert
     gyroDisconnectedAlert.set(!gyroInputs.connected && Constants.CURR_MODE != Mode.SIM);
 
-    benPeriodic();
+    // benPeriodic();
   }
 
   /**

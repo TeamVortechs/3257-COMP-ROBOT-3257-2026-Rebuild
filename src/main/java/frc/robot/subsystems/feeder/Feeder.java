@@ -63,8 +63,8 @@ public class Feeder extends SubsystemBase {
               calculateValidityToFeed();
             });
 
-    hardwareLogger.startPeriodic(1/FeederConstants.SUBSYSTEM_LOGGING_FREQUENCY_HERTZ);
-    validityLogger.startPeriodic(1/FeederConstants.VALIDITY_LOGGING_FREQUENCY_HERTZ);
+    hardwareLogger.startPeriodic(1 / FeederConstants.SUBSYSTEM_LOGGING_FREQUENCY_HERTZ);
+    validityLogger.startPeriodic(1 / FeederConstants.VALIDITY_LOGGING_FREQUENCY_HERTZ);
   }
 
   @Override

@@ -5,6 +5,7 @@ import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.SignalLogger;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
+import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -33,6 +34,7 @@ public class Shooter extends SubsystemBase {
 
   private BooleanSupplier withinAutomaticChargingZone;
 
+  private final Notifier logger;
   /**
    * @param shooterIO the hardware interface
    * @param distanceSupplierMeters the distance supplier for when it goes automatic
@@ -54,16 +56,19 @@ public class Shooter extends SubsystemBase {
     this.speedToTableInit(1.8034, 62.5);
 
     this.withinAutomaticChargingZone = withinAutomaticChargingZone;
+
+    logger =
+        new Notifier(
+            () -> {
+              shooterIO.updateInputs(inputs);
+              Logger.processInputs("shooter", inputs);
+            });
+
+    logger.startPeriodic(1 / ShooterConstants.FREQUENCY_HZ);
   }
 
   @Override
-  public void periodic() {
-    shooterIO.updateInputs(inputs);
-    Logger.processInputs("shooter", inputs);
-
-    // calculate speed that automatically updates with distance
-
-  }
+  public void periodic() {}
 
   // SUBSYSTEM METHODS
 

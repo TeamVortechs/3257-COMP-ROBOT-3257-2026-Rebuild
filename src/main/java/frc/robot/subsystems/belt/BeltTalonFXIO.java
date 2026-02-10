@@ -39,14 +39,18 @@ public class BeltTalonFXIO implements BeltIO {
     motorVoltage = motor.getMotorVoltage();
     supplyCurrent = motor.getSupplyCurrent();
     statorCurrent = motor.getStatorCurrent();
+    temperatureCelsius = motor.getDeviceTemp();
 
     // Optimize CAN bus usage by refreshing these signals together
     BaseStatusSignal.setUpdateFrequencyForAll(
-        BeltConstants.FREQUENCY_HZ, velocity, motorVoltage, supplyCurrent);
+        BeltConstants.FREQUENCY_HZ,
+        velocity,
+        motorVoltage,
+        supplyCurrent,
+        statorCurrent,
+        temperatureCelsius);
 
     isBraked = true;
-
-    temperatureCelsius = motor.getDeviceTemp();
   }
 
   @Override

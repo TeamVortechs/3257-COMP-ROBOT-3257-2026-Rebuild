@@ -4,7 +4,6 @@ import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -18,7 +17,7 @@ import frc.robot.Constants.FeederConstants;
 public class FeederTalonFXIO implements FeederIO {
   private final TalonFX motor;
 
-  private final VelocityVoltage mVelocityRequest;
+  // private final VelocityVoltage mVelocityRequest;
 
   // StatusSignals allow for high-frequency, synchronous data collection
   private final StatusSignal<AngularVelocity> velocity;
@@ -33,7 +32,7 @@ public class FeederTalonFXIO implements FeederIO {
 
   public FeederTalonFXIO(int canId) {
     motor = new TalonFX(canId);
-    mVelocityRequest = new VelocityVoltage(0).withSlot(0);
+    // mVelocityRequest = new VelocityVoltage(0).withSlot(0);
 
     // Basic Configuration
     TalonFXConfiguration config = Constants.FeederConstants.CONFIG;
@@ -49,12 +48,16 @@ public class FeederTalonFXIO implements FeederIO {
     motorVoltage = motor.getMotorVoltage();
     supplyCurrent = motor.getSupplyCurrent();
     statorCurrent = motor.getStatorCurrent();
-
     temperatureCelsius = motor.getDeviceTemp();
 
     // Optimize CAN bus usage by refreshing these signals together
     BaseStatusSignal.setUpdateFrequencyForAll(
-        FeederConstants.SUBSYSTEM_LOGGING_FREQUENCY_HERTZ, velocity, motorVoltage, supplyCurrent, statorCurrent, temperatureCelsius);
+        FeederConstants.SUBSYSTEM_LOGGING_FREQUENCY_HERTZ,
+        velocity,
+        motorVoltage,
+        supplyCurrent,
+        statorCurrent,
+        temperatureCelsius);
 
     isBraked = true;
   }

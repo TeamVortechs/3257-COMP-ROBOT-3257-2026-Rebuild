@@ -56,7 +56,12 @@ public class ShooterTalonFXIO implements ShooterIO {
 
     // Optimize CAN bus usage by refreshing these signals together
     BaseStatusSignal.setUpdateFrequencyForAll(
-        Constants.FREQUENCY_HZ, velocity, motorVoltage, supplyCurrent);
+        Constants.ShooterConstants.FREQUENCY_HZ,
+        velocity,
+        motorVoltage,
+        supplyCurrent,
+        statorCurrent,
+        temperatureCelsius);
 
     mVelocityRequest = new MotionMagicVelocityVoltage(0).withSlot(0);
     isBraked = true;
