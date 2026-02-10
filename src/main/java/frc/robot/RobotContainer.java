@@ -307,6 +307,9 @@ public class RobotContainer {
             () -> -controller.getLeftY() * DriveConstants.K_JOYSTICK_WHEN_SHOOTING,
             () -> -controller.getLeftX() * DriveConstants.K_JOYSTICK_WHEN_SHOOTING);
 
+    controller.a().whileTrue(aimTowardsTargetCommand);
+    controller.y().whileTrue(drive.iteratePassingCommand(true));
+
     // controller
     //     .povUp()
     //     .whileTrue(
@@ -325,27 +328,27 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // return autoChooser.get();
-    String osName = System.getProperty("os.name").toLowerCase();
-    if (osName.contains("win")) {
+    // String osName = System.getProperty("os.name").toLowerCase();
+    // if (osName.contains("win")) {
       // Windows
-      return autoChooser.get();
-    } else if (osName.contains("nix") || osName.contains("nux")) {
-      int station = DriverStation.getLocation().orElse(1);
-      switch (station) {
-          // switches paths easily on linux since no smart dashboard
-        case 1:
-          //   return new PathPlannerAuto("auto left feeder station");
-          return new PathPlannerAuto("get balls from middle (left)");
-        case 2:
-          return new PathPlannerAuto("auto middle feeder station2 twice, climb");
-        case 3:
-          return new PathPlannerAuto("auto right feeder station2 twice, climb");
-        default:
-          return new PathPlannerAuto("auto left feeder station");
-      }
-    } else {
-      return autoChooser.get();
-    }
+    return autoChooser.get();
+    // } else if (osName.contains("nix") || osName.contains("nux")) {
+    //   int station = DriverStation.getLocation().orElse(1);
+    //   switch (station) {
+    //       // switches paths easily on linux since no smart dashboard
+    //     case 1:
+    //       //   return new PathPlannerAuto("auto left feeder station");
+    //       return new PathPlannerAuto("get balls from middle (left)");
+    //     case 2:
+    //       return new PathPlannerAuto("auto middle feeder station2 twice, climb");
+    //     case 3:
+    //       return new PathPlannerAuto("auto right feeder station2 twice, climb");
+    //     default:
+    //       return new PathPlannerAuto("auto left feeder station");
+    //   }
+    // } else {
+    //   return autoChooser.get();
+    // }
   }
 
   public Intake getIntake() {
