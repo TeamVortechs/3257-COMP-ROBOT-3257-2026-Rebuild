@@ -74,7 +74,7 @@ public class RobotContainer {
   private final CommandXboxController controller = new CommandXboxController(0);
 
   // usign this for sys id so it doesn't conflict with anything
-//   private final CommandXboxController sysID_controller = new CommandXboxController(3);
+  //   private final CommandXboxController sysID_controller = new CommandXboxController(3);
 
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
@@ -261,9 +261,9 @@ public class RobotContainer {
         .leftTrigger()
         .whileTrue(intake.setRollerVoltageCommand(IntakeConstants.INTAKE_VOLTS));
 
-    controller.rightTrigger().whileTrue(feeder.setPercentMotorRunCommand(0.4));
+    controller.rightTrigger().whileTrue(feeder.setPercentMotorRunCommand(0.6));
 
-    // controller.rightBumper().whileTrue(shooter.setManualSpeedRunCommand(70));
+    controller.rightBumper().whileTrue(shooter.setManualSpeedRunCommand(80));
     controller.leftBumper().whileTrue(shooter.setAutomaticCommandRun());
 
     // configureSysIdBindings(sysID_controller, shooter.BuildSysIdRoutine());
@@ -281,13 +281,13 @@ public class RobotContainer {
             () -> -controller.getLeftX() * DriveConstants.K_JOYSTICK_WHEN_SHOOTING,
             () -> drive.getHeadingToGoal());
 
-    controller
-        .rightBumper()
-        .whileTrue(
-            Commands.parallel(
-                aimTowardsTargetCommand,
-                shooter.setAutomaticCommandRun(),
-                feeder.feedWhenValidRunCommand(FeederConstants.FEED_POWER)));
+    // controller
+    //     .rightBumper()
+    //     .whileTrue(
+    //         Commands.parallel(
+    //             aimTowardsTargetCommand,
+    //             shooter.setAutomaticCommandRun(),
+    //             feeder.feedWhenValidRunCommand(FeederConstants.FEED_POWER)));
 
     // controller
     //     .rightTrigger()

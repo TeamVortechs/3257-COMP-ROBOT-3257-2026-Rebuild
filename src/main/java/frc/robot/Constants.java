@@ -297,7 +297,7 @@ public final class Constants {
     public static final double KI = 0;
     public static final double KD = 0.1;
 
-    public static final double INTAKE_VOLTS = 8;
+    public static final double INTAKE_VOLTS = 10;
     public static final double INTAKE_POSITION = 0.5;
 
     public static final double MOTION_MAGIC_CRUISE_VELOCITY = 3;
