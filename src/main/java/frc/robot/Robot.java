@@ -7,8 +7,18 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.subsystems.feeder.Feeder;
+import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.util.simulation.SimulationManager;
+import frc.robot.util.simulation.VisualSimulator;
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
@@ -26,6 +36,8 @@ public class Robot extends LoggedRobot {
   private Command autonomousCommand;
   private RobotContainer robotContainer;
 
+  private Field2d field2d;
+
   public Robot() {
     // Record metadata
     Logger.recordMetadata("ProjectName", BuildConstants.MAVEN_NAME);
@@ -42,7 +54,7 @@ public class Robot extends LoggedRobot {
         });
 
     // Set up data receivers & replay source
-    switch (Constants.currentMode) {
+    switch (Constants.CURR_MODE) {
       case REAL:
         // Running on a real robot, log to a USB stick ("/U/logs")
         Logger.addDataReceiver(new WPILOGWriter());
@@ -68,7 +80,11 @@ public class Robot extends LoggedRobot {
 
     // Instantiate our RobotContainer. This will perform all our button bindings,
     // and put our autonomous chooser on the dashboard.
+
     robotContainer = new RobotContainer();
+
+    // addSimObjects();
+    field2d = new Field2d();
   }
 
   /** This function is called periodically during all modes. */
@@ -85,8 +101,17 @@ public class Robot extends LoggedRobot {
     // the Command-based framework to work.
     CommandScheduler.getInstance().run();
 
+    // SimulationManager.updateSim();
+    ;
     // Return to non-RT thread priority (do not modify the first argument)
     // Threads.setCurrentThreadPriority(false, 10);
+
+    field2d.setRobotPose(robotContainer.getDrive().getPose());
+  }
+
+  @Override
+  public void robotInit() {
+    SmartDashboard.putData(field2d);
   }
 
   /** This function is called once when the robot is disabled. */
@@ -146,4 +171,78 @@ public class Robot extends LoggedRobot {
   /** This function is called periodically whilst in simulation. */
   @Override
   public void simulationPeriodic() {}
+
+  private void addSimObjects() {
+    robotContainer = new RobotContainer();
+
+    Intake intake = robotContainer.getIntake();
+
+    VisualSimulator intakeSim =
+        new VisualSimulator(
+            new Translation2d(1, 0.25),
+            () -> -intake.getPosition() * 40,
+            () -> 0.25,
+            1,
+            new Color8Bit(Color.kAqua),
+            "intake");
+
+    intakeSim.setColorSupplier(
+        () -> {
+          if (intake.getRollerSpeed() > 1) {
+            return new Color8Bit(Color.kRed);
+          }
+          return new Color8Bit(Color.kWhite);
+        });
+
+    Feeder feeder = robotContainer.getFeeder();
+
+    VisualSimulator feederSim =
+        new VisualSimulator(
+            new Translation2d(-0.1, 0.5),
+            () -> -90,
+            () -> 0.25,
+            0.5,
+            new Color8Bit(Color.kAqua),
+            "feeder");
+
+    feederSim.setColorSupplier(
+        () -> {
+          if (feeder.getSpeed() > 0.05) {
+            return new Color8Bit(Color.kRed);
+          }
+          return new Color8Bit(Color.kWhite);
+        });
+
+    Shooter shooter = robotContainer.getShooter();
+
+    VisualSimulator shooterSim =
+        new VisualSimulator(
+            new Translation2d(-0.1, 0.8),
+            () -> -90,
+            () -> 0.25,
+            0.5,
+            new Color8Bit(Color.kAqua),
+            "shooter");
+
+    shooterSim.setColorSupplier(
+        () -> {
+          if (shooter.getSpeed() > 0.5) {
+            return new Color8Bit(Color.kRed);
+          }
+          return new Color8Bit(Color.kWhite);
+        });
+
+    intakeSim.setColorSupplier(
+        () -> {
+          if (intake.getRollerSpeed() > 1) {
+            return new Color8Bit(Color.kRed);
+          }
+          return new Color8Bit(Color.kWhite);
+        });
+
+    SimulationManager.addSimulationMechanism(intakeSim);
+    SimulationManager.addSimulationMechanism(shooterSim);
+    SimulationManager.addSimulationMechanism(feederSim);
+    SimulationManager.addSimulationMechanism(intakeSim);
+  }
 }

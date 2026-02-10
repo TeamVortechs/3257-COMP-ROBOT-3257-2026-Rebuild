@@ -26,3 +26,8 @@ public final class Main {
     RobotBase.startRobot(Robot::new);
   }
 }
+
+/*
+ * Changelogs:
+ * Moved shooter rotation manager in drive. I did it like this instead of putting all the functions in drive so we can easily change drive later cus all the code is still in shooter manager. Also so it's all contained and readable.
+ */

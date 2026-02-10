@@ -34,12 +34,14 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
+import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
+import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.Mode;
 import frc.robot.generated.TunerConstants;
 import frc.robot.util.LocalADStarAK;
@@ -49,16 +51,94 @@ import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 public class Drive extends SubsystemBase {
+
+  /*
+   * Code I added(Ben). Putting this here so it's easier to know when we change the drive later
+   */
+
+  // puttign this in container because it's already like this and when we change drive it'll be good
+  // to have it easily changed. Also it's probably more readable this way
+  private ShooterRotationManager shooterRotationManager;
+
+  private BuiltInAccelerometer accelerometer;
+
+  // caching values here so they can be logged
+  @AutoLogOutput private double accelerometerX;
+  @AutoLogOutput private double accelerometerY;
+
+  /**
+   * @return the needed rotation for the robot to rotate towards a goal I made it like this so we
+   *     can use the joystick drive command from drive commands compensates for robot movement
+   */
+  public Rotation2d getHeadingToGoal() {
+    return shooterRotationManager.getHeading();
+  }
+
+  /**
+   * @return the distance from the robot to the goal
+   */
+  public double getDistanceToGoal() {
+    return shooterRotationManager.getDistance();
+  }
+
+  /**
+   * @return wether or not the shooter is pointing towards the goal within tolerance
+   */
+  public boolean isPointingToGoal() {
+    return shooterRotationManager.isOriented();
+  }
+
+  /**
+   * Defines skidding as if measuredChassisSpeeds(gotten from encoders) differ from built in
+   * acceleraomter(accurate with specific variance profile) above skid threshold.
+   *
+   * @return If you wish to make this method always return false for some logic just spike skid
+   *     treshold
+   */
+  @AutoLogOutput
+  public boolean isSkidding() {
+
+    // no acceleratomer in sim
+    if (Constants.CURR_MODE == Mode.SIM) {
+      return false;
+    }
+
+    // slip test
+    double chassisX = getChassisSpeeds().vxMetersPerSecond;
+    double chassisY = getChassisSpeeds().vyMetersPerSecond;
+
+    boolean isSkidding =
+        Math.abs(accelerometerX - chassisX) > DriveConstants.SKID_THRESHOLD
+            || Math.abs(accelerometerY - chassisY) > DriveConstants.SKID_THRESHOLD;
+
+    return isSkidding;
+  }
+
+  /**
+   * @return wether or not the robot is in a zone where the shooter hsould be charged more
+   *     agressively to reduce windup time
+   */
+  @AutoLogOutput
+  public boolean isWithinShooterAutomaticChargingZone() {
+    double xPose = getPose().getX();
+
+    return xPose < DriveConstants.X_POSE_TO_CHARGE;
+  }
+
+  /**
+   * This is really ugly. I'm putting this in my own periodic so we can easily add this logic into
+   * the cdoe when we change the drive code.
+   *
+   * @return
+   */
+  public void benPeriodic() {
+    accelerometerY = accelerometer.getY();
+    accelerometerX = accelerometer.getX();
+
+    shooterRotationManager.periodic();
+  }
+
   // TunerConstants doesn't include these constants, so they are declared locally
-  static final double ODOMETRY_FREQUENCY = TunerConstants.kCANBus.isNetworkFD() ? 250.0 : 100.0;
-  public static final double DRIVE_BASE_RADIUS =
-      Math.max(
-          Math.max(
-              Math.hypot(TunerConstants.FrontLeft.LocationX, TunerConstants.FrontLeft.LocationY),
-              Math.hypot(TunerConstants.FrontRight.LocationX, TunerConstants.FrontRight.LocationY)),
-          Math.max(
-              Math.hypot(TunerConstants.BackLeft.LocationX, TunerConstants.BackLeft.LocationY),
-              Math.hypot(TunerConstants.BackRight.LocationX, TunerConstants.BackRight.LocationY)));
 
   // PathPlanner config constants
   private static final double ROBOT_MASS_KG = 74.088;
@@ -147,6 +227,9 @@ public class Drive extends SubsystemBase {
                 (state) -> Logger.recordOutput("Drive/SysIdState", state.toString())),
             new SysIdRoutine.Mechanism(
                 (voltage) -> runCharacterization(voltage.in(Volts)), null, this));
+
+    shooterRotationManager = new ShooterRotationManager(Constants.DriveConstants.GOAL_POSE, this);
+    accelerometer = new BuiltInAccelerometer();
   }
 
   @Override
@@ -205,7 +288,9 @@ public class Drive extends SubsystemBase {
     }
 
     // Update gyro alert
-    gyroDisconnectedAlert.set(!gyroInputs.connected && Constants.currentMode != Mode.SIM);
+    gyroDisconnectedAlert.set(!gyroInputs.connected && Constants.CURR_MODE != Mode.SIM);
+
+    benPeriodic();
   }
 
   /**
@@ -290,7 +375,7 @@ public class Drive extends SubsystemBase {
 
   /** Returns the measured chassis speeds of the robot. */
   @AutoLogOutput(key = "SwerveChassisSpeeds/Measured")
-  private ChassisSpeeds getChassisSpeeds() {
+  public ChassisSpeeds getChassisSpeeds() {
     return kinematics.toChassisSpeeds(getModuleStates());
   }
 
@@ -344,7 +429,7 @@ public class Drive extends SubsystemBase {
 
   /** Returns the maximum angular speed in radians per sec. */
   public double getMaxAngularSpeedRadPerSec() {
-    return getMaxLinearSpeedMetersPerSec() / DRIVE_BASE_RADIUS;
+    return getMaxLinearSpeedMetersPerSec() / DriveConstants.DRIVE_BASE_RADIUS;
   }
 
   /** Returns an array of module translations. */
