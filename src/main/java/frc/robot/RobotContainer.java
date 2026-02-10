@@ -74,7 +74,7 @@ public class RobotContainer {
   private final CommandXboxController controller = new CommandXboxController(0);
 
   // usign this for sys id so it doesn't conflict with anything
-  private final CommandXboxController sysID_controller = new CommandXboxController(3);
+//   private final CommandXboxController sysID_controller = new CommandXboxController(3);
 
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
@@ -266,7 +266,7 @@ public class RobotContainer {
     // controller.rightBumper().whileTrue(shooter.setManualSpeedRunCommand(70));
     controller.leftBumper().whileTrue(shooter.setAutomaticCommandRun());
 
-    configureSysIdBindings(sysID_controller, shooter.BuildSysIdRoutine());
+    // configureSysIdBindings(sysID_controller, shooter.BuildSysIdRoutine());
 
     // belt.setDefaultCommand(belt.setPercentMotorOutputRunCommand(BeltConstants.FEED_POWER));
     feeder.setDefaultCommand(feeder.setPercentMotorRunCommand(0));
