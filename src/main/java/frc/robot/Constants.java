@@ -113,7 +113,7 @@ public final class Constants {
     private static List<Pose2d> PASSING_GOALS_STORAGE = null;
     private static List<String> PASSING_GOALS_NAME_STORAGE = null;
 
-    public static boolean SWICH_PASSING_GOALS = true;
+    public static boolean SWICH_PASSING_GOALS = false;
 
     public static final List<String> PASSING_GOALS_NAMES() {
 
