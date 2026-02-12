@@ -123,11 +123,16 @@ public class Shooter extends SubsystemBase {
    * @return the finished command
    */
   public Command setManualSpeedRunCommand(double speed) {
-    return Commands.run(() -> this.setManualSpeed(speed), this);
+    return Commands.startRun(
+        () -> {
+          this.setManualSpeed(speed);
+        },
+        () -> {},
+        this);
   }
 
   public Command setVoltageRunCommand(double voltage) {
-    return Commands.run(() -> this.setVoltage(voltage), this);
+    return Commands.startRun(() -> this.setVoltage(voltage), () -> {}, this);
   }
 
   /**
@@ -136,10 +141,11 @@ public class Shooter extends SubsystemBase {
    * @return
    */
   public Command setAutomaticCommandRun() {
-    return new RunCommand(
+    return Commands.startRun(
         () -> {
           setAutomaticSpeed(1);
         },
+        () -> {},
         this);
   }
 

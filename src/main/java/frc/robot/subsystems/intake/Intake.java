@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.IntakeConstants;
@@ -109,22 +108,22 @@ public class Intake extends SubsystemBase {
 
   // sets the manual override speed of this command. Uses a regular double
   public Command setRollerVoltageCommand(double speed) {
-    return new RunCommand(() -> this.setRollersVoltage(speed), this);
+    return Commands.startRun(() -> this.setRollersVoltage(speed), () -> {}, this);
   }
 
   // sets the manual override speed of this command. Uses a double supplier
   public Command setRollerVoltageCommand(DoubleSupplier speed) {
-    return new RunCommand(() -> this.setRollersVoltage(speed.getAsDouble()), this);
+    return Commands.startRun(() -> this.setRollersVoltage(speed.getAsDouble()), () -> {}, this);
   }
 
   public Command setPositionCommand(double position) {
-    return new RunCommand(() -> this.setPosition(position), this);
+    return Commands.startRun(() -> this.setPosition(position), () -> {}, this);
   }
 
   public Command setRollerVoltageAndPositionCommand(double position, double voltage) {
     return Commands.parallel(
-        new RunCommand(() -> this.setPosition(position)),
-        new RunCommand(() -> this.setRollersVoltage(voltage), this));
+        Commands.startRun(() -> this.setPosition(position), () -> {}),
+        Commands.startRun(() -> this.setRollersVoltage(voltage), () -> {}, this));
   }
 
   // resets the encoders of the wrist

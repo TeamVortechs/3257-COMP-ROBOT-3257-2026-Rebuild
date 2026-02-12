@@ -6,8 +6,8 @@ import static edu.wpi.first.units.Units.Volts;
 import com.ctre.phoenix6.SignalLogger;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.ClimbConstants;
@@ -125,11 +125,11 @@ public class Climb extends SubsystemBase {
   }
 
   public Command setPositionsRunCommand(double leftPosition, double rightPosition) {
-    return new RunCommand(() -> setPositions(leftPosition, rightPosition), this);
+    return Commands.startRun(() -> setPositions(leftPosition, rightPosition), () -> {}, this);
   }
 
   public Command setSpeedsRunCommand(double leftPosition, double rightPosition) {
-    return new RunCommand(() -> setManualSpeeds(leftPosition, rightPosition), this);
+    return Commands.startRun(() -> setManualSpeeds(leftPosition, rightPosition), () -> {}, this);
   }
 
   public Command setIsLockedCommand(BooleanSupplier isLocked) {

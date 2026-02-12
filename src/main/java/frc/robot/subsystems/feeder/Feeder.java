@@ -123,7 +123,7 @@ public class Feeder extends SubsystemBase {
    * @return the finished command
    */
   public Command setPercentMotorRunCommand(double percentage) {
-    return Commands.run(() -> this.setPercentMotorOutput(percentage), this);
+    return Commands.startRun(() -> this.setPercentMotorOutput(percentage), () -> {}, this);
   }
 
   /**

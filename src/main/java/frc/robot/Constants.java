@@ -55,7 +55,7 @@ public final class Constants {
   public class DriveConstants {
 
     public static final double SHOOTER_ROTATION_MANAGER_LOGGING_FREQUENCY =
-        Constants.VERY_LOW_PRIORITY_FREQUENCY_HZ;
+        Constants.LOW_PRIORITY_FREQUENCY_HZ;
 
     public static final double FREQUENCY_UPDATE_ACC =
         20.00; // how many times per sec should we log accelerometer
@@ -196,7 +196,7 @@ public final class Constants {
   }
 
   public class ShooterConstants {
-    public static final double FREQUENCY_HZ = Constants.LOW_PRIORITY_FREQUENCY_HZ;
+    public static final double FREQUENCY_HZ = Constants.HIGH_PRIORITY_FREQUENCY_HZ;
 
     public static final double CURRENT_LIMIT = 40.0;
 
@@ -259,7 +259,7 @@ public final class Constants {
   // copied directly from ShooterConstants
   public class FeederConstants {
 
-    public static final double VALIDITY_LOGGING_FREQUENCY_HERTZ = VERY_LOW_PRIORITY_FREQUENCY_HZ;
+    public static final double VALIDITY_LOGGING_FREQUENCY_HERTZ = LOW_PRIORITY_FREQUENCY_HZ;
     public static final double SUBSYSTEM_LOGGING_FREQUENCY_HERTZ = MEDIUM_PRIORITY_FREQUENCY_HZ;
 
     public static final double VALIDITY_DEBOUNCE_TIME_SEC = 0.2;
