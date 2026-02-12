@@ -239,7 +239,7 @@ public class RobotContainer {
     configureButtonBindings();
     registerNamedCommandsAuto(); // register named commands for auto (pathplanner)
     Optional<Alliance> ally = DriverStation.getAlliance();
-    if (ally.get() == Alliance.Red) {
+    if (ally != null && ally.isPresent() && ally.get() == Alliance.Red) {
       flipAllPoses();
     }
   }
