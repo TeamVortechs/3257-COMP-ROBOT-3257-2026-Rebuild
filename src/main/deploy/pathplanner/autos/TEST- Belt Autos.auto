@@ -7,13 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "test drive named commands"
+            "pathName": "TEST- Belt Commands"
           }
         }
       ]
     }
   },
-  "resetOdom": false,
-  "folder": null,
+  "resetOdom": true,
+  "folder": "Autos for Testing",
   "choreoAuto": false
 }
