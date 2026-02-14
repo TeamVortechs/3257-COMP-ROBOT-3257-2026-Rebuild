@@ -327,28 +327,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // return autoChooser.get();
-    String osName = System.getProperty("os.name").toLowerCase();
-    if (osName.contains("win")) {
-      // Windows
-      return autoChooser.get();
-    } else if (osName.contains("nix") || osName.contains("nux")) {
-      int station = DriverStation.getLocation().orElse(1);
-      switch (station) {
-          // switches paths easily on linux since no smart dashboard
-        case 1:
-          //   return new PathPlannerAuto("auto left feeder station");
-          return new PathPlannerAuto("get balls from middle (left)");
-        case 2:
-          return new PathPlannerAuto("auto middle feeder station2 twice, climb");
-        case 3:
-          return new PathPlannerAuto("auto right feeder station2 twice, climb");
-        default:
-          return new PathPlannerAuto("auto left feeder station");
-      }
-    } else {
-      return autoChooser.get();
-    }
+    return autoChooser.get();
   }
 
   public Intake getIntake() {
