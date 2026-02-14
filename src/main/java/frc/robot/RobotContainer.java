@@ -20,7 +20,6 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
@@ -30,9 +29,9 @@ import frc.robot.Constants.FeederConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.commands.DriveCommands;
-import frc.robot.commands.communication.ControllerVibrateCommand;
-import frc.robot.commands.communication.TellCommand;
 import frc.robot.generated.TunerConstants;
+import frc.robot.subsystems.LED_strip.LEDStrip;
+import frc.robot.subsystems.LED_strip.LEDStripTalonFXIO;
 import frc.robot.subsystems.belt.Belt;
 import frc.robot.subsystems.belt.BeltIO;
 import frc.robot.subsystems.belt.BeltSimulationIO;
@@ -102,6 +101,9 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+
+    new LEDStrip(new LEDStripTalonFXIO(0));
+
     switch (Constants.CURR_MODE) {
       case REAL:
         // Real robot, instantiate hardware IO implementations
@@ -410,12 +412,6 @@ public class RobotContainer {
       new EventTrigger(commandName + "Event").onTrue(command);
     } else {
       // registers the named commands to print something out instead of actually running anything
-      NamedCommands.registerCommand(
-          commandName,
-          new TellCommand(commandName + " auto command")
-              .andThen(
-                  new ControllerVibrateCommand(1, controller).withDeadline(new WaitCommand(0.2)))
-              .alongWith(command));
 
       //   new EventTrigger(commandName)
       //       .onTrue(
