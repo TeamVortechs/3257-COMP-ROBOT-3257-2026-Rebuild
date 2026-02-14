@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
@@ -31,7 +32,7 @@ import frc.robot.Constants.ShooterConstants;
 import frc.robot.commands.DriveCommands;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.LED_strip.LEDStrip;
-import frc.robot.subsystems.LED_strip.LEDStripTalonFXIO;
+import frc.robot.subsystems.LED_strip.LEDStripIO;
 import frc.robot.subsystems.belt.Belt;
 import frc.robot.subsystems.belt.BeltIO;
 import frc.robot.subsystems.belt.BeltSimulationIO;
@@ -75,6 +76,8 @@ public class RobotContainer {
 
   private final Shooter shooter;
 
+  private final SubsystemBase ledStrip;
+
   // private final Climb climb;
 
   // Controller
@@ -101,14 +104,12 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-
-    new LEDStrip(new LEDStripTalonFXIO(0));
-
     switch (Constants.CURR_MODE) {
       case REAL:
         // Real robot, instantiate hardware IO implementations
         // ModuleIOTalonFX is intended for modules with TalonFX drive, TalonFX turn, and
         // a CANcoder
+        ledStrip = new LEDStrip(new LEDStripIO() {});
         drive =
             new Drive(
                 new GyroIOPigeon2(),
@@ -159,6 +160,7 @@ public class RobotContainer {
         break;
 
       case SIM:
+        ledStrip = new LEDStrip(new LEDStripIO() {});
         // Sim robot, instantiate physics sim IO implementations
         drive =
             new Drive(
@@ -191,6 +193,7 @@ public class RobotContainer {
 
       default:
         // Replayed robot, disable IO implementations
+        ledStrip = new LEDStrip(new LEDStripIO() {});
         drive =
             new Drive(
                 new GyroIO() {},

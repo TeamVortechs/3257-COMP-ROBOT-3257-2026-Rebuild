@@ -21,6 +21,7 @@ public class LEDStrip extends SubsystemBase {
     this.ledStripIO = ledStripIO;
     timer = new Timer();
     timer.reset();
+    timer.start();
 
     orangeColor.Color = new RGBWColor(Color.kOrange);
 
@@ -29,6 +30,7 @@ public class LEDStrip extends SubsystemBase {
 
   @Override
   public void periodic() {
+
     if (timer.advanceIfElapsed(1)) {
       if (orange) {
         ledStripIO.setColor(orangeColor);

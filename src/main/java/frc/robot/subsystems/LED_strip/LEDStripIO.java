@@ -4,5 +4,6 @@ import com.ctre.phoenix6.controls.SolidColor;
 
 public interface LEDStripIO {
 
-  void setColor(SolidColor color);
+  public default void setColor(SolidColor color) {}
+  ;
 }
