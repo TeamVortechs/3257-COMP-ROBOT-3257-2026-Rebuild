@@ -156,6 +156,10 @@ public final class Constants {
     // this is ugly but all it does is return target pose based on the team
     public static final Supplier<Pose2d> GOAL_POSE =
         () -> {
+          if (DriverStation.getAlliance().isEmpty()) {
+            return new Pose2d();
+          }
+
           if (DriverStation.getAlliance().get() == Alliance.Blue) {
             return GOAL_POSE_BLUE;
           } else {
