@@ -24,6 +24,9 @@ public class ShooterRotationManager {
 
   private final Notifier logger;
 
+  // used to stop recursive calls with get dsitance and get effective target. This is really jank
+  // but it's the only thing I could think of without a  rewrite
+
   /**
    * @param targetPose the pose of the area we want to shoot too
    * @param drive the pose of the robot
@@ -163,10 +166,14 @@ public class ShooterRotationManager {
     ChassisSpeeds fieldSpeeds =
         ChassisSpeeds.fromRobotRelativeSpeeds(drive.getChassisSpeeds(), drive.getRotation());
 
+    // calculate distance without effective target because otherwise ti would breka the calculation
+    double distance =
+        targetPose.get().getTranslation().getDistance(drive.getPose().getTranslation());
+
     // this scaling factor is a constnat we'll just need to test for. We can change it depending on
     // if the shot is compensation to much or not enough. We can also make it zero to remove it
     // it is negative to make it minus in the final equation
-    double dt = DriveConstants.KFLIGHT_COMPENSATION_SEC;
+    double dt = DriveConstants.KFLIGHT_COMPENSATION_SEC(distance);
     Pose2d updatedTarget =
         new Pose2d(
             firstPose.getX() - fieldSpeeds.vxMetersPerSecond * dt,
