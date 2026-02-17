@@ -20,7 +20,6 @@ public interface ClimbIO {
     public double motorLeftSpeed = 0.0;
     public double motorRightSpeed = 0.0;
 
-    public double servoPosition = 0.0;
 
     public boolean isBraked = true;
 
@@ -38,12 +37,6 @@ public interface ClimbIO {
    */
   public default void setSpeeds(double leftSpeed, double rightSpeed) {}
 
-  /**
-   * set position of servo
-   *
-   * @param position
-   */
-  public default void setServo(double position) {}
 
   /**
    * set pos of motors
