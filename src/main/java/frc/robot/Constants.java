@@ -92,7 +92,7 @@ public final class Constants {
 
     // the maximum allowed difference allowed between acceleraomter and encoders before it is
     // considered skid
-    public static final double SKID_THRESHOLD = 5.0;
+    public static final double SKID_THRESHOLD = 1000;
 
     public static final double DEADBAND = 0.1;
     public static final double ANGLE_KP = 5.0;
