@@ -16,6 +16,7 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -24,6 +25,7 @@ import frc.robot.generated.TunerConstants;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
+import org.littletonrobotics.junction.Logger;
 
 /**
  * This class defines the runtime mode used by AdvantageKit. The mode is always "real" when running
@@ -53,6 +55,12 @@ public final class Constants {
   }
 
   public class DriveConstants {
+
+    private static final InterpolatingDoubleTreeMap AIRTIME_MAP = new InterpolatingDoubleTreeMap();
+
+    private static void characterizeAirtimeMap() {
+      AIRTIME_MAP.put(0.0, 0.0);
+    }
 
     public static final double SHOOTER_ROTATION_MANAGER_LOGGING_FREQUENCY =
         Constants.LOW_PRIORITY_FREQUENCY_HZ;
@@ -88,7 +96,16 @@ public final class Constants {
     // we should test by looking at values. this can also be a distance lookup table. This corrects
     // for robot speed by changing the target location. This constant is supposed ot emmulate fligth
     // time
-    public static final double KFLIGHT_COMPENSATION_SEC = 0; // to change .5
+    public static final double KFLIGHT_COMPENSATION_SEC(double distance) {
+
+      double val = AIRTIME_MAP.get(distance);
+
+      Logger.recordOutput("DriveConstants/MostRecentAirTimeEstimation", val);
+      // return val;
+
+      return 0;
+
+    }
 
     // the maximum allowed difference allowed between acceleraomter and encoders before it is
     // considered skid
@@ -156,6 +173,10 @@ public final class Constants {
     // this is ugly but all it does is return target pose based on the team
     public static final Supplier<Pose2d> GOAL_POSE =
         () -> {
+          if (DriverStation.getAlliance().isEmpty()) {
+            return new Pose2d();
+          }
+
           if (DriverStation.getAlliance().get() == Alliance.Blue) {
             return GOAL_POSE_BLUE;
           } else {
@@ -192,6 +213,8 @@ public final class Constants {
               ANGLE_KD,
               new TrapezoidProfile.Constraints(ANGLE_MAX_VELOCITY, ANGLE_MAX_ACCELERATION));
       ANGLE_CONTROLLER.enableContinuousInput(-Math.PI, Math.PI);
+
+      characterizeAirtimeMap();
     }
   }
 

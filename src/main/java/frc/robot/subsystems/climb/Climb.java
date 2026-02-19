@@ -78,11 +78,6 @@ public class Climb extends SubsystemBase {
     }
   }
 
-  /** set servo in degrees */
-  public void setServo(double position) {
-    climbIO.setServo(position);
-  }
-
   /**
    * Manual control for both motors. Useful if the robot is tilting and you need to adjust one side.
    * sets it to manual

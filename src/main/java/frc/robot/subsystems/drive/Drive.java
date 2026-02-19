@@ -226,6 +226,11 @@ public class Drive extends SubsystemBase {
 
   private boolean isWithinZone(double x, boolean wantsCenter) {
     double xPose = getPose().getX();
+
+    if (DriverStation.getAlliance().isEmpty()) {
+      return false;
+    }
+
     if (DriverStation.getAlliance().get() == Alliance.Blue) {
       if (!wantsCenter) {
         return xPose < x;

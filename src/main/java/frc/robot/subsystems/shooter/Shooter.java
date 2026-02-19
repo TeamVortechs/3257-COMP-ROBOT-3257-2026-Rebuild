@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.ShooterConstants;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
+import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 public class Shooter extends SubsystemBase {
@@ -35,6 +36,10 @@ public class Shooter extends SubsystemBase {
   private BooleanSupplier withinAutomaticChargingZone;
 
   private final Notifier logger;
+
+  // wether or not the shooter automatically charges to
+  @AutoLogOutput private boolean automaticallyChargeFully = false;
+
   /**
    * @param shooterIO the hardware interface
    * @param distanceSupplierMeters the distance supplier for when it goes automatic
@@ -65,6 +70,8 @@ public class Shooter extends SubsystemBase {
             });
 
     logger.startPeriodic(1 / ShooterConstants.FREQUENCY_HZ);
+
+    setAutomaticallyChargeFully(false);
   }
 
   @Override
@@ -103,6 +110,16 @@ public class Shooter extends SubsystemBase {
    */
   public boolean isOnTarget() {
     return shooterIO.isOnTargetSpeed();
+  }
+
+  public void setAutomaticallyChargeFully(boolean automaticallyChargeFully) {
+    this.automaticallyChargeFully = automaticallyChargeFully;
+
+    Logger.recordOutput("Shooter/AutomaticallyChargeFulyl", automaticallyChargeFully);
+  }
+
+  public boolean isAutomaticallyChargeFully() {
+    return automaticallyChargeFully;
   }
 
   // COMMANDS
@@ -153,6 +170,14 @@ public class Shooter extends SubsystemBase {
       double automaticPercentage, double speedWhenNotInZone) {
     return new RunCommand(
         () -> {
+
+          // if this flag is in action we're probably gonna shoot soon and should default to full
+          // charge
+          if (automaticallyChargeFully) {
+            setAutomaticSpeed(1);
+            return;
+          }
+
           if (withinAutomaticChargingZone.getAsBoolean()) {
             setAutomaticSpeed(automaticPercentage);
           } else {
@@ -160,6 +185,13 @@ public class Shooter extends SubsystemBase {
           }
         },
         this);
+  }
+
+  public Command setAutomaticallyChargeFully(BooleanSupplier automaticallyChargeFully) {
+    return new InstantCommand(
+        () -> {
+          setAutomaticallyChargeFully(automaticallyChargeFully.getAsBoolean());
+        });
   }
 
   // HELPER METHODS
