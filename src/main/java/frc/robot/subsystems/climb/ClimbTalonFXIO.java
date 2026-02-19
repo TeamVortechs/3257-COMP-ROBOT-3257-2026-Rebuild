@@ -12,7 +12,6 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Temperature;
 import edu.wpi.first.units.measure.Voltage;
-import edu.wpi.first.wpilibj.Servo;
 import frc.robot.Constants;
 
 public class ClimbTalonFXIO implements ClimbIO {
@@ -32,7 +31,6 @@ public class ClimbTalonFXIO implements ClimbIO {
   private final StatusSignal<Current> rightStatorCurrent;
   private final StatusSignal<Angle> rightMotorPosition;
   private final StatusSignal<Temperature> rightMotorTemperatureCelsius;
-
 
   //   private PIDController positionPIDController = new PIDController(0.1, 0, 0); // CHANGE -
   // CONSTANTS
@@ -119,7 +117,6 @@ public class ClimbTalonFXIO implements ClimbIO {
     inputs.motorLeftSpeed = leftVelocity.getValueAsDouble();
     inputs.motorRightSpeed = rightVelocity.getValueAsDouble();
 
-
     inputs.isBraked = isBraked;
 
     inputs.motorLeftTemperatureCelsius = leftMotorTemperatureCelsius.getValueAsDouble();
@@ -156,7 +153,6 @@ public class ClimbTalonFXIO implements ClimbIO {
     targetLeftPos = leftPosition;
     targetRightPos = rightPosition;
   }
-
 
   @Override
   public void stop() {

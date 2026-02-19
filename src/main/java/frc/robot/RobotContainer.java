@@ -7,6 +7,7 @@
 
 package frc.robot;
 
+import com.fasterxml.jackson.databind.deser.DataFormatReaders.Match;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.events.EventTrigger;
@@ -19,6 +20,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -53,6 +55,7 @@ import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterIO;
 import frc.robot.subsystems.shooter.ShooterSimulationIO;
 import frc.robot.subsystems.shooter.ShooterTalonFXIO;
+import frc.robot.util.MatchTimeline;
 import java.util.Optional;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
@@ -74,6 +77,8 @@ public class RobotContainer {
   private final Feeder feeder;
 
   private final Shooter shooter;
+
+  private final MatchTimeline matchTimeline = new MatchTimeline();
 
   // private final Climb climb;
 
@@ -300,6 +305,7 @@ public class RobotContainer {
     feeder.setDefaultCommand(feeder.setPercentMotorRunCommand(0));
     shooter.setDefaultCommand(shooter.setManualSpeedRunCommand(0));
 
+
     // climb.setDefaultCommand(climb.setPositionsRunCommand(0, 0));
 
     @SuppressWarnings("unused")
@@ -343,6 +349,10 @@ public class RobotContainer {
 
   public Drive getDrive() {
     return drive;
+  }
+
+  public MatchTimeline getMatchTimeline() {
+    return matchTimeline;
   }
 
   private void registerNamedCommandsAuto() {

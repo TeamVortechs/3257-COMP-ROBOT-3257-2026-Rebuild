@@ -25,13 +25,8 @@ public class ClimbTalonFXOneMotorIO implements ClimbIO {
   private final StatusSignal<Angle> leftMotorPosition;
   private final StatusSignal<Temperature> leftMotorTemperatureCelsius;
 
-
-
-
   //   private PIDController positionPIDController = new PIDController(0.1, 0, 0); // CHANGE -
   // CONSTANTS
-
-
 
   private final PositionVoltage leftRequestVoltage;
 
@@ -49,7 +44,6 @@ public class ClimbTalonFXOneMotorIO implements ClimbIO {
     leftMotor.getConfigurator().apply(slot0Configs);
 
     leftMotor.getConfigurator().apply(config);
-
 
     // Initialize signals for AdvantageKit
     leftVelocity = leftMotor.getVelocity();
@@ -69,7 +63,6 @@ public class ClimbTalonFXOneMotorIO implements ClimbIO {
         leftStatorCurrent,
         leftMotorTemperatureCelsius);
 
-
     // this the servo
   }
 
@@ -85,7 +78,6 @@ public class ClimbTalonFXOneMotorIO implements ClimbIO {
 
     inputs.motorLeftSpeed = leftVelocity.getValueAsDouble();
 
-
     inputs.isBraked = isBraked;
 
     inputs.motorLeftTemperatureCelsius = leftMotorTemperatureCelsius.getValueAsDouble();
@@ -95,14 +87,12 @@ public class ClimbTalonFXOneMotorIO implements ClimbIO {
   public void setSpeeds(double leftSpeed, double rightSpeed) {
 
     leftMotor.setControl(leftRequestVoltage.withVelocity(leftSpeed));
-
   }
 
   @Override
   public void setPositions(double leftPosition, double rightPosition) {
     leftMotor.setControl(leftRequestVoltage.withPosition(leftPosition));
   }
-
 
   @Override
   public void stop() {

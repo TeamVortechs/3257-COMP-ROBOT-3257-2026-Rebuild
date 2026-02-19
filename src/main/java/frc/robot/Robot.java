@@ -131,7 +131,10 @@ public class Robot extends LoggedRobot {
     if (autonomousCommand != null) {
       CommandScheduler.getInstance().schedule(autonomousCommand);
     }
+
+    robotContainer.getMatchTimeline().start();
   }
+
 
   /** This function is called periodically during autonomous. */
   @Override

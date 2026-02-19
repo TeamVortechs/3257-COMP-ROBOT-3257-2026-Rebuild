@@ -47,7 +47,6 @@ public class ClimbSimulationIO implements ClimbIO {
     inputs.motorLeftSpeed = leftMotorSim.getAngularVelocityRPM();
     inputs.motorRightSpeed = rightMotorSim.getAngularVelocityRPM();
 
-
     if (!manual) {
       leftMotorSim.setInputVoltage(
           positionPIDController.calculate(
@@ -72,7 +71,6 @@ public class ClimbSimulationIO implements ClimbIO {
     targetLeftPos = leftPosition;
     targetRightPos = rightPosition;
   }
-
 
   @Override
   public void setLeftVoltage(double leftVoltage) {

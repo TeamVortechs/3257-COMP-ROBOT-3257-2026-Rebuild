@@ -104,7 +104,6 @@ public final class Constants {
       // return val;
 
       return 0;
-
     }
 
     // the maximum allowed difference allowed between acceleraomter and encoders before it is
