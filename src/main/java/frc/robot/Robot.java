@@ -135,7 +135,6 @@ public class Robot extends LoggedRobot {
     robotContainer.getMatchTimeline().start();
   }
 
-
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {}

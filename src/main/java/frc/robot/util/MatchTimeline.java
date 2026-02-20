@@ -8,6 +8,8 @@ public class MatchTimeline {
 
   private Notifier notifer;
 
+  private MatchChangeCallback matchChangeCallback;
+
   {
     notifer =
         new Notifier(
@@ -16,6 +18,8 @@ public class MatchTimeline {
             });
 
     Logger.recordOutput("MatchTimeline/currentPhase", MatchPhase.NO_PHASE.getDisplayName());
+
+    matchChangeCallback = () -> {};
   }
 
   public void start() {
@@ -27,6 +31,11 @@ public class MatchTimeline {
     currentPhase = currentPhase.getNextPhase();
     notifer.startSingle(currentPhase.getTime());
     Logger.recordOutput("MatchTimeline/currentPhase", currentPhase.getDisplayName());
+    matchChangeCallback.run();
+  }
+
+  public void setMatchChangeCallBack(MatchChangeCallback matchChangeCallback) {
+    this.matchChangeCallback = matchChangeCallback;
   }
 
   public MatchPhase getCurrentPhase() {
@@ -44,5 +53,9 @@ public class MatchTimeline {
     if (matchPhase.getScoreType() == ScoreType.LOSING_SCORE && !isWinning) return true;
 
     return false;
+  }
+
+  interface MatchChangeCallback {
+    void run();
   }
 }

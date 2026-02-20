@@ -7,7 +7,6 @@
 
 package frc.robot;
 
-import com.fasterxml.jackson.databind.deser.DataFormatReaders.Match;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.events.EventTrigger;
@@ -20,7 +19,6 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -255,6 +253,7 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+
     // Default command, normal field-relative drive
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
@@ -304,7 +303,6 @@ public class RobotContainer {
     // belt.setDefaultCommand(belt.setPercentMotorOutputRunCommand(BeltConstants.FEED_POWER));
     feeder.setDefaultCommand(feeder.setPercentMotorRunCommand(0));
     shooter.setDefaultCommand(shooter.setManualSpeedRunCommand(0));
-
 
     // climb.setDefaultCommand(climb.setPositionsRunCommand(0, 0));
 
