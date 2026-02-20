@@ -126,7 +126,7 @@ public class ClimbTalonFXIO implements ClimbIO {
       // motor.set(speed);
       leftMotor.setControl(leftRequestVoltage.withPosition(targetLeftPos));
       // motor.set(speed);
-      leftMotor.setControl(rightRequestVoltage.withPosition(targetRightPos));
+      rightMotor.setControl(rightRequestVoltage.withPosition(targetRightPos));
       //
       // leftMotor.setVoltage(positionPIDController.calculate(leftMotorPosition.getValueAsDouble(),
       // targetLeftPos)); // CHANGE MAYBE
