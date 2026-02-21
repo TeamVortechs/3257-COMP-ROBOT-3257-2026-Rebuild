@@ -324,7 +324,7 @@ public class RobotContainer {
         .rightBumper()
         .whileTrue(feeder.setPercentMotorRunCommand(Constants.FeederConstants.FEED_POWER));
 
-    controller.rightTrigger().whileTrue(shooter.setManualSpeedRunCommand(100));
+    // controller.rightTrigger().whileTrue(shooter.setManualSpeedRunCommand(72));
 
     shooter.setDefaultCommand(shooter.setManualSpeedCommand(0));
     // controller.leftBumper().whileTrue(shooter.setAutomaticCommandRun());
@@ -356,14 +356,10 @@ public class RobotContainer {
 
     // configureSysIdBindings(sysID_controller, shooter.BuildSysIdRoutine());
 
-    // controller
-    //     .rightBumper()
-    //     .whileTrue(
-    //         Commands.parallel(
-    //             aimTowardsTargetCommand,
-    //             shooter.setAutomaticCommandRun(),
-    //             feeder.feedWhenValidRunCommand(FeederConstants.FEED_POWER),
-    //             intake.setRollerVoltageCommand(Constants.IntakeConstants.INTAKE_VOLTS)));
+    controller
+        .rightTrigger()
+        .whileTrue(
+            Commands.parallel(aimTowardsTargetCommand, shooter.setAutomaticCommandRun()));
 
     //   controller.povRight().toggleOnTrue(drive.iteratePassingCommand(true));
   }
