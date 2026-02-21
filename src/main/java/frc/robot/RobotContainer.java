@@ -134,15 +134,13 @@ public class RobotContainer {
 
         belt = new Belt(new BeltIO() {});
 
-
-
         shooter =
             new Shooter(
                 new ShooterTalonFXIO(ShooterConstants.MOTOR_ID),
                 () -> drive.getDistanceToGoal(),
                 () -> drive.isWithinShooterAutomaticChargingZone());
 
-          feeder =
+        feeder =
             new Feeder(
                 new FeederTalonFXIO(FeederConstants.MOTOR_ID),
                 () -> drive.isPointingToGoal(),
@@ -358,14 +356,14 @@ public class RobotContainer {
 
     // configureSysIdBindings(sysID_controller, shooter.BuildSysIdRoutine());
 
-      // controller
-      //     .rightBumper()
-      //     .whileTrue(
-      //         Commands.parallel(
-      //             aimTowardsTargetCommand,
-      //             shooter.setAutomaticCommandRun(),
-      //             feeder.feedWhenValidRunCommand(FeederConstants.FEED_POWER),
-      //             intake.setRollerVoltageCommand(Constants.IntakeConstants.INTAKE_VOLTS)));
+    // controller
+    //     .rightBumper()
+    //     .whileTrue(
+    //         Commands.parallel(
+    //             aimTowardsTargetCommand,
+    //             shooter.setAutomaticCommandRun(),
+    //             feeder.feedWhenValidRunCommand(FeederConstants.FEED_POWER),
+    //             intake.setRollerVoltageCommand(Constants.IntakeConstants.INTAKE_VOLTS)));
 
     //   controller.povRight().toggleOnTrue(drive.iteratePassingCommand(true));
   }
