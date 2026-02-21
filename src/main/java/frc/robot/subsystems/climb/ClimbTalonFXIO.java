@@ -37,7 +37,7 @@ public class ClimbTalonFXIO implements ClimbIO {
   // CONSTANTS
 
   private Servo servo;
-  private double servoPosition = 0.0;
+  private double servoTargetPosition = 0.0;
 
   private boolean manual = true;
 
@@ -127,7 +127,7 @@ public class ClimbTalonFXIO implements ClimbIO {
     inputs.motorLeftTemperatureCelsius = leftMotorTemperatureCelsius.getValueAsDouble();
     inputs.motorRightTemperatureCelsius = rightMotorTemperatureCelsius.getValueAsDouble();
 
-    inputs.servoPosition = servoPosition;
+    inputs.servoTargetPosition = servoTargetPosition;
 
     if (!manual) {
       // motor.set(speed);
@@ -163,7 +163,7 @@ public class ClimbTalonFXIO implements ClimbIO {
 
   @Override
   public void setServo(double position) {
-    this.servoPosition = position;
+    this.servoTargetPosition = position;
     servo.setAngle(position);
   }
 

@@ -25,7 +25,7 @@ public interface ClimbIO {
     public double motorLeftTemperatureCelsius = 0.0;
     public double motorRightTemperatureCelsius = 0.0;
 
-    public double servoPosition = 0.0;
+    public double servoTargetPosition = 0.0;
   }
 
   public default void updateInputs(ClimbIOInputsAutoLogged inputs) {}

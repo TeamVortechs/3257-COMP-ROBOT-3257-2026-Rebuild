@@ -27,7 +27,7 @@ public class ClimbTalonFXOneMotorIO implements ClimbIO {
   private final StatusSignal<Temperature> leftMotorTemperatureCelsius;
 
   private Servo servo;
-  private double servoPosition = 0.0;
+  private double servoTargetPosition = 0.0;
 
   //   private PIDController positionPIDController = new PIDController(0.1, 0, 0); // CHANGE -
   // CONSTANTS
@@ -87,7 +87,7 @@ public class ClimbTalonFXOneMotorIO implements ClimbIO {
 
     inputs.motorLeftTemperatureCelsius = leftMotorTemperatureCelsius.getValueAsDouble();
 
-    inputs.servoPosition = servoPosition;
+    inputs.servoTargetPosition = servoTargetPosition;
   }
 
   @Override
@@ -103,7 +103,7 @@ public class ClimbTalonFXOneMotorIO implements ClimbIO {
 
   @Override
   public void setServo(double position) {
-    this.servoPosition = position;
+    this.servoTargetPosition = position;
     servo.setAngle(position);
   }
 
