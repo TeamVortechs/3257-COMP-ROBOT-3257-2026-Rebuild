@@ -24,6 +24,8 @@ public interface ClimbIO {
 
     public double motorLeftTemperatureCelsius = 0.0;
     public double motorRightTemperatureCelsius = 0.0;
+
+    public double servoTargetPosition = 0.0;
   }
 
   public default void updateInputs(ClimbIOInputsAutoLogged inputs) {}
@@ -50,6 +52,13 @@ public interface ClimbIO {
    * @param leftVoltage
    */
   public default void setLeftVoltage(double leftVoltage) {}
+
+  /**
+   * set position of servo
+   *
+   * @param position
+   */
+  public default void setServo(double position) {}
 
   /**
    * set right voltage

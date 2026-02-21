@@ -393,6 +393,9 @@ public final class Constants {
       SLOT0CONFIGS.kI = Constants.ClimbConstants.KI;
       SLOT0CONFIGS.kD = Constants.ClimbConstants.KD;
     }
+
+    public static final double SERVO_OPEN = 0;
+    public static final double SERVO_CLOSED = 10; // in degrees TODO: change
   }
 
   public class IntakeConstants {
