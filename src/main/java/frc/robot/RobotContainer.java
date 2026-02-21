@@ -116,28 +116,18 @@ public class RobotContainer {
                 new ModuleIOTalonFX(TunerConstants.FrontRight),
                 new ModuleIOTalonFX(TunerConstants.BackLeft),
                 new ModuleIOTalonFX(TunerConstants.BackRight));
-
-        intake =
-            new Intake(
-                new IntakeTalonFXOnlyRollerIO(
-                    IntakeConstants.ROLLER_ID, IntakeConstants.POSITION_ID) {});
+                
+        intake = new Intake(new IntakeIO() {});
 
         belt = new Belt(new BeltIO() {});
 
+        feeder = new Feeder(new FeederIO() {}, () -> false, () -> false, () -> false);
+
         shooter =
             new Shooter(
-                new ShooterTalonFXIO(ShooterConstants.MOTOR_ID),
+                new ShooterIO() {},
                 () -> drive.getDistanceToGoal(),
                 () -> drive.isWithinShooterAutomaticChargingZone());
-
-        // climb = new Climb(new ClimbIO() {});
-
-        feeder =
-            new Feeder(
-                new FeederTalonFXIO(FeederConstants.MOTOR_ID) {},
-                () -> drive.isPointingToGoal() && !drive.isSkidding(),
-                () -> shooter.isOnTarget(),
-                () -> true);
 
         // The ModuleIOTalonFXS implementation provides an example implementation for
         // TalonFXS controller connected to a CANdi with a PWM encoder. The
