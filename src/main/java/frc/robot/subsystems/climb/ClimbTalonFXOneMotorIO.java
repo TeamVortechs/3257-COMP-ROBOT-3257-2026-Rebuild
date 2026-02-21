@@ -12,6 +12,7 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Temperature;
 import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.wpilibj.Servo;
 import frc.robot.Constants;
 
 public class ClimbTalonFXOneMotorIO implements ClimbIO {
@@ -24,6 +25,9 @@ public class ClimbTalonFXOneMotorIO implements ClimbIO {
   private final StatusSignal<Current> leftStatorCurrent;
   private final StatusSignal<Angle> leftMotorPosition;
   private final StatusSignal<Temperature> leftMotorTemperatureCelsius;
+
+  private Servo servo;
+  private double servoPosition = 0.0;
 
   //   private PIDController positionPIDController = new PIDController(0.1, 0, 0); // CHANGE -
   // CONSTANTS
@@ -64,6 +68,7 @@ public class ClimbTalonFXOneMotorIO implements ClimbIO {
         leftMotorTemperatureCelsius);
 
     // this the servo
+    this.servo = new Servo(Constants.ClimbConstants.SERVO_ID);
   }
 
   @Override
@@ -81,6 +86,8 @@ public class ClimbTalonFXOneMotorIO implements ClimbIO {
     inputs.isBraked = isBraked;
 
     inputs.motorLeftTemperatureCelsius = leftMotorTemperatureCelsius.getValueAsDouble();
+
+    inputs.servoPosition = servoPosition;
   }
 
   @Override
@@ -92,6 +99,12 @@ public class ClimbTalonFXOneMotorIO implements ClimbIO {
   @Override
   public void setPositions(double leftPosition, double rightPosition) {
     leftMotor.setControl(leftRequestVoltage.withPosition(leftPosition));
+  }
+
+  @Override
+  public void setServo(double position) {
+    this.servoPosition = position;
+    servo.setAngle(position);
   }
 
   @Override
