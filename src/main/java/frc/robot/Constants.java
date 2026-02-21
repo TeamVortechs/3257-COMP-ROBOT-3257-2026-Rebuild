@@ -111,7 +111,7 @@ public final class Constants {
     public static final double SKID_THRESHOLD = 1000;
 
     public static final double DEADBAND = 0.1;
-    public static final double ANGLE_KP = 5.0;
+    public static final double ANGLE_KP = 15; //12
     public static final double ANGLE_KD = 0.4;
     public static final double ANGLE_MAX_ACCELERATION = 20.0;
     public static final double ANGLE_MAX_VELOCITY = 8.0;
@@ -119,7 +119,7 @@ public final class Constants {
     public static final double FF_RAMP_RATE = 0.1; // Volts/Sec
     public static final double WHEEL_RADIUS_MAX_VELOCITY = 0.25; // Rad/Sec
     public static final double WHEEL_RADIUS_RAMP_RATE = 0.05; // Rad/Sec^2
-
+\[]
     public static final Translation2d CENTER_POINT = new Translation2d(8.27, 4.115);
 
     // find this
