@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.5,
-        "y": 4.0
+        "x": 3.4688615023474183,
+        "y": 5.663767605633803
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.387321483411471,
-        "y": 3.9954343139590054
+        "x": 2.3159323109937375,
+        "y": 5.207245332656991
       },
       "isLocked": false,
-      "linkedName": "middle start"
+      "linkedName": "New start"
     },
     {
       "anchor": {
-        "x": 2.4911693834160173,
-        "y": 4.0
+        "x": 2.1807511737089214,
+        "y": 5.142136150234742
       },
       "prevControl": {
-        "x": 3.4828899182138766,
-        "y": 3.96632383090788
+        "x": 2.6085498338218556,
+        "y": 5.2964712599099855
       },
       "nextControl": null,
       "isLocked": false,
@@ -29,12 +29,39 @@
     }
   ],
   "rotationTargets": [],
-  "constraintZones": [],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 0,
+      "maxWaypointRelativePos": 1.0,
+      "constraints": {
+        "maxVelocity": 0.5,
+        "maxAcceleration": 0.5,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "shooterAutomaticEvent",
+      "waypointRelativePos": 0.04429678848283285,
+      "endWaypointRelativePos": null,
+      "command": null
+    },
+    {
+      "name": "feedStartEvent",
+      "waypointRelativePos": 0.9302325581395338,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 3.0,
-    "maxAcceleration": 3.0,
+    "maxAcceleration": 0.5,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -42,13 +69,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -23.96248897457817
   },
   "reversed": false,
   "folder": "Davis Auto",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -38.50065372034543
   },
   "useDefaultConstraints": true
 }

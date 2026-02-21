@@ -326,7 +326,7 @@ public class RobotContainer {
 
     // controller.rightTrigger().whileTrue(shooter.setManualSpeedRunCommand(72));
 
-    shooter.setDefaultCommand(shooter.setManualSpeedCommand(0));
+    shooter.setDefaultCommand(shooter.automaticallyChargeWhenNeededRunCommand(0, 0));
     // controller.leftBumper().whileTrue(shooter.setAutomaticCommandRun());
 
     // controller.povDown().whileTrue(belt.setPercentMotorOutputCommand(0.5));
@@ -343,7 +343,6 @@ public class RobotContainer {
 
     // // belt.setDefaultCommand(belt.setPercentMotorOutputRunCommand(BeltConstants.FEED_POWER));
     feeder.setDefaultCommand(feeder.setPercentMotorRunCommand(0));
-    shooter.setDefaultCommand(shooter.setManualSpeedRunCommand(0));
 
     // // climb.setDefaultCommand(climb.setPositionsRunCommand(0, 0));
 
@@ -354,6 +353,7 @@ public class RobotContainer {
             () -> -controller.getLeftY() * DriveConstants.K_JOYSTICK_WHEN_SHOOTING,
             () -> -controller.getLeftX() * DriveConstants.K_JOYSTICK_WHEN_SHOOTING);
 
+
     // configureSysIdBindings(sysID_controller, shooter.BuildSysIdRoutine());
 
     controller
@@ -362,10 +362,14 @@ public class RobotContainer {
             Commands.parallel(
                 aimTowardsTargetCommand,
                 shooter.setAutomaticCommandRun(),
-                intake.setRollerVoltageCommand(IntakeConstants.INTAKE_VOLTS)));
+                intake.setRollerVoltageCommand(IntakeConstants.INTAKE_VOLTS),
+                feeder.feedWhenValidRunCommand(FeederConstants.FEED_POWER)));
 
     controller.leftBumper().whileTrue(intake.setRollerVoltageCommand(-8));
-    controller.povDown().whileTrue(shooter.setManualSpeedRunCommand(82));
+    // controller.povDown().whileTrue(shooter.setManualSpeedRunCommand(82));
+    operatorController
+        .y()
+        .onTrue(shooter.setAutomaticallyChargeFully(() -> !shooter.isAutomaticallyChargeFully()));
 
     //   controller.povRight().toggleOnTrue(drive.iteratePassingCommand(true));
   }
@@ -415,11 +419,8 @@ public class RobotContainer {
     addNamedCommand("beltStop", belt.setPercentMotorOutputRunCommand(0), isReal);
 
     addNamedCommand(
-        "intakeStart",
-        intake.setRollerVoltageAndPositionCommand(
-            IntakeConstants.INTAKE_POSITION, IntakeConstants.INTAKE_VOLTS),
-        isReal);
-    addNamedCommand("intakeStop", intake.setRollerVoltageAndPositionCommand(0, 0), isReal);
+        "intakeStart", intake.setRollerVoltageCommand(IntakeConstants.INTAKE_VOLTS), isReal);
+    addNamedCommand("intakeStop", intake.setRollerVoltageCommand(0), isReal);
 
     addNamedCommand("shooterStop", shooter.setManualSpeedRunCommand(0), isReal);
     addNamedCommand("shooterPreset1", shooter.setManualSpeedRunCommand(1), isReal);

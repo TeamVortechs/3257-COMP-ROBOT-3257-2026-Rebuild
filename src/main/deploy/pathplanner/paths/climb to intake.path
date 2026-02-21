@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.1807511737089214,
-        "y": 5.142136150234742
-      },
-      "prevControl": null,
-      "nextControl": {
-        "x": 2.412105611954108,
-        "y": 4.779768392412771
-      },
-      "isLocked": false,
-      "linkedName": "BumperShot"
-    },
-    {
-      "anchor": {
         "x": 1.467500000000001,
         "y": 6.23862676056338
       },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.467500000000001,
+        "y": 6.23862676056338
+      },
+      "isLocked": false,
+      "linkedName": "climb"
+    },
+    {
+      "anchor": {
+        "x": 2.883356807511738,
+        "y": 5.227300469483569
+      },
       "prevControl": {
-        "x": 1.6077943180370846,
-        "y": 6.03170285105433
+        "x": 1.883356807511738,
+        "y": 5.227300469483569
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "climb"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -33,8 +33,14 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "feedStopEvent",
-      "waypointRelativePos": 0.03322259136212702,
+      "name": "intakeStartEvent",
+      "waypointRelativePos": 0.06201550387596923,
+      "endWaypointRelativePos": null,
+      "command": null
+    },
+    {
+      "name": "intakeStopEvent",
+      "waypointRelativePos": 0.9678848283499455,
       "endWaypointRelativePos": null,
       "command": null
     }
@@ -55,7 +61,7 @@
   "folder": "Davis Auto",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -23.96248897457817
+    "rotation": 0.0
   },
   "useDefaultConstraints": true
 }

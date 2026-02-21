@@ -3,42 +3,35 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.1807511737089214,
-        "y": 5.142136150234742
+        "x": 2.0,
+        "y": 7.0
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.412105611954108,
-        "y": 4.779768392412771
+        "x": 3.0,
+        "y": 7.0
       },
       "isLocked": false,
-      "linkedName": "BumperShot"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.467500000000001,
-        "y": 6.23862676056338
+        "x": 4.0,
+        "y": 6.0
       },
       "prevControl": {
-        "x": 1.6077943180370846,
-        "y": 6.03170285105433
+        "x": 3.0,
+        "y": 6.0
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "climb"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [
-    {
-      "name": "feedStopEvent",
-      "waypointRelativePos": 0.03322259136212702,
-      "endWaypointRelativePos": null,
-      "command": null
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 0.5,
@@ -52,10 +45,10 @@
     "rotation": 0.0
   },
   "reversed": false,
-  "folder": "Davis Auto",
+  "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -23.96248897457817
+    "rotation": 0.0
   },
   "useDefaultConstraints": true
 }
