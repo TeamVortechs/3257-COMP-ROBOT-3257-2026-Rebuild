@@ -9,7 +9,7 @@
       "prevControl": null,
       "nextControl": {
         "x": 3.7770211450782423,
-        "y": 0.486949434951514
+        "y": 0.48694943495151405
       },
       "isLocked": false,
       "linkedName": "right start"
@@ -70,7 +70,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 179.225779835072
+    "rotation": 0.0
   },
   "reversed": false,
   "folder": null,

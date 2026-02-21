@@ -163,11 +163,10 @@ public class Shooter extends SubsystemBase {
    * @return
    */
   public Command setAutomaticCommandRun() {
-    return Commands.startRun(
+    return new RunCommand(
         () -> {
           setAutomaticSpeed(1);
         },
-        () -> {},
         this);
   }
 

@@ -3,32 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.5,
+        "x": 2.4911693834160173,
         "y": 4.0
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.5007748414233646,
-        "y": 3.931730141400743
+        "x": 2.738568104497241,
+        "y": 4.035970443524856
       },
       "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 2.7,
-        "y": 4.0
-      },
-      "prevControl": {
-        "x": 3.280611337146608,
-        "y": 4.005491409417201
-      },
-      "nextControl": {
-        "x": 1.3420054352239923,
-        "y": 3.9871561168988428
-      },
-      "isLocked": false,
-      "linkedName": null
+      "linkedName": "BumperShot"
     },
     {
       "anchor": {
@@ -36,30 +20,18 @@
         "y": 3.7758571428571432
       },
       "prevControl": {
-        "x": 2.523141168658442,
-        "y": 4.044084506950048
+        "x": 1.9011881814838971,
+        "y": 3.88241933187665
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": "climb"
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 1,
-      "rotationDegrees": 2.2456436573757803
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [
-    {
-      "name": "shoot",
-      "waypointRelativePos": 0.8975811907983761,
-      "endWaypointRelativePos": 1.0992155784844382,
-      "command": null
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 3.0,
@@ -73,7 +45,7 @@
     "rotation": 0.0
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Davis Auto",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 0.0

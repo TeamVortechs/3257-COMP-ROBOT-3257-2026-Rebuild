@@ -359,7 +359,13 @@ public class RobotContainer {
     controller
         .rightTrigger()
         .whileTrue(
-            Commands.parallel(aimTowardsTargetCommand, shooter.setAutomaticCommandRun()));
+            Commands.parallel(
+                aimTowardsTargetCommand,
+                shooter.setAutomaticCommandRun(),
+                intake.setRollerVoltageCommand(IntakeConstants.INTAKE_VOLTS)));
+
+    controller.leftBumper().whileTrue(intake.setRollerVoltageCommand(-8));
+    controller.povDown().whileTrue(shooter.setManualSpeedRunCommand(82));
 
     //   controller.povRight().toggleOnTrue(drive.iteratePassingCommand(true));
   }

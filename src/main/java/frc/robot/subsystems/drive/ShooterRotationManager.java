@@ -8,7 +8,6 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
 import java.util.function.Supplier;
-import org.littletonrobotics.junction.Logger;
 
 /** change this so it only logs hwen it's getting consumed */
 /*
@@ -68,7 +67,7 @@ public class ShooterRotationManager {
         getEffectiveTarget().getTranslation().getDistance(getPoseAtRelease().getTranslation());
 
     // logs so we have good logging of this when it's important
-    Logger.recordOutput("ShooterRotationManager/Distance", distance);
+    // Logger.recordOutput("ShooterRotationManager/Distance", distance);
 
     return distance;
   }
@@ -80,7 +79,7 @@ public class ShooterRotationManager {
 
     double rotationSpeed = angle_controller.calculate(currentRadians, targetRadians);
 
-    Logger.recordOutput("ShooterRotationManager/RotationFeedbackOverride", rotationSpeed);
+    // Logger.recordOutput("ShooterRotationManager/RotationFeedbackOverride", rotationSpeed);
 
     return rotationSpeed;
     // return .1;
@@ -98,7 +97,7 @@ public class ShooterRotationManager {
 
     Rotation2d heading = new Rotation2d(delta.getX(), delta.getY());
 
-    Logger.recordOutput("ShooterRotationManager/TargetHeading", heading);
+    // Logger.recordOutput("ShooterRotationManager/TargetHeading", heading);
 
     return heading;
   }
@@ -120,7 +119,7 @@ public class ShooterRotationManager {
     boolean onTarget =
         Math.abs(error.getRadians()) < Constants.DriveConstants.ORIENTATION_TOLERANCE;
 
-    Logger.recordOutput("ShooterRotationManager/IsOriented", onTarget);
+    // Logger.recordOutput("ShooterRotationManager/IsOriented", onTarget);
 
     return onTarget;
   }
@@ -151,7 +150,7 @@ public class ShooterRotationManager {
             firstPose.getY() + fieldSpeeds.vyMetersPerSecond * dt,
             predictedRot);
 
-    Logger.recordOutput("ShooterRotationManager/PoseAtRelease", updatedPose);
+    // Logger.recordOutput("ShooterRotationManager/PoseAtRelease", updatedPose);
 
     return updatedPose;
   }
@@ -176,7 +175,7 @@ public class ShooterRotationManager {
             firstPose.getY() - fieldSpeeds.vyMetersPerSecond * dt,
             firstPose.getRotation());
 
-    Logger.recordOutput("ShooterRotationManager/EffectiveTarget", updatedTarget);
+    // Logger.recordOutput("ShooterRotationManager/EffectiveTarget", updatedTarget);
 
     return updatedTarget;
   }
