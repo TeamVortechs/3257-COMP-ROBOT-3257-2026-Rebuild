@@ -5,7 +5,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.wpilibj.Notifier;
 import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
 import java.util.function.Supplier;
@@ -21,7 +20,7 @@ public class ShooterRotationManager {
 
   private ProfiledPIDController angle_controller = DriveConstants.ANGLE_CONTROLLER;
 
-  private final Notifier logger;
+  // private final Notifier logger;
 
   // used to stop recursive calls with get dsitance and get effective target. This is really jank
   // but it's the only thing I could think of without a  rewrite
@@ -35,15 +34,15 @@ public class ShooterRotationManager {
     this.drive = drive;
 
     // set up logging
-    logger =
-        new Notifier(
-            () -> {
-              log();
-            });
+    // logger =
+    //     new Notifier(
+    //         () -> {
+    //           log();
+    //         });
   }
 
   public void startLogThread() {
-    logger.startPeriodic(1 / DriveConstants.SHOOTER_ROTATION_MANAGER_LOGGING_FREQUENCY);
+    // logger.startPeriodic(1 / DriveConstants.SHOOTER_ROTATION_MANAGER_LOGGING_FREQUENCY);
   }
 
   /*
