@@ -354,9 +354,6 @@ public final class Constants {
     public static final double RAMP_RATE_VOLTS_SYSID = 0.1;
     public static final double DYNAMIC_STEP_VOLTS_SYSID = 0.25;
 
-    // not real
-    public static final int SERVO_ID = 6;
-
     public static final double FEED_POWER = 0.1;
 
     public static final double MIN_POSITION_LEFT = 0;
@@ -378,6 +375,10 @@ public final class Constants {
 
     public static final TalonFXConfiguration CONFIG;
     public static final Slot0Configs SLOT0CONFIGS;
+
+    public static final int RIGHT_ID = 26;
+    public static final int LEFT_ID = 27;
+    public static final int SERVO_ID = 28;
 
     static {
       CONFIG = new TalonFXConfiguration();

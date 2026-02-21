@@ -54,28 +54,6 @@ public class Climb extends SubsystemBase {
       setManualSpeeds(0, 0);
       return;
     }
-
-    if (automaticLeftSetpoint > ClimbConstants.MAX_POSITION_LEFT) {
-      automaticLeftSetpoint = ClimbConstants.MAX_POSITION_LEFT;
-    }
-
-    if (automaticRightSetpoint > ClimbConstants.MAX_POSITION_RIGHT) {
-      automaticRightSetpoint = ClimbConstants.MAX_POSITION_RIGHT;
-    }
-
-    if (automaticLeftSetpoint < ClimbConstants.MIN_POSITION_LEFT) {
-      automaticLeftSetpoint = ClimbConstants.MIN_POSITION_LEFT;
-    }
-
-    if (automaticRightSetpoint < ClimbConstants.MIN_POSITION_RIGHT) {
-      automaticRightSetpoint = ClimbConstants.MIN_POSITION_RIGHT;
-    }
-
-    if (isManual) {
-      climbIO.setSpeeds(manualLeftSpeed, manualRightSpeed);
-    } else {
-      climbIO.setPositions(automaticLeftSetpoint, automaticRightSetpoint);
-    }
   }
 
   public void setServo(double position) {
@@ -87,10 +65,12 @@ public class Climb extends SubsystemBase {
    * sets it to manual
    */
   public void setManualSpeeds(double left, double right) {
-    // if (isLocked) {
-    //   climbIO.stop();
-    //   return;
-    // }
+    if (isLocked) {
+      climbIO.stop();
+      return;
+    }
+
+    climbIO.setSpeeds(manualLeftSpeed, manualRightSpeed);
 
     isManual = true;
 
@@ -108,10 +88,33 @@ public class Climb extends SubsystemBase {
     isManual = false;
     this.automaticLeftSetpoint = leftPosition;
     this.automaticRightSetpoint = rightPosition;
+    if (automaticLeftSetpoint > ClimbConstants.MAX_POSITION_LEFT) {
+      automaticLeftSetpoint = ClimbConstants.MAX_POSITION_LEFT;
+    }
+
+    if (automaticRightSetpoint > ClimbConstants.MAX_POSITION_RIGHT) {
+      automaticRightSetpoint = ClimbConstants.MAX_POSITION_RIGHT;
+    }
+
+    if (automaticLeftSetpoint < ClimbConstants.MIN_POSITION_LEFT) {
+      automaticLeftSetpoint = ClimbConstants.MIN_POSITION_LEFT;
+    }
+
+    if (automaticRightSetpoint < ClimbConstants.MIN_POSITION_RIGHT) {
+      automaticRightSetpoint = ClimbConstants.MIN_POSITION_RIGHT;
+    }
+
+    climbIO.setPositions(automaticLeftSetpoint, automaticRightSetpoint);
   }
 
   public void setLocked(boolean locked) {
     isLocked = locked;
+    if (isLocked) {
+      climbIO.stop();
+
+      setManualSpeeds(0, 0);
+      return;
+    }
   }
 
   public boolean isLocked() {
@@ -136,7 +139,7 @@ public class Climb extends SubsystemBase {
   }
 
   public Command setServoRunCommand(double position) {
-    return new InstantCommand(() -> setServo(position), this);
+    return new InstantCommand(() -> setServo(position));
   }
 
   // the constants here should probably be more and move but that's later when this is transferred

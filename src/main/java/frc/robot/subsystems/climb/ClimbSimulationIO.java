@@ -10,6 +10,8 @@ public class ClimbSimulationIO implements ClimbIO {
   private final DCMotorSim leftMotorSim;
   private final DCMotorSim rightMotorSim;
 
+  private double servoTargetPosition = 0.0;
+
   private PIDController positionPIDController = new PIDController(0.1, 0, 0);
 
   private boolean manual = true;
@@ -47,6 +49,8 @@ public class ClimbSimulationIO implements ClimbIO {
     inputs.motorLeftSpeed = leftMotorSim.getAngularVelocityRPM();
     inputs.motorRightSpeed = rightMotorSim.getAngularVelocityRPM();
 
+    inputs.servoTargetPosition = servoTargetPosition;
+
     if (!manual) {
       leftMotorSim.setInputVoltage(
           positionPIDController.calculate(
@@ -75,6 +79,11 @@ public class ClimbSimulationIO implements ClimbIO {
   @Override
   public void setLeftVoltage(double leftVoltage) {
     leftMotorSim.setInputVoltage(leftVoltage);
+  }
+
+  @Override
+  public void setServo(double position) {
+    servoTargetPosition = position;
   }
 
   @Override

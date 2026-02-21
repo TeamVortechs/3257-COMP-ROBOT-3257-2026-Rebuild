@@ -24,10 +24,10 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants.BeltConstants;
+import frc.robot.Constants.ClimbConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.FeederConstants;
 import frc.robot.Constants.IntakeConstants;
-import frc.robot.Constants.ShooterConstants;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.communication.ControllerVibrateCommand;
 import frc.robot.commands.communication.TellCommand;
@@ -35,6 +35,10 @@ import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.belt.Belt;
 import frc.robot.subsystems.belt.BeltIO;
 import frc.robot.subsystems.belt.BeltSimulationIO;
+import frc.robot.subsystems.climb.Climb;
+import frc.robot.subsystems.climb.ClimbIO;
+import frc.robot.subsystems.climb.ClimbSimulationIO;
+import frc.robot.subsystems.climb.ClimbTalonFXOneMotorIO;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
@@ -44,15 +48,12 @@ import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.feeder.Feeder;
 import frc.robot.subsystems.feeder.FeederIO;
 import frc.robot.subsystems.feeder.FeederSimulationIO;
-import frc.robot.subsystems.feeder.FeederTalonFXIO;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeIO;
 import frc.robot.subsystems.intake.IntakeSimulationIO;
-import frc.robot.subsystems.intake.IntakeTalonFXOnlyRollerIO;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterIO;
 import frc.robot.subsystems.shooter.ShooterSimulationIO;
-import frc.robot.subsystems.shooter.ShooterTalonFXIO;
 import frc.robot.util.MatchTimeline;
 import java.util.Optional;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
@@ -75,6 +76,8 @@ public class RobotContainer {
   private final Feeder feeder;
 
   private final Shooter shooter;
+
+  private final Climb climb;
 
   private final MatchTimeline matchTimeline = new MatchTimeline();
 
@@ -116,7 +119,7 @@ public class RobotContainer {
                 new ModuleIOTalonFX(TunerConstants.FrontRight),
                 new ModuleIOTalonFX(TunerConstants.BackLeft),
                 new ModuleIOTalonFX(TunerConstants.BackRight));
-                
+
         intake = new Intake(new IntakeIO() {});
 
         belt = new Belt(new BeltIO() {});
@@ -128,6 +131,9 @@ public class RobotContainer {
                 new ShooterIO() {},
                 () -> drive.getDistanceToGoal(),
                 () -> drive.isWithinShooterAutomaticChargingZone());
+
+        climb =
+            new Climb(new ClimbTalonFXOneMotorIO(ClimbConstants.LEFT_ID, ClimbConstants.RIGHT_ID));
 
         // The ModuleIOTalonFXS implementation provides an example implementation for
         // TalonFXS controller connected to a CANdi with a PWM encoder. The
@@ -175,6 +181,8 @@ public class RobotContainer {
                 () -> shooter.isOnTarget(),
                 () -> true);
 
+        climb = new Climb(new ClimbSimulationIO());
+
         // climb = new Climb(new ClimbSimulationIO());
 
         break;
@@ -201,7 +209,7 @@ public class RobotContainer {
                 () -> drive.getDistanceToGoal(),
                 () -> drive.isWithinShooterAutomaticChargingZone());
 
-        // climb = new Climb(new ClimbIO() {});
+        climb = new Climb(new ClimbIO() {});
 
         break;
     }
@@ -289,6 +297,16 @@ public class RobotContainer {
     controller.leftBumper().whileTrue(shooter.setAutomaticCommandRun());
 
     controller.povDown().whileTrue(belt.setPercentMotorOutputCommand(0.5));
+
+    // controller
+    //     .povUp()
+    //     .whileTrue(climb.setServoRunCommand(ClimbConstants.SERVO_CLOSED))
+    //     .onFalse(climb.setServoRunCommand(ClimbConstants.SERVO_OPEN));
+
+    operatorController
+        .x()
+        .whileTrue(climb.setPositionsRunCommand(5, 5))
+        .onFalse(climb.setPositionsRunCommand(0, 0));
 
     // belt.setDefaultCommand(belt.setPercentMotorOutputRunCommand(BeltConstants.FEED_POWER));
     feeder.setDefaultCommand(feeder.setPercentMotorRunCommand(0));
