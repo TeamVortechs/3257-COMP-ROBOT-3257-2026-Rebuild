@@ -134,18 +134,20 @@ public class RobotContainer {
 
         belt = new Belt(new BeltIO() {});
 
-        feeder =
-            new Feeder(
-                new FeederTalonFXIO(FeederConstants.MOTOR_ID),
-                () -> false,
-                () -> false,
-                () -> false);
+
 
         shooter =
             new Shooter(
                 new ShooterTalonFXIO(ShooterConstants.MOTOR_ID),
                 () -> drive.getDistanceToGoal(),
                 () -> drive.isWithinShooterAutomaticChargingZone());
+
+          feeder =
+            new Feeder(
+                new FeederTalonFXIO(FeederConstants.MOTOR_ID),
+                () -> drive.isPointingToGoal(),
+                () -> shooter.isOnTarget(),
+                () -> true);
 
         climb = new Climb(new ClimbIO() {});
         // The ModuleIOTalonFXS implementation provides an example implementation for
@@ -356,13 +358,14 @@ public class RobotContainer {
 
     // configureSysIdBindings(sysID_controller, shooter.BuildSysIdRoutine());
 
-    //   controller
-    //       .rightBumper()
-    //       .whileTrue(
-    //           Commands.parallel(
-    //               aimTowardsTargetCommand,
-    //               shooter.setAutomaticCommandRun(),
-    //               feeder.feedWhenValidRunCommand(FeederConstants.FEED_POWER)));
+      // controller
+      //     .rightBumper()
+      //     .whileTrue(
+      //         Commands.parallel(
+      //             aimTowardsTargetCommand,
+      //             shooter.setAutomaticCommandRun(),
+      //             feeder.feedWhenValidRunCommand(FeederConstants.FEED_POWER),
+      //             intake.setRollerVoltageCommand(Constants.IntakeConstants.INTAKE_VOLTS)));
 
     //   controller.povRight().toggleOnTrue(drive.iteratePassingCommand(true));
   }
