@@ -78,6 +78,10 @@ public class Climb extends SubsystemBase {
     }
   }
 
+  public void setServo(double position) {
+    climbIO.setServo(position);
+  }
+
   /**
    * Manual control for both motors. Useful if the robot is tilting and you need to adjust one side.
    * sets it to manual
@@ -129,6 +133,10 @@ public class Climb extends SubsystemBase {
 
   public Command setIsLockedCommand(BooleanSupplier isLocked) {
     return new InstantCommand(() -> setLocked(isLocked.getAsBoolean()), this);
+  }
+
+  public Command setServoRunCommand(double position) {
+    return new InstantCommand(() -> setServo(position), this);
   }
 
   // the constants here should probably be more and move but that's later when this is transferred
