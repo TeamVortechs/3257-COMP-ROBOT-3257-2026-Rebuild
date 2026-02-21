@@ -299,7 +299,7 @@ public final class Constants {
     // not real
     public static final int MOTOR_ID = 23;
 
-    public static final double FEED_POWER = 0.5;
+    public static final double FEED_POWER = 1;
 
     public static final Slot0Configs SLOT0CONFIGS;
     public static final TalonFXConfiguration CONFIG;
