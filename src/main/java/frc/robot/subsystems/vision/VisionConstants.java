@@ -30,12 +30,12 @@ public class VisionConstants {
   // !!!! TODO: GET NEW TRANSFORMS FOR NEW ROBOT !!!!
   public static Transform3d robotToPhoton0 =
       new Transform3d(
-          -0.381, -0.05715, 0.2794, new Rotation3d(0.0, -Units.degreesToRadians(27), Math.PI / 2));
+          -0.32385, 0.3048, 0.51435, new Rotation3d(0.0, -Units.degreesToRadians(23.5), -Units.degreesToRadians(33)));
   public static Transform3d
       robotToPhoton1 = // !! WARNING !! rough estimates. i punched this in at 9:10 PM; recheck
           // better
           new Transform3d(
-              -0.381, -0.03215, 0.3494, new Rotation3d(0.0, -Units.degreesToRadians(35), Math.PI));
+              -0.32385, -0.3048, 0.51435, new Rotation3d(0.0, -Units.degreesToRadians(23.5), Units.degreesToRadians(33)));
 
   // Basic filtering thresholds
   public static double maxAmbiguity = 0.3;
