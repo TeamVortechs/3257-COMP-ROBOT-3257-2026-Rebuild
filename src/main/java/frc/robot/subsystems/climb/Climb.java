@@ -23,13 +23,11 @@ public class Climb extends SubsystemBase {
 
   @AutoLogOutput private boolean isLocked = true;
 
-  @AutoLogOutput private boolean isManual = false;
+  private double manualLeftSpeed = 0;
+  private double manualRightSpeed = 0;
 
-  @AutoLogOutput private double manualLeftSpeed = 0;
-  @AutoLogOutput private double manualRightSpeed = 0;
-
-  @AutoLogOutput private double automaticLeftSetpoint = 0;
-  @AutoLogOutput private double automaticRightSetpoint = 0;
+  private double automaticLeftSetpoint = 0;
+  private double automaticRightSetpoint = 0;
 
   public Climb(ClimbIO climbIO) {
     this.climbIO = climbIO;
@@ -44,6 +42,8 @@ public class Climb extends SubsystemBase {
             });
 
     logger.startPeriodic(1 / ClimbConstants.FREQUENCY_HZ);
+
+    setLocked(false);
   }
 
   @Override
@@ -72,8 +72,6 @@ public class Climb extends SubsystemBase {
 
     climbIO.setSpeeds(manualLeftSpeed, manualRightSpeed);
 
-    isManual = true;
-
     manualLeftSpeed = left;
     manualRightSpeed = right;
   }
@@ -85,7 +83,6 @@ public class Climb extends SubsystemBase {
    * @param rightPosition
    */
   public void setPositions(double leftPosition, double rightPosition) {
-    isManual = false;
     this.automaticLeftSetpoint = leftPosition;
     this.automaticRightSetpoint = rightPosition;
     if (automaticLeftSetpoint > ClimbConstants.MAX_POSITION_LEFT) {

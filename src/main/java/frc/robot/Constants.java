@@ -357,10 +357,10 @@ public final class Constants {
     public static final double FEED_POWER = 0.1;
 
     public static final double MIN_POSITION_LEFT = 0;
-    public static final double MAX_POSITION_LEFT = 0;
+    public static final double MAX_POSITION_LEFT = 1;
 
     public static final double MIN_POSITION_RIGHT = 0;
-    public static final double MAX_POSITION_RIGHT = 0;
+    public static final double MAX_POSITION_RIGHT = 1;
 
     // CHANGE !!
     public static final double KS = 0.1;

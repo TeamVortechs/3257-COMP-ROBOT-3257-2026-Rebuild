@@ -12,7 +12,7 @@ public class ClimbSimulationIO implements ClimbIO {
 
   private double servoTargetPosition = 0.0;
 
-  private PIDController positionPIDController = new PIDController(0.1, 0, 0);
+  private PIDController positionPIDController = new PIDController(1, 0, 0);
 
   private boolean manual = true;
 

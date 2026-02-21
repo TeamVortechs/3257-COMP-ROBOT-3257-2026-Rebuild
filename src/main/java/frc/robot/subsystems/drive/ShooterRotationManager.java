@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj.Notifier;
 import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
 import java.util.function.Supplier;
-import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 /** change this so it only logs hwen it's getting consumed */
@@ -133,7 +132,6 @@ public class ShooterRotationManager {
    *
    * @return
    */
-  @AutoLogOutput
   public Pose2d getPoseAtRelease() {
     Pose2d firstPose = drive.getPose();
 
@@ -159,7 +157,6 @@ public class ShooterRotationManager {
     return updatedPose;
   }
 
-  @AutoLogOutput
   public Pose2d getEffectiveTarget() {
     Pose2d firstPose = targetPose.get();
 

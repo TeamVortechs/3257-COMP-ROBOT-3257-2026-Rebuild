@@ -305,8 +305,8 @@ public class RobotContainer {
 
     operatorController
         .x()
-        .whileTrue(climb.setPositionsRunCommand(5, 5))
-        .onFalse(climb.setPositionsRunCommand(0, 0));
+        .whileTrue(climb.setSpeedsRunCommand(5, 5))
+        .onFalse(climb.setSpeedsRunCommand(0, 0));
 
     // belt.setDefaultCommand(belt.setPercentMotorOutputRunCommand(BeltConstants.FEED_POWER));
     feeder.setDefaultCommand(feeder.setPercentMotorRunCommand(0));
