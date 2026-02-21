@@ -343,7 +343,7 @@ public class RobotContainer {
 
     // // belt.setDefaultCommand(belt.setPercentMotorOutputRunCommand(BeltConstants.FEED_POWER));
     feeder.setDefaultCommand(feeder.setPercentMotorRunCommand(0));
-    // shooter.setDefaultCommand(shooter.setManualSpeedRunCommand(0));
+    shooter.setDefaultCommand(shooter.setManualSpeedRunCommand(0));
 
     // // climb.setDefaultCommand(climb.setPositionsRunCommand(0, 0));
 
@@ -353,6 +353,8 @@ public class RobotContainer {
             drive,
             () -> -controller.getLeftY() * DriveConstants.K_JOYSTICK_WHEN_SHOOTING,
             () -> -controller.getLeftX() * DriveConstants.K_JOYSTICK_WHEN_SHOOTING);
+
+    // configureSysIdBindings(sysID_controller, shooter.BuildSysIdRoutine());
 
     //   controller
     //       .rightBumper()
