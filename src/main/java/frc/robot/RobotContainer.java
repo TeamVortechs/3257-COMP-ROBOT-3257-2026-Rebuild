@@ -361,7 +361,7 @@ public class RobotContainer {
     controller
         .rightTrigger()
         .whileTrue(
-            Commands.parallel(aimTowardsTargetCommand, shooter.setManualSpeedRunCommand(78)));
+            Commands.parallel(aimTowardsTargetCommand, shooter.setAutomaticCommandRun()));
 
     //   controller.povRight().toggleOnTrue(drive.iteratePassingCommand(true));
   }
