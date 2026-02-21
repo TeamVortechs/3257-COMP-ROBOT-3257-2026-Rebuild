@@ -27,6 +27,7 @@ import frc.robot.Constants.BeltConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.FeederConstants;
 import frc.robot.Constants.IntakeConstants;
+import frc.robot.Constants.ShooterConstants;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.communication.ControllerVibrateCommand;
 import frc.robot.commands.communication.TellCommand;
@@ -46,12 +47,15 @@ import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.feeder.Feeder;
 import frc.robot.subsystems.feeder.FeederIO;
 import frc.robot.subsystems.feeder.FeederSimulationIO;
+import frc.robot.subsystems.feeder.FeederTalonFXIO;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeIO;
 import frc.robot.subsystems.intake.IntakeSimulationIO;
+import frc.robot.subsystems.intake.IntakeTalonFXOnlyRollerIO;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterIO;
 import frc.robot.subsystems.shooter.ShooterSimulationIO;
+import frc.robot.subsystems.shooter.ShooterTalonFXIO;
 import frc.robot.util.MatchTimeline;
 import java.util.Optional;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
@@ -118,15 +122,21 @@ public class RobotContainer {
                 new ModuleIOTalonFX(TunerConstants.BackLeft),
                 new ModuleIOTalonFX(TunerConstants.BackRight));
 
-        intake = new Intake(new IntakeIO() {});
+        intake =
+            new Intake(new IntakeTalonFXOnlyRollerIO(IntakeConstants.INTAKE_ROLLER_MOTOR_ID, 0));
 
         belt = new Belt(new BeltIO() {});
 
-        feeder = new Feeder(new FeederIO() {}, () -> false, () -> false, () -> false);
+        feeder =
+            new Feeder(
+                new FeederTalonFXIO(FeederConstants.MOTOR_ID),
+                () -> false,
+                () -> false,
+                () -> false);
 
         shooter =
             new Shooter(
-                new ShooterIO() {},
+                new ShooterTalonFXIO(ShooterConstants.MOTOR_ID),
                 () -> drive.getDistanceToGoal(),
                 () -> drive.isWithinShooterAutomaticChargingZone());
 
@@ -281,34 +291,38 @@ public class RobotContainer {
                 .ignoringDisable(true));
 
     // intake
-    intake.setDefaultCommand(intake.setRollerVoltageAndPositionCommand(0, 0));
+    intake.setDefaultCommand(intake.setRollerVoltageCommand(0));
 
     controller
         .leftTrigger()
         .whileTrue(intake.setRollerVoltageCommand(IntakeConstants.INTAKE_VOLTS));
 
-    controller.rightTrigger().whileTrue(feeder.setPercentMotorRunCommand(0.4));
+    controller
+        .rightBumper()
+        .whileTrue(feeder.setPercentMotorRunCommand(Constants.FeederConstants.FEED_POWER));
 
-    // controller.rightBumper().whileTrue(shooter.setManualSpeedRunCommand(70));
-    controller.leftBumper().whileTrue(shooter.setAutomaticCommandRun());
+    controller.rightTrigger().whileTrue(shooter.setManualSpeedRunCommand(70));
 
-    controller.povDown().whileTrue(belt.setPercentMotorOutputCommand(0.5));
+    shooter.setDefaultCommand(shooter.setManualSpeedCommand(0));
+    // controller.leftBumper().whileTrue(shooter.setAutomaticCommandRun());
 
-    // controller
-    //     .povUp()
-    //     .whileTrue(climb.setServoRunCommand(ClimbConstants.SERVO_CLOSED))
-    //     .onFalse(climb.setServoRunCommand(ClimbConstants.SERVO_OPEN));
+    // controller.povDown().whileTrue(belt.setPercentMotorOutputCommand(0.5));
 
-    operatorController
-        .x()
-        .whileTrue(climb.setSpeedsRunCommand(5, 5))
-        .onFalse(climb.setSpeedsRunCommand(0, 0));
+    // // controller
+    // //     .povUp()
+    // //     .whileTrue(climb.setServoRunCommand(ClimbConstants.SERVO_CLOSED))
+    // //     .onFalse(climb.setServoRunCommand(ClimbConstants.SERVO_OPEN));
 
-    // belt.setDefaultCommand(belt.setPercentMotorOutputRunCommand(BeltConstants.FEED_POWER));
+    // operatorController
+    //     .x()
+    //     .whileTrue(climb.setSpeedsRunCommand(5, 5))
+    //     .onFalse(climb.setSpeedsRunCommand(0, 0));
+
+    // // belt.setDefaultCommand(belt.setPercentMotorOutputRunCommand(BeltConstants.FEED_POWER));
     feeder.setDefaultCommand(feeder.setPercentMotorRunCommand(0));
-    shooter.setDefaultCommand(shooter.setManualSpeedRunCommand(0));
+    // shooter.setDefaultCommand(shooter.setManualSpeedRunCommand(0));
 
-    // climb.setDefaultCommand(climb.setPositionsRunCommand(0, 0));
+    // // climb.setDefaultCommand(climb.setPositionsRunCommand(0, 0));
 
     @SuppressWarnings("unused")
     Command aimTowardsTargetCommand =
@@ -317,15 +331,15 @@ public class RobotContainer {
             () -> -controller.getLeftY() * DriveConstants.K_JOYSTICK_WHEN_SHOOTING,
             () -> -controller.getLeftX() * DriveConstants.K_JOYSTICK_WHEN_SHOOTING);
 
-    controller
-        .rightBumper()
-        .whileTrue(
-            Commands.parallel(
-                aimTowardsTargetCommand,
-                shooter.setAutomaticCommandRun(),
-                feeder.feedWhenValidRunCommand(FeederConstants.FEED_POWER)));
+    //   controller
+    //       .rightBumper()
+    //       .whileTrue(
+    //           Commands.parallel(
+    //               aimTowardsTargetCommand,
+    //               shooter.setAutomaticCommandRun(),
+    //               feeder.feedWhenValidRunCommand(FeederConstants.FEED_POWER)));
 
-    controller.povRight().toggleOnTrue(drive.iteratePassingCommand(true));
+    //   controller.povRight().toggleOnTrue(drive.iteratePassingCommand(true));
   }
 
   /**
