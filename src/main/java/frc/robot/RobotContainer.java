@@ -24,7 +24,6 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants.BeltConstants;
-import frc.robot.Constants.ClimbConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.FeederConstants;
 import frc.robot.Constants.IntakeConstants;
@@ -38,7 +37,6 @@ import frc.robot.subsystems.belt.BeltSimulationIO;
 import frc.robot.subsystems.climb.Climb;
 import frc.robot.subsystems.climb.ClimbIO;
 import frc.robot.subsystems.climb.ClimbSimulationIO;
-import frc.robot.subsystems.climb.ClimbTalonFXOneMotorIO;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
@@ -132,8 +130,7 @@ public class RobotContainer {
                 () -> drive.getDistanceToGoal(),
                 () -> drive.isWithinShooterAutomaticChargingZone());
 
-        climb =
-            new Climb(new ClimbTalonFXOneMotorIO(ClimbConstants.LEFT_ID, ClimbConstants.RIGHT_ID));
+        climb = new Climb(new ClimbIO() {});
         // The ModuleIOTalonFXS implementation provides an example implementation for
         // TalonFXS controller connected to a CANdi with a PWM encoder. The
         // implementations
@@ -181,7 +178,6 @@ public class RobotContainer {
                 () -> true);
 
         climb = new Climb(new ClimbSimulationIO());
-
 
         // climb = new Climb(new ClimbSimulationIO());
 
