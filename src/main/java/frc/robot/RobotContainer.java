@@ -79,8 +79,6 @@ public class RobotContainer {
 
   private final Climb climb;
 
-  private final Vision vision;
-
   private final MatchTimeline matchTimeline = new MatchTimeline();
 
   // private final Climb climb;
@@ -136,13 +134,6 @@ public class RobotContainer {
 
         climb =
             new Climb(new ClimbTalonFXOneMotorIO(ClimbConstants.LEFT_ID, ClimbConstants.RIGHT_ID));
-
-          vision =
-            new Vision(
-                drive::addVisionMeasurement,
-                new VisionIOLimelight(
-                    VisionConstants.limelight0Name, () -> drive.getRotation()) {});
-
         // The ModuleIOTalonFXS implementation provides an example implementation for
         // TalonFXS controller connected to a CANdi with a PWM encoder. The
         // implementations
