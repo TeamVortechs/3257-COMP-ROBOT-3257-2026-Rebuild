@@ -38,6 +38,7 @@ public class Robot extends LoggedRobot {
 
   private Field2d field2d;
 
+
   public Robot() {
     // Record metadata
     Logger.recordMetadata("ProjectName", BuildConstants.MAVEN_NAME);
