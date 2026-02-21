@@ -59,7 +59,6 @@ import frc.robot.subsystems.shooter.ShooterTalonFXIO;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionIO;
-import frc.robot.subsystems.vision.VisionIOLimelight;
 import frc.robot.subsystems.vision.VisionIOPhotonVision;
 import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
 import frc.robot.util.MatchTimeline;
@@ -166,6 +165,14 @@ public class RobotContainer {
         // new ModuleIOTalonFXS(TunerConstants.FrontRight),
         // new ModuleIOTalonFXS(TunerConstants.BackLeft),
         // new ModuleIOTalonFXS(TunerConstants.BackRight));
+
+        vision =
+            new Vision(
+                drive::addVisionMeasurement,
+                new VisionIOPhotonVision(
+                    VisionConstants.photon0Name, VisionConstants.robotToPhoton0),
+                new VisionIOPhotonVision(
+                    VisionConstants.photon1Name, VisionConstants.robotToPhoton1));
         break;
 
       case SIM:
@@ -317,9 +324,12 @@ public class RobotContainer {
         .rightBumper()
         .whileTrue(feeder.setPercentMotorRunCommand(Constants.FeederConstants.FEED_POWER));
 
-    controller.rightTrigger().whileTrue(shooter.setManualSpeedRunCommand(70));
+    controller.rightTrigger().whileTrue(shooter.setManualSpeedRunCommand(100));
 
     shooter.setDefaultCommand(shooter.setManualSpeedCommand(0));
+
+
+  
     // controller.leftBumper().whileTrue(shooter.setAutomaticCommandRun());
 
     // controller.povDown().whileTrue(belt.setPercentMotorOutputCommand(0.5));
