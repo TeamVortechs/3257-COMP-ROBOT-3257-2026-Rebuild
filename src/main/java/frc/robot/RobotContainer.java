@@ -54,6 +54,12 @@ import frc.robot.subsystems.intake.IntakeSimulationIO;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterIO;
 import frc.robot.subsystems.shooter.ShooterSimulationIO;
+import frc.robot.subsystems.vision.Vision;
+import frc.robot.subsystems.vision.VisionConstants;
+import frc.robot.subsystems.vision.VisionIO;
+import frc.robot.subsystems.vision.VisionIOLimelight;
+import frc.robot.subsystems.vision.VisionIOPhotonVision;
+import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
 import frc.robot.util.MatchTimeline;
 import java.util.Optional;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
@@ -80,6 +86,8 @@ public class RobotContainer {
   private final Climb climb;
 
   private final MatchTimeline matchTimeline = new MatchTimeline();
+
+  private final Vision vision;
 
   // private final Climb climb;
 
@@ -135,6 +143,15 @@ public class RobotContainer {
         climb =
             new Climb(new ClimbTalonFXOneMotorIO(ClimbConstants.LEFT_ID, ClimbConstants.RIGHT_ID));
 
+        vision =
+            new Vision(
+                drive::addVisionMeasurement,
+                new VisionIOLimelight(VisionConstants.limelight0Name, () -> drive.getRotation()),
+                new VisionIOPhotonVision(
+                    VisionConstants.photon0Name, VisionConstants.robotToPhoton0),
+                new VisionIOPhotonVision(
+                    VisionConstants.photon1Name, VisionConstants.robotToPhoton1));
+
         // The ModuleIOTalonFXS implementation provides an example implementation for
         // TalonFXS controller connected to a CANdi with a PWM encoder. The
         // implementations
@@ -184,6 +201,13 @@ public class RobotContainer {
         climb = new Climb(new ClimbSimulationIO());
 
         // climb = new Climb(new ClimbSimulationIO());
+        vision =
+            new Vision(
+                drive::addVisionMeasurement,
+                new VisionIOPhotonVisionSim(
+                    VisionConstants.photon0Name, VisionConstants.robotToPhoton0, drive::getPose),
+                new VisionIOPhotonVisionSim(
+                    VisionConstants.photon1Name, VisionConstants.robotToPhoton1, drive::getPose));
 
         break;
 
@@ -210,6 +234,7 @@ public class RobotContainer {
                 () -> drive.isWithinShooterAutomaticChargingZone());
 
         climb = new Climb(new ClimbIO() {});
+        vision = new Vision(drive::addVisionMeasurement, new VisionIO() {});
 
         break;
     }
