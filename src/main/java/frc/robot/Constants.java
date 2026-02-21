@@ -245,11 +245,11 @@ public final class Constants {
 
     // CHANGE !!
     public static final double KS = 0.0;
-    public static final double KV = 0.12559;
-    public static final double KP = 0.14947;
+    public static final double KV = 0.13236;
+    public static final double KP = 0.16218;
     public static final double KI = 0.0;
     public static final double KD = 0.0;
-    public static final double KA = 0.038169;
+    public static final double KA = 0.036553;
 
     public static final TalonFXConfiguration CONFIG;
     public static final Slot0Configs SLOT0CONFIGS;

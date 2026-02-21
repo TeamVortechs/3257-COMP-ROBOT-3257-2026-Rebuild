@@ -328,8 +328,8 @@ public class RobotContainer {
 
     shooter.setDefaultCommand(shooter.setManualSpeedCommand(0));
 
+    configureSysIdBindings(sysID_controller, shooter.BuildSysIdRoutine());
 
-  
     // controller.leftBumper().whileTrue(shooter.setAutomaticCommandRun());
 
     // controller.povDown().whileTrue(belt.setPercentMotorOutputCommand(0.5));
