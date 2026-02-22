@@ -8,6 +8,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
 import java.util.function.Supplier;
+import org.littletonrobotics.junction.Logger;
 
 /** change this so it only logs hwen it's getting consumed */
 /*
@@ -119,7 +120,7 @@ public class ShooterRotationManager {
     boolean onTarget =
         Math.abs(error.getRadians()) < Constants.DriveConstants.ORIENTATION_TOLERANCE;
 
-    // Logger.recordOutput("ShooterRotationManager/IsOriented", onTarget);
+    Logger.recordOutput("ShooterRotationManager/IsOriented", onTarget);
 
     return onTarget;
   }
