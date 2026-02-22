@@ -245,6 +245,8 @@ public class RobotContainer {
 
     SmartDashboard.putData("Flip Poses", Commands.runOnce(() -> flipAllPoses()));
 
+    registerNamedCommandsAuto(); // register named commands for auto (pathplanner)
+
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
 
@@ -266,7 +268,7 @@ public class RobotContainer {
 
     // Configure the button bindings
     configureButtonBindings();
-    registerNamedCommandsAuto(); // register named commands for auto (pathplanner)
+
     Optional<Alliance> ally = DriverStation.getAlliance();
     if (ally != null && ally.isPresent() && ally.get() == Alliance.Red) {
       flipAllPoses();
@@ -408,7 +410,9 @@ public class RobotContainer {
         "feedStart", feeder.setPercentMotorRunCommand(FeederConstants.FEED_POWER), isReal);
     addNamedCommand(
         "feedWhenValid", feeder.feedWhenValidRunCommand(FeederConstants.FEED_POWER), isReal);
-    addNamedCommand("feedStop", feeder.setPercentMotorRunCommand(0), isReal);
+
+    //deprecated cus to do this instead u shoul dod a race group
+    // addNamedCommand("feedStop", feeder.setPercentMotorRunCommand(0), isReal);
 
     addNamedCommand(
         "beltStart", belt.setPercentMotorOutputRunCommand(BeltConstants.FEED_POWER), isReal);

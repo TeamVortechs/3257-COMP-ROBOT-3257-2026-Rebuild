@@ -19,33 +19,28 @@
                 "data": {
                   "commands": [
                     {
-                      "type": "path",
+                      "type": "race",
                       "data": {
-                        "pathName": "mid to shoot"
+                        "commands": [
+                          {
+                            "type": "wait",
+                            "data": {
+                              "waitTime": 1.0
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "feedStart"
+                            }
+                          }
+                        ]
                       }
                     },
                     {
                       "type": "named",
                       "data": {
-                        "name": "feedStartEvent"
-                      }
-                    },
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 5.0
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "feedstop"
-                      }
-                    },
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "Bumper shot mid to climb"
+                        "name": "feedStop"
                       }
                     }
                   ]
