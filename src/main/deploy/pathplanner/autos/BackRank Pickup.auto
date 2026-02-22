@@ -52,6 +52,12 @@
                     {
                       "type": "named",
                       "data": {
+                        "name": "intakeStop"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
                         "name": "waitForShooterOnTarget"
                       }
                     },
@@ -84,6 +90,12 @@
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shooterStop"
           }
         },
         {

@@ -418,7 +418,8 @@ public class RobotContainer {
         intake.setRollerVoltageAndPositionCommand(
             IntakeConstants.INTAKE_POSITION, IntakeConstants.INTAKE_VOLTS));
 
-    NamedCommands.registerCommand("intakeStop", new InstantCommand(() -> intake.setRollersVoltage(0)));
+    NamedCommands.registerCommand(
+        "intakeStop", new InstantCommand(() -> intake.setRollersVoltage(0)));
 
     NamedCommands.registerCommand(
         "intakeDown",
