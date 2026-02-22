@@ -3,11 +3,10 @@
   "robotLength": 0.9,
   "holonomicMode": true,
   "pathFolders": [
-    "Davis Auto",
-    "Paths for Testing"
+
   ],
   "autoFolders": [
-    "Autos for Testing"
+
   ],
   "defaultMaxVel": 3.0,
   "defaultMaxAccel": 3.0,
