@@ -1,0 +1,104 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 4.0,
+        "y": 7.6044838709677425
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 5.134510752688173,
+        "y": 7.053456989247312
+      },
+      "isLocked": false,
+      "linkedName": "Left Start"
+    },
+    {
+      "anchor": {
+        "x": 7.738478494623655,
+        "y": 5.288220430107527
+      },
+      "prevControl": {
+        "x": 7.717934740243506,
+        "y": 8.028757264418982
+      },
+      "nextControl": {
+        "x": 7.762860215053765,
+        "y": 2.035698924731183
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 5.3783279569892475,
+        "y": 7.497204301075269
+      },
+      "prevControl": {
+        "x": 6.350788834111124,
+        "y": 7.497204301075269
+      },
+      "nextControl": {
+        "x": 5.1283279569892475,
+        "y": 7.497204301075269
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 3.759381720430108,
+        "y": 7.394801075268817
+      },
+      "prevControl": {
+        "x": 3.509381720430108,
+        "y": 7.394801075268817
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Top Shoot"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.75,
+      "rotationDegrees": -90.0
+    }
+  ],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "intakeStartEvent",
+      "waypointRelativePos": 0.05898876404494582,
+      "endWaypointRelativePos": null,
+      "command": null
+    },
+    {
+      "name": "intakeStopEvent",
+      "waypointRelativePos": 1.4616104868913853,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -75.8498863020422
+  },
+  "reversed": false,
+  "folder": "Top",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 0.0
+  },
+  "useDefaultConstraints": true
+}

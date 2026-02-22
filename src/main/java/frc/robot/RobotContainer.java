@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
@@ -369,6 +370,8 @@ public class RobotContainer {
     controller.leftBumper().whileTrue(intake.setRollerVoltageCommand(-8));
     controller.povDown().whileTrue(shooter.setManualSpeedRunCommand(82));
 
+    climb.setDefaultCommand(climb.setSpeedsRunCommand(0, 0));
+
     //   controller.povRight().toggleOnTrue(drive.iteratePassingCommand(true));
   }
 
@@ -420,19 +423,23 @@ public class RobotContainer {
 
     addNamedCommand(
         "intakeStart",
-        intake.setRollerVoltageAndPositionCommand(
-            IntakeConstants.INTAKE_POSITION, IntakeConstants.INTAKE_VOLTS),
+        intake.setRollerVoltageCommand(
+            IntakeConstants.INTAKE_VOLTS),
         isReal);
-    addNamedCommand("intakeStop", intake.setRollerVoltageAndPositionCommand(0, 0), isReal);
+    addNamedCommand("intakeStop", intake.setRollerVoltageCommand(0), isReal);
 
     addNamedCommand("shooterStop", shooter.setManualSpeedRunCommand(0), isReal);
     addNamedCommand("shooterPreset1", shooter.setManualSpeedRunCommand(1), isReal);
     addNamedCommand("shooterAutomatic", shooter.setAutomaticCommandRun(), isReal);
+    addNamedCommand("waitForShooterOnTarget", new WaitUntilCommand(() -> shooter.isOnTarget()), isReal);
 
     addNamedCommand("driveOverrideRotation", drive.overrideRotationCommand(), isReal);
     // new EventTrigger("driveOverrideRotation").onTrue(drive.overrideRotationCommand());
 
     addNamedCommand("driveResetOverrides", drive.removeRotationOverrideCommand(), isReal);
+
+    addNamedCommand("climbUp", climb.setSpeedsRunCommand(0.1, 0), isReal);
+    addNamedCommand("climbDown", climb.setSpeedsRunCommand(-0.1, 0), isReal);
     // new EventTrigger("driveResetOverrides").onTrue(drive.removeRotationOverrideCommand());
   }
 
