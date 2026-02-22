@@ -8,27 +8,48 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.706091397849463,
-        "y": 7.136354838709678
+        "x": 3.7974136180535387,
+        "y": 7.456276486005108
       },
       "isLocked": false,
       "linkedName": "Top Shoot"
     },
     {
       "anchor": {
-        "x": 2.0331559139784954,
-        "y": 3.732666666666667
+        "x": 2.9593514585853065,
+        "y": 7.338096748195894
       },
       "prevControl": {
-        "x": 1.8869139030944915,
-        "y": 3.4248024083867667
+        "x": 2.717798293337874,
+        "y": 7.273660202983206
+      },
+      "nextControl": {
+        "x": 3.2009046238327388,
+        "y": 7.402533293408581
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 6.075645161290323,
+        "y": 7.599607526881721
+      },
+      "prevControl": {
+        "x": 6.28094222982769,
+        "y": 7.74227186597865
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Climb Start"
+      "linkedName": "Top Ending Position"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1.4664341761115902,
+      "rotationDegrees": 0.0
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],

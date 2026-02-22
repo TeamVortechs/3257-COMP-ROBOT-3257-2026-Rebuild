@@ -9,7 +9,6 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.events.EventTrigger;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -19,19 +18,16 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
-import frc.robot.Constants.BeltConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.FeederConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.commands.DriveCommands;
-import frc.robot.commands.communication.ControllerVibrateCommand;
-import frc.robot.commands.communication.TellCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.belt.Belt;
 import frc.robot.subsystems.belt.BeltIO;
@@ -317,7 +313,6 @@ public class RobotContainer {
                 .ignoringDisable(true));
 
     // intake
-    intake.setDefaultCommand(intake.setRollerVoltageCommand(0));
 
     controller
         .leftTrigger()
@@ -329,7 +324,7 @@ public class RobotContainer {
 
     // controller.rightTrigger().whileTrue(shooter.setManualSpeedRunCommand(72));
 
-    shooter.setDefaultCommand(shooter.setManualSpeedCommand(0));
+    shooter.setDefaultCommand(shooter.automaticallyChargeWhenNeededRunCommand(0, 0));
     // controller.leftBumper().whileTrue(shooter.setAutomaticCommandRun());
 
     // controller.povDown().whileTrue(belt.setPercentMotorOutputCommand(0.5));
@@ -365,7 +360,8 @@ public class RobotContainer {
             Commands.parallel(
                 aimTowardsTargetCommand,
                 shooter.setAutomaticCommandRun(),
-                intake.setRollerVoltageCommand(IntakeConstants.INTAKE_VOLTS)));
+                intake.setRollerVoltageCommand(IntakeConstants.INTAKE_VOLTS),
+                feeder.feedWhenValidRunCommand(FeederConstants.FEED_POWER)));
 
     controller.leftBumper().whileTrue(intake.setRollerVoltageCommand(-8));
     controller.povDown().whileTrue(shooter.setManualSpeedRunCommand(82));
@@ -405,69 +401,47 @@ public class RobotContainer {
   }
 
   private void registerNamedCommandsAuto() {
-    boolean isReal = true;
-    // if (Constants.currentMode == Mode.SIM) isReal = false;
 
-    // feed commands
-    addNamedCommand(
-        "feedStart", feeder.setPercentMotorRunCommand(FeederConstants.FEED_POWER), isReal);
-    addNamedCommand(
-        "feedWhenValid", feeder.feedWhenValidRunCommand(FeederConstants.FEED_POWER), isReal);
+    NamedCommands.registerCommand("shooterAutomatic", shooter.setAutomaticCommandRun());
+    NamedCommands.registerCommand("shooterStop", shooter.setManualSpeedCommand(0));
 
-    //deprecated cus to do this instead u shoul dod a race group
-    // addNamedCommand("feedStop", feeder.setPercentMotorRunCommand(0), isReal);
+    NamedCommands.registerCommand(
+        "feedWhenValid", feeder.feedWhenValidRunCommand(FeederConstants.FEED_POWER));
 
-    addNamedCommand(
-        "beltStart", belt.setPercentMotorOutputRunCommand(BeltConstants.FEED_POWER), isReal);
-    addNamedCommand("beltStop", belt.setPercentMotorOutputRunCommand(0), isReal);
+    NamedCommands.registerCommand("feedStop", feeder.setPercentMotorCommand(0));
 
-    addNamedCommand(
-        "intakeStart",
-        intake.setRollerVoltageCommand(
-            IntakeConstants.INTAKE_VOLTS),
-        isReal);
-    addNamedCommand("intakeStop", intake.setRollerVoltageCommand(0), isReal);
+    NamedCommands.registerCommand(
+        "intakeStart", intake.setRollerVoltageCommand(IntakeConstants.INTAKE_VOLTS));
 
-    addNamedCommand("shooterStop", shooter.setManualSpeedRunCommand(0), isReal);
-    addNamedCommand("shooterPreset1", shooter.setManualSpeedRunCommand(1), isReal);
-    addNamedCommand("shooterAutomatic", shooter.setAutomaticCommandRun(), isReal);
-    addNamedCommand("waitForShooterOnTarget", new WaitUntilCommand(() -> shooter.isOnTarget()), isReal);
+    NamedCommands.registerCommand(
+        "intakeStartAndDown",
+        intake.setRollerVoltageAndPositionCommand(
+            IntakeConstants.INTAKE_POSITION, IntakeConstants.INTAKE_VOLTS));
 
-    addNamedCommand("driveOverrideRotation", drive.overrideRotationCommand(), isReal);
+    NamedCommands.registerCommand("intakeStop", new InstantCommand(() -> intake.setRollersVoltage(0)));
+
+    NamedCommands.registerCommand(
+        "intakeDown",
+        intake
+            .setPositionCommand(IntakeConstants.INTAKE_POSITION)
+            .withDeadline(new WaitUntilCommand(() -> intake.isOnTarget())));
+
+    NamedCommands.registerCommand(
+        "intakeUp",
+        intake.setPositionCommand(0).withDeadline(new WaitUntilCommand(() -> intake.isOnTarget())));
+
+    NamedCommands.registerCommand("shooterStop", shooter.setManualSpeedCommand(0));
+
+    NamedCommands.registerCommand(
+        "waitForShooterOnTarget", new WaitUntilCommand(() -> shooter.isOnTarget()));
+
+    NamedCommands.registerCommand("driveOverrideRotation", drive.overrideRotationCommand());
     // new EventTrigger("driveOverrideRotation").onTrue(drive.overrideRotationCommand());
 
-    addNamedCommand("driveResetOverrides", drive.removeRotationOverrideCommand(), isReal);
+    NamedCommands.registerCommand("driveResetOverrides", drive.removeRotationOverrideCommand());
 
-    addNamedCommand("climbUp", climb.setSpeedsRunCommand(0.1, 0), isReal);
-    addNamedCommand("climbDown", climb.setSpeedsRunCommand(-0.1, 0), isReal);
-    // new EventTrigger("driveResetOverrides").onTrue(drive.removeRotationOverrideCommand());
-  }
-
-  public void addNamedCommand(String commandName, Command command, boolean isReal) {
-
-    if (isReal) {
-      NamedCommands.registerCommand(
-          // commandName, command.andThen(new TellCommand("just ran " + commandName)));
-          commandName, command);
-
-      new EventTrigger(commandName + "Event").onTrue(command);
-    } else {
-      // registers the named commands to print something out instead of actually running anything
-      NamedCommands.registerCommand(
-          commandName,
-          new TellCommand(commandName + " auto command")
-              .andThen(
-                  new ControllerVibrateCommand(1, controller).withDeadline(new WaitCommand(0.2)))
-              .alongWith(command));
-
-      //   new EventTrigger(commandName)
-      //       .onTrue(
-      //           new TellCommand(commandName + " auto event trigger command")
-      //               .andThen(
-      //                   new ControllerVibrateCommand(1, controller)
-      //                       .withDeadline(new WaitCommand(0.2)))
-      //               .andThen(new WaitCommand(0.3)));
-    }
+    NamedCommands.registerCommand("climbUp", climb.setSpeedsRunCommand(0.1, 0));
+    NamedCommands.registerCommand("climbDown", climb.setSpeedsRunCommand(-0.1, 0));
   }
 
   // this shoudl be in a helper method or somewhere in robot container

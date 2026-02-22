@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.7270452173382718,
-        "y": 3.6682388794245533
+        "x": 1.7831559139784954,
+        "y": 3.732666666666667
       },
       "isLocked": false,
       "linkedName": "Climb Start"
@@ -20,8 +20,8 @@
         "y": 3.732666666666667
       },
       "prevControl": {
-        "x": 1.3615433269073323,
-        "y": 3.793465604399815
+        "x": 1.854037634408603,
+        "y": 3.732666666666667
       },
       "nextControl": null,
       "isLocked": false,
@@ -45,7 +45,14 @@
     }
   ],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "",
+      "waypointRelativePos": 0.0,
+      "endWaypointRelativePos": 1.0,
+      "command": null
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 3.0,

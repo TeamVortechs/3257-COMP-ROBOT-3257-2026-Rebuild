@@ -19,9 +19,34 @@
                 "data": {
                   "commands": [
                     {
-                      "type": "path",
+                      "type": "named",
                       "data": {
-                        "pathName": "Left to Mid intake to Shoot"
+                        "name": "intakeDown"
+                      }
+                    },
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 3.0
+                      }
+                    },
+                    {
+                      "type": "race",
+                      "data": {
+                        "commands": [
+                          {
+                            "type": "path",
+                            "data": {
+                              "pathName": "HP station to top intake, shoot"
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "intakeStart"
+                            }
+                          }
+                        ]
                       }
                     },
                     {
@@ -35,18 +60,24 @@
                       "data": {
                         "commands": [
                           {
+                            "type": "wait",
+                            "data": {
+                              "waitTime": 3.0
+                            }
+                          },
+                          {
                             "type": "named",
                             "data": {
                               "name": "feedWhenValid"
                             }
-                          },
-                          {
-                            "type": "wait",
-                            "data": {
-                              "waitTime": 5.0
-                            }
                           }
                         ]
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "feedStop"
                       }
                     }
                   ]
@@ -58,19 +89,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Top Shoot to Climb"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Climb"
+            "pathName": "Top Shoot to ending position"
           }
         }
       ]
     }
   },
-  "resetOdom": false,
+  "resetOdom": true,
   "folder": null,
   "choreoAuto": false
 }

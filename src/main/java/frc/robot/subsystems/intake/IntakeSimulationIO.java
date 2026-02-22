@@ -44,6 +44,13 @@ public class IntakeSimulationIO implements IntakeIO {
 
     rollerMotorsSim.update(0.02);
     positionMotorsSim.update(0.02);
+
+    double currentAngle = positionMotorsSim.getAngularPositionRotations();
+    double inputVoltage = positionPIDController.calculate(currentAngle, targetPosition);
+    // System.out.println("Input volt: "+inputVoltage+" Target Angle: "+targetAngle);
+    positionMotorsSim.setInputVoltage(inputVoltage);
+    // System.out.println("Voltage being sent in PID Voltage");
+
   }
 
   // getters for motors
@@ -64,11 +71,8 @@ public class IntakeSimulationIO implements IntakeIO {
 
   // sets the position of the arm.
   public void setPositionControl(double position) {
-    double currentAngle = positionMotorsSim.getAngularPositionRotations();
-    double inputVoltage = positionPIDController.calculate(currentAngle, position);
-    // System.out.println("Input volt: "+inputVoltage+" Target Angle: "+targetAngle);
-    positionMotorsSim.setInputVoltage(inputVoltage);
-    // System.out.println("Voltage being sent in PID Voltage");
+
+    targetPosition = position;
   }
 
   public double getTargetPosition() {
