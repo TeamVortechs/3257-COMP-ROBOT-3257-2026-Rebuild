@@ -27,26 +27,7 @@
                     {
                       "type": "named",
                       "data": {
-                        "name": "waitForShooterOnTarget"
-                      }
-                    },
-                    {
-                      "type": "race",
-                      "data": {
-                        "commands": [
-                          {
-                            "type": "named",
-                            "data": {
-                              "name": "feedWhenValid"
-                            }
-                          },
-                          {
-                            "type": "wait",
-                            "data": {
-                              "waitTime": 3.0
-                            }
-                          }
-                        ]
+                        "name": "feedWhenValidAndStop"
                       }
                     }
                   ]
@@ -68,28 +49,9 @@
           }
         },
         {
-          "type": "race",
+          "type": "path",
           "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "climbUp"
-                }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Climb"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "climbStop"
+            "pathName": "Climb"
           }
         },
         {

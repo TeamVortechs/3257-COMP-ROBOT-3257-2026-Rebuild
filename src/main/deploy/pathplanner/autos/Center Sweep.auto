@@ -19,66 +19,15 @@
                 "data": {
                   "commands": [
                     {
-                      "type": "parallel",
+                      "type": "path",
                       "data": {
-                        "commands": [
-                          {
-                            "type": "race",
-                            "data": {
-                              "commands": [
-                                {
-                                  "type": "path",
-                                  "data": {
-                                    "pathName": "Back Bottom Center sweep, Shoot"
-                                  }
-                                },
-                                {
-                                  "type": "named",
-                                  "data": {
-                                    "name": "intakeStartAndDown"
-                                  }
-                                }
-                              ]
-                            }
-                          }
-                        ]
+                        "pathName": "Back Bottom Center sweep, Shoot"
                       }
                     },
                     {
                       "type": "named",
                       "data": {
-                        "name": "intakeStop"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "waitForShooterOnTarget"
-                      }
-                    },
-                    {
-                      "type": "race",
-                      "data": {
-                        "commands": [
-                          {
-                            "type": "named",
-                            "data": {
-                              "name": "feedWhenValid"
-                            }
-                          },
-                          {
-                            "type": "wait",
-                            "data": {
-                              "waitTime": 3.0
-                            }
-                          }
-                        ]
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "feedStop"
+                        "name": "feedWhenValidAndStop"
                       }
                     }
                   ]

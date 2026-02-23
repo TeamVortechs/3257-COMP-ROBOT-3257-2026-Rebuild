@@ -31,7 +31,7 @@ public class MatchTimeline {
     currentPhase = MatchPhase.BEGINNING;
     advancePhase();
 
-    timer.start();
+    timer.restart();
   }
 
   private void advancePhase() {
