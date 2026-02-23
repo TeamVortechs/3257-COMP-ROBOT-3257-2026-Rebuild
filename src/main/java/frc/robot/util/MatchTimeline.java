@@ -1,6 +1,7 @@
 package frc.robot.util;
 
 import edu.wpi.first.wpilibj.Notifier;
+import edu.wpi.first.wpilibj.Timer;
 import org.littletonrobotics.junction.Logger;
 
 public class MatchTimeline {
@@ -9,6 +10,8 @@ public class MatchTimeline {
   private Notifier notifer;
 
   private MatchChangeCallback matchChangeCallback;
+
+  private Timer timer;
 
   {
     notifer =
@@ -20,11 +23,15 @@ public class MatchTimeline {
     Logger.recordOutput("MatchTimeline/currentPhase", MatchPhase.NO_PHASE.getDisplayName());
 
     matchChangeCallback = () -> {};
+
+    timer = new Timer();
   }
 
   public void start() {
     currentPhase = MatchPhase.BEGINNING;
     advancePhase();
+
+    timer.start();
   }
 
   private void advancePhase() {
@@ -40,6 +47,10 @@ public class MatchTimeline {
 
   public MatchPhase getCurrentPhase() {
     return currentPhase;
+  }
+
+  public double getTimeSinceStart() {
+    return timer.get();
   }
 
   public boolean canScore(boolean isWinning) {

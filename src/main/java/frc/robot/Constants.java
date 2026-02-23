@@ -354,7 +354,9 @@ public final class Constants {
     public static final double RAMP_RATE_VOLTS_SYSID = 0.1;
     public static final double DYNAMIC_STEP_VOLTS_SYSID = 0.25;
 
-    public static final double FEED_POWER = 0.1;
+    public static final double CLIMB_UP_VOLTS = 0.1;
+    public static final double CLIMB_DOWN_VOLTS = -0.1;
+
 
     public static final double MIN_POSITION_LEFT = 0;
     public static final double MAX_POSITION_LEFT = 1;
@@ -421,7 +423,9 @@ public final class Constants {
     public static final double KD = 0.1;
 
     public static final double INTAKE_VOLTS = 8;
-    public static final double INTAKE_POSITION = 0.5;
+    public static final double EJECT_VOLTS = -8;
+    public static final double INTAKE_DOWN_POSITION = 0.5;
+    public static final double INTAKE_UP_POSITION = 0;
 
     public static final double MOTION_MAGIC_CRUISE_VELOCITY = 3;
     public static final double MOTION_MAGIC_ACCELERATION = 2.5;
@@ -459,4 +463,5 @@ public final class Constants {
       ROLLER_CONFIG.CurrentLimits.SupplyCurrentLimitEnable = true;
     }
   }
+
 }

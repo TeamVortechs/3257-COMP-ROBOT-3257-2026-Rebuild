@@ -6,12 +6,11 @@ import static edu.wpi.first.units.Units.Volts;
 import com.ctre.phoenix6.SignalLogger;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.ClimbConstants;
-import java.util.function.BooleanSupplier;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
@@ -21,13 +20,7 @@ public class Climb extends SubsystemBase {
 
   private final Notifier logger;
 
-  @AutoLogOutput private boolean isLocked = true;
-
-  private double manualLeftSpeed = 0;
-  private double manualRightSpeed = 0;
-
-  private double automaticLeftSetpoint = 0;
-  private double automaticRightSetpoint = 0;
+  @AutoLogOutput private boolean isLocked = false;
 
   public Climb(ClimbIO climbIO) {
     this.climbIO = climbIO;
@@ -42,101 +35,42 @@ public class Climb extends SubsystemBase {
             });
 
     logger.startPeriodic(1 / ClimbConstants.FREQUENCY_HZ);
-
-    setLocked(false);
   }
 
   @Override
-  public void periodic() {
-    if (isLocked) {
-      climbIO.stop();
+  public void periodic() {}
 
-      setManualSpeeds(0, 0);
-      return;
-    }
-  }
+  public void setVoltage(double voltage) {
 
-  public void setServo(double position) {
-    climbIO.setServo(position);
-  }
-
-  /**
-   * Manual control for both motors. Useful if the robot is tilting and you need to adjust one side.
-   * sets it to manual
-   */
-  public void setManualSpeeds(double left, double right) {
-    if (isLocked) {
-      climbIO.stop();
-      return;
+    // safety to make sure it doesn't break
+    if (isLocked && voltage < 0) {
+      voltage = 0;
     }
 
-    climbIO.setSpeeds(manualLeftSpeed, manualRightSpeed);
-
-    manualLeftSpeed = left;
-    manualRightSpeed = right;
-  }
-
-  /**
-   * sets the climber to automatic and sets the positions
-   *
-   * @param leftPosition
-   * @param rightPosition
-   */
-  public void setPositions(double leftPosition, double rightPosition) {
-    this.automaticLeftSetpoint = leftPosition;
-    this.automaticRightSetpoint = rightPosition;
-    if (automaticLeftSetpoint > ClimbConstants.MAX_POSITION_LEFT) {
-      automaticLeftSetpoint = ClimbConstants.MAX_POSITION_LEFT;
-    }
-
-    if (automaticRightSetpoint > ClimbConstants.MAX_POSITION_RIGHT) {
-      automaticRightSetpoint = ClimbConstants.MAX_POSITION_RIGHT;
-    }
-
-    if (automaticLeftSetpoint < ClimbConstants.MIN_POSITION_LEFT) {
-      automaticLeftSetpoint = ClimbConstants.MIN_POSITION_LEFT;
-    }
-
-    if (automaticRightSetpoint < ClimbConstants.MIN_POSITION_RIGHT) {
-      automaticRightSetpoint = ClimbConstants.MIN_POSITION_RIGHT;
-    }
-
-    climbIO.setPositions(automaticLeftSetpoint, automaticRightSetpoint);
+    climbIO.setVoltage(voltage);
   }
 
   public void setLocked(boolean locked) {
     isLocked = locked;
-    if (isLocked) {
-      climbIO.stop();
 
-      setManualSpeeds(0, 0);
-      return;
+    if (isLocked) {
+      climbIO.setServo(ClimbConstants.SERVO_CLOSED);
+    } else {
+      climbIO.setServo(ClimbConstants.SERVO_OPEN);
     }
   }
 
-  public boolean isLocked() {
-    return isLocked;
+  //this is a run command because we do a check everytime we run this command
+  public Command setVoltageRun(double voltage) {
+    return new RunCommand(() -> setVoltage(voltage), this);
   }
 
-  /** makes the climber manual and stops the setpoint */
-  public void stop() {
-    climbIO.stop();
+  public Command setVoltageInstant(double voltage) {
+    return new InstantCommand(() -> setVoltage(voltage), this);
   }
 
-  public Command setPositionsRunCommand(double leftPosition, double rightPosition) {
-    return Commands.startRun(() -> setPositions(leftPosition, rightPosition), () -> {}, this);
-  }
-
-  public Command setSpeedsRunCommand(double leftPosition, double rightPosition) {
-    return Commands.startRun(() -> setManualSpeeds(leftPosition, rightPosition), () -> {}, this);
-  }
-
-  public Command setIsLockedCommand(BooleanSupplier isLocked) {
-    return new InstantCommand(() -> setLocked(isLocked.getAsBoolean()), this);
-  }
-
-  public Command setServoRunCommand(double position) {
-    return new InstantCommand(() -> setServo(position));
+  public Command setLockedInstant(boolean locked) {
+    return new InstantCommand(() -> setLocked(locked));
   }
 
   // the constants here should probably be more and move but that's later when this is transferred
@@ -155,19 +89,7 @@ public class Climb extends SubsystemBase {
             Volts.of(ClimbConstants.DYNAMIC_STEP_VOLTS_SYSID),
             null,
             (state) -> SignalLogger.writeString("leftState", state.toString())),
-        new SysIdRoutine.Mechanism((volts) -> climbIO.setLeftVoltage(volts.in(Volts)), null, this));
-  }
-
-  /** Build SysId Routine for the Right Motor */
-  public SysIdRoutine buildRightSysIdRoutine() {
-    return new SysIdRoutine(
-        new SysIdRoutine.Config(
-            Volts.of(ClimbConstants.RAMP_RATE_VOLTS_SYSID).per(Seconds),
-            Volts.of(ClimbConstants.DYNAMIC_STEP_VOLTS_SYSID),
-            null,
-            (state) -> SignalLogger.writeString("rightState", state.toString())),
-        new SysIdRoutine.Mechanism(
-            (volts) -> climbIO.setRightVoltage(volts.in(Volts)), null, this));
+        new SysIdRoutine.Mechanism((volts) -> climbIO.setVoltage(volts.in(Volts)), null, this));
   }
 }
 

@@ -14,15 +14,18 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.robot.Constants.ClimbConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.FeederConstants;
 import frc.robot.Constants.IntakeConstants;
@@ -363,10 +366,10 @@ public class RobotContainer {
                 intake.setRollerVoltageCommand(IntakeConstants.INTAKE_VOLTS),
                 feeder.feedWhenValidRunCommand(FeederConstants.FEED_POWER)));
 
-    controller.leftBumper().whileTrue(intake.setRollerVoltageCommand(-8));
+    controller.leftBumper().whileTrue(intake.setRollerVoltageCommand(IntakeConstants.EJECT_VOLTS));
     controller.povDown().whileTrue(shooter.setManualSpeedRunCommand(82));
 
-    climb.setDefaultCommand(climb.setSpeedsRunCommand(0, 0));
+    climb.setDefaultCommand(climb.setVoltageRun(0));
 
     //   controller.povRight().toggleOnTrue(drive.iteratePassingCommand(true));
   }
@@ -416,7 +419,7 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "intakeStartAndDown",
         intake.setRollerVoltageAndPositionCommand(
-            IntakeConstants.INTAKE_POSITION, IntakeConstants.INTAKE_VOLTS));
+            IntakeConstants.INTAKE_DOWN_POSITION, IntakeConstants.INTAKE_VOLTS));
 
     NamedCommands.registerCommand(
         "intakeStop", new InstantCommand(() -> intake.setRollersVoltage(0)));
@@ -424,12 +427,14 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "intakeDown",
         intake
-            .setPositionCommand(IntakeConstants.INTAKE_POSITION)
+            .setPositionCommand(IntakeConstants.INTAKE_DOWN_POSITION)
             .withDeadline(new WaitUntilCommand(() -> intake.isOnTarget())));
 
     NamedCommands.registerCommand(
         "intakeUp",
-        intake.setPositionCommand(0).withDeadline(new WaitUntilCommand(() -> intake.isOnTarget())));
+        intake
+            .setPositionCommand(IntakeConstants.INTAKE_UP_POSITION)
+            .withDeadline(new WaitUntilCommand(() -> intake.isOnTarget())));
 
     NamedCommands.registerCommand("shooterStop", shooter.setManualSpeedCommand(0));
 
@@ -441,8 +446,10 @@ public class RobotContainer {
 
     NamedCommands.registerCommand("driveResetOverrides", drive.removeRotationOverrideCommand());
 
-    NamedCommands.registerCommand("climbUp", climb.setSpeedsRunCommand(0.1, 0));
-    NamedCommands.registerCommand("climbDown", climb.setSpeedsRunCommand(-0.1, 0));
+    NamedCommands.registerCommand("climbUp", climb.setVoltageRun(ClimbConstants.CLIMB_UP_VOLTS));
+    NamedCommands.registerCommand("climbStop", climb.setVoltageInstant(0));
+    NamedCommands.registerCommand(
+        "climbDownWhenNeeded", new WaitUntilCommand(() -> matchTimeline.getTimeSinceStart() > 18).andThen(climb.setVoltageRun(ClimbConstants.CLIMB_DOWN_VOLTS)));
   }
 
   // this shoudl be in a helper method or somewhere in robot container

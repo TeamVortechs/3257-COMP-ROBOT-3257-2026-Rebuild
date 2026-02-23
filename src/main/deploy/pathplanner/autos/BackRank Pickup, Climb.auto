@@ -105,9 +105,34 @@
           }
         },
         {
-          "type": "path",
+          "type": "race",
           "data": {
-            "pathName": "Climb"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "climbUp"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Climb"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "climbStop"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "climbDownWhenNeeded"
           }
         }
       ]
