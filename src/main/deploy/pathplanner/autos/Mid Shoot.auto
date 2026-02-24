@@ -25,15 +25,15 @@
                       }
                     },
                     {
-                      "type": "path",
+                      "type": "wait",
                       "data": {
-                        "pathName": "Bumper shot mid to climb"
+                        "waitTime": 4.0
                       }
                     },
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "climb to intake"
+                        "pathName": "Bumper shot mid to climb"
                       }
                     }
                   ]

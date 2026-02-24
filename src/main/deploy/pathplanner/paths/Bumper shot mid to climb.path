@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.1807511737089214,
-        "y": 5.142136150234742
+        "x": 2.3524436536180313,
+        "y": 3.997342823250296
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.412105611954108,
-        "y": 4.779768392412771
+        "x": 2.583798091863218,
+        "y": 3.6349750654283257
       },
       "isLocked": false,
       "linkedName": "BumperShot"
     },
     {
       "anchor": {
-        "x": 1.467500000000001,
-        "y": 6.23862676056338
+        "x": 1.642336892052195,
+        "y": 3.8682325029655997
       },
       "prevControl": {
-        "x": 1.6077943180370846,
-        "y": 6.03170285105433
+        "x": 1.7826312100892787,
+        "y": 3.6613085934565497
       },
       "nextControl": null,
       "isLocked": false,
@@ -55,7 +55,7 @@
   "folder": "Davis Auto",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -23.96248897457817
+    "rotation": 1.3704510177996145
   },
   "useDefaultConstraints": true
 }

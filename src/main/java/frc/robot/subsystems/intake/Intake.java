@@ -114,7 +114,11 @@ public class Intake extends SubsystemBase {
 
   // sets the manual override speed of this command. Uses a double supplier
   public Command setRollerVoltageCommand(DoubleSupplier speed) {
-    return new RunCommand(() -> {setRollersVoltage(speed.getAsDouble());}, this);
+    return new RunCommand(
+        () -> {
+          setRollersVoltage(speed.getAsDouble());
+        },
+        this);
   }
 
   public Command setPositionCommand(double position) {

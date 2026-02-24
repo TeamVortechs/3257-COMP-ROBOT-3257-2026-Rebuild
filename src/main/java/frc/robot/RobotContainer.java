@@ -320,31 +320,13 @@ public class RobotContainer {
         .leftTrigger()
         .whileTrue(intake.setRollerVoltageCommand(IntakeConstants.INTAKE_VOLTS));
 
-    controller
+    operatorController
         .rightBumper()
         .whileTrue(feeder.setPercentMotorRunCommand(Constants.FeederConstants.FEED_POWER));
 
-    // controller.rightTrigger().whileTrue(shooter.setManualSpeedRunCommand(72));
+    shooter.setDefaultCommand(shooter.setVoltageRunCommand(0));
 
-    shooter.setDefaultCommand(shooter.automaticallyChargeWhenNeededRunCommand(0, 0));
-    // controller.leftBumper().whileTrue(shooter.setAutomaticCommandRun());
-
-    // controller.povDown().whileTrue(belt.setPercentMotorOutputCommand(0.5));
-
-    // // controller
-    // //     .povUp()
-    // //     .whileTrue(climb.setServoRunCommand(ClimbConstants.SERVO_CLOSED))
-    // //     .onFalse(climb.setServoRunCommand(ClimbConstants.SERVO_OPEN));
-
-    // operatorController
-    //     .x()
-    //     .whileTrue(climb.setSpeedsRunCommand(5, 5))
-    //     .onFalse(climb.setSpeedsRunCommand(0, 0));
-
-    // // belt.setDefaultCommand(belt.setPercentMotorOutputRunCommand(BeltConstants.FEED_POWER));
     feeder.setDefaultCommand(feeder.setPercentMotorRunCommand(0));
-
-    // // climb.setDefaultCommand(climb.setPositionsRunCommand(0, 0));
 
     @SuppressWarnings("unused")
     Command aimTowardsTargetCommand =
@@ -352,7 +334,6 @@ public class RobotContainer {
             drive,
             () -> -controller.getLeftY() * DriveConstants.K_JOYSTICK_WHEN_SHOOTING,
             () -> -controller.getLeftX() * DriveConstants.K_JOYSTICK_WHEN_SHOOTING);
-
 
     // configureSysIdBindings(sysID_controller, shooter.BuildSysIdRoutine());
 
@@ -367,9 +348,13 @@ public class RobotContainer {
 
     controller.leftBumper().whileTrue(intake.setRollerVoltageCommand(-8));
     // controller.povDown().whileTrue(shooter.setManualSpeedRunCommand(82));
-    operatorController
-        .y()
-        .onTrue(shooter.setAutomaticallyChargeFully(() -> !shooter.isAutomaticallyChargeFully()));
+    // operatorController
+    //     .y()
+    //     .onTrue(shooter.setAutomaticallyChargeFully(() ->
+    // !shooter.isAutomaticallyChargeFully()));
+
+    operatorController.leftBumper().onTrue(drive.iteratePassingCommand(false));
+    operatorController.rightBumper().onTrue(drive.iteratePassingCommand(true));
 
     //   controller.povRight().toggleOnTrue(drive.iteratePassingCommand(true));
   }

@@ -3,25 +3,41 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.4688615023474183,
-        "y": 5.663767605633803
+        "x": 3.4068446026097274,
+        "y": 4.922633451957295
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.3159323109937375,
-        "y": 5.207245332656991
+        "x": 2.965717674970344,
+        "y": 4.083416370106762
       },
       "isLocked": false,
       "linkedName": "New start"
     },
     {
       "anchor": {
-        "x": 2.1807511737089214,
-        "y": 5.142136150234742
+        "x": 2.5461091340450777,
+        "y": 5.008706998813759
       },
       "prevControl": {
-        "x": 2.6085498338218556,
-        "y": 5.2964712599099855
+        "x": 3.019513641755635,
+        "y": 3.470142348754448
+      },
+      "nextControl": {
+        "x": 2.472587671835698,
+        "y": 5.247651750994242
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.3524436536180313,
+        "y": 3.997342823250296
+      },
+      "prevControl": {
+        "x": 2.82008918799332,
+        "y": 3.692841018655825
       },
       "nextControl": null,
       "isLocked": false,
@@ -33,7 +49,7 @@
     {
       "name": "Constraints Zone",
       "minWaypointRelativePos": 0,
-      "maxWaypointRelativePos": 1.0,
+      "maxWaypointRelativePos": 2.0,
       "constraints": {
         "maxVelocity": 0.5,
         "maxAcceleration": 0.5,
@@ -48,13 +64,13 @@
   "eventMarkers": [
     {
       "name": "shooterAutomaticEvent",
-      "waypointRelativePos": 0.04429678848283285,
+      "waypointRelativePos": 0.1,
       "endWaypointRelativePos": null,
       "command": null
     },
     {
       "name": "feedStartEvent",
-      "waypointRelativePos": 0.9302325581395338,
+      "waypointRelativePos": 1.9,
       "endWaypointRelativePos": null,
       "command": null
     }
@@ -69,7 +85,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -23.96248897457817
+    "rotation": 1.3704510177996145
   },
   "reversed": false,
   "folder": "Davis Auto",

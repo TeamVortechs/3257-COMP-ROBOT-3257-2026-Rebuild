@@ -3,42 +3,35 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.47714071278089865,
-        "y": 0.6359792837078646
+        "x": 7.000415183867142,
+        "y": 6.891565836298932
       },
       "prevControl": null,
       "nextControl": {
-        "x": 0.6968743569707686,
-        "y": 0.7552148724011722
+        "x": 8.000415183867151,
+        "y": 6.891565836298932
       },
       "isLocked": false,
-      "linkedName": "feeder station2"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.642336892052195,
-        "y": 3.8682325029655997
+        "x": 4.0,
+        "y": 6.0
       },
       "prevControl": {
-        "x": 2.2685665707741056,
-        "y": 3.2237192856702537
+        "x": 3.0,
+        "y": 6.0
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "climb"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [
-    {
-      "name": "climb and shoot",
-      "waypointRelativePos": 1.0,
-      "endWaypointRelativePos": null,
-      "command": null
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 0.5,
