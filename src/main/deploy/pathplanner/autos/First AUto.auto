@@ -5,7 +5,7 @@
     "data": {
       "commands": [
         {
-          "type": "race",
+          "type": "parallel",
           "data": {
             "commands": [
               {
@@ -21,19 +21,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "Back Bottom Center sweep, Shoot"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "feedWhenValidAndStop"
-                      }
-                    },
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "Top Shoot to intake, Top shoot"
+                        "pathName": "Front Bottom Start, mid intake"
                       }
                     },
                     {
@@ -46,12 +34,6 @@
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Top Shoot to ending position"
           }
         }
       ]
