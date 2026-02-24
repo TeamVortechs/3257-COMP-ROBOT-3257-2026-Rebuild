@@ -19,7 +19,7 @@
                 "data": {
                   "commands": [
                     {
-                      "type": "path",
+                      "type": "race",
                       "data": {
                         "pathName": "mid to shoot"
                       }
