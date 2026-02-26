@@ -224,6 +224,18 @@ public class Drive extends SubsystemBase {
     return isWithinZone(DriveConstants.X_POSE_TO_PASS, true);
   }
 
+  public Rotation2d getRotationOverBumper() {
+    double xPose = getPose().getX();
+
+    if (xPose > 8.270) {
+      // this means we're on the red side
+      return Rotation2d.fromDegrees(135);
+    } else {
+      // this means we're on the blue side
+      return Rotation2d.fromDegrees(45);
+    }
+  }
+
   private boolean isWithinZone(double x, boolean wantsCenter) {
     double xPose = getPose().getX();
 

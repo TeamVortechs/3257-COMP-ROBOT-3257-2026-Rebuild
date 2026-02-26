@@ -60,7 +60,7 @@ public class Climb extends SubsystemBase {
     }
   }
 
-  //this is a run command because we do a check everytime we run this command
+  // this is a run command because we do a check everytime we run this command
   public Command setVoltageRun(double voltage) {
     return new RunCommand(() -> setVoltage(voltage), this);
   }

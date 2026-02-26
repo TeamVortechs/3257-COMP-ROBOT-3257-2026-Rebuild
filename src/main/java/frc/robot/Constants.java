@@ -357,7 +357,6 @@ public final class Constants {
     public static final double CLIMB_UP_VOLTS = 0.1;
     public static final double CLIMB_DOWN_VOLTS = -0.1;
 
-
     public static final double MIN_POSITION_LEFT = 0;
     public static final double MAX_POSITION_LEFT = 1;
 
@@ -463,5 +462,4 @@ public final class Constants {
       ROLLER_CONFIG.CurrentLimits.SupplyCurrentLimitEnable = true;
     }
   }
-
 }

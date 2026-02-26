@@ -32,14 +32,14 @@
                     }
                   ]
                 }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Bottom shoot back to mid"
-                }
               }
             ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Bottom shoot back to mid"
           }
         }
       ]

@@ -8,7 +8,6 @@
 package frc.robot;
 
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
@@ -108,8 +107,6 @@ public class Robot extends LoggedRobot {
     // Threads.setCurrentThreadPriority(false, 10);
 
     field2d.setRobotPose(robotContainer.getDrive().getPose());
-
-
   }
 
   @Override
@@ -137,7 +134,6 @@ public class Robot extends LoggedRobot {
 
     robotContainer.getMatchTimeline().start();
   }
-
 
   /** This function is called periodically during autonomous. */
   @Override

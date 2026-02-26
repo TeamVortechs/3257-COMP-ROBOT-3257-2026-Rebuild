@@ -10,19 +10,16 @@ package frc.robot;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.events.EventTrigger;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -62,7 +59,6 @@ import frc.robot.subsystems.shooter.ShooterTalonFXIO;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionIO;
-import frc.robot.subsystems.vision.VisionIOPhotonVision;
 import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
 import frc.robot.util.MatchTimeline;
 import java.util.Optional;
@@ -169,13 +165,7 @@ public class RobotContainer {
         // new ModuleIOTalonFXS(TunerConstants.BackLeft),
         // new ModuleIOTalonFXS(TunerConstants.BackRight));
 
-        vision =
-            new Vision(
-                drive::addVisionMeasurement,
-                new VisionIOPhotonVision(
-                    VisionConstants.photon0Name, VisionConstants.robotToPhoton0),
-                new VisionIOPhotonVision(
-                    VisionConstants.photon1Name, VisionConstants.robotToPhoton1));
+        vision = new Vision(drive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
         break;
 
       case SIM:
@@ -414,11 +404,14 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "feedWhenValid", feeder.feedWhenValidRunCommand(FeederConstants.FEED_POWER));
 
-    NamedCommands.registerCommand("feedWhenValidAndStop", new WaitUntilCommand(() -> shooter.isOnTarget())
-    
-    .andThen(feeder.feedWhenValidRunCommand(FeederConstants.FEED_POWER).withDeadline(new WaitCommand(3)))
-    
-    .andThen(feeder.setPercentMotorCommand(0)));
+    NamedCommands.registerCommand(
+        "feedWhenValidAndStop",
+        new WaitUntilCommand(() -> shooter.isOnTarget())
+            .andThen(
+                feeder
+                    .feedWhenValidRunCommand(FeederConstants.FEED_POWER)
+                    .withDeadline(new WaitCommand(3)))
+            .andThen(feeder.setPercentMotorCommand(0)));
 
     NamedCommands.registerCommand("feedStop", feeder.setPercentMotorCommand(0));
 
@@ -458,14 +451,21 @@ public class RobotContainer {
     NamedCommands.registerCommand("climbUp", climb.setVoltageRun(ClimbConstants.CLIMB_UP_VOLTS));
     NamedCommands.registerCommand("climbStop", climb.setVoltageInstant(0));
     NamedCommands.registerCommand(
-        "climbDownWhenNeeded", new WaitUntilCommand(() -> matchTimeline.getTimeSinceStart() > 18).andThen(climb.setVoltageRun(ClimbConstants.CLIMB_DOWN_VOLTS)));
+        "climbDownWhenNeeded",
+        new WaitUntilCommand(() -> matchTimeline.getTimeSinceStart() > 18)
+            .andThen(climb.setVoltageRun(ClimbConstants.CLIMB_DOWN_VOLTS)));
 
-    new EventTrigger("intakeStartEvent").onTrue(new InstantCommand(() -> intake.setRollersVoltage(Constants.IntakeConstants.INTAKE_VOLTS)));
-    new EventTrigger("intakeStopEvent").onTrue(new InstantCommand(() -> intake.setRollersVoltage(0)));
-    new EventTrigger("intakeDownEvent").onTrue(new InstantCommand(() -> intake.setPosition(IntakeConstants.INTAKE_DOWN_POSITION)));
-    new EventTrigger("climbUpEvent").onTrue(new InstantCommand(() -> climb.setVoltage(ClimbConstants.CLIMB_UP_VOLTS)));
+    new EventTrigger("intakeStartEvent")
+        .onTrue(
+            new InstantCommand(
+                () -> intake.setRollersVoltage(Constants.IntakeConstants.INTAKE_VOLTS)));
+    new EventTrigger("intakeStopEvent")
+        .onTrue(new InstantCommand(() -> intake.setRollersVoltage(0)));
+    new EventTrigger("intakeDownEvent")
+        .onTrue(new InstantCommand(() -> intake.setPosition(IntakeConstants.INTAKE_DOWN_POSITION)));
+    new EventTrigger("climbUpEvent")
+        .onTrue(new InstantCommand(() -> climb.setVoltage(ClimbConstants.CLIMB_UP_VOLTS)));
     new EventTrigger("climbStopEvent").onTrue(new InstantCommand(() -> climb.setVoltage(0)));
-
   }
 
   // this shoudl be in a helper method or somewhere in robot container
