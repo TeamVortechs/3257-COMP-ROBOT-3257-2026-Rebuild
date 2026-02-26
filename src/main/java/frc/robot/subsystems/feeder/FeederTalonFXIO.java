@@ -124,4 +124,9 @@ public class FeederTalonFXIO implements FeederIO {
 
     motor.setNeutralMode(neutralModeValue);
   }
+
+  @Override
+  public double getTargetSpeed() {
+    return targetSpeed;
+  }
 }

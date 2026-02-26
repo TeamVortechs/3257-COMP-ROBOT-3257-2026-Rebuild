@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
@@ -345,8 +346,9 @@ public class RobotContainer {
             Commands.parallel(
                 aimTowardsTargetCommand,
                 shooter.setAutomaticCommandRun(),
-                intake.setRollerVoltageCommand(IntakeConstants.INTAKE_VOLTS),
-                feeder.feedWhenValidRunCommand(FeederConstants.FEED_POWER)));
+                intake.intakeRetractWhileShooting(new WaitUntilCommand(() -> feeder.getTargetSpeed() > 0.5), 4),
+                feeder.feedWhenValidRunCommand(FeederConstants.FEED_POWER)
+                ));
 
     controller.leftBumper().whileTrue(intake.setRollerVoltageCommand(-8));
     // controller.povDown().whileTrue(shooter.setManualSpeedRunCommand(82));
@@ -400,7 +402,7 @@ public class RobotContainer {
     addNamedCommand(
         "feedWhenValid", feeder.feedWhenValidRunCommand(FeederConstants.FEED_POWER), isReal);
 
-    //deprecated cus to do this instead u shoul dod a race group
+    // deprecated cus to do this instead u shoul dod a race group
     // addNamedCommand("feedStop", feeder.setPercentMotorRunCommand(0), isReal);
 
     addNamedCommand(

@@ -86,6 +86,15 @@ public class Feeder extends SubsystemBase {
     return feederIO.getSpeed();
   }
 
+  public double getTargetSpeed() {
+    return feederIO.getTargetSpeed();
+  }
+
+  /**
+   * 
+   * @return target speed 
+   */
+
   // HELPER METHODS
   private boolean calculateValidityToFeed() {
     // this stuff should wait on debounce, probably not shooter on speed though

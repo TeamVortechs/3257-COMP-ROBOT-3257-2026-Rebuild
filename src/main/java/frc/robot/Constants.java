@@ -414,6 +414,9 @@ public final class Constants {
     public static final double MAX_POSITION = 1;
     public static final double MIN_POSITION = 0;
 
+    public static final double CLAMP_MAX_VOLTS = 3;
+    public static final double POSITION_THRESHOLD_STOP = 0.2;
+
     // CHANGE !!
     public static final double KS = 0.25;
     public static final double KV = 0.12;

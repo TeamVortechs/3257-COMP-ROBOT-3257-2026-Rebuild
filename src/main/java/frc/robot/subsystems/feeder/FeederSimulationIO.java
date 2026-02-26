@@ -62,4 +62,9 @@ public class FeederSimulationIO implements FeederIO {
   public boolean isOnTargetSpeed() {
     return Math.abs(getSpeed() - targetSpeed) < .05;
   }
+
+  @Override
+  public double getTargetSpeed() {
+    return targetSpeed;
+  }
 }
