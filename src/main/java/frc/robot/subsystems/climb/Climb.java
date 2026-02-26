@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.ClimbConstants;
 import java.util.function.BooleanSupplier;
-import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 public class Climb extends SubsystemBase {
@@ -21,7 +20,7 @@ public class Climb extends SubsystemBase {
 
   private final Notifier logger;
 
-  @AutoLogOutput private boolean isLocked = true;
+  private boolean isLocked = true;
 
   private double manualLeftSpeed = 0;
   private double manualRightSpeed = 0;
