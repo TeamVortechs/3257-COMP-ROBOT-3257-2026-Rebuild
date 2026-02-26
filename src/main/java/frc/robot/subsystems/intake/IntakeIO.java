@@ -87,8 +87,6 @@ public interface IntakeIO {
    */
   public default void setPositionControl(double position) {}
 
-
-
   /**
    * gets target position of the position motor
    *
@@ -136,7 +134,6 @@ public interface IntakeIO {
   public default double getPosition() {
     return 0;
   }
-
 
   /**
    * checks if position motor is within certain tolerance of the max position

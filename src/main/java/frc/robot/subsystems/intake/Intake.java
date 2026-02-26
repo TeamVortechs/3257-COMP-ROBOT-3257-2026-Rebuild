@@ -13,8 +13,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.IntakeConstants;
-
-import java.nio.file.Watchable;
 import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.Logger;
 
@@ -159,9 +157,13 @@ public class Intake extends SubsystemBase {
   }
 
   public Command intakeRetractWhileShooting(Command waitingCommand, double rollerVolts) {
-    
-    return waitingCommand.andThen( new InstantCommand(() -> setRollerVoltageCommand(rollerVolts)))
-    .andThen(setPositionVoltageRunCommand(0).withDeadline(new WaitCommand(2))); // I don't like this magic number. I am displeased.
+
+    return new InstantCommand(() -> this.setRollerVoltageCommand(rollerVolts))
+        .andThen(waitingCommand)
+        .andThen(
+            setPositionVoltageRunCommand(0)
+                .withDeadline(
+                    new WaitCommand(2))); // I don't like this magic number. I am displeased.
   }
 
   // intakes until the canrange finds distance less than the given distance

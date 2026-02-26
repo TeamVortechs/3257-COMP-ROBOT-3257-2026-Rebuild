@@ -133,11 +133,13 @@ public class IntakeTalonFXIO implements IntakeIO {
   public void setPositionVoltage(double volts) {
     VortechsUtil.clamp(volts, IntakeConstants.CLAMP_MAX_VOLTS);
 
-    if(volts > 0 && getPosition() > IntakeConstants.MAX_POSITION - IntakeConstants.POSITION_THRESHOLD_STOP) {
+    if (volts > 0
+        && getPosition() > IntakeConstants.MAX_POSITION - IntakeConstants.POSITION_THRESHOLD_STOP) {
       volts = 0;
     }
 
-    if(volts < 0 && getPosition() < IntakeConstants.MIN_POSITION + IntakeConstants.POSITION_THRESHOLD_STOP) {
+    if (volts < 0
+        && getPosition() < IntakeConstants.MIN_POSITION + IntakeConstants.POSITION_THRESHOLD_STOP) {
       volts = 0;
     }
 

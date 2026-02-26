@@ -246,7 +246,7 @@ public class RobotContainer {
 
     SmartDashboard.putData("Flip Poses", Commands.runOnce(() -> flipAllPoses()));
 
-    registerNamedCommandsAuto(); // register named commands for auto (pathplanner)
+    // registerNamedCommandsAuto(); // register named commands for auto (pathplanner)
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
@@ -346,9 +346,9 @@ public class RobotContainer {
             Commands.parallel(
                 aimTowardsTargetCommand,
                 shooter.setAutomaticCommandRun(),
-                intake.intakeRetractWhileShooting(new WaitUntilCommand(() -> feeder.getTargetSpeed() > 0.5), 4),
-                feeder.feedWhenValidRunCommand(FeederConstants.FEED_POWER)
-                ));
+                intake.intakeRetractWhileShooting(
+                    new WaitUntilCommand(() -> feeder.getTargetSpeed() > 0.5), 4),
+                feeder.feedWhenValidRunCommand(FeederConstants.FEED_POWER)));
 
     controller.leftBumper().whileTrue(intake.setRollerVoltageCommand(-8));
     // controller.povDown().whileTrue(shooter.setManualSpeedRunCommand(82));

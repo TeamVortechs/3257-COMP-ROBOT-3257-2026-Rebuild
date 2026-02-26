@@ -91,8 +91,7 @@ public class Feeder extends SubsystemBase {
   }
 
   /**
-   * 
-   * @return target speed 
+   * @return target speed
    */
 
   // HELPER METHODS
