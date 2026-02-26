@@ -13,7 +13,6 @@ import frc.robot.Constants;
 import frc.robot.subsystems.drive.Drive;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 /*
@@ -30,7 +29,7 @@ public class PathfindToPoseCommand extends Command {
    */
   private Drive drive;
 
-  @AutoLogOutput private Supplier<Pose2d> targetPoseSupplier;
+  private Supplier<Pose2d> targetPoseSupplier;
 
   // PIDController
   private final PIDController translationController =

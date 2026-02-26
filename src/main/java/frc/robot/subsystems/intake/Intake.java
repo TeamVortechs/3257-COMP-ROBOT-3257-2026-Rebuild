@@ -4,6 +4,7 @@ import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.SignalLogger;
 import edu.wpi.first.units.Units;
+import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -18,32 +19,40 @@ import org.littletonrobotics.junction.Logger;
 public class Intake extends SubsystemBase {
 
   // advantage kit logging
-  private IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
+  private IntakeIOInputsAutoLogged inputs;
 
   // useful for a flexible hardware interface and for advantage kit logging
-  private final IntakeIO moduleIO;
+  private final IntakeIO intakeIO;
 
+  private final Notifier logger;
   /**
    * Constructor for the Intake subsystem.
    *
-   * @param moduleIO Hardware interface for Intake motors.
+   * @param intakeIO Hardware interface for Intake motors.
    * @param homeSwitch Digital input limit switch for homing.
    */
-  public Intake(IntakeIO moduleIO) {
-    this.moduleIO = moduleIO;
+  public Intake(IntakeIO intakeIO) {
+    this.intakeIO = intakeIO;
+    this.inputs = new IntakeIOInputsAutoLogged();
+
+    logger =
+        new Notifier(
+            () -> {
+              intakeIO.updateInputs(inputs);
+              Logger.processInputs("intake", inputs);
+            });
+
+    logger.startPeriodic(1 / IntakeConstants.FREQUENCY_HZ);
   }
 
   @Override
   public void periodic() {
-    moduleIO.updateInputs(inputs);
-    Logger.processInputs("Intake", inputs);
-
     // check to see if the module is stalling; if so, then stop the motors and cancel the next
     // movement
 
-    if (moduleIO.checkIfStalled()) {
+    if (intakeIO.checkIfStalled()) {
       System.out.println("Intake HAS STALLED ");
-      moduleIO.stop();
+      intakeIO.stop();
       return;
     }
 
@@ -61,61 +70,65 @@ public class Intake extends SubsystemBase {
       targetPosition = IntakeConstants.MIN_POSITION;
     }
 
-    moduleIO.setPositionControl(targetPosition);
+    intakeIO.setPositionControl(targetPosition);
   }
 
   /** sets the roller motors, -1-1 */
   public void setRollersVoltage(double voltage) {
 
-    moduleIO.setRollerVoltage(voltage);
+    intakeIO.setRollerVoltage(voltage);
   }
 
   /** Holds the current position using braking mode. */
   public void stop() {
-    moduleIO.stop();
+    intakeIO.stop();
   }
 
   public boolean isOnTarget() {
 
-    double diff = Math.abs(moduleIO.getTargetPosition() - moduleIO.getPosition());
+    double diff = Math.abs(intakeIO.getTargetPosition() - intakeIO.getPosition());
 
     return IntakeConstants.POS_TOLERANCE > diff;
   }
 
   /** resets encoders to read 0 and resets PID (setting it to begin at current height) */
   public void resetEncoders() {
-    moduleIO.resetEncoders();
+    intakeIO.resetEncoders();
   }
 
   // gets the roller speed
   public double getRollerSpeed() {
-    return moduleIO.getSpeed();
+    return intakeIO.getSpeed();
   }
 
   public double getPosition() {
-    return moduleIO.getPosition();
+    return intakeIO.getPosition();
   }
 
   // commands
 
   // sets the manual override speed of this command. Uses a regular double
   public Command setRollerVoltageCommand(double speed) {
-    return new RunCommand(() -> this.setRollersVoltage(speed), this);
+    return Commands.startRun(() -> this.setRollersVoltage(speed), () -> {}, this);
   }
 
   // sets the manual override speed of this command. Uses a double supplier
   public Command setRollerVoltageCommand(DoubleSupplier speed) {
-    return new RunCommand(() -> this.setRollersVoltage(speed.getAsDouble()), this);
+    return new RunCommand(
+        () -> {
+          setRollersVoltage(speed.getAsDouble());
+        },
+        this);
   }
 
   public Command setPositionCommand(double position) {
-    return new RunCommand(() -> this.setPosition(position), this);
+    return Commands.startRun(() -> this.setPosition(position), () -> {}, this);
   }
 
   public Command setRollerVoltageAndPositionCommand(double position, double voltage) {
     return Commands.parallel(
-        new RunCommand(() -> this.setPosition(position)),
-        new RunCommand(() -> this.setRollersVoltage(voltage), this));
+        Commands.startRun(() -> this.setPosition(position), () -> {}),
+        Commands.startRun(() -> this.setRollersVoltage(voltage), () -> {}, this));
   }
 
   // resets the encoders of the wrist
@@ -151,7 +164,7 @@ public class Intake extends SubsystemBase {
             null,
             (state) -> SignalLogger.writeString("intakeRollers", state.toString())),
         new SysIdRoutine.Mechanism(
-            (volts) -> moduleIO.setRollerVoltage(volts.in(Volts)), null, this));
+            (volts) -> intakeIO.setRollerVoltage(volts.in(Volts)), null, this));
   }
 
   /** Build SysId Routine for the Right Motor */
@@ -163,6 +176,6 @@ public class Intake extends SubsystemBase {
             null,
             (state) -> SignalLogger.writeString("intakePostion", state.toString())),
         new SysIdRoutine.Mechanism(
-            (volts) -> moduleIO.setPositionVoltage(volts.in(Volts)), null, this));
+            (volts) -> intakeIO.setPositionVoltage(volts.in(Volts)), null, this));
   }
 }

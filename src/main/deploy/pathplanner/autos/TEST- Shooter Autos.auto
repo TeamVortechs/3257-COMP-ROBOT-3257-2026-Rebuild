@@ -7,13 +7,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Example Path"
+            "pathName": "TEST- Shooter Preset1 Commands"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "TEST- Shooter Automatic Commands"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "Autos for Testing",
   "choreoAuto": false
 }

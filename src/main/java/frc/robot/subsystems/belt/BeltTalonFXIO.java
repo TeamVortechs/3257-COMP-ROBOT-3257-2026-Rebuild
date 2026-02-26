@@ -10,6 +10,7 @@ import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Temperature;
 import edu.wpi.first.units.measure.Voltage;
 import frc.robot.Constants;
+import frc.robot.Constants.BeltConstants;
 
 public class BeltTalonFXIO implements BeltIO {
   private final TalonFX motor;
@@ -38,14 +39,18 @@ public class BeltTalonFXIO implements BeltIO {
     motorVoltage = motor.getMotorVoltage();
     supplyCurrent = motor.getSupplyCurrent();
     statorCurrent = motor.getStatorCurrent();
+    temperatureCelsius = motor.getDeviceTemp();
 
     // Optimize CAN bus usage by refreshing these signals together
     BaseStatusSignal.setUpdateFrequencyForAll(
-        Constants.FREQUENCY_HZ, velocity, motorVoltage, supplyCurrent);
+        BeltConstants.FREQUENCY_HZ,
+        velocity,
+        motorVoltage,
+        supplyCurrent,
+        statorCurrent,
+        temperatureCelsius);
 
     isBraked = true;
-
-    temperatureCelsius = motor.getDeviceTemp();
   }
 
   @Override

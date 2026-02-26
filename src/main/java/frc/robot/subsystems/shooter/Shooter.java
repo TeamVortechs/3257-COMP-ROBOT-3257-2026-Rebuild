@@ -5,6 +5,7 @@ import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.SignalLogger;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
+import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -33,6 +34,11 @@ public class Shooter extends SubsystemBase {
 
   private BooleanSupplier withinAutomaticChargingZone;
 
+  private final Notifier logger;
+
+  // wether or not the shooter automatically charges to
+  private boolean automaticallyChargeFully = false;
+
   /**
    * @param shooterIO the hardware interface
    * @param distanceSupplierMeters the distance supplier for when it goes automatic
@@ -47,23 +53,33 @@ public class Shooter extends SubsystemBase {
 
     this.distToSpeedTable = new InterpolatingDoubleTreeMap();
     // TO DO: populate distToSpeedTable with real valeus
-    this.speedToTableInit(3.2004, 75); // dummy val
-    this.speedToTableInit(2.8956, 70);
-    this.speedToTableInit(2.5654, 65);
-    this.speedToTableInit(2.159, 60);
-    this.speedToTableInit(1.8034, 62.5);
+    // this.speedToTableInit(3.2004, 75); // dummy val
+    // this.speedToTableInit(2.8956, 70);
+    // this.speedToTableInit(2.5654, 65);
+    // this.speedToTableInit(2.159, 60);
+    // this.speedToTableInit(1.8034, 62.5);
+    this.speedToTableInit(3.06667, 67);
+    this.speedToTableInit(2.19676, 60);
+    this.speedToTableInit(2.46118, 62);
+    this.speedToTableInit(2.75212, 64);
+    this.speedToTableInit(4.16013, 78);
 
     this.withinAutomaticChargingZone = withinAutomaticChargingZone;
+
+    logger =
+        new Notifier(
+            () -> {
+              shooterIO.updateInputs(inputs);
+              Logger.processInputs("shooter", inputs);
+            });
+
+    logger.startPeriodic(1 / ShooterConstants.FREQUENCY_HZ);
+
+    setAutomaticallyChargeFully(false);
   }
 
   @Override
-  public void periodic() {
-    shooterIO.updateInputs(inputs);
-    Logger.processInputs("shooter", inputs);
-
-    // calculate speed that automatically updates with distance
-
-  }
+  public void periodic() {}
 
   // SUBSYSTEM METHODS
 
@@ -100,6 +116,16 @@ public class Shooter extends SubsystemBase {
     return shooterIO.isOnTargetSpeed();
   }
 
+  public void setAutomaticallyChargeFully(boolean automaticallyChargeFully) {
+    this.automaticallyChargeFully = automaticallyChargeFully;
+
+    Logger.recordOutput("Shooter/AutomaticallyChargeFully", automaticallyChargeFully);
+  }
+
+  public boolean isAutomaticallyChargeFully() {
+    return automaticallyChargeFully;
+  }
+
   // COMMANDS
   /**
    * sets the manual speed of the flywheel then ends immediately
@@ -118,11 +144,16 @@ public class Shooter extends SubsystemBase {
    * @return the finished command
    */
   public Command setManualSpeedRunCommand(double speed) {
-    return Commands.run(() -> this.setManualSpeed(speed), this);
+    return Commands.startRun(
+        () -> {
+          this.setManualSpeed(speed);
+        },
+        () -> {},
+        this);
   }
 
   public Command setVoltageRunCommand(double voltage) {
-    return Commands.run(() -> this.setVoltage(voltage), this);
+    return Commands.startRun(() -> this.setVoltage(voltage), () -> {}, this);
   }
 
   /**
@@ -142,6 +173,14 @@ public class Shooter extends SubsystemBase {
       double automaticPercentage, double speedWhenNotInZone) {
     return new RunCommand(
         () -> {
+
+          // if this flag is in action we're probably gonna shoot soon and should default to full
+          // charge
+          if (automaticallyChargeFully) {
+            setAutomaticSpeed(1);
+            return;
+          }
+
           if (withinAutomaticChargingZone.getAsBoolean()) {
             setAutomaticSpeed(automaticPercentage);
           } else {
@@ -149,6 +188,13 @@ public class Shooter extends SubsystemBase {
           }
         },
         this);
+  }
+
+  public Command setAutomaticallyChargeFully(BooleanSupplier automaticallyChargeFully) {
+    return new InstantCommand(
+        () -> {
+          setAutomaticallyChargeFully(automaticallyChargeFully.getAsBoolean());
+        });
   }
 
   // HELPER METHODS

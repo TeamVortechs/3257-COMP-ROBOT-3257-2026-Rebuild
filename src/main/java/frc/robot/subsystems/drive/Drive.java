@@ -19,10 +19,13 @@ import com.pathplanner.lib.util.PathPlannerLogging;
 import edu.wpi.first.hal.FRCNetComm.tInstances;
 import edu.wpi.first.hal.FRCNetComm.tResourceType;
 import edu.wpi.first.hal.HAL;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -37,7 +40,10 @@ import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
@@ -47,6 +53,8 @@ import frc.robot.generated.TunerConstants;
 import frc.robot.util.LocalADStarAK;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
@@ -59,18 +67,28 @@ public class Drive extends SubsystemBase {
   // puttign this in container because it's already like this and when we change drive it'll be good
   // to have it easily changed. Also it's probably more readable this way
   private ShooterRotationManager shooterRotationManager;
+  private GoalPoseManager goalPoseManager;
 
   private BuiltInAccelerometer accelerometer;
 
   // caching values here so they can be logged
-  @AutoLogOutput private double accelerometerX;
-  @AutoLogOutput private double accelerometerY;
+  // @AutoLogOutput private double accelerometerX;
+  // @AutoLogOutput private double accelerometerY;
+
+  private double accelerometerX;
+  private double accelerometerY;
 
   /**
    * @return the needed rotation for the robot to rotate towards a goal I made it like this so we
    *     can use the joystick drive command from drive commands compensates for robot movement
    */
   public Rotation2d getHeadingToGoal() {
+    goalPoseManager.setIsPassing(false);
+    return shooterRotationManager.getHeading();
+  }
+
+  public Rotation2d getHeadingToPassing() {
+    goalPoseManager.setIsPassing(true);
     return shooterRotationManager.getHeading();
   }
 
@@ -78,6 +96,19 @@ public class Drive extends SubsystemBase {
    * @return the distance from the robot to the goal
    */
   public double getDistanceToGoal() {
+
+    // makes the goal pose manager switch to the shooter setting
+    goalPoseManager.setIsPassing(false);
+    return shooterRotationManager.getDistance();
+  }
+
+  public double getDistanceToPassing() {
+    ///
+    goalPoseManager.setIsPassing(true);
+    return shooterRotationManager.getDistance();
+  }
+
+  public double getDistanceToTarget() {
     return shooterRotationManager.getDistance();
   }
 
@@ -114,15 +145,109 @@ public class Drive extends SubsystemBase {
     return isSkidding;
   }
 
+  private static final double DEADBAND = DriveConstants.DEADBAND;
+
+  private Supplier<Rotation2d> rotationSupplier =
+      () -> {
+        if (isWithinPassingZone()) {
+          return getHeadingToPassing();
+        } else {
+          return getHeadingToGoal();
+        }
+      };
+
+  public Command joystickDriveAtTarget(
+      Drive drive, DoubleSupplier xSupplier, DoubleSupplier ySupplier) {
+
+    // Create PID controller
+    ProfiledPIDController angleController = DriveConstants.ANGLE_CONTROLLER;
+
+    // Construct command
+    return Commands.run(
+            () -> {
+              // Get linear velocity
+              Translation2d linearVelocity =
+                  getLinearVelocityFromJoysticks(xSupplier.getAsDouble(), ySupplier.getAsDouble());
+
+              // Calculate angular speed
+              double omega =
+                  angleController.calculate(
+                      drive.getRotation().getRadians(), rotationSupplier.get().getRadians());
+
+              // Convert to field relative speeds & send command
+              ChassisSpeeds speeds =
+                  new ChassisSpeeds(
+                      linearVelocity.getX() * drive.getMaxLinearSpeedMetersPerSec(),
+                      linearVelocity.getY() * drive.getMaxLinearSpeedMetersPerSec(),
+                      omega);
+              boolean isFlipped =
+                  DriverStation.getAlliance().isPresent()
+                      && DriverStation.getAlliance().get() == Alliance.Red;
+              drive.runVelocity(
+                  ChassisSpeeds.fromFieldRelativeSpeeds(
+                      speeds,
+                      isFlipped
+                          ? drive.getRotation().plus(new Rotation2d(Math.PI))
+                          : drive.getRotation()));
+            },
+            drive)
+
+        // Reset PID controller when command starts
+        .beforeStarting(() -> angleController.reset(drive.getRotation().getRadians()));
+  }
+
+  private static Translation2d getLinearVelocityFromJoysticks(double x, double y) {
+    // Apply deadband
+    double linearMagnitude = MathUtil.applyDeadband(Math.hypot(x, y), DEADBAND);
+    Rotation2d linearDirection = new Rotation2d(Math.atan2(y, x));
+
+    // Square magnitude for more precise control
+    linearMagnitude = linearMagnitude * linearMagnitude;
+
+    // Return new linear velocity
+    return new Pose2d(Translation2d.kZero, linearDirection)
+        .transformBy(new Transform2d(linearMagnitude, 0.0, Rotation2d.kZero))
+        .getTranslation();
+  }
+
   /**
    * @return wether or not the robot is in a zone where the shooter hsould be charged more
    *     agressively to reduce windup time
    */
   @AutoLogOutput
   public boolean isWithinShooterAutomaticChargingZone() {
+    return isWithinZone(DriveConstants.X_POSE_TO_CHARGE, false);
+  }
+
+  @AutoLogOutput
+  public boolean isWithinPassingZone() {
+    return isWithinZone(DriveConstants.X_POSE_TO_PASS, true);
+  }
+
+  private boolean isWithinZone(double x, boolean wantsCenter) {
     double xPose = getPose().getX();
 
-    return xPose < DriveConstants.X_POSE_TO_CHARGE;
+    if (DriverStation.getAlliance().isEmpty()) {
+      return false;
+    }
+
+    if (DriverStation.getAlliance().get() == Alliance.Blue) {
+      if (!wantsCenter) {
+        return xPose < x;
+      } else {
+        return xPose > x;
+      }
+    } else {
+      if (!wantsCenter) {
+        return xPose > (2 * DriveConstants.CENTER_POINT.getX() - x);
+      } else {
+        return xPose < (2 * DriveConstants.CENTER_POINT.getX() - x);
+      }
+    }
+  }
+
+  public Command iteratePassingCommand(boolean forward) {
+    return goalPoseManager.iteratePassingPoseCommand(forward);
   }
 
   /**
@@ -134,10 +259,24 @@ public class Drive extends SubsystemBase {
   public void benPeriodic() {
     accelerometerY = accelerometer.getY();
     accelerometerX = accelerometer.getX();
-
-    shooterRotationManager.periodic();
   }
 
+  public Command overrideRotationCommand() {
+    // System.out.println("override rotation command");
+    return new InstantCommand(() -> overrideRotationFeedback());
+  }
+
+  public Command removeRotationOverrideCommand() {
+    return new InstantCommand(() -> PPHolonomicDriveController.clearFeedbackOverrides());
+  }
+
+  private void overrideRotationFeedback() {
+
+    PPHolonomicDriveController.overrideRotationFeedback(
+        () ->
+            // 100.0
+            shooterRotationManager.getRotationFeedbackOverride());
+  }
   // TunerConstants doesn't include these constants, so they are declared locally
 
   // PathPlanner config constants
@@ -178,6 +317,8 @@ public class Drive extends SubsystemBase {
   private SwerveDrivePoseEstimator poseEstimator =
       new SwerveDrivePoseEstimator(kinematics, rawGyroRotation, lastModulePositions, Pose2d.kZero);
 
+  public final Notifier logger;
+
   public Drive(
       GyroIO gyroIO,
       ModuleIO flModuleIO,
@@ -196,14 +337,16 @@ public class Drive extends SubsystemBase {
     // Start odometry thread
     PhoenixOdometryThread.getInstance().start();
 
+    PPHolonomicDriveController pathplannerController =
+        new PPHolonomicDriveController(
+            new PIDConstants(5.0, 0.0, 0.0), new PIDConstants(7, 0.0, 0.0));
     // Configure AutoBuilder for PathPlanner
     AutoBuilder.configure(
         this::getPose,
         this::setPose,
         this::getChassisSpeeds,
         this::runVelocity,
-        new PPHolonomicDriveController(
-            new PIDConstants(5.0, 0.0, 0.0), new PIDConstants(7, 0.0, 0.0)),
+        pathplannerController,
         PP_CONFIG,
         () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
         this);
@@ -228,8 +371,25 @@ public class Drive extends SubsystemBase {
             new SysIdRoutine.Mechanism(
                 (voltage) -> runCharacterization(voltage.in(Volts)), null, this));
 
-    shooterRotationManager = new ShooterRotationManager(Constants.DriveConstants.GOAL_POSE, this);
+    goalPoseManager = new GoalPoseManager();
+    shooterRotationManager =
+        new ShooterRotationManager(
+            () -> goalPoseManager.getTargetPose(),
+            this,
+            DriveConstants.SHOOTER_ROTATION_MANAGER_LOGGING_FREQUENCY);
+    shooterRotationManager.startLogThread();
+
     accelerometer = new BuiltInAccelerometer();
+    logger =
+        new Notifier(
+            () -> {
+              accelerometerY = accelerometer.getY();
+              accelerometerX = accelerometer.getX();
+              Logger.recordOutput("Drive/accelerometerX", accelerometerX);
+              Logger.recordOutput("Drive/accelerometerY", accelerometerY);
+            });
+
+    logger.startPeriodic(1 / DriveConstants.FREQUENCY_UPDATE_ACC);
   }
 
   @Override
@@ -290,7 +450,7 @@ public class Drive extends SubsystemBase {
     // Update gyro alert
     gyroDisconnectedAlert.set(!gyroInputs.connected && Constants.CURR_MODE != Mode.SIM);
 
-    benPeriodic();
+    // benPeriodic();
   }
 
   /**

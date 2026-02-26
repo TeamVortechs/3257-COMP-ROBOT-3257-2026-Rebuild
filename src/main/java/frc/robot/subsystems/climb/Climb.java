@@ -4,9 +4,10 @@ import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.SignalLogger;
+import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.ClimbConstants;
@@ -16,34 +17,74 @@ import org.littletonrobotics.junction.Logger;
 
 public class Climb extends SubsystemBase {
   private final ClimbIO climbIO;
-  private final ClimbIOInputsAutoLogged inputs = new ClimbIOInputsAutoLogged();
+  private final ClimbIOInputsAutoLogged inputs;
+
+  private final Notifier logger;
 
   @AutoLogOutput private boolean isLocked = true;
 
-  @AutoLogOutput private boolean isManual = false;
+  private double manualLeftSpeed = 0;
+  private double manualRightSpeed = 0;
 
-  @AutoLogOutput private double manualLeftSpeed = 0;
-  @AutoLogOutput private double manualRightSpeed = 0;
-
-  @AutoLogOutput private double automaticLeftSetpoint = 0;
-  @AutoLogOutput private double automaticRightSetpoint = 0;
+  private double automaticLeftSetpoint = 0;
+  private double automaticRightSetpoint = 0;
 
   public Climb(ClimbIO climbIO) {
     this.climbIO = climbIO;
+    this.inputs = new ClimbIOInputsAutoLogged();
+
+    // set up logging
+    logger =
+        new Notifier(
+            () -> {
+              climbIO.updateInputs(inputs);
+              Logger.processInputs("climb", inputs);
+            });
+
+    logger.startPeriodic(1 / ClimbConstants.FREQUENCY_HZ);
+
+    setLocked(false);
   }
 
   @Override
   public void periodic() {
-    climbIO.updateInputs(inputs);
-    Logger.processInputs("Climb", inputs);
-
     if (isLocked) {
       climbIO.stop();
 
       setManualSpeeds(0, 0);
       return;
     }
+  }
 
+  public void setServo(double position) {
+    climbIO.setServo(position);
+  }
+
+  /**
+   * Manual control for both motors. Useful if the robot is tilting and you need to adjust one side.
+   * sets it to manual
+   */
+  public void setManualSpeeds(double left, double right) {
+    if (isLocked) {
+      climbIO.stop();
+      return;
+    }
+
+    climbIO.setSpeeds(manualLeftSpeed, manualRightSpeed);
+
+    manualLeftSpeed = left;
+    manualRightSpeed = right;
+  }
+
+  /**
+   * sets the climber to automatic and sets the positions
+   *
+   * @param leftPosition
+   * @param rightPosition
+   */
+  public void setPositions(double leftPosition, double rightPosition) {
+    this.automaticLeftSetpoint = leftPosition;
+    this.automaticRightSetpoint = rightPosition;
     if (automaticLeftSetpoint > ClimbConstants.MAX_POSITION_LEFT) {
       automaticLeftSetpoint = ClimbConstants.MAX_POSITION_LEFT;
     }
@@ -60,48 +101,17 @@ public class Climb extends SubsystemBase {
       automaticRightSetpoint = ClimbConstants.MIN_POSITION_RIGHT;
     }
 
-    if (isManual) {
-      climbIO.setSpeeds(manualLeftSpeed, manualRightSpeed);
-    } else {
-      climbIO.setPositions(automaticLeftSetpoint, automaticRightSetpoint);
-    }
-  }
-
-  /** set servo in degrees */
-  public void setServo(double position) {
-    climbIO.setServo(position);
-  }
-
-  /**
-   * Manual control for both motors. Useful if the robot is tilting and you need to adjust one side.
-   * sets it to manual
-   */
-  public void setManualSpeeds(double left, double right) {
-    // if (isLocked) {
-    //   climbIO.stop();
-    //   return;
-    // }
-
-    isManual = true;
-
-    manualLeftSpeed = left;
-    manualRightSpeed = right;
-  }
-
-  /**
-   * sets the climber to automatic and sets the positions
-   *
-   * @param leftPosition
-   * @param rightPosition
-   */
-  public void setPositions(double leftPosition, double rightPosition) {
-    isManual = false;
-    this.automaticLeftSetpoint = leftPosition;
-    this.automaticRightSetpoint = rightPosition;
+    climbIO.setPositions(automaticLeftSetpoint, automaticRightSetpoint);
   }
 
   public void setLocked(boolean locked) {
     isLocked = locked;
+    if (isLocked) {
+      climbIO.stop();
+
+      setManualSpeeds(0, 0);
+      return;
+    }
   }
 
   public boolean isLocked() {
@@ -114,15 +124,19 @@ public class Climb extends SubsystemBase {
   }
 
   public Command setPositionsRunCommand(double leftPosition, double rightPosition) {
-    return new RunCommand(() -> setPositions(leftPosition, rightPosition), this);
+    return Commands.startRun(() -> setPositions(leftPosition, rightPosition), () -> {}, this);
   }
 
   public Command setSpeedsRunCommand(double leftPosition, double rightPosition) {
-    return new RunCommand(() -> setManualSpeeds(leftPosition, rightPosition), this);
+    return Commands.startRun(() -> setManualSpeeds(leftPosition, rightPosition), () -> {}, this);
   }
 
   public Command setIsLockedCommand(BooleanSupplier isLocked) {
     return new InstantCommand(() -> setLocked(isLocked.getAsBoolean()), this);
+  }
+
+  public Command setServoRunCommand(double position) {
+    return new InstantCommand(() -> setServo(position));
   }
 
   // the constants here should probably be more and move but that's later when this is transferred

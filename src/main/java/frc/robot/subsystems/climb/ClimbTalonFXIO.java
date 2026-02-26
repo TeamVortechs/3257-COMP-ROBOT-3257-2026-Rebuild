@@ -33,11 +33,11 @@ public class ClimbTalonFXIO implements ClimbIO {
   private final StatusSignal<Angle> rightMotorPosition;
   private final StatusSignal<Temperature> rightMotorTemperatureCelsius;
 
-  private Servo servo;
-  private double servoPosition = 0.0;
-
   //   private PIDController positionPIDController = new PIDController(0.1, 0, 0); // CHANGE -
   // CONSTANTS
+
+  private Servo servo;
+  private double servoTargetPosition = 0.0;
 
   private boolean manual = true;
 
@@ -74,32 +74,35 @@ public class ClimbTalonFXIO implements ClimbIO {
     leftSupplyCurrent = leftMotor.getSupplyCurrent();
     leftStatorCurrent = leftMotor.getStatorCurrent();
     leftMotorPosition = leftMotor.getPosition();
+    leftMotorTemperatureCelsius = leftMotor.getDeviceTemp();
 
     rightVelocity = rightMotor.getVelocity();
     rightMotorVoltage = rightMotor.getMotorVoltage();
     rightSupplyCurrent = rightMotor.getSupplyCurrent();
     rightStatorCurrent = rightMotor.getStatorCurrent();
     rightMotorPosition = rightMotor.getPosition();
+    rightMotorTemperatureCelsius = rightMotor.getDeviceTemp();
 
     // Optimize CAN bus usage by refreshing these signals together
     BaseStatusSignal.setUpdateFrequencyForAll(
-        Constants.FREQUENCY_HZ,
+        Constants.ClimbConstants.FREQUENCY_HZ,
         leftVelocity,
         leftMotorVoltage,
         leftSupplyCurrent,
-        leftMotorPosition);
+        leftMotorPosition,
+        leftStatorCurrent,
+        leftMotorTemperatureCelsius);
     BaseStatusSignal.setUpdateFrequencyForAll(
-        Constants.FREQUENCY_HZ,
+        Constants.ClimbConstants.FREQUENCY_HZ,
         rightVelocity,
         rightMotorVoltage,
         rightSupplyCurrent,
-        rightMotorPosition);
+        rightMotorPosition,
+        rightStatorCurrent,
+        rightMotorTemperatureCelsius);
 
     // this the servo
     this.servo = new Servo(Constants.ClimbConstants.SERVO_ID);
-
-    leftMotorTemperatureCelsius = leftMotor.getDeviceTemp();
-    rightMotorTemperatureCelsius = rightMotor.getDeviceTemp();
   }
 
   @Override
@@ -119,18 +122,18 @@ public class ClimbTalonFXIO implements ClimbIO {
     inputs.motorLeftSpeed = leftVelocity.getValueAsDouble();
     inputs.motorRightSpeed = rightVelocity.getValueAsDouble();
 
-    inputs.servoPosition = servoPosition;
-
     inputs.isBraked = isBraked;
 
     inputs.motorLeftTemperatureCelsius = leftMotorTemperatureCelsius.getValueAsDouble();
     inputs.motorRightTemperatureCelsius = rightMotorTemperatureCelsius.getValueAsDouble();
 
+    inputs.servoTargetPosition = servoTargetPosition;
+
     if (!manual) {
       // motor.set(speed);
       leftMotor.setControl(leftRequestVoltage.withPosition(targetLeftPos));
       // motor.set(speed);
-      leftMotor.setControl(rightRequestVoltage.withPosition(targetRightPos));
+      rightMotor.setControl(rightRequestVoltage.withPosition(targetRightPos));
       //
       // leftMotor.setVoltage(positionPIDController.calculate(leftMotorPosition.getValueAsDouble(),
       // targetLeftPos)); // CHANGE MAYBE
@@ -160,7 +163,7 @@ public class ClimbTalonFXIO implements ClimbIO {
 
   @Override
   public void setServo(double position) {
-    this.servoPosition = position;
+    this.servoTargetPosition = position;
     servo.setAngle(position);
   }
 

@@ -20,12 +20,12 @@ public interface ClimbIO {
     public double motorLeftSpeed = 0.0;
     public double motorRightSpeed = 0.0;
 
-    public double servoPosition = 0.0;
-
     public boolean isBraked = true;
 
     public double motorLeftTemperatureCelsius = 0.0;
     public double motorRightTemperatureCelsius = 0.0;
+
+    public double servoTargetPosition = 0.0;
   }
 
   public default void updateInputs(ClimbIOInputsAutoLogged inputs) {}
@@ -37,13 +37,6 @@ public interface ClimbIO {
    * @param rightSpeed
    */
   public default void setSpeeds(double leftSpeed, double rightSpeed) {}
-
-  /**
-   * set position of servo
-   *
-   * @param position
-   */
-  public default void setServo(double position) {}
 
   /**
    * set pos of motors
@@ -59,6 +52,13 @@ public interface ClimbIO {
    * @param leftVoltage
    */
   public default void setLeftVoltage(double leftVoltage) {}
+
+  /**
+   * set position of servo
+   *
+   * @param position
+   */
+  public default void setServo(double position) {}
 
   /**
    * set right voltage

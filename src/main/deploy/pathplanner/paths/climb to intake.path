@@ -1,0 +1,67 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 1.642336892052195,
+        "y": 3.8682325029655997
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.6423368920521955,
+        "y": 3.8682325029655997
+      },
+      "isLocked": false,
+      "linkedName": "climb"
+    },
+    {
+      "anchor": {
+        "x": 2.7290154211150655,
+        "y": 6.138422301304863
+      },
+      "prevControl": {
+        "x": 1.7290154211150655,
+        "y": 6.138422301304863
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "intakeStartEvent",
+      "waypointRelativePos": 0.06201550387596923,
+      "endWaypointRelativePos": null,
+      "command": null
+    },
+    {
+      "name": "intakeStopEvent",
+      "waypointRelativePos": 0.9678848283499455,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 0.5,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0.0
+  },
+  "reversed": false,
+  "folder": "Davis Auto",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 0.0
+  },
+  "useDefaultConstraints": true
+}

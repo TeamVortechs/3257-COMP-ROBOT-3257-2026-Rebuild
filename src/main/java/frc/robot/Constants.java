@@ -12,13 +12,20 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.RobotBase;
 import frc.robot.generated.TunerConstants;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Supplier;
+import org.littletonrobotics.junction.Logger;
 
 /**
  * This class defines the runtime mode used by AdvantageKit. The mode is always "real" when running
@@ -28,7 +35,13 @@ import java.util.function.Supplier;
 public final class Constants {
   public static final Mode SIM_MODE = Mode.SIM;
   public static final Mode CURR_MODE = RobotBase.isReal() ? Mode.REAL : SIM_MODE;
+
   public static final double FREQUENCY_HZ = 50;
+
+  public static final double HIGH_PRIORITY_FREQUENCY_HZ = 50;
+  public static final double MEDIUM_PRIORITY_FREQUENCY_HZ = 25;
+  public static final double LOW_PRIORITY_FREQUENCY_HZ = 10;
+  public static final double VERY_LOW_PRIORITY_FREQUENCY_HZ = 4;
 
   public static enum Mode {
     /** Running on a real robot. */
@@ -43,6 +56,17 @@ public final class Constants {
 
   public class DriveConstants {
 
+    private static final InterpolatingDoubleTreeMap AIRTIME_MAP = new InterpolatingDoubleTreeMap();
+
+    private static void characterizeAirtimeMap() {
+      AIRTIME_MAP.put(0.0, 0.0);
+    }
+
+    public static final double SHOOTER_ROTATION_MANAGER_LOGGING_FREQUENCY =
+        Constants.LOW_PRIORITY_FREQUENCY_HZ;
+
+    public static final double FREQUENCY_UPDATE_ACC =
+        20.00; // how many times per sec should we log accelerometer
     public static final double transKp = 2;
     public static final double transKi = 0;
     public static final double transKd = 0;
@@ -62,27 +86,98 @@ public final class Constants {
     public static final double rotationTolerance = 0.1;
     public static final double translationTolerance = 0.01;
 
+    public static final ProfiledPIDController ANGLE_CONTROLLER;
+
     public static final double ORIENTATION_TOLERANCE = .1;
     // the time it takes between feeding and actual robot shoot. This is used to lead the robot
     // pose. Should be about 0.08 - 0.18 s
-    public static final double KRELEASE_POSE_PREDICTION_SEC = 0;
+    public static final double KRELEASE_POSE_PREDICTION_SEC = 0; // to change .5
 
     // we should test by looking at values. this can also be a distance lookup table. This corrects
     // for robot speed by changing the target location. This constant is supposed ot emmulate fligth
     // time
-    public static final double KFLIGHT_COMPENSATION_SEC = 0;
+    public static final double KFLIGHT_COMPENSATION_SEC(double distance) {
+
+      double val = AIRTIME_MAP.get(distance);
+
+      Logger.recordOutput("DriveConstants/MostRecentAirTimeEstimation", val);
+      // return val;
+
+      return 0;
+    }
 
     // the maximum allowed difference allowed between acceleraomter and encoders before it is
     // considered skid
-    public static final double SKID_THRESHOLD = 5.0;
+    public static final double SKID_THRESHOLD = 1000;
+
+    public static final double DEADBAND = 0.1;
+    public static final double ANGLE_KP = 10; // 12
+    public static final double ANGLE_KD = 0.4;
+    public static final double ANGLE_MAX_ACCELERATION = 20.0;
+    public static final double ANGLE_MAX_VELOCITY = 8.0;
+    public static final double FF_START_DELAY = 2.0; // Secs
+    public static final double FF_RAMP_RATE = 0.1; // Volts/Sec
+    public static final double WHEEL_RADIUS_MAX_VELOCITY = 0.25; // Rad/Sec
+    public static final double WHEEL_RADIUS_RAMP_RATE = 0.05; // Rad/Sec^2
+
+    public static final Translation2d CENTER_POINT = new Translation2d(8.27, 4.115);
 
     // find this
     public static final Pose2d GOAL_POSE_BLUE = new Pose2d(4.622, 4.03, new Rotation2d());
     public static final Pose2d GOAL_POSE_RED = new Pose2d(11.917, 4.030, new Rotation2d());
 
+    private static List<Pose2d> PASSING_GOALS_STORAGE = null;
+    private static List<String> PASSING_GOALS_NAME_STORAGE = null;
+
+    public static boolean SWICH_PASSING_GOALS = false;
+
+    public static final List<String> PASSING_GOALS_NAMES() {
+
+      if (PASSING_GOALS_NAME_STORAGE == null) {
+        PASSING_GOALS_NAME_STORAGE = new ArrayList<>();
+        PASSING_GOALS_NAME_STORAGE.add("Back left");
+        PASSING_GOALS_NAME_STORAGE.add("Back right");
+        PASSING_GOALS_NAME_STORAGE.add("Front left");
+        PASSING_GOALS_NAME_STORAGE.add("Front right");
+      }
+
+      return PASSING_GOALS_NAME_STORAGE;
+    }
+
+    public static final List<Pose2d> PASSING_GOALS() {
+
+      if (PASSING_GOALS_STORAGE == null) {
+        PASSING_GOALS_STORAGE = new ArrayList<>();
+        PASSING_GOALS_STORAGE.add(new Pose2d(2.5, 6.5, new Rotation2d()));
+        PASSING_GOALS_STORAGE.add(new Pose2d(2.5, 2.5, new Rotation2d()));
+        PASSING_GOALS_STORAGE.add(new Pose2d(7, 6.5, new Rotation2d()));
+        PASSING_GOALS_STORAGE.add(new Pose2d(7, 2.5, new Rotation2d()));
+      }
+
+      // add flip logic here
+      // double xToFlip = 5;
+      // double yToFlip = 5;
+      // double x;
+      // double y;
+      if (SWICH_PASSING_GOALS) {
+        for (int i = 0; i < PASSING_GOALS_STORAGE.size(); i++) {
+          PASSING_GOALS_STORAGE.set(
+              i,
+              PASSING_GOALS_STORAGE.get(i).rotateAround(CENTER_POINT, Rotation2d.fromDegrees(180)));
+        }
+        SWICH_PASSING_GOALS = false;
+      }
+
+      return PASSING_GOALS_STORAGE;
+    }
+
     // this is ugly but all it does is return target pose based on the team
     public static final Supplier<Pose2d> GOAL_POSE =
         () -> {
+          if (DriverStation.getAlliance().isEmpty()) {
+            return new Pose2d();
+          }
+
           if (DriverStation.getAlliance().get() == Alliance.Blue) {
             return GOAL_POSE_BLUE;
           } else {
@@ -92,8 +187,10 @@ public final class Constants {
 
     // the zone where we choose to more agressively charge the shooter
     public static final double X_POSE_TO_CHARGE = 5.5;
+    public static final double X_POSE_TO_PASS = 5.5;
 
     public static final double K_JOYSTICK_WHEN_SHOOTING = 1;
+    public static final double K_JOYSTICK_WHEN_PASSING = 1;
 
     // from our library
     public static final double ODOMETRY_FREQUENCY =
@@ -108,9 +205,23 @@ public final class Constants {
                 Math.hypot(TunerConstants.BackLeft.LocationX, TunerConstants.BackLeft.LocationY),
                 Math.hypot(
                     TunerConstants.BackRight.LocationX, TunerConstants.BackRight.LocationY)));
+
+    static {
+      ANGLE_CONTROLLER =
+          new ProfiledPIDController(
+              ANGLE_KP,
+              0.0,
+              ANGLE_KD,
+              new TrapezoidProfile.Constraints(ANGLE_MAX_VELOCITY, ANGLE_MAX_ACCELERATION));
+      ANGLE_CONTROLLER.enableContinuousInput(-Math.PI, Math.PI);
+
+      characterizeAirtimeMap();
+    }
   }
 
   public class ShooterConstants {
+    public static final double FREQUENCY_HZ = Constants.HIGH_PRIORITY_FREQUENCY_HZ;
+
     public static final double CURRENT_LIMIT = 40.0;
 
     public static final double SIM_TOLERANCE = 0.5;
@@ -118,7 +229,7 @@ public final class Constants {
     // used in Shooter.java
     public static final double RAMP_RATE_VOLTS_SYSID = 5;
     public static final double DYNAMIC_STEP_VOLTS_SYSID = 3;
-    public static final double TOLERANCE = 5;
+    public static final double TOLERANCE = 4;
 
     public static final int MOTOR_ID = 24;
 
@@ -136,11 +247,11 @@ public final class Constants {
 
     // CHANGE !!
     public static final double KS = 0.0;
-    public static final double KV = 0.12559;
-    public static final double KP = 0.14947;
+    public static final double KV = 0.13727;
+    public static final double KP = 0.16011;
     public static final double KI = 0.0;
     public static final double KD = 0.0;
-    public static final double KA = 0.038169;
+    public static final double KA = 0.050592;
 
     public static final TalonFXConfiguration CONFIG;
     public static final Slot0Configs SLOT0CONFIGS;
@@ -172,6 +283,9 @@ public final class Constants {
   // copied directly from ShooterConstants
   public class FeederConstants {
 
+    public static final double VALIDITY_LOGGING_FREQUENCY_HERTZ = LOW_PRIORITY_FREQUENCY_HZ;
+    public static final double SUBSYSTEM_LOGGING_FREQUENCY_HERTZ = MEDIUM_PRIORITY_FREQUENCY_HZ;
+
     public static final double VALIDITY_DEBOUNCE_TIME_SEC = 0.2;
 
     public static final double CURRENT_LIMIT = 40.0;
@@ -187,7 +301,7 @@ public final class Constants {
     // not real
     public static final int MOTOR_ID = 23;
 
-    public static final double FEED_POWER = 0.1;
+    public static final double FEED_POWER = 1;
 
     public static final Slot0Configs SLOT0CONFIGS;
     public static final TalonFXConfiguration CONFIG;
@@ -206,6 +320,9 @@ public final class Constants {
   // copied off feeder constants
   // copied directly from ShooterConstants
   public class BeltConstants {
+
+    public static double FREQUENCY_HZ = Constants.LOW_PRIORITY_FREQUENCY_HZ;
+
     public static final double CURRENT_LIMIT = 40.0;
 
     // used in Belt.java
@@ -232,21 +349,20 @@ public final class Constants {
 
   // copied directly from BeltConstants
   public class ClimbConstants {
+    public static final double FREQUENCY_HZ = Constants.VERY_LOW_PRIORITY_FREQUENCY_HZ;
+
     public static final double CURRENT_LIMIT = 40.0;
     // used in Belt.java
     public static final double RAMP_RATE_VOLTS_SYSID = 0.1;
     public static final double DYNAMIC_STEP_VOLTS_SYSID = 0.25;
 
-    // not real
-    public static final int SERVO_ID = 6;
-
     public static final double FEED_POWER = 0.1;
 
     public static final double MIN_POSITION_LEFT = 0;
-    public static final double MAX_POSITION_LEFT = 0;
+    public static final double MAX_POSITION_LEFT = 1;
 
     public static final double MIN_POSITION_RIGHT = 0;
-    public static final double MAX_POSITION_RIGHT = 0;
+    public static final double MAX_POSITION_RIGHT = 1;
 
     // CHANGE !!
     public static final double KS = 0.1;
@@ -262,6 +378,10 @@ public final class Constants {
     public static final TalonFXConfiguration CONFIG;
     public static final Slot0Configs SLOT0CONFIGS;
 
+    public static final int RIGHT_ID = 26;
+    public static final int LEFT_ID = 27;
+    public static final int SERVO_ID = 28;
+
     static {
       CONFIG = new TalonFXConfiguration();
       CONFIG.MotorOutput.NeutralMode = NeutralModeValue.Brake;
@@ -276,9 +396,14 @@ public final class Constants {
       SLOT0CONFIGS.kI = Constants.ClimbConstants.KI;
       SLOT0CONFIGS.kD = Constants.ClimbConstants.KD;
     }
+
+    public static final double SERVO_OPEN = 0;
+    public static final double SERVO_CLOSED = 10; // in degrees TODO: change
   }
 
   public class IntakeConstants {
+    public static final double FREQUENCY_HZ = Constants.LOW_PRIORITY_FREQUENCY_HZ;
+
     // dummy values for now
     public static final double MAX_TARGET_SPEED = 100;
     public static final double MAX_MANUAL_SPEED = 100;
@@ -316,6 +441,9 @@ public final class Constants {
     public static final double DYNAMIC_STEP_VOLTS_POSITION_SYSID = 0.25;
     public static final TalonFXConfiguration ROLLER_CONFIG;
     public static final Slot0Configs SLOT0CONFIGS;
+
+    public static final int INTAKE_ROLLER_MOTOR_ID = 21;
+    public static final int INTAKE_POSITION_MOTOR_ID = 22;
 
     static {
       SLOT0CONFIGS = new Slot0Configs();
