@@ -32,14 +32,26 @@
                     }
                   ]
                 }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Bottom shoot back to mid"
-                }
               }
             ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Ending position to climb"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Climb"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "climbDownWhenNeeded"
           }
         }
       ]
