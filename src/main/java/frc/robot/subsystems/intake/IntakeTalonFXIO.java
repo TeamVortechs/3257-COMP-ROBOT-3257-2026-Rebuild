@@ -13,7 +13,9 @@ import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Temperature;
 import edu.wpi.first.units.measure.Voltage;
 import frc.robot.Constants;
+import frc.robot.Constants.IntakeConstants;
 // CHANGE PID VALUES !!!!
+import frc.robot.util.VortechsUtil;
 
 public class IntakeTalonFXIO implements IntakeIO {
 
@@ -128,8 +130,20 @@ public class IntakeTalonFXIO implements IntakeIO {
     roller.setControl(new VoltageOut(volt));
   }
 
-  public void setPositionVoltage(double volt) {
-    position.setControl(new VoltageOut(volt));
+  public void setPositionVoltage(double volts) {
+    VortechsUtil.clamp(volts, IntakeConstants.CLAMP_MAX_VOLTS);
+
+    if (volts > 0
+        && getPosition() > IntakeConstants.MAX_POSITION - IntakeConstants.POSITION_THRESHOLD_STOP) {
+      volts = 0;
+    }
+
+    if (volts < 0
+        && getPosition() < IntakeConstants.MIN_POSITION + IntakeConstants.POSITION_THRESHOLD_STOP) {
+      volts = 0;
+    }
+
+    position.setControl(new VoltageOut(volts));
   }
 
   // sets the position of the arm.

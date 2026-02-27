@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
@@ -239,7 +240,7 @@ public class RobotContainer {
 
     SmartDashboard.putData("Flip Poses", Commands.runOnce(() -> flipAllPoses()));
 
-    registerNamedCommandsAuto(); // register named commands for auto (pathplanner)
+    // registerNamedCommandsAuto(); // register named commands for auto (pathplanner)
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
@@ -354,7 +355,8 @@ public class RobotContainer {
             Commands.parallel(
                 aimTowardsTargetCommand,
                 shooter.setAutomaticCommandRun(),
-                intake.setRollerVoltageCommand(IntakeConstants.INTAKE_VOLTS),
+                intake.intakeRetractWhileShooting(
+                    new WaitUntilCommand(() -> feeder.getTargetSpeed() > 0.5), 4),
                 feeder.feedWhenValidRunCommand(FeederConstants.FEED_POWER)));
 
     controller.leftBumper().whileTrue(intake.setRollerVoltageCommand(IntakeConstants.EJECT_VOLTS));

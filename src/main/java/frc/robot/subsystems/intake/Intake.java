@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.IntakeConstants;
 import java.util.function.DoubleSupplier;
@@ -96,6 +97,10 @@ public class Intake extends SubsystemBase {
     intakeIO.resetEncoders();
   }
 
+  public void setPositionVoltage(double volt) {
+    intakeIO.setPositionVoltage(volt);
+  }
+
   // gets the roller speed
   public double getRollerSpeed() {
     return intakeIO.getSpeed();
@@ -121,6 +126,17 @@ public class Intake extends SubsystemBase {
         this);
   }
 
+  public Command pullInIntakeRunCommand() {
+    return Commands.parallel(
+        Commands.waitSeconds(2),
+        Commands.startRun(
+            () -> {
+              this.setPosition(0);
+            },
+            () -> {},
+            this));
+  }
+
   public Command setPositionCommand(double position) {
     return Commands.startRun(() -> this.setPosition(position), () -> {}, this);
   }
@@ -134,6 +150,20 @@ public class Intake extends SubsystemBase {
   // resets the encoders of the wrist
   public Command resetEncodersCommand() {
     return new InstantCommand(() -> this.resetEncoders());
+  }
+
+  public Command setPositionVoltageRunCommand(double volt) {
+    return Commands.startRun(() -> this.setPositionVoltage(volt), () -> {}, this);
+  }
+
+  public Command intakeRetractWhileShooting(Command waitingCommand, double rollerVolts) {
+
+    return new InstantCommand(() -> this.setRollerVoltageCommand(rollerVolts))
+        .andThen(waitingCommand)
+        .andThen(
+            setPositionVoltageRunCommand(0)
+                .withDeadline(
+                    new WaitCommand(2))); // I don't like this magic number. I am displeased.
   }
 
   // intakes until the canrange finds distance less than the given distance
