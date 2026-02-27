@@ -59,7 +59,7 @@ public class ClimbSimulationIO implements ClimbIO {
 
   @Override
   public void setVoltage(double leftSpeed) {
-    leftMotorSim.setInputVoltage(leftSpeed / 502.747);
+    leftMotorSim.setInputVoltage(leftSpeed);
 
     manual = true;
   }
