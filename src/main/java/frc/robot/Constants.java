@@ -135,9 +135,10 @@ public final class Constants {
 
       if (PASSING_GOALS_NAME_STORAGE == null) {
         PASSING_GOALS_NAME_STORAGE = new ArrayList<>();
-        PASSING_GOALS_NAME_STORAGE.add("pose 1");
-        PASSING_GOALS_NAME_STORAGE.add("pose 2");
-        PASSING_GOALS_NAME_STORAGE.add("pose_3");
+        PASSING_GOALS_NAME_STORAGE.add("Back left");
+        PASSING_GOALS_NAME_STORAGE.add("Back right");
+        PASSING_GOALS_NAME_STORAGE.add("Front left");
+        PASSING_GOALS_NAME_STORAGE.add("Front right");
       }
 
       return PASSING_GOALS_NAME_STORAGE;
@@ -147,9 +148,10 @@ public final class Constants {
 
       if (PASSING_GOALS_STORAGE == null) {
         PASSING_GOALS_STORAGE = new ArrayList<>();
-        PASSING_GOALS_STORAGE.add(new Pose2d());
-        PASSING_GOALS_STORAGE.add(new Pose2d(1, 1, new Rotation2d()));
-        PASSING_GOALS_STORAGE.add(new Pose2d(2, 2, new Rotation2d()));
+        PASSING_GOALS_STORAGE.add(new Pose2d(2.5, 6.5, new Rotation2d()));
+        PASSING_GOALS_STORAGE.add(new Pose2d(2.5, 2.5, new Rotation2d()));
+        PASSING_GOALS_STORAGE.add(new Pose2d(7, 6.5, new Rotation2d()));
+        PASSING_GOALS_STORAGE.add(new Pose2d(7, 2.5, new Rotation2d()));
       }
 
       // add flip logic here
@@ -227,7 +229,7 @@ public final class Constants {
     // used in Shooter.java
     public static final double RAMP_RATE_VOLTS_SYSID = 5;
     public static final double DYNAMIC_STEP_VOLTS_SYSID = 3;
-    public static final double TOLERANCE = 5;
+    public static final double TOLERANCE = 4;
 
     public static final int MOTOR_ID = 24;
 

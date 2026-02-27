@@ -314,7 +314,7 @@ public class RobotContainer {
         .leftTrigger()
         .whileTrue(intake.setRollerVoltageCommand(IntakeConstants.INTAKE_VOLTS));
 
-    controller
+    operatorController
         .rightBumper()
         .whileTrue(feeder.setPercentMotorRunCommand(Constants.FeederConstants.FEED_POWER));
 
@@ -337,9 +337,6 @@ public class RobotContainer {
 
     // // belt.setDefaultCommand(belt.setPercentMotorOutputRunCommand(BeltConstants.FEED_POWER));
     feeder.setDefaultCommand(feeder.setPercentMotorRunCommand(0));
-    shooter.setDefaultCommand(shooter.setManualSpeedRunCommand(0));
-
-    // // climb.setDefaultCommand(climb.setPositionsRunCommand(0, 0));
 
     @SuppressWarnings("unused")
     Command aimTowardsTargetCommand =

@@ -15,7 +15,6 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.ShooterConstants;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
-import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 public class Shooter extends SubsystemBase {
@@ -38,7 +37,7 @@ public class Shooter extends SubsystemBase {
   private final Notifier logger;
 
   // wether or not the shooter automatically charges to
-  @AutoLogOutput private boolean automaticallyChargeFully = false;
+  private boolean automaticallyChargeFully = false;
 
   /**
    * @param shooterIO the hardware interface
@@ -120,7 +119,7 @@ public class Shooter extends SubsystemBase {
   public void setAutomaticallyChargeFully(boolean automaticallyChargeFully) {
     this.automaticallyChargeFully = automaticallyChargeFully;
 
-    Logger.recordOutput("Shooter/AutomaticallyChargeFulyl", automaticallyChargeFully);
+    Logger.recordOutput("Shooter/AutomaticallyChargeFully", automaticallyChargeFully);
   }
 
   public boolean isAutomaticallyChargeFully() {
