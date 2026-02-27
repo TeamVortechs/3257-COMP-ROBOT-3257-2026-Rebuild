@@ -37,6 +37,12 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "shooterStop"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "Bottom shoot back to mid"
