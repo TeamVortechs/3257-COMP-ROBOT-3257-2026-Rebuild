@@ -121,7 +121,11 @@ public final class Constants {
     public static final double WHEEL_RADIUS_RAMP_RATE = 0.05; // Rad/Sec^2
 
     public static final Translation2d CENTER_POINT = new Translation2d(8.27, 4.115);
-
+    
+    // this is the rotation the drive will turn to when travelling over the bumpers, depending on what side of the field(red or blue)
+    // this is optimal bc it's smoother going at an angle rather than straight in
+    public static final double RED_SIDE_DEGREES = 135;
+    public static final double BLUE_SIDE_DEGREES = 45;
     // find this
     public static final Pose2d GOAL_POSE_BLUE = new Pose2d(4.622, 4.03, new Rotation2d());
     public static final Pose2d GOAL_POSE_RED = new Pose2d(11.917, 4.030, new Rotation2d());

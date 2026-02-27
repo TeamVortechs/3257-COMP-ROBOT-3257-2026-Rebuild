@@ -227,12 +227,12 @@ public class Drive extends SubsystemBase {
   public Rotation2d getRotationOverBumper() {
     double xPose = getPose().getX();
 
-    if (xPose > 8.270) {
+    if (xPose > Constants.DriveConstants.CENTER_POINT.getX()) {
       // this means we're on the red side
-      return Rotation2d.fromDegrees(135);
+      return Rotation2d.fromDegrees(Constants.DriveConstants.RED_SIDE_DEGREES);
     } else {
       // this means we're on the blue side
-      return Rotation2d.fromDegrees(45);
+      return Rotation2d.fromDegrees(Constants.DriveConstants.BLUE_SIDE_DEGREES);
     }
   }
 
