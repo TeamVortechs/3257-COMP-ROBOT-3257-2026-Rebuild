@@ -20,9 +20,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -240,7 +238,7 @@ public class RobotContainer {
 
     SmartDashboard.putData("Flip Poses", Commands.runOnce(() -> flipAllPoses()));
 
-    // registerNamedCommandsAuto(); // register named commands for auto (pathplanner)
+    registerNamedCommandsAuto(); // register named commands for auto (pathplanner)
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
@@ -412,6 +410,18 @@ public class RobotContainer {
                     .feedWhenValidRunCommand(FeederConstants.FEED_POWER)
                     .withDeadline(new WaitCommand(3)))
             .andThen(feeder.setPercentMotorCommand(0)));
+
+    /*
+    version with moving intake:
+         NamedCommands.registerCommand(
+        "feedWhenValidAndStop",
+        new WaitUntilCommand(() -> shooter.isOnTarget())
+            .andThen(
+                feeder
+                    .feedWhenValidRunCommand(FeederConstants.FEED_POWER)
+                    .withDeadline(intake.intakeRetractWhileShooting(new InstantCommand(), 4)))
+            .andThen(feeder.setPercentMotorCommand(0)));
+     */
 
     NamedCommands.registerCommand("feedStop", feeder.setPercentMotorCommand(0));
 

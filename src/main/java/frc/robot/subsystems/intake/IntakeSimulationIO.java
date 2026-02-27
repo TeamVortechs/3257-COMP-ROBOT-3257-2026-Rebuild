@@ -64,6 +64,10 @@ public class IntakeSimulationIO implements IntakeIO {
     return 0;
   }
 
+  public void setPositionVoltage(double voltage) {
+    positionMotorsSim.setInputVoltage(voltage);
+  }
+
   // setters for motors
   public void setRollerVoltage(double volt) {
     rollerMotorsSim.setInputVoltage(volt);

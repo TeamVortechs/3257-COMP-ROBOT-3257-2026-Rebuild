@@ -118,7 +118,7 @@
     {
       "name": "Over Bumper",
       "minWaypointRelativePos": 2.540942928039705,
-      "maxWaypointRelativePos": 3.6,
+      "maxWaypointRelativePos": 3.734533183352084,
       "constraints": {
         "maxVelocity": 1.5,
         "maxAcceleration": 3.0,
@@ -129,7 +129,7 @@
       }
     },
     {
-      "name": "Constraints Zone",
+      "name": "While Intaking",
       "minWaypointRelativePos": 1.012406947890811,
       "maxWaypointRelativePos": 2.1717121588089268,
       "constraints": {

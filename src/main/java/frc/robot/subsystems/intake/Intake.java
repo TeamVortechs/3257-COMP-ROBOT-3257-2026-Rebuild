@@ -156,14 +156,18 @@ public class Intake extends SubsystemBase {
     return Commands.startRun(() -> this.setPositionVoltage(volt), () -> {}, this);
   }
 
+  private Command setPositionVoltageRunCommandNoRequirement(double volt) {
+    return Commands.startRun(() -> this.setPositionVoltage(volt), () -> {});
+  }
+
   public Command intakeRetractWhileShooting(Command waitingCommand, double rollerVolts) {
 
-    return new InstantCommand(() -> this.setRollerVoltageCommand(rollerVolts))
-        .andThen(waitingCommand)
-        .andThen(
-            setPositionVoltageRunCommand(0)
+    return Commands.race(
+        setRollerVoltageCommand(rollerVolts),
+        waitingCommand.andThen(
+            setPositionVoltageRunCommandNoRequirement(4)
                 .withDeadline(
-                    new WaitCommand(2))); // I don't like this magic number. I am displeased.
+                    new WaitCommand(2)))); // I don't like this magic number. I am displeased.
   }
 
   // intakes until the canrange finds distance less than the given distance
