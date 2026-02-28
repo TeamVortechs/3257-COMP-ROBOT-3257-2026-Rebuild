@@ -29,7 +29,8 @@ public enum MatchPhase {
   static {
     NEXT_PHASES = new TreeMap<>();
     NEXT_PHASES.put(BEGINNING, AUTO);
-    NEXT_PHASES.put(AUTO, SHIFT_1);
+    NEXT_PHASES.put(AUTO, TRANSITION);
+    NEXT_PHASES.put(TRANSITION, SHIFT_1);
     NEXT_PHASES.put(SHIFT_1, ALMOST_SHIFT_2);
     NEXT_PHASES.put(ALMOST_SHIFT_2, SHIFT_2);
 
