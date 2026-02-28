@@ -417,24 +417,25 @@ public final class Constants {
 
     public static final double POSITION_TOLERANCE = 0.1;
 
-    public static final double MAX_POSITION = 1;
+    public static final double MAX_POSITION = 56.23;
     public static final double MIN_POSITION = 0;
 
     public static final double CLAMP_MAX_VOLTS = 3;
     public static final double POSITION_THRESHOLD_STOP = 0.2;
 
     // CHANGE !!
-    public static final double KS = 0.25;
-    public static final double KV = 0.12;
-    public static final double KA = 0.01;
-    public static final double KP = 12;
+    public static final double KS = 0;
+    public static final double KV = 0.2;
+    public static final double KA = 0;
+    public static final double KP = 0.3;
     public static final double KI = 0;
-    public static final double KD = 0.1;
+    public static final double KD = 0;
+    public static final double KG = 0.5;
 
     public static final double INTAKE_VOLTS = 8;
     public static final double EJECT_VOLTS = -8;
-    public static final double INTAKE_DOWN_POSITION = 0.5;
-    public static final double INTAKE_UP_POSITION = 0;
+    public static final double INTAKE_DOWN_POSITION = 50;
+    public static final double INTAKE_UP_POSITION = 30;
 
     public static final double MOTION_MAGIC_CRUISE_VELOCITY = 3;
     public static final double MOTION_MAGIC_ACCELERATION = 2.5;
@@ -452,6 +453,7 @@ public final class Constants {
     public static final double DYNAMIC_STEP_VOLTS_POSITION_SYSID = 0.25;
     public static final TalonFXConfiguration ROLLER_CONFIG;
     public static final Slot0Configs SLOT0CONFIGS;
+    public static final TalonFXConfiguration POSITION_CONFIG;
 
     public static final int INTAKE_ROLLER_MOTOR_ID = 21;
     public static final int INTAKE_POSITION_MOTOR_ID = 22;
@@ -464,6 +466,13 @@ public final class Constants {
       SLOT0CONFIGS.kP = Constants.IntakeConstants.KP;
       SLOT0CONFIGS.kI = Constants.IntakeConstants.KI;
       SLOT0CONFIGS.kD = Constants.IntakeConstants.KD;
+      SLOT0CONFIGS.kG = IntakeConstants.KG;
+
+      POSITION_CONFIG = new TalonFXConfiguration();
+      POSITION_CONFIG.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+      POSITION_CONFIG.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+      POSITION_CONFIG.CurrentLimits.SupplyCurrentLimit = Constants.ClimbConstants.CURRENT_LIMIT;
+      POSITION_CONFIG.CurrentLimits.SupplyCurrentLimitEnable = true;
 
       ROLLER_CONFIG = new TalonFXConfiguration();
       ROLLER_CONFIG.MotorOutput.NeutralMode = NeutralModeValue.Coast;

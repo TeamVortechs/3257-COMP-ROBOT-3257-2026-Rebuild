@@ -62,6 +62,7 @@ public class Intake extends SubsystemBase {
   }
 
   public void setPosition(double targetPosition) {
+    System.out.println("setting position to " + targetPosition);
 
     if (targetPosition > IntakeConstants.MAX_POSITION) {
       targetPosition = IntakeConstants.MAX_POSITION;
