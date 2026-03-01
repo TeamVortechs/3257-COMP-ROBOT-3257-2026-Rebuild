@@ -161,6 +161,10 @@ public class IntakeTalonFXIO implements IntakeIO {
     // System.out.println("Voltage being sent in PID Voltage");
   }
 
+  public void resetEncoder(double positionVal) {
+    position.setPosition(positionVal);
+  }
+
   public double getTargetPosition() {
     return targetPosition;
   }

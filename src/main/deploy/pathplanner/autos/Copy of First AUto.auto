@@ -25,9 +25,22 @@
                       }
                     },
                     {
-                      "type": "named",
+                      "type": "race",
                       "data": {
-                        "name": "feedWhenValidAndStop"
+                        "commands": [
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "feedWhenValidAndStop"
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "pointAtTarget"
+                            }
+                          }
+                        ]
                       }
                     }
                   ]
@@ -45,19 +58,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Ending position to climb"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Climb"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "climbDownWhenNeeded"
+            "pathName": "Bottom shoot back to shoot"
           }
         }
       ]

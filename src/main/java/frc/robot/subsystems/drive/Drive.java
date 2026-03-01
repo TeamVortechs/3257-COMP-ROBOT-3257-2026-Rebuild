@@ -44,6 +44,7 @@ import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
@@ -85,6 +86,15 @@ public class Drive extends SubsystemBase {
   public Rotation2d getHeadingToGoal() {
     goalPoseManager.setIsPassing(false);
     return shooterRotationManager.getHeading();
+  }
+
+  public Command logDistance() {
+    return new RunCommand(
+        () -> {
+          Logger.recordOutput(
+              "ShootingOnMove/Distance",
+              getPose().getTranslation().getDistance(new Translation2d(4.629, 4.024)));
+        });
   }
 
   public Rotation2d getHeadingToPassing() {

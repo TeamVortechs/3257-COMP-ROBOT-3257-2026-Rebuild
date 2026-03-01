@@ -25,9 +25,22 @@
                       }
                     },
                     {
-                      "type": "named",
+                      "type": "race",
                       "data": {
-                        "name": "feedWhenValidAndStop"
+                        "commands": [
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "feedWhenValidAndStop"
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "pointAtTarget"
+                            }
+                          }
+                        ]
                       }
                     }
                   ]
@@ -51,7 +64,7 @@
       ]
     }
   },
-  "resetOdom": true,
+  "resetOdom": false,
   "folder": null,
   "choreoAuto": false
 }

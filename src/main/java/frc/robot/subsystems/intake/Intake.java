@@ -75,6 +75,10 @@ public class Intake extends SubsystemBase {
     intakeIO.setPositionControl(targetPosition);
   }
 
+  public void resetEncoder(double newPosition) {
+    intakeIO.resetEncoder(newPosition);
+  }
+
   /** sets the roller motors, -1-1 */
   public void setRollersVoltage(double voltage) {
 
@@ -136,6 +140,14 @@ public class Intake extends SubsystemBase {
             },
             () -> {},
             this));
+  }
+
+  public Command resetEncoderInstant(double newPosition) {
+    return new InstantCommand(
+            () -> {
+              resetEncoder(newPosition);
+            })
+        .ignoringDisable(true);
   }
 
   public Command setPositionCommand(double position) {

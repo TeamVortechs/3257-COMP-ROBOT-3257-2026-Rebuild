@@ -25,7 +25,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -366,7 +365,7 @@ public class RobotContainer {
             () -> -controller.getLeftY() * DriveConstants.K_JOYSTICK_WHEN_SHOOTING,
             () -> -controller.getLeftX() * DriveConstants.K_JOYSTICK_WHEN_SHOOTING);
 
-    // configureSysIdBindings(sysID_controller, shooter.BuildSysIdRoutine());
+    configureSysIdBindings(sysID_controller, shooter.BuildSysIdRoutine());
 
     controller
         .rightTrigger()
@@ -374,15 +373,19 @@ public class RobotContainer {
             Commands.parallel(
                 aimTowardsTargetCommand,
                 shooter.setAutomaticCommandRun(),
-          
-                feeder.feedWhenValidRunCommand(FeederConstants.FEED_POWER)));
+                feeder.feedWhenValidRunCommand(FeederConstants.FEED_POWER),
+                drive.logDistance()));
 
-    controller.leftBumper().whileTrue(intake.setRollerVoltageCommand(IntakeConstants.EJECT_VOLTS));
+    // controller.leftBumper().whileTrue(intake.setRollerVoltageCommand(IntakeConstants.EJECT_VOLTS));
+
+    controller.povRight().whileTrue(intake.setPositionCommand(0));
     // controller.povDown().whileTrue(shooter.setManualSpeedRunCommand(82));
 
     climb.setDefaultCommand(climb.setVoltageRun(0));
 
     controller.start().whileTrue(new InstantCommand(() -> drive.setPose(new Pose2d())));
+
+    controller.back().whileTrue(intake.resetEncoderInstant(IntakeConstants.INTAKE_DOWN_POSITION));
 
     //   controller.povRight().toggleOnTrue(drive.iteratePassingCommand(true));
   }
@@ -485,8 +488,10 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "climbDownWhenNeeded",
         new WaitUntilCommand(() -> matchTimeline.getTimeSinceStart() > 18)
-            .andThen(new PrintCommand("sfd"))
             .andThen(climb.setVoltageRun(ClimbConstants.CLIMB_DOWN_VOLTS)));
+
+    NamedCommands.registerCommand(
+        "pointAtTarget", drive.joystickDriveAtTarget(drive, () -> 0, () -> 0));
 
     new EventTrigger("intakeStartEvent")
         .onTrue(
@@ -496,6 +501,9 @@ public class RobotContainer {
         .onTrue(new InstantCommand(() -> intake.setRollersVoltage(0)));
     new EventTrigger("intakeDownEvent")
         .onTrue(new InstantCommand(() -> intake.setPosition(IntakeConstants.INTAKE_DOWN_POSITION)));
+
+    new EventTrigger("intakeUpEvent").onTrue(new InstantCommand(() -> intake.setPosition(0)));
+
     new EventTrigger("climbUpEvent")
         .onTrue(new InstantCommand(() -> climb.setVoltage(ClimbConstants.CLIMB_UP_VOLTS)));
     new EventTrigger("climbStopEvent").onTrue(new InstantCommand(() -> climb.setVoltage(0)));

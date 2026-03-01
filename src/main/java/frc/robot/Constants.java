@@ -111,7 +111,7 @@ public final class Constants {
     public static final double SKID_THRESHOLD = 1000;
 
     public static final double DEADBAND = 0.1;
-    public static final double ANGLE_KP = 10; // 12
+    public static final double ANGLE_KP = 4; // 12
     public static final double ANGLE_KD = 0.4;
     public static final double ANGLE_MAX_ACCELERATION = 20.0;
     public static final double ANGLE_MAX_VELOCITY = 8.0;
@@ -234,7 +234,7 @@ public final class Constants {
     // used in Shooter.java
     public static final double RAMP_RATE_VOLTS_SYSID = 5;
     public static final double DYNAMIC_STEP_VOLTS_SYSID = 3;
-    public static final double TOLERANCE = 4;
+    public static final double TOLERANCE = 1;
 
     public static final int MOTOR_ID = 24;
 
@@ -252,11 +252,11 @@ public final class Constants {
 
     // CHANGE !!
     public static final double KS = 0.0;
-    public static final double KV = 0.13727;
-    public static final double KP = 0.16011;
+    public static final double KV = 0.12478; // 0.13727;
+    public static final double KP = 0.14084; // 16011;
     public static final double KI = 0.0;
     public static final double KD = 0.0;
-    public static final double KA = 0.050592;
+    public static final double KA = 0.032958; // 050592;
 
     public static final TalonFXConfiguration CONFIG;
     public static final Slot0Configs SLOT0CONFIGS;
@@ -417,7 +417,7 @@ public final class Constants {
 
     public static final double POSITION_TOLERANCE = 0.1;
 
-    public static final double MAX_POSITION = 56.23;
+    public static final double MAX_POSITION = 60.5;
     public static final double MIN_POSITION = 0;
 
     public static final double CLAMP_MAX_VOLTS = 3;
@@ -432,9 +432,9 @@ public final class Constants {
     public static final double KD = 0;
     public static final double KG = 0.5;
 
-    public static final double INTAKE_VOLTS = 8;
+    public static final double INTAKE_VOLTS = 12;
     public static final double EJECT_VOLTS = -8;
-    public static final double INTAKE_DOWN_POSITION = 50;
+    public static final double INTAKE_DOWN_POSITION = 60;
     public static final double INTAKE_UP_POSITION = 30;
 
     public static final double MOTION_MAGIC_CRUISE_VELOCITY = 3;
