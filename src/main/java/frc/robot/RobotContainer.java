@@ -322,16 +322,13 @@ public class RobotContainer {
 
     controller
         .leftTrigger()
-        .whileTrue(intake.setRollerVoltageCommand(IntakeConstants.INTAKE_VOLTS));
+        .whileTrue(intake.setRollerVoltageAndPositionCommand(IntakeConstants.INTAKE_DOWN_POSITION ,IntakeConstants.INTAKE_VOLTS));
 
     operatorController
         .rightBumper()
         .whileTrue(feeder.setPercentMotorRunCommand(Constants.FeederConstants.FEED_POWER));
 
-    controller
-        .rightBumper()
-        .whileTrue(feeder.setPercentMotorCommand(Constants.FeederConstants.FEED_POWER));
-    // controller.rightTrigger().whileTrue(shooter.setManualSpeedRunCommand(70));
+    controller.rightTrigger().whileTrue(shooter.setManualSpeedRunCommand(70));
 
     // controller.rightTrigger().whileTrue(shooter.setManualSpeedRunCommand(72));
 
@@ -379,6 +376,7 @@ public class RobotContainer {
     // controller.leftBumper().whileTrue(intake.setRollerVoltageCommand(IntakeConstants.EJECT_VOLTS));
 
     controller.povRight().whileTrue(intake.setPositionCommand(0));
+    controller.povLeft().whileTrue(drive.iteratePassingCommand(true));
     // controller.povDown().whileTrue(shooter.setManualSpeedRunCommand(82));
 
     climb.setDefaultCommand(climb.setVoltageRun(0));
