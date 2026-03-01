@@ -269,7 +269,8 @@ public class RobotContainer {
       flipAllPoses();
     }
 
-    matchTimeline.start();
+    matchTimeline.setController(operatorController);
+    // matchTimeline.start();
   }
 
   /**
@@ -325,7 +326,7 @@ public class RobotContainer {
     operatorController
         .povUp()
         .onTrue(new InstantCommand(() -> matchTimeline.setIsWinningAuto(true)));
-        
+
     operatorController
         .povDown()
         .onTrue(new InstantCommand(() -> matchTimeline.setIsWinningAuto(false)));
