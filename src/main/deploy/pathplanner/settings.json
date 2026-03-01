@@ -4,9 +4,9 @@
   "holonomicMode": true,
   "pathFolders": [
     "Back Bottom",
-    "Front Bottom - OLD",
+    "Front Bottom",
     "Mid",
-    "Front Bottom"
+    "Front Bottom Mid"
   ],
   "autoFolders": [],
   "defaultMaxVel": 2.0,

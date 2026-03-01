@@ -198,9 +198,9 @@ public class ShooterRotationManager {
       // System.out.println("running loop " + logNum);
 
       // Logger.recordOutput("test/testPose" + logNum, new Pose2d(testPose, new Rotation2d()));
-      Logger.recordOutput("test/differenceOnLine" + logNum, differenceOnLine);
-      Logger.recordOutput("test/testVal" + logNum, testPoint);
-      Logger.recordOutput("test/testPose" + logNum, new Pose2d(testPose, new Rotation2d()));
+      // Logger.recordOutput("test/differenceOnLine" + logNum, differenceOnLine);
+      // Logger.recordOutput("test/testVal" + logNum, testPoint);
+      // Logger.recordOutput("test/testPose" + logNum, new Pose2d(testPose, new Rotation2d()));
 
       logNum++;
 
@@ -209,12 +209,10 @@ public class ShooterRotationManager {
       }
     }
 
-    Logger.recordOutput("test/loopAmount", logNum);
-    Logger.recordOutput(
-        "test/targetPose",
-        new Pose2d(getTargetPose(testPoint, fieldSpeedsNormalized), new Rotation2d()));
+    // Logger.recordOutput("test/loopAmount", logNum);
+    // Logger.recordOutput("test/targetPose", getTargetPose(testPoint, fieldSpeedsNormalized));
 
-    return targetPose.get();
+    return getTargetPose(testPoint, fieldSpeedsNormalized);
   }
 
   /**
@@ -228,7 +226,8 @@ public class ShooterRotationManager {
    */
   public Translation2d testDistance(double distanceAlongLine, Translation2d fieldSpeeds) {
 
-    Translation2d targetTranslation = getTargetPose(distanceAlongLine, fieldSpeeds);
+    Translation2d targetTranslation =
+        getTargetPose(distanceAlongLine, fieldSpeeds).getTranslation();
 
     double distance = drive.getPose().getTranslation().getDistance(targetTranslation);
 
@@ -245,12 +244,12 @@ public class ShooterRotationManager {
    * @param fieldSpeeds
    * @return
    */
-  public Translation2d getTargetPose(double distanceAlongLine, Translation2d fieldSpeeds) {
+  public Pose2d getTargetPose(double distanceAlongLine, Translation2d fieldSpeeds) {
     Translation2d fieldSpeedsNormalized = fieldSpeeds.div(fieldSpeeds.getNorm());
     Translation2d offset = fieldSpeedsNormalized.times(distanceAlongLine);
     Translation2d targetTranslation = targetPose.get().getTranslation().plus(offset);
 
-    return targetTranslation;
+    return new Pose2d(targetTranslation, new Rotation2d());
   }
 }
 

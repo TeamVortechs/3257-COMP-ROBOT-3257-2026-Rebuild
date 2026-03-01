@@ -429,12 +429,16 @@ public class RobotContainer {
 
     NamedCommands.registerCommand(
         "feedWhenValidAndStop",
-        new WaitUntilCommand(() -> shooter.isOnTarget())
-            .andThen(
-                feeder
-                    .feedWhenValidRunCommand(FeederConstants.FEED_POWER)
-                    .withDeadline(new WaitCommand(3)))
-            .andThen(feeder.setPercentMotorCommand(0)));
+        Commands.race(
+            // first command(feedwhen valid and stop)
+            new WaitUntilCommand(() -> shooter.isOnTarget())
+                .andThen(
+                    feeder
+                        .feedWhenValidRunCommand(FeederConstants.FEED_POWER)
+                        .withDeadline(new WaitCommand(3)))
+                .andThen(feeder.setPercentMotorCommand(0)),
+            // second command(point towards target)
+            drive.joystickDriveAtTarget(drive, () -> 0, () -> 0)));
 
     /*
     version with moving intake:
@@ -489,9 +493,6 @@ public class RobotContainer {
         "climbDownWhenNeeded",
         new WaitUntilCommand(() -> matchTimeline.getTimeSinceStart() > 18)
             .andThen(climb.setVoltageRun(ClimbConstants.CLIMB_DOWN_VOLTS)));
-
-    NamedCommands.registerCommand(
-        "pointAtTarget", drive.joystickDriveAtTarget(drive, () -> 0, () -> 0));
 
     new EventTrigger("intakeStartEvent")
         .onTrue(

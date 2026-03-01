@@ -5,7 +5,7 @@
     "data": {
       "commands": [
         {
-          "type": "parallel",
+          "type": "race",
           "data": {
             "commands": [
               {
@@ -21,7 +21,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "Shooter test auto"
+                        "pathName": "Front Bottom Mid start center sweep"
                       }
                     },
                     {
@@ -39,7 +39,7 @@
       ]
     }
   },
-  "resetOdom": true,
+  "resetOdom": false,
   "folder": null,
   "choreoAuto": false
 }

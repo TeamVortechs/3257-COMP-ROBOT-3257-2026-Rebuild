@@ -25,7 +25,6 @@ import frc.robot.generated.TunerConstants;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
-import org.littletonrobotics.junction.Logger;
 
 /**
  * This class defines the runtime mode used by AdvantageKit. The mode is always "real" when running
@@ -59,7 +58,7 @@ public final class Constants {
     private static final InterpolatingDoubleTreeMap AIRTIME_MAP = new InterpolatingDoubleTreeMap();
 
     private static void characterizeAirtimeMap() {
-      //bad balue
+      // bad balue
       AIRTIME_MAP.put(2.3, 0.9);
     }
 
@@ -101,9 +100,8 @@ public final class Constants {
 
       double val = AIRTIME_MAP.get(distance);
 
-      //realistic for a midpoint shot
+      // realistic for a midpoint shot
       return 0.9;
-
     }
 
     public static final double SHOOT_ON_MOVE_TOLERANCE = 0.05;

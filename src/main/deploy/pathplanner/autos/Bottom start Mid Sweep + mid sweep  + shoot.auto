@@ -25,40 +25,27 @@
                       }
                     },
                     {
-                      "type": "race",
+                      "type": "named",
                       "data": {
-                        "commands": [
-                          {
-                            "type": "named",
-                            "data": {
-                              "name": "feedWhenValidAndStop"
-                            }
-                          },
-                          {
-                            "type": "named",
-                            "data": {
-                              "name": "pointAtTarget"
-                            }
-                          }
-                        ]
+                        "name": "feedWhenValidAndStop"
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Bottom shoot back to shoot"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "feedWhenValidAndStop"
                       }
                     }
                   ]
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "shooterStop"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Bottom shoot back to mid"
           }
         }
       ]

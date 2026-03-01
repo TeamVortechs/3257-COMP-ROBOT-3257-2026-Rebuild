@@ -97,8 +97,8 @@
   "constraintZones": [
     {
       "name": "Over Bumper",
-      "minWaypointRelativePos": 2.540942928039705,
-      "maxWaypointRelativePos": 3.35,
+      "minWaypointRelativePos": 2.755227552275521,
+      "maxWaypointRelativePos": 3.447314473144738,
       "constraints": {
         "maxVelocity": 1.5,
         "maxAcceleration": 3.0,
@@ -110,8 +110,8 @@
     },
     {
       "name": "While Intaking",
-      "minWaypointRelativePos": 1.012406947890811,
-      "maxWaypointRelativePos": 2.1717121588089268,
+      "minWaypointRelativePos": 0.8298482984829839,
+      "maxWaypointRelativePos": 2.040180401804019,
       "constraints": {
         "maxVelocity": 0.75,
         "maxAcceleration": 3.0,
@@ -164,7 +164,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 52.56532106843232
+    "rotation": 50.95118590466371
   },
   "reversed": false,
   "folder": "Front Bottom",
