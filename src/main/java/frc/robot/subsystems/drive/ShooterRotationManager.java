@@ -157,28 +157,100 @@ public class ShooterRotationManager {
   }
 
   public Pose2d getEffectiveTarget() {
-    Pose2d firstPose = targetPose.get();
 
-    ChassisSpeeds fieldSpeeds =
+    ChassisSpeeds fieldSpeedsChassis =
         ChassisSpeeds.fromRobotRelativeSpeeds(drive.getChassisSpeeds(), drive.getRotation());
 
-    // calculate distance without effective target because otherwise ti would breka the calculation
-    double distance =
-        targetPose.get().getTranslation().getDistance(drive.getPose().getTranslation());
+    Translation2d fieldSpeeds =
+        new Translation2d(
+            fieldSpeedsChassis.vxMetersPerSecond, fieldSpeedsChassis.vyMetersPerSecond);
 
-    // this scaling factor is a constnat we'll just need to test for. We can change it depending on
-    // if the shot is compensation to much or not enough. We can also make it zero to remove it
-    // it is negative to make it minus in the final equation
-    double dt = DriveConstants.KFLIGHT_COMPENSATION_SEC(distance);
-    Pose2d updatedTarget =
-        new Pose2d(
-            firstPose.getX() - fieldSpeeds.vxMetersPerSecond * dt,
-            firstPose.getY() - fieldSpeeds.vyMetersPerSecond * dt,
-            firstPose.getRotation());
+    Translation2d fieldSpeedsNormalized = fieldSpeeds.div(fieldSpeeds.getNorm());
 
-    // Logger.recordOutput("ShooterRotationManager/EffectiveTarget", updatedTarget);
+    double upperBound = 0;
+    double lowerBound = -30;
+    double testPoint = 0;
 
-    return updatedTarget;
+    double error = 10;
+
+    int logNum = 0;
+
+    // binary search
+    while (error > DriveConstants.SHOOT_ON_MOVE_TOLERANCE) {
+
+      testPoint = lowerBound + (upperBound - lowerBound) / 2;
+
+      Translation2d testPose = testDistance(testPoint, fieldSpeeds);
+
+      // put it onto a line so that we can do binary search logic
+      Translation2d difference = targetPose.get().getTranslation().minus(testPose);
+      double differenceOnLine = difference.dot(fieldSpeedsNormalized);
+
+      error = Math.abs(differenceOnLine);
+
+      // binary search stuff
+      if (differenceOnLine >= 0) {
+        lowerBound = testPoint;
+      } else {
+        upperBound = testPoint;
+      }
+
+      // System.out.println("running loop " + logNum);
+
+      // Logger.recordOutput("test/testPose" + logNum, new Pose2d(testPose, new Rotation2d()));
+      Logger.recordOutput("test/differenceOnLine" + logNum, differenceOnLine);
+      Logger.recordOutput("test/testVal" + logNum, testPoint);
+      Logger.recordOutput("test/testPose" + logNum, new Pose2d(testPose, new Rotation2d()));
+
+      logNum++;
+
+      if (logNum > 20) {
+        break;
+      }
+    }
+
+    Logger.recordOutput("test/loopAmount", logNum);
+    Logger.recordOutput(
+        "test/targetPose",
+        new Pose2d(getTargetPose(testPoint, fieldSpeedsNormalized), new Rotation2d()));
+
+    return targetPose.get();
+  }
+
+  /**
+   * tests a difference along the line. Returns the pose where we think the note will land given our
+   * model
+   *
+   * @param distanceAlongLine
+   * @param loggingPrefix
+   * @param fieldSpeeds
+   * @return
+   */
+  public Translation2d testDistance(double distanceAlongLine, Translation2d fieldSpeeds) {
+
+    Translation2d targetTranslation = getTargetPose(distanceAlongLine, fieldSpeeds);
+
+    double distance = drive.getPose().getTranslation().getDistance(targetTranslation);
+
+    Translation2d landingTranslation =
+        targetTranslation.plus(fieldSpeeds.times(DriveConstants.getTimeInAir(distance)));
+
+    return landingTranslation;
+  }
+
+  /**
+   * gets a pose along hte line
+   *
+   * @param distanceAlongLine
+   * @param fieldSpeeds
+   * @return
+   */
+  public Translation2d getTargetPose(double distanceAlongLine, Translation2d fieldSpeeds) {
+    Translation2d fieldSpeedsNormalized = fieldSpeeds.div(fieldSpeeds.getNorm());
+    Translation2d offset = fieldSpeedsNormalized.times(distanceAlongLine);
+    Translation2d targetTranslation = targetPose.get().getTranslation().plus(offset);
+
+    return targetTranslation;
   }
 }
 
@@ -193,4 +265,29 @@ public class ShooterRotationManager {
  * <p>public static double convertRotationToMotorVal(Rotation2d rotation) { return 0; }
  *
  * <p>public static double convertDistToShooterAngle(double distance) { return 0; }
+ */
+
+ /*
+ *     Pose2d firstPose = targetPose.get();
+
+   ChassisSpeeds fieldSpeeds =
+       ChassisSpeeds.fromRobotRelativeSpeeds(drive.getChassisSpeeds(), drive.getRotation());
+
+   // calculate distance without effective target because otherwise ti would breka the calculation
+   double distance =
+       targetPose.get().getTranslation().getDistance(drive.getPose().getTranslation());
+
+   // this scaling factor is a constnat we'll just need to test for. We can change it depending on
+   // if the shot is compensation to much or not enough. We can also make it zero to remove it
+   // it is negative to make it minus in the final equation
+   double dt = DriveConstants.TIME_IN_AIR(distance);
+   Pose2d updatedTarget =
+       new Pose2d(
+           firstPose.getX() - fieldSpeeds.vxMetersPerSecond * dt,
+           firstPose.getY() - fieldSpeeds.vyMetersPerSecond * dt,
+           firstPose.getRotation());
+
+   // Logger.recordOutput("ShooterRotationManager/EffectiveTarget", updatedTarget);
+
+   return updatedTarget;
  */

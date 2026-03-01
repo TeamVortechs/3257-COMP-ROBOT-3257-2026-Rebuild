@@ -59,7 +59,8 @@ public final class Constants {
     private static final InterpolatingDoubleTreeMap AIRTIME_MAP = new InterpolatingDoubleTreeMap();
 
     private static void characterizeAirtimeMap() {
-      AIRTIME_MAP.put(0.0, 0.0);
+      //bad balue
+      AIRTIME_MAP.put(2.3, 0.9);
     }
 
     public static final double SHOOTER_ROTATION_MANAGER_LOGGING_FREQUENCY =
@@ -96,15 +97,16 @@ public final class Constants {
     // we should test by looking at values. this can also be a distance lookup table. This corrects
     // for robot speed by changing the target location. This constant is supposed ot emmulate fligth
     // time
-    public static final double KFLIGHT_COMPENSATION_SEC(double distance) {
+    public static final double getTimeInAir(double distance) {
 
       double val = AIRTIME_MAP.get(distance);
 
-      Logger.recordOutput("DriveConstants/MostRecentAirTimeEstimation", val);
-      // return val;
+      //realistic for a midpoint shot
+      return 0.9;
 
-      return 0;
     }
+
+    public static final double SHOOT_ON_MOVE_TOLERANCE = 0.05;
 
     // the maximum allowed difference allowed between acceleraomter and encoders before it is
     // considered skid
