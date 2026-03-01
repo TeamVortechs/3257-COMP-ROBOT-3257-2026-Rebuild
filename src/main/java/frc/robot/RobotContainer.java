@@ -322,7 +322,9 @@ public class RobotContainer {
 
     controller
         .leftTrigger()
-        .whileTrue(intake.setRollerVoltageAndPositionCommand(IntakeConstants.INTAKE_DOWN_POSITION ,IntakeConstants.INTAKE_VOLTS));
+        .whileTrue(
+            intake.setRollerVoltageAndPositionCommand(
+                IntakeConstants.INTAKE_DOWN_POSITION, IntakeConstants.INTAKE_VOLTS));
 
     operatorController
         .rightBumper()

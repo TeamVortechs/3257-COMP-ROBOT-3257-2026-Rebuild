@@ -129,6 +129,10 @@ public class Drive extends SubsystemBase {
     return shooterRotationManager.isOriented();
   }
 
+  public void setShootingOnMove(boolean calculateShootingOnMove) {
+    shooterRotationManager.setCalculateShootMove(calculateShootingOnMove);
+  }
+
   /**
    * Defines skidding as if measuredChassisSpeeds(gotten from encoders) differ from built in
    * acceleraomter(accurate with specific variance profile) above skid threshold.
@@ -202,8 +206,17 @@ public class Drive extends SubsystemBase {
             },
             drive)
 
-        // Reset PID controller when command starts
-        .beforeStarting(() -> angleController.reset(drive.getRotation().getRadians()));
+        // Reset PID controller when command starts/start shooting on move calculations
+        .beforeStarting(
+            () -> {
+              angleController.reset(drive.getRotation().getRadians());
+              setShootingOnMove(true);
+            })
+        // stops shooting on move calculations
+        .finallyDo(
+            () -> {
+              setShootingOnMove(false);
+            });
   }
 
   private static Translation2d getLinearVelocityFromJoysticks(double x, double y) {

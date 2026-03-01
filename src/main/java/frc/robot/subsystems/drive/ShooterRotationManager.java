@@ -8,6 +8,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
 import java.util.function.Supplier;
+import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 /** change this so it only logs hwen it's getting consumed */
@@ -19,6 +20,8 @@ public class ShooterRotationManager {
   private Drive drive;
 
   private ProfiledPIDController angle_controller = DriveConstants.ANGLE_CONTROLLER;
+
+  @AutoLogOutput private boolean calculateShootOnMove;
 
   // private final Notifier logger;
 
@@ -156,7 +159,15 @@ public class ShooterRotationManager {
     return updatedPose;
   }
 
+  public void setCalculateShootMove(boolean calculateShootOnMove) {
+    this.calculateShootOnMove = calculateShootOnMove;
+  }
+
   public Pose2d getEffectiveTarget() {
+
+    if (!calculateShootOnMove) {
+      return targetPose.get();
+    }
 
     ChassisSpeeds fieldSpeedsChassis =
         ChassisSpeeds.fromRobotRelativeSpeeds(drive.getChassisSpeeds(), drive.getRotation());
@@ -224,7 +235,7 @@ public class ShooterRotationManager {
    * @param fieldSpeeds
    * @return
    */
-  public Translation2d testDistance(double distanceAlongLine, Translation2d fieldSpeeds) {
+  private Translation2d testDistance(double distanceAlongLine, Translation2d fieldSpeeds) {
 
     Translation2d targetTranslation =
         getTargetPose(distanceAlongLine, fieldSpeeds).getTranslation();
@@ -244,7 +255,7 @@ public class ShooterRotationManager {
    * @param fieldSpeeds
    * @return
    */
-  public Pose2d getTargetPose(double distanceAlongLine, Translation2d fieldSpeeds) {
+  private Pose2d getTargetPose(double distanceAlongLine, Translation2d fieldSpeeds) {
     Translation2d fieldSpeedsNormalized = fieldSpeeds.div(fieldSpeeds.getNorm());
     Translation2d offset = fieldSpeedsNormalized.times(distanceAlongLine);
     Translation2d targetTranslation = targetPose.get().getTranslation().plus(offset);
