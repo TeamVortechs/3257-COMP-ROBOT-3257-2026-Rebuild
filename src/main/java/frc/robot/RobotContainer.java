@@ -99,16 +99,12 @@ public class RobotContainer {
 
   // Controller
 
-  @SuppressWarnings("unused")
   private final CommandXboxController controller = new CommandXboxController(0);
 
-  @SuppressWarnings("unused")
   private final CommandXboxController operatorController = new CommandXboxController(1);
 
-  @SuppressWarnings("unused")
   private final CommandXboxController testController = new CommandXboxController(2);
 
-  @SuppressWarnings("unused")
   private final CommandXboxController sysID_controller = new CommandXboxController(3);
 
   // Dashboard inputs
@@ -208,14 +204,14 @@ public class RobotContainer {
         climb = new Climb(new ClimbSimulationIO());
 
         // climb = new Climb(new ClimbSimulationIO());
-        // vision =
-        //     new Vision(
-        //         drive::addVisionMeasurement,
-        //         new VisionIOPhotonVisionSim(
-        //             VisionConstants.photon0Name, VisionConstants.robotToPhoton0, drive::getPose),
-        //         new VisionIOPhotonVisionSim(
-        //             VisionConstants.photon1Name, VisionConstants.robotToPhoton1, drive::getPose));
-        vision = new Vision(drive::addVisionMeasurement, new VisionIO() {});
+        vision =
+            new Vision(
+                drive::addVisionMeasurement,
+                new VisionIOPhotonVisionSim(
+                    VisionConstants.photon0Name, VisionConstants.robotToPhoton0, drive::getPose),
+                new VisionIOPhotonVisionSim(
+                    VisionConstants.photon1Name, VisionConstants.robotToPhoton1, drive::getPose));
+        // vision = new Vision(drive::addVisionMeasurement, new VisionIO() {});
 
         break;
 
