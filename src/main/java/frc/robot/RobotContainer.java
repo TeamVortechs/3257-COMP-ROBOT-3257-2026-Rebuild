@@ -208,13 +208,15 @@ public class RobotContainer {
         climb = new Climb(new ClimbSimulationIO());
 
         // climb = new Climb(new ClimbSimulationIO());
-        vision =
-            new Vision(
-                drive::addVisionMeasurement,
-                new VisionIOPhotonVisionSim(
-                    VisionConstants.photon0Name, VisionConstants.robotToPhoton0, drive::getPose),
-                new VisionIOPhotonVisionSim(
-                    VisionConstants.photon1Name, VisionConstants.robotToPhoton1, drive::getPose));
+        // vision =
+        //     new Vision(
+        //         drive::addVisionMeasurement,
+        //         new VisionIOPhotonVisionSim(
+        //             VisionConstants.photon0Name, VisionConstants.robotToPhoton0, drive::getPose),
+        //         new VisionIOPhotonVisionSim(
+        //             VisionConstants.photon1Name, VisionConstants.robotToPhoton1, drive::getPose));
+        vision = new Vision(drive::addVisionMeasurement, new VisionIO() {});
+
         break;
 
       default:
