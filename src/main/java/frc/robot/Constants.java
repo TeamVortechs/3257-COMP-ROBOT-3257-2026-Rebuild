@@ -25,7 +25,6 @@ import frc.robot.generated.TunerConstants;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
-import org.littletonrobotics.junction.Logger;
 
 /**
  * This class defines the runtime mode used by AdvantageKit. The mode is always "real" when running
@@ -59,7 +58,8 @@ public final class Constants {
     private static final InterpolatingDoubleTreeMap AIRTIME_MAP = new InterpolatingDoubleTreeMap();
 
     private static void characterizeAirtimeMap() {
-      AIRTIME_MAP.put(0.0, 0.0);
+      // bad balue
+      AIRTIME_MAP.put(2.3, 0.9);
     }
 
     public static final double SHOOTER_ROTATION_MANAGER_LOGGING_FREQUENCY =
@@ -96,22 +96,22 @@ public final class Constants {
     // we should test by looking at values. this can also be a distance lookup table. This corrects
     // for robot speed by changing the target location. This constant is supposed ot emmulate fligth
     // time
-    public static final double KFLIGHT_COMPENSATION_SEC(double distance) {
+    public static final double getTimeInAir(double distance) {
 
       double val = AIRTIME_MAP.get(distance);
 
-      Logger.recordOutput("DriveConstants/MostRecentAirTimeEstimation", val);
-      // return val;
-
-      return 0;
+      // realistic for a midpoint shot
+      return 0.9;
     }
+
+    public static final double SHOOT_ON_MOVE_TOLERANCE = 0.05;
 
     // the maximum allowed difference allowed between acceleraomter and encoders before it is
     // considered skid
     public static final double SKID_THRESHOLD = 1000;
 
     public static final double DEADBAND = 0.1;
-    public static final double ANGLE_KP = 10; // 12
+    public static final double ANGLE_KP = 4; // 12
     public static final double ANGLE_KD = 0.4;
     public static final double ANGLE_MAX_ACCELERATION = 20.0;
     public static final double ANGLE_MAX_VELOCITY = 8.0;
@@ -234,7 +234,7 @@ public final class Constants {
     // used in Shooter.java
     public static final double RAMP_RATE_VOLTS_SYSID = 5;
     public static final double DYNAMIC_STEP_VOLTS_SYSID = 3;
-    public static final double TOLERANCE = 4;
+    public static final double TOLERANCE = 1;
 
     public static final int MOTOR_ID = 24;
 
@@ -252,11 +252,11 @@ public final class Constants {
 
     // CHANGE !!
     public static final double KS = 0.0;
-    public static final double KV = 0.13727;
-    public static final double KP = 0.16011;
+    public static final double KV = 0.12478; // 0.13727;
+    public static final double KP = 0.14084; // 16011;
     public static final double KI = 0.0;
     public static final double KD = 0.0;
-    public static final double KA = 0.050592;
+    public static final double KA = 0.032958; // 050592;
 
     public static final TalonFXConfiguration CONFIG;
     public static final Slot0Configs SLOT0CONFIGS;
@@ -417,24 +417,25 @@ public final class Constants {
 
     public static final double POSITION_TOLERANCE = 0.1;
 
-    public static final double MAX_POSITION = 1;
+    public static final double MAX_POSITION = 60.5;
     public static final double MIN_POSITION = 0;
 
     public static final double CLAMP_MAX_VOLTS = 3;
     public static final double POSITION_THRESHOLD_STOP = 0.2;
 
     // CHANGE !!
-    public static final double KS = 0.25;
-    public static final double KV = 0.12;
-    public static final double KA = 0.01;
-    public static final double KP = 12;
+    public static final double KS = 0;
+    public static final double KV = 0.2;
+    public static final double KA = 0;
+    public static final double KP = 0.3;
     public static final double KI = 0;
-    public static final double KD = 0.1;
+    public static final double KD = 0;
+    public static final double KG = 0.5;
 
-    public static final double INTAKE_VOLTS = 8;
+    public static final double INTAKE_VOLTS = 12;
     public static final double EJECT_VOLTS = -8;
-    public static final double INTAKE_DOWN_POSITION = 0.5;
-    public static final double INTAKE_UP_POSITION = 0;
+    public static final double INTAKE_DOWN_POSITION = 60;
+    public static final double INTAKE_UP_POSITION = 30;
 
     public static final double MOTION_MAGIC_CRUISE_VELOCITY = 3;
     public static final double MOTION_MAGIC_ACCELERATION = 2.5;
@@ -452,6 +453,7 @@ public final class Constants {
     public static final double DYNAMIC_STEP_VOLTS_POSITION_SYSID = 0.25;
     public static final TalonFXConfiguration ROLLER_CONFIG;
     public static final Slot0Configs SLOT0CONFIGS;
+    public static final TalonFXConfiguration POSITION_CONFIG;
 
     public static final int INTAKE_ROLLER_MOTOR_ID = 21;
     public static final int INTAKE_POSITION_MOTOR_ID = 22;
@@ -464,6 +466,13 @@ public final class Constants {
       SLOT0CONFIGS.kP = Constants.IntakeConstants.KP;
       SLOT0CONFIGS.kI = Constants.IntakeConstants.KI;
       SLOT0CONFIGS.kD = Constants.IntakeConstants.KD;
+      SLOT0CONFIGS.kG = IntakeConstants.KG;
+
+      POSITION_CONFIG = new TalonFXConfiguration();
+      POSITION_CONFIG.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+      POSITION_CONFIG.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+      POSITION_CONFIG.CurrentLimits.SupplyCurrentLimit = Constants.ClimbConstants.CURRENT_LIMIT;
+      POSITION_CONFIG.CurrentLimits.SupplyCurrentLimitEnable = true;
 
       ROLLER_CONFIG = new TalonFXConfiguration();
       ROLLER_CONFIG.MotorOutput.NeutralMode = NeutralModeValue.Coast;

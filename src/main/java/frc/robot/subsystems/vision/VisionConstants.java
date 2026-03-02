@@ -32,7 +32,7 @@ public class VisionConstants {
       new Transform3d(
           -0.3429, // 13.5 in
           0.282575, // 11 and 1/8 in
-          0.51435,
+          0.52705, // 20 3/4 in
           new Rotation3d(0.0, -Units.degreesToRadians(25.3), -Units.degreesToRadians(35)));
   public static Transform3d
       robotToPhoton1 = // !! WARNING !! rough estimates. i punched this in at 9:10 PM; recheck
@@ -40,7 +40,7 @@ public class VisionConstants {
           new Transform3d(
               -0.3429,
               -0.282575,
-              0.51435,
+              0.52705,
               new Rotation3d(0.0, -Units.degreesToRadians(25.3), Units.degreesToRadians(35)));
 
   // Basic filtering thresholds

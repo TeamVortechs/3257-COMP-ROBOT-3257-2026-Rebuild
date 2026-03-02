@@ -62,6 +62,7 @@ public class Intake extends SubsystemBase {
   }
 
   public void setPosition(double targetPosition) {
+    System.out.println("setting position to " + targetPosition);
 
     if (targetPosition > IntakeConstants.MAX_POSITION) {
       targetPosition = IntakeConstants.MAX_POSITION;
@@ -72,6 +73,10 @@ public class Intake extends SubsystemBase {
     }
 
     intakeIO.setPositionControl(targetPosition);
+  }
+
+  public void resetEncoder(double newPosition) {
+    intakeIO.resetEncoder(newPosition);
   }
 
   /** sets the roller motors, -1-1 */
@@ -135,6 +140,14 @@ public class Intake extends SubsystemBase {
             },
             () -> {},
             this));
+  }
+
+  public Command resetEncoderInstant(double newPosition) {
+    return new InstantCommand(
+            () -> {
+              resetEncoder(newPosition);
+            })
+        .ignoringDisable(true);
   }
 
   public Command setPositionCommand(double position) {

@@ -87,6 +87,8 @@ public interface IntakeIO {
    */
   public default void setPositionControl(double position) {}
 
+  public default void resetEncoder(double position) {}
+
   /**
    * gets target position of the position motor
    *

@@ -44,6 +44,7 @@ import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
@@ -87,6 +88,15 @@ public class Drive extends SubsystemBase {
     return shooterRotationManager.getHeading();
   }
 
+  public Command logDistance() {
+    return new RunCommand(
+        () -> {
+          Logger.recordOutput(
+              "ShootingOnMove/Distance",
+              getPose().getTranslation().getDistance(new Translation2d(4.629, 4.024)));
+        });
+  }
+
   public Rotation2d getHeadingToPassing() {
     goalPoseManager.setIsPassing(true);
     return shooterRotationManager.getHeading();
@@ -117,6 +127,10 @@ public class Drive extends SubsystemBase {
    */
   public boolean isPointingToGoal() {
     return shooterRotationManager.isOriented();
+  }
+
+  public void setShootingOnMove(boolean calculateShootingOnMove) {
+    shooterRotationManager.setCalculateShootMove(calculateShootingOnMove);
   }
 
   /**
@@ -192,8 +206,17 @@ public class Drive extends SubsystemBase {
             },
             drive)
 
-        // Reset PID controller when command starts
-        .beforeStarting(() -> angleController.reset(drive.getRotation().getRadians()));
+        // Reset PID controller when command starts/start shooting on move calculations
+        .beforeStarting(
+            () -> {
+              angleController.reset(drive.getRotation().getRadians());
+              setShootingOnMove(true);
+            })
+        // stops shooting on move calculations
+        .finallyDo(
+            () -> {
+              setShootingOnMove(false);
+            });
   }
 
   private static Translation2d getLinearVelocityFromJoysticks(double x, double y) {
