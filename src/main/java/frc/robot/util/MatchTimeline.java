@@ -18,6 +18,10 @@ public class MatchTimeline {
 
   private CommandXboxController controller;
 
+  public MatchTimeline(CommandXboxController commandXboxController) {
+    this.controller = commandXboxController;
+  }
+
   {
     notifer =
         new Notifier(
@@ -68,9 +72,6 @@ public class MatchTimeline {
     }
   }
 
-  public void setController(CommandXboxController controller) {
-    this.controller = controller;
-  }
 
   public void setMatchChangeCallBack(MatchChangeCallback matchChangeCallback) {
     this.matchChangeCallback = matchChangeCallback;

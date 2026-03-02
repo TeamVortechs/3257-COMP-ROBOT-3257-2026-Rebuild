@@ -84,7 +84,6 @@ public class RobotContainer {
 
   private final Climb climb;
 
-  private final MatchTimeline matchTimeline = new MatchTimeline();
 
   private final Vision vision;
 
@@ -106,6 +105,9 @@ public class RobotContainer {
 
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
+
+    private final MatchTimeline matchTimeline = new MatchTimeline(operatorController);
+
 
   private static void flipAllPoses() {
     Constants.DriveConstants.SWICH_PASSING_GOALS = true;
@@ -269,7 +271,6 @@ public class RobotContainer {
       flipAllPoses();
     }
 
-    matchTimeline.setController(operatorController);
     // matchTimeline.start();
   }
 
