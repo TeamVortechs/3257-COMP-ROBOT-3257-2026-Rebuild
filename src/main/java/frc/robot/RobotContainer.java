@@ -7,6 +7,11 @@
 
 package frc.robot;
 
+import static frc.robot.subsystems.vision.VisionConstants.photon0Name;
+import static frc.robot.subsystems.vision.VisionConstants.photon1Name;
+import static frc.robot.subsystems.vision.VisionConstants.robotToPhoton0;
+import static frc.robot.subsystems.vision.VisionConstants.robotToPhoton1;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.events.EventTrigger;
@@ -20,7 +25,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -52,7 +56,7 @@ import frc.robot.subsystems.feeder.FeederTalonFXIO;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeIO;
 import frc.robot.subsystems.intake.IntakeSimulationIO;
-import frc.robot.subsystems.intake.IntakeTalonFXOnlyRollerIO;
+import frc.robot.subsystems.intake.IntakeTalonFXIO;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterIO;
 import frc.robot.subsystems.shooter.ShooterSimulationIO;
@@ -60,6 +64,7 @@ import frc.robot.subsystems.shooter.ShooterTalonFXIO;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionIO;
+import frc.robot.subsystems.vision.VisionIOPhotonVision;
 import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
 import frc.robot.util.MatchTimeline;
 import java.util.Optional;
@@ -128,9 +133,15 @@ public class RobotContainer {
                 new ModuleIOTalonFX(TunerConstants.FrontRight),
                 new ModuleIOTalonFX(TunerConstants.BackLeft),
                 new ModuleIOTalonFX(TunerConstants.BackRight));
-
-        intake =
-            new Intake(new IntakeTalonFXOnlyRollerIO(IntakeConstants.INTAKE_ROLLER_MOTOR_ID, 0));
+        // drive =
+        //     new Drive(
+        //         new GyroIO() {},
+        //         new ModuleIO() {},
+        //         new ModuleIO() {},
+        //         new ModuleIO() {},
+        //         new ModuleIO() {});
+        intake = new Intake(new IntakeTalonFXIO(IntakeConstants.INTAKE_ROLLER_MOTOR_ID, 22));
+        // intake = new Intake(new IntakeIO() {});
 
         belt = new Belt(new BeltIO() {});
 
@@ -139,6 +150,11 @@ public class RobotContainer {
                 new ShooterTalonFXIO(ShooterConstants.MOTOR_ID),
                 () -> drive.getDistanceToGoal(),
                 () -> drive.isWithinShooterAutomaticChargingZone());
+        // shooter =
+        //     new Shooter(
+        //         new ShooterIO() {},
+        //         () -> drive.getDistanceToGoal(),
+        //         () -> drive.isWithinShooterAutomaticChargingZone());
 
         feeder =
             new Feeder(
@@ -146,27 +162,20 @@ public class RobotContainer {
                 () -> drive.isPointingToGoal(),
                 () -> shooter.isOnTarget(),
                 () -> true);
+        // feeder =
+        //     new Feeder(
+        //         new FeederIO() {},
+        //         () -> drive.isPointingToGoal(),
+        //         () -> shooter.isOnTarget(),
+        //         () -> true);
 
         climb = new Climb(new ClimbIO() {});
-        // The ModuleIOTalonFXS implementation provides an example implementation for
-        // TalonFXS controller connected to a CANdi with a PWM encoder. The
-        // implementations
-        // of ModuleIOTalonFX, ModuleIOTalonFXS, and ModuleIOSpark (from the Spark
-        // swerve
-        // template) can be freely intermixed to support alternative hardware
-        // arrangements.
-        // Please see the AdvantageKit template documentation for more information:
-        // https://docs.advantagekit.org/getting-started/template-projects/talonfx-swerve-template#custom-module-implementations
-        //
-        // drive =
-        // new Drive(
-        // new GyroIOPigeon2(),
-        // new ModuleIOTalonFXS(TunerConstants.FrontLeft),
-        // new ModuleIOTalonFXS(TunerConstants.FrontRight),
-        // new ModuleIOTalonFXS(TunerConstants.BackLeft),
-        // new ModuleIOTalonFXS(TunerConstants.BackRight));
 
-        vision = new Vision(drive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
+        vision =
+            new Vision(
+                drive::addVisionMeasurement,
+                new VisionIOPhotonVision(photon0Name, robotToPhoton0),
+                new VisionIOPhotonVision(photon1Name, robotToPhoton1));
         break;
 
       case SIM:
@@ -307,15 +316,24 @@ public class RobotContainer {
 
     controller
         .leftTrigger()
-        .whileTrue(intake.setRollerVoltageCommand(IntakeConstants.INTAKE_VOLTS));
+        .whileTrue(
+            intake.setRollerVoltageAndPositionCommand(
+                IntakeConstants.INTAKE_DOWN_POSITION, IntakeConstants.INTAKE_VOLTS));
 
     operatorController
         .rightBumper()
         .whileTrue(feeder.setPercentMotorRunCommand(Constants.FeederConstants.FEED_POWER));
 
+    controller.rightTrigger().whileTrue(shooter.setManualSpeedRunCommand(70));
+
     // controller.rightTrigger().whileTrue(shooter.setManualSpeedRunCommand(72));
 
     shooter.setDefaultCommand(shooter.automaticallyChargeWhenNeededRunCommand(0, 0));
+    intake.setDefaultCommand(intake.setRollerVoltageCommand(0));
+
+    controller.povDown().whileTrue(intake.setPositionCommand(IntakeConstants.INTAKE_UP_POSITION));
+
+    controller.povUp().whileTrue(intake.setPositionCommand(IntakeConstants.INTAKE_DOWN_POSITION));
     // controller.leftBumper().whileTrue(shooter.setAutomaticCommandRun());
 
     // controller.povDown().whileTrue(belt.setPercentMotorOutputCommand(0.5));
@@ -340,7 +358,7 @@ public class RobotContainer {
             () -> -controller.getLeftY() * DriveConstants.K_JOYSTICK_WHEN_SHOOTING,
             () -> -controller.getLeftX() * DriveConstants.K_JOYSTICK_WHEN_SHOOTING);
 
-    // configureSysIdBindings(sysID_controller, shooter.BuildSysIdRoutine());
+    configureSysIdBindings(sysID_controller, shooter.BuildSysIdRoutine());
 
     controller
         .rightTrigger()
@@ -348,14 +366,20 @@ public class RobotContainer {
             Commands.parallel(
                 aimTowardsTargetCommand,
                 shooter.setAutomaticCommandRun(),
-                intake.intakeRetractWhileShooting(
-                    new WaitUntilCommand(() -> feeder.getTargetSpeed() > 0.5), 4),
-                feeder.feedWhenValidRunCommand(FeederConstants.FEED_POWER)));
+                feeder.feedWhenValidRunCommand(FeederConstants.FEED_POWER),
+                drive.logDistance()));
 
-    controller.leftBumper().whileTrue(intake.setRollerVoltageCommand(IntakeConstants.EJECT_VOLTS));
-    controller.povDown().whileTrue(shooter.setManualSpeedRunCommand(82));
+    // controller.leftBumper().whileTrue(intake.setRollerVoltageCommand(IntakeConstants.EJECT_VOLTS));
+
+    controller.povRight().whileTrue(intake.setPositionCommand(0));
+    controller.povLeft().whileTrue(drive.iteratePassingCommand(true));
+    // controller.povDown().whileTrue(shooter.setManualSpeedRunCommand(82));
 
     climb.setDefaultCommand(climb.setVoltageRun(0));
+
+    controller.start().whileTrue(new InstantCommand(() -> drive.setPose(new Pose2d())));
+
+    controller.back().whileTrue(intake.resetEncoderInstant(IntakeConstants.INTAKE_DOWN_POSITION));
 
     //   controller.povRight().toggleOnTrue(drive.iteratePassingCommand(true));
   }
@@ -399,12 +423,16 @@ public class RobotContainer {
 
     NamedCommands.registerCommand(
         "feedWhenValidAndStop",
-        new WaitUntilCommand(() -> shooter.isOnTarget())
-            .andThen(
-                feeder
-                    .feedWhenValidRunCommand(FeederConstants.FEED_POWER)
-                    .withDeadline(new WaitCommand(3)))
-            .andThen(feeder.setPercentMotorCommand(0)));
+        Commands.race(
+            // first command(feedwhen valid and stop)
+            new WaitUntilCommand(() -> shooter.isOnTarget())
+                .andThen(
+                    feeder
+                        .feedWhenValidRunCommand(FeederConstants.FEED_POWER)
+                        .withDeadline(new WaitCommand(3)))
+                .andThen(feeder.setPercentMotorCommand(0)),
+            // second command(point towards target)
+            drive.joystickDriveAtTarget(drive, () -> 0, () -> 0)));
 
     /*
     version with moving intake:
@@ -458,7 +486,6 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "climbDownWhenNeeded",
         new WaitUntilCommand(() -> matchTimeline.getTimeSinceStart() > 18)
-            .andThen(new PrintCommand("sfd"))
             .andThen(climb.setVoltageRun(ClimbConstants.CLIMB_DOWN_VOLTS)));
 
     new EventTrigger("intakeStartEvent")
@@ -469,6 +496,9 @@ public class RobotContainer {
         .onTrue(new InstantCommand(() -> intake.setRollersVoltage(0)));
     new EventTrigger("intakeDownEvent")
         .onTrue(new InstantCommand(() -> intake.setPosition(IntakeConstants.INTAKE_DOWN_POSITION)));
+
+    new EventTrigger("intakeUpEvent").onTrue(new InstantCommand(() -> intake.setPosition(0)));
+
     new EventTrigger("climbUpEvent")
         .onTrue(new InstantCommand(() -> climb.setVoltage(ClimbConstants.CLIMB_UP_VOLTS)));
     new EventTrigger("climbStopEvent").onTrue(new InstantCommand(() -> climb.setVoltage(0)));

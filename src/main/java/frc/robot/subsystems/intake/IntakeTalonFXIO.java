@@ -5,6 +5,7 @@ import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -38,6 +39,8 @@ public class IntakeTalonFXIO implements IntakeIO {
 
   private final MotionMagicVoltage mVoltageRequest;
 
+  private final PositionVoltage mPositionVoltage;
+
   private boolean isBrakedRoller = true;
   private boolean isBrakedPosition = true;
   private double targetPosition = 0;
@@ -47,21 +50,23 @@ public class IntakeTalonFXIO implements IntakeIO {
     position = new TalonFX(canIdPosition);
 
     mVoltageRequest = new MotionMagicVoltage(0);
+    mPositionVoltage = new PositionVoltage(0);
 
     // Basic Configuration
-    TalonFXConfiguration config = Constants.IntakeConstants.ROLLER_CONFIG;
+    TalonFXConfiguration rollerConfig = Constants.IntakeConstants.ROLLER_CONFIG;
+    TalonFXConfiguration positionConfig = Constants.IntakeConstants.POSITION_CONFIG;
     Slot0Configs slot0Configs = Constants.IntakeConstants.SLOT0CONFIGS;
 
-    var motionMagicConfigs = config.MotionMagic;
+    var motionMagicConfigs = rollerConfig.MotionMagic;
     motionMagicConfigs.MotionMagicCruiseVelocity =
         Constants.IntakeConstants.MOTION_MAGIC_CRUISE_VELOCITY;
     motionMagicConfigs.MotionMagicAcceleration =
         Constants.IntakeConstants.MOTION_MAGIC_ACCELERATION;
     motionMagicConfigs.MotionMagicJerk = Constants.IntakeConstants.MOTION_MAGIC_JERK;
 
-    roller.getConfigurator().apply(config);
-    position.getConfigurator().apply(config);
-    roller.getConfigurator().apply(slot0Configs);
+    roller.getConfigurator().apply(rollerConfig);
+    position.getConfigurator().apply(positionConfig);
+
     position.getConfigurator().apply(slot0Configs);
 
     // Initialize signals for AdvantageKit
@@ -149,9 +154,15 @@ public class IntakeTalonFXIO implements IntakeIO {
   // sets the position of the arm.
   public void setPositionControl(double position1) { // IMPORTANT - POSITON1 NOT POSITION
     targetPosition = position1;
+
+    System.out.println("seting positin IO " + position1);
     // System.out.println("Input volt: "+inputVoltage+" Target Angle: "+targetAngle);
-    position.setControl(mVoltageRequest.withPosition(position1));
+    position.setControl(mPositionVoltage.withPosition(position1));
     // System.out.println("Voltage being sent in PID Voltage");
+  }
+
+  public void resetEncoder(double positionVal) {
+    position.setPosition(positionVal);
   }
 
   public double getTargetPosition() {

@@ -21,7 +21,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "Front Bottom Start, mid intake"
+                        "pathName": "Front Bottom Mid start center sweep"
                       }
                     },
                     {
@@ -35,35 +35,11 @@
               }
             ]
           }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "shooterStop"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Ending position to climb"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Climb"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "climbDownWhenNeeded"
-          }
         }
       ]
     }
   },
-  "resetOdom": true,
+  "resetOdom": false,
   "folder": null,
   "choreoAuto": false
 }
