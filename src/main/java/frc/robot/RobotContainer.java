@@ -15,6 +15,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -32,6 +33,7 @@ import frc.robot.Constants.FeederConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.commands.DriveCommands;
+import frc.robot.commands.communication.TellCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.belt.Belt;
 import frc.robot.subsystems.belt.BeltIO;
@@ -84,7 +86,6 @@ public class RobotContainer {
 
   private final Climb climb;
 
-
   private final Vision vision;
 
   // private final Climb climb;
@@ -106,8 +107,7 @@ public class RobotContainer {
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
 
-    private final MatchTimeline matchTimeline = new MatchTimeline(operatorController);
-
+  private final MatchTimeline matchTimeline = new MatchTimeline(operatorController);
 
   private static void flipAllPoses() {
     Constants.DriveConstants.SWICH_PASSING_GOALS = true;
@@ -281,6 +281,21 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+
+    operatorController
+        .a()
+        .whileTrue(
+            new TellCommand("testset")
+                .andThen(
+                    new InstantCommand(
+                        () -> {
+                          operatorController.getHID().setRumble(RumbleType.kBothRumble, 1);
+                        })))
+        .onFalse(
+            new InstantCommand(
+                () -> {
+                  operatorController.getHID().setRumble(RumbleType.kBothRumble, 0);
+                }));
 
     // Default command, normal field-relative drive
     drive.setDefaultCommand(

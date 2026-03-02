@@ -1,11 +1,16 @@
 package frc.robot.util;
 
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.communication.*;
 import org.littletonrobotics.junction.Logger;
-
 
 public class MatchTimeline {
   private MatchPhase currentPhase = MatchPhase.NO_PHASE;
@@ -58,8 +63,16 @@ public class MatchTimeline {
     timer.restart();
   }
 
-  private void vibrateController() {
-    new ControllerVibrateCommand(10, controller).withTimeout(1.0);
+  private Command vibrateControllerCommand() {
+    return new StartEndCommand(
+            () -> {
+              controller.getHID().setRumble(RumbleType.kBothRumble, 1);
+            },
+            () -> {
+              controller.getHID().setRumble(RumbleType.kBothRumble, 0);
+            })
+        .withDeadline(new WaitCommand(1));
+
   }
 
   private void advancePhase() {
@@ -71,10 +84,9 @@ public class MatchTimeline {
         || currentPhase == MatchPhase.ALMOST_SHIFT_3
         || currentPhase == MatchPhase.ALMOST_SHIFT_4
         || currentPhase == MatchPhase.ALMOST_ENDGAME) {
-      vibrateController();
+      CommandScheduler.getInstance().schedule(vibrateControllerCommand());
     }
   }
-
 
   public void setMatchChangeCallBack(MatchChangeCallback matchChangeCallback) {
     this.matchChangeCallback = matchChangeCallback;
