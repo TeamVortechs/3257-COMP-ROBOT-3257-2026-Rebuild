@@ -8,6 +8,7 @@ public enum MatchPhase {
       "beginning(let ben know if u see this in code, it shouldn't be here)",
       0),
   AUTO(ScoreType.ALL_SCORE, "Auto", 20),
+  TRANSITION_TO_TRANSITION(ScoreType.ALL_SCORE, "Disabled", 3),
   TRANSITION(ScoreType.ALL_SCORE, "Transition", 10),
   SHIFT_1(ScoreType.LOSING_SCORE, "Shift 1", 18),
   ALMOST_SHIFT_2(ScoreType.LOSING_SCORE, "Transition to Shift 2", 7),
@@ -29,7 +30,8 @@ public enum MatchPhase {
   static {
     NEXT_PHASES = new TreeMap<>();
     NEXT_PHASES.put(BEGINNING, AUTO);
-    NEXT_PHASES.put(AUTO, TRANSITION);
+    NEXT_PHASES.put(AUTO, TRANSITION_TO_TRANSITION);
+    NEXT_PHASES.put(TRANSITION_TO_TRANSITION, TRANSITION);
     NEXT_PHASES.put(TRANSITION, SHIFT_1);
     NEXT_PHASES.put(SHIFT_1, ALMOST_SHIFT_2);
     NEXT_PHASES.put(ALMOST_SHIFT_2, SHIFT_2);

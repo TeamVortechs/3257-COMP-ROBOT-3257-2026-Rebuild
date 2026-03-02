@@ -127,7 +127,7 @@ public class MatchTimeline {
   }
 
   double timeSinceStart;
-  double matchTimes[] = {20, 30, 55, 80, 105, 130, 160};
+  double matchTimes[] = {20, 33, 58, 83, 108, 133, 163};
 
   public double timeUntilNextPhase() {
     timeSinceStart = getTimeSinceStart();
