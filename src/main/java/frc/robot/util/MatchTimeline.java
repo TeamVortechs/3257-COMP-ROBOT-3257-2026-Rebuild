@@ -1,10 +1,11 @@
 package frc.robot.util;
 
-import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.commands.communication.*;
 import org.littletonrobotics.junction.Logger;
+
 
 public class MatchTimeline {
   private MatchPhase currentPhase = MatchPhase.NO_PHASE;
@@ -53,6 +54,10 @@ public class MatchTimeline {
     timer.restart();
   }
 
+  private void vibrateController() {
+    new ControllerVibrateCommand(10, controller).withTimeout(1.0);
+  }
+
   private void advancePhase() {
     currentPhase = currentPhase.getNextPhase();
     notifer.startSingle(currentPhase.getTime());
@@ -62,18 +67,16 @@ public class MatchTimeline {
         || currentPhase == MatchPhase.ALMOST_SHIFT_3
         || currentPhase == MatchPhase.ALMOST_SHIFT_4
         || currentPhase == MatchPhase.ALMOST_ENDGAME) {
-      controller.setRumble(RumbleType.kBothRumble, 1000);
-    } else {
-      controller.setRumble(RumbleType.kBothRumble, 0);
+      vibrateController();
     }
-  }
-
-  public void setController(CommandXboxController controller) {
-    this.controller = controller;
   }
 
   public void setMatchChangeCallBack(MatchChangeCallback matchChangeCallback) {
     this.matchChangeCallback = matchChangeCallback;
+  }
+
+  public void setController(CommandXboxController controller) {
+    this.controller = controller;
   }
 
   public MatchPhase getCurrentPhase() {
