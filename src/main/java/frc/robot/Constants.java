@@ -53,6 +53,31 @@ public final class Constants {
     REPLAY
   }
 
+  public class CurrentLimitConstants {
+    // public static final double SUPPLY_CURRENT_LIMIT_DRIVE = 40.0;
+    // public static final double STATOR_CURRENT_LIMIT_DRIVE = 40.0;
+
+    // Drive doesn't have these limits here. That's because it has limit constants from another
+    // file.
+    // I decided not to mess with all that... so the limit is at 120. Check ModuleIOTalonFX.java for
+    // more info
+
+    public static final double SUPPLY_CURRENT_LIMIT_SHOOTER = 40.0;
+    public static final double STATOR_CURRENT_LIMIT_SHOOTER = 40.0;
+
+    public static final double SUPPLY_CURRENT_LIMIT_FEEDER = 40.0;
+    public static final double STATOR_CURRENT_LIMIT_FEEDER = 40.0;
+
+    public static final double SUPPLY_CURRENT_LIMIT_BELT = 40.0;
+    public static final double STATOR_CURRENT_LIMIT_BELT = 40.0;
+
+    public static final double SUPPLY_CURRENT_LIMIT_CLIMB = 40.0;
+    public static final double STATOR_CURRENT_LIMIT_CLIMB = 40.0;
+
+    public static final double SUPPLY_CURRENT_LIMIT_INTAKE = 40.0;
+    public static final double STATOR_CURRENT_LIMIT_INTAKE = 40.0;
+  }
+
   public class DriveConstants {
 
     private static final InterpolatingDoubleTreeMap AIRTIME_MAP = new InterpolatingDoubleTreeMap();
@@ -227,8 +252,6 @@ public final class Constants {
   public class ShooterConstants {
     public static final double FREQUENCY_HZ = Constants.HIGH_PRIORITY_FREQUENCY_HZ;
 
-    public static final double CURRENT_LIMIT = 40.0;
-
     public static final double SIM_TOLERANCE = 0.5;
 
     // used in Shooter.java
@@ -268,8 +291,12 @@ public final class Constants {
       CLOSE_LOOP_RAMP_CONFIG = new ClosedLoopRampsConfigs();
       CONFIG.MotorOutput.NeutralMode = NeutralModeValue.Coast;
       CONFIG.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-      CONFIG.CurrentLimits.SupplyCurrentLimit = Constants.ShooterConstants.CURRENT_LIMIT;
+      CONFIG.CurrentLimits.SupplyCurrentLimit =
+          Constants.CurrentLimitConstants.SUPPLY_CURRENT_LIMIT_SHOOTER;
       CONFIG.CurrentLimits.SupplyCurrentLimitEnable = true;
+      CONFIG.CurrentLimits.StatorCurrentLimit =
+          Constants.CurrentLimitConstants.STATOR_CURRENT_LIMIT_SHOOTER;
+      CONFIG.CurrentLimits.StatorCurrentLimitEnable = true;
       SLOT0CONFIGS.kS = Constants.ShooterConstants.KS;
       SLOT0CONFIGS.kV = Constants.ShooterConstants.KV;
       SLOT0CONFIGS.kP = Constants.ShooterConstants.KP;
@@ -293,7 +320,6 @@ public final class Constants {
 
     public static final double VALIDITY_DEBOUNCE_TIME_SEC = 0.2;
 
-    public static final double CURRENT_LIMIT = 40.0;
     public static final double SIM_TOLERANCE = 0.5;
 
     public static final double FEEDER_ID = 23;
@@ -317,8 +343,12 @@ public final class Constants {
 
       CONFIG.MotorOutput.NeutralMode = NeutralModeValue.Brake;
       CONFIG.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
-      CONFIG.CurrentLimits.SupplyCurrentLimit = Constants.FeederConstants.CURRENT_LIMIT;
+      CONFIG.CurrentLimits.SupplyCurrentLimit =
+          Constants.CurrentLimitConstants.SUPPLY_CURRENT_LIMIT_FEEDER;
       CONFIG.CurrentLimits.SupplyCurrentLimitEnable = true;
+      CONFIG.CurrentLimits.StatorCurrentLimit =
+          Constants.CurrentLimitConstants.STATOR_CURRENT_LIMIT_FEEDER;
+      CONFIG.CurrentLimits.StatorCurrentLimitEnable = true;
     }
   }
 
@@ -328,7 +358,8 @@ public final class Constants {
 
     public static double FREQUENCY_HZ = Constants.LOW_PRIORITY_FREQUENCY_HZ;
 
-    public static final double CURRENT_LIMIT = 40.0;
+    public static final double SUPPLY_CURRENT_LIMIT = 40.0;
+    public static final double STATOR_CURRENT_LIMIT = 40.0;
 
     // used in Belt.java
     public static final double RAMP_RATE_VOLTS_SYSID = 0.25;
@@ -347,8 +378,12 @@ public final class Constants {
       CONFIG = new TalonFXConfiguration();
       CONFIG.MotorOutput.NeutralMode = NeutralModeValue.Coast;
       CONFIG.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-      CONFIG.CurrentLimits.SupplyCurrentLimit = Constants.BeltConstants.CURRENT_LIMIT;
+      CONFIG.CurrentLimits.SupplyCurrentLimit =
+          Constants.CurrentLimitConstants.SUPPLY_CURRENT_LIMIT_BELT;
+      CONFIG.CurrentLimits.StatorCurrentLimit =
+          Constants.CurrentLimitConstants.STATOR_CURRENT_LIMIT_BELT;
       CONFIG.CurrentLimits.SupplyCurrentLimitEnable = true;
+      CONFIG.CurrentLimits.StatorCurrentLimitEnable = true;
     }
   }
 
@@ -356,7 +391,6 @@ public final class Constants {
   public class ClimbConstants {
     public static final double FREQUENCY_HZ = Constants.VERY_LOW_PRIORITY_FREQUENCY_HZ;
 
-    public static final double CURRENT_LIMIT = 40.0;
     // used in Belt.java
     public static final double RAMP_RATE_VOLTS_SYSID = 0.1;
     public static final double DYNAMIC_STEP_VOLTS_SYSID = 0.25;
@@ -392,8 +426,12 @@ public final class Constants {
       CONFIG = new TalonFXConfiguration();
       CONFIG.MotorOutput.NeutralMode = NeutralModeValue.Brake;
       CONFIG.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-      CONFIG.CurrentLimits.SupplyCurrentLimit = Constants.ClimbConstants.CURRENT_LIMIT;
+      CONFIG.CurrentLimits.SupplyCurrentLimit =
+          Constants.CurrentLimitConstants.SUPPLY_CURRENT_LIMIT_CLIMB;
+      CONFIG.CurrentLimits.StatorCurrentLimit =
+          Constants.CurrentLimitConstants.STATOR_CURRENT_LIMIT_CLIMB;
       CONFIG.CurrentLimits.SupplyCurrentLimitEnable = true;
+      CONFIG.CurrentLimits.StatorCurrentLimitEnable = true;
 
       SLOT0CONFIGS = new Slot0Configs();
       SLOT0CONFIGS.kS = Constants.ClimbConstants.KS;
@@ -471,14 +509,22 @@ public final class Constants {
       POSITION_CONFIG = new TalonFXConfiguration();
       POSITION_CONFIG.MotorOutput.NeutralMode = NeutralModeValue.Brake;
       POSITION_CONFIG.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-      POSITION_CONFIG.CurrentLimits.SupplyCurrentLimit = Constants.ClimbConstants.CURRENT_LIMIT;
+      POSITION_CONFIG.CurrentLimits.SupplyCurrentLimit =
+          Constants.CurrentLimitConstants.SUPPLY_CURRENT_LIMIT_INTAKE;
       POSITION_CONFIG.CurrentLimits.SupplyCurrentLimitEnable = true;
+      POSITION_CONFIG.CurrentLimits.StatorCurrentLimit =
+          Constants.CurrentLimitConstants.STATOR_CURRENT_LIMIT_INTAKE;
+      POSITION_CONFIG.CurrentLimits.StatorCurrentLimitEnable = true;
 
       ROLLER_CONFIG = new TalonFXConfiguration();
       ROLLER_CONFIG.MotorOutput.NeutralMode = NeutralModeValue.Coast;
       ROLLER_CONFIG.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
-      ROLLER_CONFIG.CurrentLimits.SupplyCurrentLimit = Constants.ClimbConstants.CURRENT_LIMIT;
+      ROLLER_CONFIG.CurrentLimits.SupplyCurrentLimit =
+          Constants.CurrentLimitConstants.SUPPLY_CURRENT_LIMIT_INTAKE;
       ROLLER_CONFIG.CurrentLimits.SupplyCurrentLimitEnable = true;
+      ROLLER_CONFIG.CurrentLimits.StatorCurrentLimit =
+          Constants.CurrentLimitConstants.STATOR_CURRENT_LIMIT_INTAKE;
+      ROLLER_CONFIG.CurrentLimits.StatorCurrentLimitEnable = true;
     }
   }
 }
