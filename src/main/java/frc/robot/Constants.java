@@ -52,12 +52,15 @@ public final class Constants {
     /** Replaying from a log file. */
     REPLAY
   }
-  public class CurrentLimitConstants{
+
+  public class CurrentLimitConstants {
     // public static final double SUPPLY_CURRENT_LIMIT_DRIVE = 40.0;
     // public static final double STATOR_CURRENT_LIMIT_DRIVE = 40.0;
 
-    // Drive doesn't have these limits here. That's because it has limit constants from another file.
-    // I decided not to mess with all that... so the limit is at 120. Check ModuleIOTalonFX.java for more info
+    // Drive doesn't have these limits here. That's because it has limit constants from another
+    // file.
+    // I decided not to mess with all that... so the limit is at 120. Check ModuleIOTalonFX.java for
+    // more info
 
     public static final double SUPPLY_CURRENT_LIMIT_SHOOTER = 40.0;
     public static final double STATOR_CURRENT_LIMIT_SHOOTER = 40.0;
@@ -74,6 +77,7 @@ public final class Constants {
     public static final double SUPPLY_CURRENT_LIMIT_INTAKE = 40.0;
     public static final double STATOR_CURRENT_LIMIT_INTAKE = 40.0;
   }
+
   public class DriveConstants {
 
     private static final InterpolatingDoubleTreeMap AIRTIME_MAP = new InterpolatingDoubleTreeMap();
@@ -287,9 +291,11 @@ public final class Constants {
       CLOSE_LOOP_RAMP_CONFIG = new ClosedLoopRampsConfigs();
       CONFIG.MotorOutput.NeutralMode = NeutralModeValue.Coast;
       CONFIG.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-      CONFIG.CurrentLimits.SupplyCurrentLimit = Constants.CurrentLimitConstants.SUPPLY_CURRENT_LIMIT_SHOOTER;
+      CONFIG.CurrentLimits.SupplyCurrentLimit =
+          Constants.CurrentLimitConstants.SUPPLY_CURRENT_LIMIT_SHOOTER;
       CONFIG.CurrentLimits.SupplyCurrentLimitEnable = true;
-      CONFIG.CurrentLimits.StatorCurrentLimit = Constants.CurrentLimitConstants.STATOR_CURRENT_LIMIT_SHOOTER;
+      CONFIG.CurrentLimits.StatorCurrentLimit =
+          Constants.CurrentLimitConstants.STATOR_CURRENT_LIMIT_SHOOTER;
       CONFIG.CurrentLimits.StatorCurrentLimitEnable = true;
       SLOT0CONFIGS.kS = Constants.ShooterConstants.KS;
       SLOT0CONFIGS.kV = Constants.ShooterConstants.KV;
@@ -337,9 +343,11 @@ public final class Constants {
 
       CONFIG.MotorOutput.NeutralMode = NeutralModeValue.Brake;
       CONFIG.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
-      CONFIG.CurrentLimits.SupplyCurrentLimit = Constants.CurrentLimitConstants.SUPPLY_CURRENT_LIMIT_FEEDER;
+      CONFIG.CurrentLimits.SupplyCurrentLimit =
+          Constants.CurrentLimitConstants.SUPPLY_CURRENT_LIMIT_FEEDER;
       CONFIG.CurrentLimits.SupplyCurrentLimitEnable = true;
-      CONFIG.CurrentLimits.StatorCurrentLimit = Constants.CurrentLimitConstants.STATOR_CURRENT_LIMIT_FEEDER;
+      CONFIG.CurrentLimits.StatorCurrentLimit =
+          Constants.CurrentLimitConstants.STATOR_CURRENT_LIMIT_FEEDER;
       CONFIG.CurrentLimits.StatorCurrentLimitEnable = true;
     }
   }
@@ -370,8 +378,10 @@ public final class Constants {
       CONFIG = new TalonFXConfiguration();
       CONFIG.MotorOutput.NeutralMode = NeutralModeValue.Coast;
       CONFIG.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-      CONFIG.CurrentLimits.SupplyCurrentLimit = Constants.CurrentLimitConstants.SUPPLY_CURRENT_LIMIT_BELT;
-      CONFIG.CurrentLimits.StatorCurrentLimit = Constants.CurrentLimitConstants.STATOR_CURRENT_LIMIT_BELT;
+      CONFIG.CurrentLimits.SupplyCurrentLimit =
+          Constants.CurrentLimitConstants.SUPPLY_CURRENT_LIMIT_BELT;
+      CONFIG.CurrentLimits.StatorCurrentLimit =
+          Constants.CurrentLimitConstants.STATOR_CURRENT_LIMIT_BELT;
       CONFIG.CurrentLimits.SupplyCurrentLimitEnable = true;
       CONFIG.CurrentLimits.StatorCurrentLimitEnable = true;
     }
@@ -416,8 +426,10 @@ public final class Constants {
       CONFIG = new TalonFXConfiguration();
       CONFIG.MotorOutput.NeutralMode = NeutralModeValue.Brake;
       CONFIG.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-      CONFIG.CurrentLimits.SupplyCurrentLimit = Constants.CurrentLimitConstants.SUPPLY_CURRENT_LIMIT_CLIMB;
-      CONFIG.CurrentLimits.StatorCurrentLimit = Constants.CurrentLimitConstants.STATOR_CURRENT_LIMIT_CLIMB;
+      CONFIG.CurrentLimits.SupplyCurrentLimit =
+          Constants.CurrentLimitConstants.SUPPLY_CURRENT_LIMIT_CLIMB;
+      CONFIG.CurrentLimits.StatorCurrentLimit =
+          Constants.CurrentLimitConstants.STATOR_CURRENT_LIMIT_CLIMB;
       CONFIG.CurrentLimits.SupplyCurrentLimitEnable = true;
       CONFIG.CurrentLimits.StatorCurrentLimitEnable = true;
 
@@ -497,15 +509,21 @@ public final class Constants {
       POSITION_CONFIG = new TalonFXConfiguration();
       POSITION_CONFIG.MotorOutput.NeutralMode = NeutralModeValue.Brake;
       POSITION_CONFIG.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-      POSITION_CONFIG.CurrentLimits.SupplyCurrentLimit = Constants.ClimbConstants.CURRENT_LIMIT;
+      POSITION_CONFIG.CurrentLimits.SupplyCurrentLimit =
+          Constants.CurrentLimitConstants.SUPPLY_CURRENT_LIMIT_INTAKE;
       POSITION_CONFIG.CurrentLimits.SupplyCurrentLimitEnable = true;
+      POSITION_CONFIG.CurrentLimits.StatorCurrentLimit =
+          Constants.CurrentLimitConstants.STATOR_CURRENT_LIMIT_INTAKE;
+      POSITION_CONFIG.CurrentLimits.StatorCurrentLimitEnable = true;
 
       ROLLER_CONFIG = new TalonFXConfiguration();
       ROLLER_CONFIG.MotorOutput.NeutralMode = NeutralModeValue.Coast;
       ROLLER_CONFIG.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
-      ROLLER_CONFIG.CurrentLimits.SupplyCurrentLimit = Constants.CurrentLimitConstants.SUPPLY_CURRENT_LIMIT_INTAKE;
+      ROLLER_CONFIG.CurrentLimits.SupplyCurrentLimit =
+          Constants.CurrentLimitConstants.SUPPLY_CURRENT_LIMIT_INTAKE;
       ROLLER_CONFIG.CurrentLimits.SupplyCurrentLimitEnable = true;
-      ROLLER_CONFIG.CurrentLimits.StatorCurrentLimit = Constants.CurrentLimitConstants.STATOR_CURRENT_LIMIT_INTAKE;
+      ROLLER_CONFIG.CurrentLimits.StatorCurrentLimit =
+          Constants.CurrentLimitConstants.STATOR_CURRENT_LIMIT_INTAKE;
       ROLLER_CONFIG.CurrentLimits.StatorCurrentLimitEnable = true;
     }
   }
