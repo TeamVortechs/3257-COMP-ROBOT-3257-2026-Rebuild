@@ -79,6 +79,8 @@ public class Drive extends SubsystemBase {
   private double accelerometerX;
   private double accelerometerY;
 
+  private Notifier effectiveTargetNotifier;
+
   /**
    * @return the needed rotation for the robot to rotate towards a goal I made it like this so we
    *     can use the joystick drive command from drive commands compensates for robot movement
@@ -425,6 +427,15 @@ public class Drive extends SubsystemBase {
             });
 
     logger.startPeriodic(1 / DriveConstants.FREQUENCY_UPDATE_ACC);
+
+    effectiveTargetNotifier =
+        new Notifier(
+            () -> {
+              shooterRotationManager.effectiveTargetCalculate();
+              Logger.recordOutput("Effective Target", shooterRotationManager.getEffectiveTarget());
+            });
+
+    effectiveTargetNotifier.startPeriodic(1 / DriveConstants.EFFECTIVE_TARGET_NOTIFIER_FREQUENCY);
   }
 
   @Override

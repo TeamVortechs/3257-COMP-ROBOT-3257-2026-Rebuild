@@ -163,10 +163,21 @@ public class ShooterRotationManager {
     this.calculateShootOnMove = calculateShootOnMove;
   }
 
+  private Pose2d effectiveTarget;
+
   public Pose2d getEffectiveTarget() {
 
     if (!calculateShootOnMove) {
       return targetPose.get();
+    }
+
+    return effectiveTarget;
+  }
+
+  public void effectiveTargetCalculate() {
+
+    if (!calculateShootOnMove) {
+      return;
     }
 
     ChassisSpeeds fieldSpeedsChassis =
@@ -178,11 +189,11 @@ public class ShooterRotationManager {
 
     Translation2d fieldSpeedsNormalized = fieldSpeeds.div(fieldSpeeds.getNorm());
 
-    double upperBound = 0;
-    double lowerBound = -30;
-    double testPoint = 0;
+    double upperBound = DriveConstants.UPPER_BOUND_SHOOTER_ROTATION_MANAGER;
+    double lowerBound = DriveConstants.LOWER_BOUND_SHOOTER_ROTATION_MANAGER;
+    double testPoint = DriveConstants.TESTING_POINT_SHOOTER_ROTATION_MANAGER;
 
-    double error = 10;
+    double error = Double.MAX_VALUE;
 
     int logNum = 0;
 
@@ -223,7 +234,7 @@ public class ShooterRotationManager {
     // Logger.recordOutput("test/loopAmount", logNum);
     // Logger.recordOutput("test/targetPose", getTargetPose(testPoint, fieldSpeedsNormalized));
 
-    return getTargetPose(testPoint, fieldSpeedsNormalized);
+    effectiveTarget = getTargetPose(testPoint, fieldSpeedsNormalized);
   }
 
   /**

@@ -122,6 +122,11 @@ public final class Constants {
 
     public static final Translation2d CENTER_POINT = new Translation2d(8.27, 4.115);
 
+    public static final double UPPER_BOUND_SHOOTER_ROTATION_MANAGER = 0;
+    public static final double LOWER_BOUND_SHOOTER_ROTATION_MANAGER = -30;
+    public static final double TESTING_POINT_SHOOTER_ROTATION_MANAGER = 0;
+    public static final double EFFECTIVE_TARGET_NOTIFIER_FREQUENCY = 15.00000;
+
     // this is the rotation the drive will turn to when travelling over the bumpers, depending on
     // what side of the field(red or blue)
     // this is optimal bc it's smoother going at an angle rather than straight in
