@@ -330,7 +330,7 @@ public class RobotContainer {
         .rightBumper()
         .whileTrue(feeder.setPercentMotorRunCommand(Constants.FeederConstants.FEED_POWER));
 
-    controller.rightTrigger().whileTrue(shooter.setManualSpeedRunCommand(70));
+    // controller.rightTrigger().whileTrue(shooter.setManualSpeedRunCommand(70));
 
     // controller.rightTrigger().whileTrue(shooter.setManualSpeedRunCommand(72));
 
@@ -366,6 +366,11 @@ public class RobotContainer {
 
     configureSysIdBindings(sysID_controller, shooter.BuildSysIdRoutine());
 
+    Command raiseIntakeWhenReadyCommand = // temp binding; move to intake class when ready
+        new WaitUntilCommand(() -> feeder.getTargetSpeed() > 0)
+            .andThen(new WaitCommand(IntakeConstants.WAIT_TIME_TO_PULL_INTAKE))
+            .andThen(intake.setPositionWithVelocityCommand(0, IntakeConstants.MOTION_MAGIC_SLOWED_VELOCITY));
+
     controller
         .rightTrigger()
         .whileTrue(
@@ -373,7 +378,8 @@ public class RobotContainer {
                 aimTowardsTargetCommand,
                 shooter.setAutomaticCommandRun(),
                 feeder.feedWhenValidRunCommand(FeederConstants.FEED_POWER),
-                drive.logDistance()));
+                raiseIntakeWhenReadyCommand,
+                drive.logDistance()).finallyDo(() -> intake.stop()));
 
     // controller.leftBumper().whileTrue(intake.setRollerVoltageCommand(IntakeConstants.EJECT_VOLTS));
 
