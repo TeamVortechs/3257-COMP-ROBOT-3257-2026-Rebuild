@@ -330,7 +330,7 @@ public class RobotContainer {
         .rightBumper()
         .whileTrue(feeder.setPercentMotorRunCommand(Constants.FeederConstants.FEED_POWER));
 
-    controller.rightTrigger().whileTrue(shooter.setManualSpeedRunCommand(70));
+    // controller.rightTrigger().whileTrue(shooter.setManualSpeedRunCommand(70));
 
     // controller.rightTrigger().whileTrue(shooter.setManualSpeedRunCommand(72));
 
