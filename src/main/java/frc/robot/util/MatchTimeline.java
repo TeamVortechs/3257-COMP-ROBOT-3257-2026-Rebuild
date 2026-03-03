@@ -1,17 +1,31 @@
 package frc.robot.util;
 
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.commands.communication.*;
 import org.littletonrobotics.junction.Logger;
 
 public class MatchTimeline {
   private MatchPhase currentPhase = MatchPhase.NO_PHASE;
 
   private Notifier notifer;
+  private Notifier logger;
 
   private MatchChangeCallback matchChangeCallback;
 
   private Timer timer;
+
+  private CommandXboxController controller;
+
+  public MatchTimeline(CommandXboxController commandXboxController) {
+    this.controller = commandXboxController;
+  }
 
   {
     notifer =
@@ -20,11 +34,25 @@ public class MatchTimeline {
               advancePhase();
             });
 
+    logger =
+        new Notifier(
+            () -> {
+              logOutputs();
+            });
+
+    logger.startPeriodic(1 / 4.0);
+
     Logger.recordOutput("MatchTimeline/currentPhase", MatchPhase.NO_PHASE.getDisplayName());
 
     matchChangeCallback = () -> {};
 
     timer = new Timer();
+  }
+
+  private void logOutputs() {
+    Logger.recordOutput("MatchTimeline/timeUntilNextPhase", timeUntilNextPhase());
+    Logger.recordOutput("MatchTimeline/isWinningAuto", getIsWinningAuto());
+    Logger.recordOutput("MatchTimeline/canScore", canScore());
   }
 
   public void start() {
@@ -34,15 +62,36 @@ public class MatchTimeline {
     timer.restart();
   }
 
+  private Command vibrateControllerCommand() {
+    return new StartEndCommand(
+            () -> {
+              controller.getHID().setRumble(RumbleType.kBothRumble, 1);
+            },
+            () -> {
+              controller.getHID().setRumble(RumbleType.kBothRumble, 0);
+            })
+        .withDeadline(new WaitCommand(1));
+  }
+
   private void advancePhase() {
     currentPhase = currentPhase.getNextPhase();
     notifer.startSingle(currentPhase.getTime());
     Logger.recordOutput("MatchTimeline/currentPhase", currentPhase.getDisplayName());
     matchChangeCallback.run();
+    if (currentPhase == MatchPhase.ALMOST_SHIFT_2
+        || currentPhase == MatchPhase.ALMOST_SHIFT_3
+        || currentPhase == MatchPhase.ALMOST_SHIFT_4
+        || currentPhase == MatchPhase.ALMOST_ENDGAME) {
+      CommandScheduler.getInstance().schedule(vibrateControllerCommand());
+    }
   }
 
   public void setMatchChangeCallBack(MatchChangeCallback matchChangeCallback) {
     this.matchChangeCallback = matchChangeCallback;
+  }
+
+  public void setController(CommandXboxController controller) {
+    this.controller = controller;
   }
 
   public MatchPhase getCurrentPhase() {
@@ -53,17 +102,41 @@ public class MatchTimeline {
     return timer.get();
   }
 
-  public boolean canScore(boolean isWinning) {
+  private boolean isWinningAuto = false;
 
+  public void setIsWinningAuto(boolean isWinning) {
+    this.isWinningAuto = isWinning;
+  }
+
+  public boolean getIsWinningAuto() {
+    return this.isWinningAuto;
+  }
+
+  public boolean canScore() {
     MatchPhase matchPhase = getCurrentPhase();
 
     if (matchPhase.getScoreType() == ScoreType.ALL_SCORE) return true;
 
-    if (matchPhase.getScoreType() == ScoreType.WINNING_SCORE && isWinning) return true;
+    if (matchPhase.getScoreType() == ScoreType.WINNING_SCORE && isWinningAuto) return true;
 
-    if (matchPhase.getScoreType() == ScoreType.LOSING_SCORE && !isWinning) return true;
+    if (matchPhase.getScoreType() == ScoreType.LOSING_SCORE && !isWinningAuto) return true;
 
     return false;
+  }
+
+  double timeSinceStart;
+  double matchTimes[] = {20, 33, 58, 83, 108, 133, 163};
+
+  public double timeUntilNextPhase() {
+    timeSinceStart = getTimeSinceStart();
+    for (double i : matchTimes) {
+      if (timeSinceStart > i) {
+        continue;
+      } else {
+        return Math.round(Math.abs(timeSinceStart - i));
+      }
+    }
+    return 0;
   }
 
   interface MatchChangeCallback {
