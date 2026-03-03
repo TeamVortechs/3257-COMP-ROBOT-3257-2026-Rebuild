@@ -5,7 +5,6 @@ import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -72,7 +71,6 @@ public class MatchTimeline {
               controller.getHID().setRumble(RumbleType.kBothRumble, 0);
             })
         .withDeadline(new WaitCommand(1));
-
   }
 
   private void advancePhase() {
