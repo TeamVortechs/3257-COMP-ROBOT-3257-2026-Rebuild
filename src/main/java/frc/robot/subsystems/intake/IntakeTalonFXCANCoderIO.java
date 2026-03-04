@@ -2,6 +2,7 @@ package frc.robot.subsystems.intake;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
@@ -9,6 +10,7 @@ import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -22,7 +24,6 @@ import frc.robot.util.VortechsUtil;
 public class IntakeTalonFXCANCoderIO {
   private final TalonFX roller;
   private final TalonFX position;
-  private final CANcoder cancoder;
 
   // StatusSignals allow for high-frequency, synchronous data collection
   private final StatusSignal<AngularVelocity> rollerVelocity;
@@ -49,7 +50,6 @@ public class IntakeTalonFXCANCoderIO {
   public IntakeTalonFXCANCoderIO(int canIdRoller, int canIdPosition, int canIdCANCoder) {
     roller = new TalonFX(canIdRoller);
     position = new TalonFX(canIdPosition);
-    cancoder = new CANcoder(canIdCANCoder);
 
     mVoltageRequest = new MotionMagicVoltage(0);
     mPositionVoltage = new PositionVoltage(0);
@@ -65,6 +65,8 @@ public class IntakeTalonFXCANCoderIO {
     motionMagicConfigs.MotionMagicAcceleration =
         Constants.IntakeConstants.MOTION_MAGIC_ACCELERATION;
     motionMagicConfigs.MotionMagicJerk = Constants.IntakeConstants.MOTION_MAGIC_JERK;
+
+    positionConfig.Feedback = new FeedbackConfigs().withFeedbackRemoteSensorID(canIdCANCoder).withFeedbackSensorSource(FeedbackSensorSourceValue.RemoteCANcoder).RotorToSensorRatio(1 / IntakeConstants.CANCODER_ROTOR_TO_SENSOR_RATIO);
 
     roller.getConfigurator().apply(rollerConfig);
     position.getConfigurator().apply(positionConfig);

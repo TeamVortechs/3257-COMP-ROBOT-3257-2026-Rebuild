@@ -495,6 +495,10 @@ public final class Constants {
 
     public static final int INTAKE_ROLLER_MOTOR_ID = 21;
     public static final int INTAKE_POSITION_MOTOR_ID = 22;
+    public static final int INTAKE_CANCODER_ID = 99;
+
+
+    public static final double CANCODER_ROTOR_TO_SENSOR_RATIO = 30;
 
     static {
       SLOT0CONFIGS = new Slot0Configs();
