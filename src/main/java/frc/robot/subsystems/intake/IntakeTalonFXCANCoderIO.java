@@ -66,7 +66,7 @@ public class IntakeTalonFXCANCoderIO {
         Constants.IntakeConstants.MOTION_MAGIC_ACCELERATION;
     motionMagicConfigs.MotionMagicJerk = Constants.IntakeConstants.MOTION_MAGIC_JERK;
 
-    positionConfig.Feedback = new FeedbackConfigs().withFeedbackRemoteSensorID(canIdCANCoder).withFeedbackSensorSource(FeedbackSensorSourceValue.RemoteCANcoder).RotorToSensorRatio(1 / IntakeConstants.CANCODER_ROTOR_TO_SENSOR_RATIO);
+    positionConfig.Feedback = new FeedbackConfigs().withFeedbackRemoteSensorID(canIdCANCoder).withFeedbackSensorSource(FeedbackSensorSourceValue.RemoteCANcoder).withRotorToSensorRatio(1 / IntakeConstants.CANCODER_ROTOR_TO_SENSOR_RATIO);
 
     roller.getConfigurator().apply(rollerConfig);
     position.getConfigurator().apply(positionConfig);
