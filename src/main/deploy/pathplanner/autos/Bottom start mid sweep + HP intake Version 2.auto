@@ -33,7 +33,19 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "Bottom shoot back to shoot"
+                        "pathName": "Bottom Shoot to Human player station 2 intake"
+                      }
+                    },
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 3.0
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Bottom Shoot to Human player station 2 shoot"
                       }
                     },
                     {

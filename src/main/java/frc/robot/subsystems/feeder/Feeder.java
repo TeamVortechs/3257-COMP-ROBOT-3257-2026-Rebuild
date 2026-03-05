@@ -108,7 +108,7 @@ public class Feeder extends SubsystemBase {
             && shooterOnVelocity.getAsBoolean();
 
     Logger.recordOutput("Feeder/IsValidToFeed", isValid);
-    Logger.recordOutput("DebounceTime", debounceTimer.get());
+    Logger.recordOutput("Feeder/DebounceTime", debounceTimer.get());
 
     return isValid;
   }

@@ -170,8 +170,6 @@ public final class Constants {
         PASSING_GOALS_NAME_STORAGE = new ArrayList<>();
         PASSING_GOALS_NAME_STORAGE.add("Back left");
         PASSING_GOALS_NAME_STORAGE.add("Back right");
-        PASSING_GOALS_NAME_STORAGE.add("Front left");
-        PASSING_GOALS_NAME_STORAGE.add("Front right");
       }
 
       return PASSING_GOALS_NAME_STORAGE;
@@ -181,10 +179,8 @@ public final class Constants {
 
       if (PASSING_GOALS_STORAGE == null) {
         PASSING_GOALS_STORAGE = new ArrayList<>();
-        PASSING_GOALS_STORAGE.add(new Pose2d(2.5, 6.5, new Rotation2d()));
-        PASSING_GOALS_STORAGE.add(new Pose2d(2.5, 2.5, new Rotation2d()));
-        PASSING_GOALS_STORAGE.add(new Pose2d(7, 6.5, new Rotation2d()));
-        PASSING_GOALS_STORAGE.add(new Pose2d(7, 2.5, new Rotation2d()));
+        PASSING_GOALS_STORAGE.add(new Pose2d(0.5, 1.2, new Rotation2d()));
+        PASSING_GOALS_STORAGE.add(new Pose2d(0.5, 6.8, new Rotation2d()));
       }
 
       // add flip logic here
@@ -371,6 +367,7 @@ public final class Constants {
     public static final double FEED_POWER = 1;
     public static final double INTAKE_POWER = 1;
     public static final double DEFAULT_POWER = 0;
+    public static final double EJECT_POWER = -1;
 
     public static final double TOLERANCE = 0.1;
 
