@@ -358,17 +358,16 @@ public final class Constants {
 
     public static double FREQUENCY_HZ = Constants.LOW_PRIORITY_FREQUENCY_HZ;
 
-    public static final double SUPPLY_CURRENT_LIMIT = 40.0;
-    public static final double STATOR_CURRENT_LIMIT = 40.0;
-
     // used in Belt.java
     public static final double RAMP_RATE_VOLTS_SYSID = 0.25;
     public static final double DYNAMIC_STEP_VOLTS_SYSID = 1;
 
     // not real
-    public static final int ID = 6;
+    public static final int ID = 25;
 
-    public static final double FEED_POWER = 0.1;
+    public static final double FEED_POWER = 1;
+    public static final double INTAKE_POWER = 1;
+    public static final double DEFAULT_POWER = 0;
 
     public static final double TOLERANCE = 0.1;
 
@@ -497,8 +496,7 @@ public final class Constants {
     public static final int INTAKE_POSITION_MOTOR_ID = 22;
     public static final int INTAKE_CANCODER_ID = 99;
 
-
-    public static final double CANCODER_ROTOR_TO_SENSOR_RATIO = 1; //used to be 30
+    public static final double CANCODER_ROTOR_TO_SENSOR_RATIO = 1; // used to be 30
 
     static {
       SLOT0CONFIGS = new Slot0Configs();
