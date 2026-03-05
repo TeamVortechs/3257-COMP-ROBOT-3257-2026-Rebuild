@@ -498,7 +498,7 @@ public final class Constants {
     public static final int INTAKE_CANCODER_ID = 99;
 
 
-    public static final double CANCODER_ROTOR_TO_SENSOR_RATIO = 30;
+    public static final double CANCODER_ROTOR_TO_SENSOR_RATIO = 1; //used to be 30
 
     static {
       SLOT0CONFIGS = new Slot0Configs();
