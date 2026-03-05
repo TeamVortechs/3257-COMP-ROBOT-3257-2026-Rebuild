@@ -58,6 +58,7 @@ public class ShooterSimulationIO implements ShooterIO {
   // might as well include ts W tech
   public void stop() {
     setVoltage(0);
+    rollerMotorsSim.setAngularVelocity(0);
   }
 
   public double getSpeed() {

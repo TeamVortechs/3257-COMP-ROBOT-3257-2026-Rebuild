@@ -75,6 +75,20 @@ public class Intake extends SubsystemBase {
     intakeIO.setPositionControl(targetPosition);
   }
 
+    public void setPositionWithVelocity(double targetPosition, double velocity) {
+    System.out.println("VERY SLOWLY setting position to " + targetPosition);
+
+    if (targetPosition > IntakeConstants.MAX_POSITION) {
+      targetPosition = IntakeConstants.MAX_POSITION;
+    }
+
+    if (targetPosition < IntakeConstants.MIN_POSITION) {
+      targetPosition = IntakeConstants.MIN_POSITION;
+    }
+
+    intakeIO.setPositionControlWithVelocity(targetPosition, velocity);
+  }
+
   public void resetEncoder(double newPosition) {
     intakeIO.resetEncoder(newPosition);
   }
@@ -152,6 +166,10 @@ public class Intake extends SubsystemBase {
 
   public Command setPositionCommand(double position) {
     return Commands.startRun(() -> this.setPosition(position), () -> {}, this);
+  }
+
+  public Command setPositionWithVelocityCommand(double position, double velocity) {
+    return Commands.startRun(() -> this.setPositionWithVelocity(position, velocity), () -> {}, this);
   }
 
   public Command setRollerVoltageAndPositionCommand(double position, double voltage) {

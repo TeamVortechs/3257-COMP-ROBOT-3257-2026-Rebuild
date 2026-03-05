@@ -7,6 +7,8 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Seconds;
+
 import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -18,6 +20,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.units.measure.*;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -477,6 +480,9 @@ public final class Constants {
     public static final double MOTION_MAGIC_CRUISE_VELOCITY = 3;
     public static final double MOTION_MAGIC_ACCELERATION = 2.5;
     public static final double MOTION_MAGIC_JERK = 10;
+    // for slowing down the intake when attempting to close while firing
+    public static final Time WAIT_TIME_TO_PULL_INTAKE = Seconds.of(2);
+    public static final double MOTION_MAGIC_SLOWED_VELOCITY = 1.5;
 
     public static final double RAMP_RATE_VOLTS_ROLLER_SYSID = 0.25;
     public static final double DYNAMIC_STEP_VOLTS_ROLLER_SYSID = 1;

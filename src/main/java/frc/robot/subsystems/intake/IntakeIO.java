@@ -87,6 +87,13 @@ public interface IntakeIO {
    */
   public default void setPositionControl(double position) {}
 
+    /**
+   * attempts to use a slower speed for the position motor (set by MotionMagic; differs in sim)
+   *
+   * @param position rotations
+   */
+  public default void setPositionControlWithVelocity(double position, double velocity) {}
+
   public default void resetEncoder(double position) {}
 
   /**

@@ -1,9 +1,13 @@
 package frc.robot.subsystems.intake;
 
+
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
+import frc.robot.Constants.IntakeConstants;
 
 public class IntakeSimulationIO implements IntakeIO {
 
@@ -75,8 +79,20 @@ public class IntakeSimulationIO implements IntakeIO {
 
   // sets the position of the arm.
   public void setPositionControl(double position) {
-
+    positionPIDController.setP(0.9); // TEMP BIND to reset the slow version
+    Logger.recordOutput("IntakeIO/CommandedIntakeVelocity", IntakeConstants.MOTION_MAGIC_CRUISE_VELOCITY); // TEMP BIND to reset the slow version
     targetPosition = position;
+  }
+
+      // VERY SLOWLY sets the position of the arm.
+  public void setPositionControlWithVelocity(double position1, double velocity) { // dawg i can't control velocity simply in sim; i'm just cranking P
+    targetPosition = position1;
+
+    Logger.recordOutput("IntakeIO/CommandedIntakeVelocity", velocity);
+
+
+    System.out.println("VERY SLOWLY setting position in sim to " + position1);
+    positionPIDController.setP(0.4); // yes, this is a magic number. i do not care
   }
 
   public double getTargetPosition() {
@@ -88,7 +104,13 @@ public class IntakeSimulationIO implements IntakeIO {
   public void rebuildMotorsPID() {}
 
   /** Stops the motor immediately */
-  public void stop() {}
+  public void stop() {
+    rollerMotorsSim.setAngularVelocity(0);
+    rollerMotorsSim.setInputVoltage(0);
+    positionMotorsSim.setAngularVelocity(0);
+    positionMotorsSim.setInputVoltage(0);
+    setPositionControl(getPosition());
+  }
   ;
 
   public void resetEncoders() {}
