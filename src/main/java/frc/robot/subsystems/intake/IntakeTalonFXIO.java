@@ -46,14 +46,9 @@ public class IntakeTalonFXIO implements IntakeIO {
   private boolean isBrakedPosition = true;
   private double targetPosition = 0;
 
-  private final CANcoder cancoder;
-
   public IntakeTalonFXIO(int canIdRoller, int canIdPosition) {
     roller = new TalonFX(canIdRoller);
     position = new TalonFX(canIdPosition);
-    cancoder = new CANcoder(29);
-    var toApply = new CANcoderConfiguration();
-    cancoder.getConfigurator().apply(toApply);
 
     mVoltageRequest =
         new DynamicMotionMagicVoltage(
@@ -131,9 +126,6 @@ public class IntakeTalonFXIO implements IntakeIO {
 
     inputsAutoLogged.isBrakedRoller = isBrakedRoller;
     inputsAutoLogged.isBrakedPosition = isBrakedPosition;
-
-    inputsAutoLogged.talonFXPOS = position.getPosition().getValueAsDouble();
-    inputsAutoLogged.cancoderPOS = cancoder.getPosition().getValueAsDouble();
   }
 
   // getters for motors
