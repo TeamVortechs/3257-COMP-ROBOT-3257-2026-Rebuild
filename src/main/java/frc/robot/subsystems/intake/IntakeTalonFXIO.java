@@ -2,12 +2,10 @@ package frc.robot.subsystems.intake;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
-import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DynamicMotionMagicVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
-import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -57,7 +55,6 @@ public class IntakeTalonFXIO implements IntakeIO {
                 IntakeConstants.MOTION_MAGIC_ACCELERATION)
             .withJerk(IntakeConstants.MOTION_MAGIC_JERK);
     // mPositionVoltage = new PositionVoltage(0);
-
 
     // Basic Configuration
     TalonFXConfiguration rollerConfig = Constants.IntakeConstants.ROLLER_CONFIG;

@@ -8,11 +8,9 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
-import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Temperature;
@@ -66,7 +64,11 @@ public class IntakeTalonFXCANCoderIO {
         Constants.IntakeConstants.MOTION_MAGIC_ACCELERATION;
     motionMagicConfigs.MotionMagicJerk = Constants.IntakeConstants.MOTION_MAGIC_JERK;
 
-    positionConfig.Feedback = new FeedbackConfigs().withFeedbackRemoteSensorID(canIdCANCoder).withFeedbackSensorSource(FeedbackSensorSourceValue.RemoteCANcoder).withRotorToSensorRatio(1 / IntakeConstants.CANCODER_ROTOR_TO_SENSOR_RATIO);
+    positionConfig.Feedback =
+        new FeedbackConfigs()
+            .withFeedbackRemoteSensorID(canIdCANCoder)
+            .withFeedbackSensorSource(FeedbackSensorSourceValue.RemoteCANcoder)
+            .withRotorToSensorRatio(1 / IntakeConstants.CANCODER_ROTOR_TO_SENSOR_RATIO);
 
     roller.getConfigurator().apply(rollerConfig);
     position.getConfigurator().apply(positionConfig);

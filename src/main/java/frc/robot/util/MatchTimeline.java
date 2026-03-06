@@ -1,22 +1,17 @@
 package frc.robot.util;
 
-import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-
-import java.lang.constant.Constable;
 import java.util.Optional;
-
 import org.littletonrobotics.junction.Logger;
-
-import com.google.flatbuffers.Constants;
 
 public class MatchTimeline {
   private MatchPhase currentPhase = MatchPhase.NO_PHASE;
@@ -49,11 +44,12 @@ public class MatchTimeline {
               logOutputs();
             });
 
-    logger.startPeriodic(1 / 4.0);
 
     Logger.recordOutput("MatchTimeline/currentPhase", MatchPhase.NO_PHASE.getDisplayName());
 
     matchChangeCallback = () -> {};
+
+    logger.startPeriodic(1 / 4.0);
 
     timer = new Timer();
   }
@@ -62,6 +58,7 @@ public class MatchTimeline {
     Logger.recordOutput("MatchTimeline/timeUntilNextPhase", timeUntilNextPhase());
     Logger.recordOutput("MatchTimeline/isWinningAuto", hasWonAuto());
     Logger.recordOutput("MatchTimeline/canScore", canScore());
+    
   }
 
   public void start() {
@@ -111,47 +108,47 @@ public class MatchTimeline {
     return timer.get();
   }
 
-
   /**
    * returns wether or not your team won auto
+   *
    * @return
    */
   public boolean hasWonAuto() {
 
-    if(teamThatWonAuto.isEmpty()) {
-          updateAutoWinner();
-    }
-
-    if(DriverStation.getAlliance() == null || DriverStation.getAlliance().isEmpty()) {
-      return false;
-    }
-
-    if(teamThatWonAuto.isPresent()) {
-      return teamThatWonAuto.get() == DriverStation.getAlliance().get();
-    }
-
     return false;
 
+    // if (teamThatWonAuto.isEmpty()) {
+    //   updateAutoWinner();
+    // }
+
+    // if (DriverStation.getAlliance() == null || DriverStation.getAlliance().isEmpty()) {
+    //   return false;
+    // }
+
+    // if (teamThatWonAuto.isPresent()) {
+    //   return teamThatWonAuto.get() == DriverStation.getAlliance().get();
+    // }
+
+    // return false;
   }
 
   public void updateAutoWinner() {
     String gameData = DriverStation.getGameSpecificMessage();
 
-    if(gameData == null || gameData.length() < 0) {
+    if (gameData == null || gameData.length() < 0) {
       return;
     }
 
     switch (gameData.charAt(0)) {
       case 'R':
-
         teamThatWonAuto = Optional.of(Alliance.Red);
-        
+
         break;
 
       case 'B':
         teamThatWonAuto = Optional.of(Alliance.Blue);
         break;
-    
+
       default:
         break;
     }
