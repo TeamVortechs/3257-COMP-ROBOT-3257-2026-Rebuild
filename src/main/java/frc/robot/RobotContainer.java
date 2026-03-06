@@ -117,48 +117,48 @@ public class RobotContainer {
         // Real robot, instantiate hardware IO implementations
         // ModuleIOTalonFX is intended for modules with TalonFX drive, TalonFX turn, and
         // a CANcoder
-        drive =
-            new Drive(
-                new GyroIOPigeon2(),
-                new ModuleIOTalonFX(TunerConstants.FrontLeft),
-                new ModuleIOTalonFX(TunerConstants.FrontRight),
-                new ModuleIOTalonFX(TunerConstants.BackLeft),
-                new ModuleIOTalonFX(TunerConstants.BackRight));
         // drive =
         //     new Drive(
-        //         new GyroIO() {},
-        //         new ModuleIO() {},
-        //         new ModuleIO() {},
-        //         new ModuleIO() {},
-        //         new ModuleIO() {});
-        intake = new Intake(new IntakeTalonFXIO(IntakeConstants.INTAKE_ROLLER_MOTOR_ID, 22));
-        // intake = new Intake(new IntakeIO() {});
+        //         new GyroIOPigeon2(),
+        //         new ModuleIOTalonFX(TunerConstants.FrontLeft),
+        //         new ModuleIOTalonFX(TunerConstants.FrontRight),
+        //         new ModuleIOTalonFX(TunerConstants.BackLeft),
+        //         new ModuleIOTalonFX(TunerConstants.BackRight));
+        drive =
+            new Drive(
+                new GyroIO() {},
+                new ModuleIO() {},
+                new ModuleIO() {},
+                new ModuleIO() {},
+                new ModuleIO() {});
+        // intake = new Intake(new IntakeTalonFXIO(IntakeConstants.INTAKE_ROLLER_MOTOR_ID, 22));
+        intake = new Intake(new IntakeIO() {});
 
         belt = new Belt(new BeltIO() {});
 
-        shooter =
-            new Shooter(
-                new ShooterTalonFXIO(ShooterConstants.MOTOR_ID),
-                () -> drive.getDistanceToGoal(),
-                () -> drive.isWithinShooterAutomaticChargingZone());
         // shooter =
         //     new Shooter(
-        //         new ShooterIO() {},
+        //         new ShooterTalonFXIO(ShooterConstants.MOTOR_ID),
         //         () -> drive.getDistanceToGoal(),
         //         () -> drive.isWithinShooterAutomaticChargingZone());
+        shooter =
+            new Shooter(
+                new ShooterIO() {},
+                () -> drive.getDistanceToGoal(),
+                () -> drive.isWithinShooterAutomaticChargingZone());
 
-        feeder =
-            new Feeder(
-                new FeederTalonFXIO(FeederConstants.MOTOR_ID),
-                () -> drive.isPointingToGoal(),
-                () -> shooter.isOnTarget(),
-                () -> true);
         // feeder =
         //     new Feeder(
-        //         new FeederIO() {},
+        //         new FeederTalonFXIO(FeederConstants.MOTOR_ID),
         //         () -> drive.isPointingToGoal(),
         //         () -> shooter.isOnTarget(),
         //         () -> true);
+        feeder =
+            new Feeder(
+                new FeederIO() {},
+                () -> drive.isPointingToGoal(),
+                () -> shooter.isOnTarget(),
+                () -> true);
 
         climb = new Climb(new ClimbIO() {});
 
