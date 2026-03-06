@@ -3,42 +3,35 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.426279342723006,
-        "y": 2.534
-      },
-      "prevControl": null,
-      "nextControl": {
-        "x": 3.009096701356163,
-        "y": 2.247531207545306
-      },
-      "isLocked": false,
-      "linkedName": "Bottom Score"
-    },
-    {
-      "anchor": {
         "x": 0.46958481613285974,
         "y": 0.823380782918149
       },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.743645496839888,
+        "y": 3.0122364817415725
+      },
+      "isLocked": false,
+      "linkedName": "Human player Intake Stationary"
+    },
+    {
+      "anchor": {
+        "x": 3.426279342723006,
+        "y": 5.696
+      },
       "prevControl": {
-        "x": 1.597095076498837,
-        "y": 1.4562107574514025
+        "x": 2.5584159058988765,
+        "y": 5.034236613412921
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Human player Intake Stationary"
+      "linkedName": "Top Shoot Ramp"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [
-    {
-      "name": "intakeDownEvent",
-      "waypointRelativePos": 0.05,
-      "endWaypointRelativePos": null,
-      "command": null
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 2.0,
     "maxAcceleration": 3.0,
@@ -48,14 +41,14 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0.0,
-    "rotation": 0.0
+    "velocity": 0,
+    "rotation": -54.397690038137
   },
   "reversed": false,
-  "folder": "Front Bottom",
+  "folder": "Front Top",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 51.257592517258765
+    "rotation": 0.0
   },
   "useDefaultConstraints": true
 }
