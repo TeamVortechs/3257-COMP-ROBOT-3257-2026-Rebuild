@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.4480664294187432,
-        "y": 0.6727520759193351
+        "x": 0.46958481613285974,
+        "y": 0.823380782918149
       },
       "prevControl": null,
       "nextControl": {
-        "x": 0.6600656797892204,
-        "y": 0.8052523319279774
+        "x": 0.69606706258416,
+        "y": 0.929238196651777
       },
       "isLocked": false,
       "linkedName": "Human player Intake Stationary"
@@ -20,8 +20,8 @@
         "y": 2.5339788732394366
       },
       "prevControl": {
-        "x": 3.0630308989568045,
-        "y": 2.2538439248628146
+        "x": 2.8300203043424226,
+        "y": 2.154624132045145
       },
       "nextControl": null,
       "isLocked": false,
@@ -55,7 +55,7 @@
   "folder": "Front Bottom",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -90.0
   },
   "useDefaultConstraints": true
 }

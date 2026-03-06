@@ -475,6 +475,8 @@ public final class Constants {
     public static final double KD = 0;
     public static final double KG = 0.5;
 
+    public static final double ROLLER_GOING_DOWN_VOLTS = 0;
+    public static final double ROLLER_GOING_UP_VOLTS = 1;
     public static final double INTAKE_VOLTS = 12;
     public static final double EJECT_VOLTS = -8;
     public static final double INTAKE_DOWN_POSITION = 60;

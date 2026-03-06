@@ -44,7 +44,6 @@ public class MatchTimeline {
               logOutputs();
             });
 
-
     Logger.recordOutput("MatchTimeline/currentPhase", MatchPhase.NO_PHASE.getDisplayName());
 
     matchChangeCallback = () -> {};
@@ -58,7 +57,6 @@ public class MatchTimeline {
     Logger.recordOutput("MatchTimeline/timeUntilNextPhase", timeUntilNextPhase());
     Logger.recordOutput("MatchTimeline/isWinningAuto", hasWonAuto());
     Logger.recordOutput("MatchTimeline/canScore", canScore());
-    
   }
 
   public void start() {

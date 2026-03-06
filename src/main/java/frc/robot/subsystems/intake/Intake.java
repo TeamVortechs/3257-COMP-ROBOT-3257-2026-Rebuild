@@ -175,7 +175,9 @@ public class Intake extends SubsystemBase {
   }
 
   public Command setPositionAndRollersCommandConsistentEnd(double position, double voltage) {
-    return Commands.startRun(() -> this.setPositionWithVelocity(position, voltage), () -> {}, this)
+    return Commands.parallel(
+            Commands.startRun(() -> this.setPosition(position), () -> {}),
+            Commands.startRun(() -> this.setRollersVoltage(voltage), () -> {}, this))
         .withDeadline(new WaitUntilCommand(() -> isOnTarget()));
   }
 
