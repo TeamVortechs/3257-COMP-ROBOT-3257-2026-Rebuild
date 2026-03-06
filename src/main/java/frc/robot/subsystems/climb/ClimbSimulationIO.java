@@ -63,4 +63,9 @@ public class ClimbSimulationIO implements ClimbIO {
 
     manual = true;
   }
+
+  @Override
+  public void setServo(double position) {
+    servoTargetPosition = position;
+  }
 }

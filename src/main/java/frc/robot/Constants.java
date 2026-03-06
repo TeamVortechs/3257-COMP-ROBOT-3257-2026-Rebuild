@@ -162,8 +162,6 @@ public final class Constants {
     private static List<Pose2d> PASSING_GOALS_STORAGE = null;
     private static List<String> PASSING_GOALS_NAME_STORAGE = null;
 
-    public static boolean SWICH_PASSING_GOALS = false;
-
     public static final List<String> PASSING_GOALS_NAMES() {
 
       if (PASSING_GOALS_NAME_STORAGE == null) {
@@ -175,29 +173,34 @@ public final class Constants {
       return PASSING_GOALS_NAME_STORAGE;
     }
 
-    public static final List<Pose2d> PASSING_GOALS() {
+    public static final int GET_PASSING_GOALS() {
+      GET_PASSING_GOAL(0);
+      return PASSING_GOALS_STORAGE.size();
+    }
+
+    public static final Pose2d GET_PASSING_GOAL(int index) {
 
       if (PASSING_GOALS_STORAGE == null) {
         PASSING_GOALS_STORAGE = new ArrayList<>();
-        PASSING_GOALS_STORAGE.add(new Pose2d(0.5, 1.2, new Rotation2d()));
         PASSING_GOALS_STORAGE.add(new Pose2d(0.5, 6.8, new Rotation2d()));
+        PASSING_GOALS_STORAGE.add(new Pose2d(0.5, 1.2, new Rotation2d()));
       }
+
+      Pose2d returnPose = PASSING_GOALS_STORAGE.get(index);
 
       // add flip logic here
       // double xToFlip = 5;
       // double yToFlip = 5;
       // double x;
       // double y;
-      if (SWICH_PASSING_GOALS) {
-        for (int i = 0; i < PASSING_GOALS_STORAGE.size(); i++) {
-          PASSING_GOALS_STORAGE.set(
-              i,
-              PASSING_GOALS_STORAGE.get(i).rotateAround(CENTER_POINT, Rotation2d.fromDegrees(180)));
-        }
-        SWICH_PASSING_GOALS = false;
+      if (DriverStation.getAlliance() != null
+          && DriverStation.getAlliance().isPresent()
+          && DriverStation.getAlliance().get() == Alliance.Red) {
+
+        returnPose = returnPose.rotateAround(CENTER_POINT, Rotation2d.fromDegrees(180));
       }
 
-      return PASSING_GOALS_STORAGE;
+      return returnPose;
     }
 
     // this is ugly but all it does is return target pose based on the team
@@ -472,7 +475,8 @@ public final class Constants {
     public static final double INTAKE_VOLTS = 12;
     public static final double EJECT_VOLTS = -8;
     public static final double INTAKE_DOWN_POSITION = 60;
-    public static final double INTAKE_UP_POSITION = 30;
+    public static final double INTAKE_HALFWAY_UP_POSITION = 30;
+    public static final double INTAKE_UP_POSITION = 0;
 
     public static final double MOTION_MAGIC_CRUISE_VELOCITY = 3;
     public static final double MOTION_MAGIC_ACCELERATION = 2.5;

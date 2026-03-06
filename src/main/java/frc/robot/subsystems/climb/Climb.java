@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.ClimbConstants;
+import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.Logger;
 
 public class Climb extends SubsystemBase {
@@ -52,6 +53,8 @@ public class Climb extends SubsystemBase {
   public void setLocked(boolean locked) {
     isLocked = locked;
 
+    Logger.recordOutput("Climb/IsLocked", locked);
+
     if (isLocked) {
       climbIO.setServo(ClimbConstants.SERVO_CLOSED);
     } else {
@@ -62,6 +65,10 @@ public class Climb extends SubsystemBase {
   // this is a run command because we do a check everytime we run this command
   public Command setVoltageRun(double voltage) {
     return new RunCommand(() -> setVoltage(voltage), this);
+  }
+
+  public Command setVoltageRun(DoubleSupplier voltage) {
+    return new RunCommand(() -> setVoltage(voltage.getAsDouble()), this);
   }
 
   public Command setVoltageInstant(double voltage) {
