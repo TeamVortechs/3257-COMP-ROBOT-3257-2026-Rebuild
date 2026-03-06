@@ -102,7 +102,7 @@ public class RobotContainer {
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
 
-  private final MatchTimeline matchTimeline = new MatchTimeline(operatorController);
+  private final MatchTimeline matchTimeline = new MatchTimeline(operatorController, controller);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -280,9 +280,9 @@ public class RobotContainer {
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
             drive,
-            () -> -controller.getLeftY(),
-            () -> -controller.getLeftX(),
-            () -> -controller.getRightX()));
+            () -> -controller.getLeftY() * 0.75,
+            () -> -controller.getLeftX() * 0.75,
+            () -> -controller.getRightX() * 0.6));
 
     // CONTROLLER:
 
@@ -292,8 +292,8 @@ public class RobotContainer {
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
                 drive,
-                () -> -controller.getLeftY(),
-                () -> -controller.getLeftX(),
+                () -> -controller.getLeftY() * 0.75,
+                () -> -controller.getLeftX() * 0.75,
                 () -> drive.getRotationOverBumper()));
 
     // Switch to X pattern when X button is pressed
@@ -405,6 +405,9 @@ public class RobotContainer {
 
     operatorController.povUp().whileTrue(belt.setPercentMotorOutputRunCommand(0.5));
     operatorController.povDown().whileTrue(belt.setPercentMotorOutputRunCommand(-0.2));
+
+    operatorController.povRight().onTrue(drive.setPassingIndexCommmand(1));
+    operatorController.povLeft().onTrue(drive.setPassingIndexCommmand(0));
 
     // sysid bindings:
     configureSysIdBindings(sysID_controller, shooter.BuildSysIdRoutine());

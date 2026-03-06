@@ -285,6 +285,10 @@ public class Drive extends SubsystemBase {
     return goalPoseManager.iteratePassingPoseCommand(forward);
   }
 
+  public Command setPassingIndexCommmand(int index) {
+    return goalPoseManager.setPassingPoseIndexCommand(index);
+  }
+
   /**
    * This is really ugly. I'm putting this in my own periodic so we can easily add this logic into
    * the cdoe when we change the drive code.

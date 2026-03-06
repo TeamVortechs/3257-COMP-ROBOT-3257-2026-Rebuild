@@ -20,6 +20,10 @@ public class GoalPoseManager {
     Logger.recordOutput("GoalPoseManager/isPassing", isPassing);
   }
 
+  public void setPassingPoseIndex(int index) {
+    indexOfPassingPose = index;
+  }
+
   // operations
   public void iteratePassingPose(boolean forwards) {
 
@@ -64,5 +68,9 @@ public class GoalPoseManager {
   // commands
   public Command iteratePassingPoseCommand(boolean forwards) {
     return new InstantCommand(() -> iteratePassingPose(forwards));
+  }
+
+  public Command setPassingPoseIndexCommand(int index) {
+    return new InstantCommand(() -> setPassingPoseIndex(index));
   }
 }
