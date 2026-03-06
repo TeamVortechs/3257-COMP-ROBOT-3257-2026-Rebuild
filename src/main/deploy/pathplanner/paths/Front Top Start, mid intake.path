@@ -4,28 +4,28 @@
     {
       "anchor": {
         "x": 4.4999397590361445,
-        "y": 0.8222530120481917
+        "y": 7.408
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.483368920521945,
-        "y": 0.6081969157769855
+        "x": 5.861596930594147,
+        "y": 7.483761476864715
       },
       "isLocked": false,
-      "linkedName": "Bottom Start"
+      "linkedName": "Top Start"
     },
     {
       "anchor": {
         "x": 7.613689205219455,
-        "y": 1.4043772241992882
+        "y": 6.826
       },
       "prevControl": {
-        "x": 7.437098060340933,
-        "y": 1.2274151730400273
+        "x": 7.412096584750958,
+        "y": 6.973852681317062
       },
       "nextControl": {
-        "x": 7.790280350097977,
-        "y": 1.5813392753585487
+        "x": 7.8152818256879515,
+        "y": 6.678147318682938
       },
       "isLocked": false,
       "linkedName": null
@@ -33,15 +33,15 @@
     {
       "anchor": {
         "x": 7.64596678529063,
-        "y": 3.16888493475682
+        "y": 5.061
       },
       "prevControl": {
-        "x": 7.760186389380174,
-        "y": 2.9465026466994577
+        "x": 7.731800815286661,
+        "y": 5.2958031500952245
       },
       "nextControl": {
-        "x": 7.375556782550023,
-        "y": 3.6953654422177897
+        "x": 7.489813633643421,
+        "y": 4.633835483714819
       },
       "isLocked": false,
       "linkedName": null
@@ -49,15 +49,15 @@
     {
       "anchor": {
         "x": 4.927300469483568,
-        "y": 2.544624413145541
+        "y": 5.685
       },
       "prevControl": {
-        "x": 5.169765195084906,
-        "y": 2.6055412157460363
+        "x": 5.1766824902041035,
+        "y": 5.667432765119629
       },
       "nextControl": {
-        "x": 4.260002181460358,
-        "y": 2.376972487751681
+        "x": 4.174804620544575,
+        "y": 5.7380081169709864
       },
       "isLocked": false,
       "linkedName": null
@@ -65,37 +65,37 @@
     {
       "anchor": {
         "x": 3.426279342723006,
-        "y": 2.534
+        "y": 5.696
       },
       "prevControl": {
-        "x": 3.255588813913891,
-        "y": 2.7166601855218167
+        "x": 3.2718522756810002,
+        "y": 6.090274420335167
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Bottom Score"
+      "linkedName": "Top Shoot Ramp"
     }
   ],
   "rotationTargets": [
     {
       "waypointRelativePos": 0.3978685612788609,
-      "rotationDegrees": 90.0
+      "rotationDegrees": -90.0
     },
     {
       "waypointRelativePos": 0.9925311203319542,
-      "rotationDegrees": 67.46668522475444
+      "rotationDegrees": -67.467
     },
     {
       "waypointRelativePos": 2.1211618257261216,
-      "rotationDegrees": 67.0
+      "rotationDegrees": -67.0
     },
     {
       "waypointRelativePos": 2.804979253112027,
-      "rotationDegrees": 45.0
+      "rotationDegrees": -45.0
     },
     {
       "waypointRelativePos": 3.4175438596491254,
-      "rotationDegrees": 45.0
+      "rotationDegrees": -45.0
     }
   ],
   "constraintZones": [
@@ -168,13 +168,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 51.257592517258765
+    "rotation": -54.397690038137
   },
   "reversed": false,
-  "folder": "Front Bottom",
+  "folder": "Front Top",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 90.0
+    "rotation": -90.0
   },
   "useDefaultConstraints": true
 }

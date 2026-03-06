@@ -33,7 +33,6 @@ import frc.robot.Constants.ClimbConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.FeederConstants;
 import frc.robot.Constants.IntakeConstants;
-import frc.robot.Constants.ShooterConstants;
 import frc.robot.commands.DriveCommands;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.belt.Belt;
@@ -44,25 +43,22 @@ import frc.robot.subsystems.climb.ClimbIO;
 import frc.robot.subsystems.climb.ClimbSimulationIO;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
-import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
-import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.feeder.Feeder;
 import frc.robot.subsystems.feeder.FeederIO;
 import frc.robot.subsystems.feeder.FeederSimulationIO;
-import frc.robot.subsystems.feeder.FeederTalonFXIO;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeIO;
 import frc.robot.subsystems.intake.IntakeSimulationIO;
-import frc.robot.subsystems.intake.IntakeTalonFXIO;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterIO;
 import frc.robot.subsystems.shooter.ShooterSimulationIO;
-import frc.robot.subsystems.shooter.ShooterTalonFXIO;
 import frc.robot.subsystems.vision.Vision;
+import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOPhotonVision;
+import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
 import frc.robot.util.MatchTimeline;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
@@ -205,8 +201,7 @@ public class RobotContainer {
         //         new VisionIOPhotonVisionSim(
         //             VisionConstants.photon0Name, VisionConstants.robotToPhoton0, drive::getPose),
         //         new VisionIOPhotonVisionSim(
-        //             VisionConstants.photon1Name, VisionConstants.robotToPhoton1,
-        // drive::getPose));
+        //             VisionConstants.photon1Name, VisionConstants.robotToPhoton1, drive::getPose));
 
         vision = new Vision(drive::addVisionMeasurement, new VisionIO() {});
 
@@ -382,26 +377,27 @@ public class RobotContainer {
 
     operatorController.rightStick().whileTrue(drive.iteratePassingCommand(true));
 
-    operatorController.rightBumper().whileTrue(feeder.setPercentMotorRunCommand(FeederConstants.FEED_POWER));
     operatorController
-        .rightTrigger()
-        .whileTrue(
-            shooter
-                .setManualSpeedRunCommand(78));
+        .rightBumper()
+        .whileTrue(feeder.setPercentMotorRunCommand(FeederConstants.FEED_POWER));
+    operatorController.rightTrigger().whileTrue(shooter.setManualSpeedRunCommand(78));
 
-    operatorController.a().whileTrue(intake.setPositionCommand(IntakeConstants.INTAKE_HALFWAY_UP_POSITION));
     operatorController
-        .b()
-        .whileTrue(intake.setPositionCommand(IntakeConstants.INTAKE_UP_POSITION));
+        .a()
+        .whileTrue(intake.setPositionCommand(IntakeConstants.INTAKE_HALFWAY_UP_POSITION));
+    operatorController.b().whileTrue(intake.setPositionCommand(IntakeConstants.INTAKE_UP_POSITION));
 
     operatorController
         .x()
         .whileTrue(
-            feeder.setPercentMotorRunCommand(-0.3).alongWith(shooter.setManualSpeedRunCommand(-10)));
+            feeder
+                .setPercentMotorRunCommand(-0.3)
+                .alongWith(shooter.setManualSpeedRunCommand(-10)));
 
     operatorController
         .y()
-        .whileTrue(shooter.setAutomaticallyChargeFully(() -> !shooter.isAutomaticallyChargeFully()));
+        .whileTrue(
+            shooter.setAutomaticallyChargeFully(() -> !shooter.isAutomaticallyChargeFully()));
 
     operatorController.povUp().whileTrue(belt.setPercentMotorOutputRunCommand(0.5));
     operatorController.povDown().whileTrue(belt.setPercentMotorOutputRunCommand(-0.2));

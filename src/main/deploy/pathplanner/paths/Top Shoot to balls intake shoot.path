@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.4480664294187432,
-        "y": 0.6727520759193351
+        "x": 0.4996061195567352,
+        "y": 5.957199902963969
       },
       "prevControl": null,
       "nextControl": {
-        "x": 0.6600656797892204,
-        "y": 0.8052523319279774
+        "x": 0.7448445958275405,
+        "y": 6.005760069318437
       },
       "isLocked": false,
-      "linkedName": "Human player Intake Stationary"
+      "linkedName": "balls intake end"
     },
     {
       "anchor": {
         "x": 3.426279342723006,
-        "y": 2.534
+        "y": 5.696
       },
       "prevControl": {
-        "x": 3.0630308989568045,
-        "y": 2.253865051623378
+        "x": 3.1919286286202966,
+        "y": 5.608938281664384
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Bottom Score"
+      "linkedName": "Top Shoot Ramp"
     }
   ],
   "rotationTargets": [],
@@ -49,13 +49,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 51.257592517258765
+    "rotation": -54.397690038137
   },
   "reversed": false,
-  "folder": "Front Bottom",
+  "folder": "Front Top",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -122.51244126161416
   },
   "useDefaultConstraints": true
 }

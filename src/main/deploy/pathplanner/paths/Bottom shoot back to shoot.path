@@ -4,12 +4,12 @@
     {
       "anchor": {
         "x": 3.426279342723006,
-        "y": 2.5339788732394366
+        "y": 2.534
       },
       "prevControl": null,
       "nextControl": {
         "x": 3.7107451950988133,
-        "y": 1.8601687968404725
+        "y": 1.8601899236010357
       },
       "isLocked": false,
       "linkedName": "Bottom Score"
@@ -81,11 +81,11 @@
     {
       "anchor": {
         "x": 3.426279342723006,
-        "y": 2.5339788732394366
+        "y": 2.534
       },
       "prevControl": {
         "x": 4.475943474751545,
-        "y": 3.0290695529374343
+        "y": 3.0290906796979975
       },
       "nextControl": null,
       "isLocked": false,
@@ -175,13 +175,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 52.51911833466975
+    "rotation": 51.257592517258765
   },
   "reversed": false,
   "folder": "Front Bottom",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 52.51911833466975
+    "rotation": 51.257592517258765
   },
   "useDefaultConstraints": true
 }

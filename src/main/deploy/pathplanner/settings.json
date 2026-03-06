@@ -5,8 +5,9 @@
   "pathFolders": [
     "Back Bottom",
     "Front Bottom",
+    "Front Bottom Mid",
     "Mid",
-    "Front Bottom Mid"
+    "Front Top"
   ],
   "autoFolders": [],
   "defaultMaxVel": 2.0,

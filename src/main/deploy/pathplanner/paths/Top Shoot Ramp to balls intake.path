@@ -4,59 +4,58 @@
     {
       "anchor": {
         "x": 3.426279342723006,
-        "y": 2.534
+        "y": 5.696
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.1433164769044426,
-        "y": 1.1987670399987342
+        "x": 4.036578935780833,
+        "y": 5.6592890622278915
       },
       "isLocked": false,
-      "linkedName": "Bottom Score"
+      "linkedName": "Top Shoot Ramp"
     },
     {
       "anchor": {
-        "x": 3.426279342723006,
-        "y": 0.6800752688172043
+        "x": 0.7818747543793074,
+        "y": 6.779317406000221
       },
       "prevControl": {
-        "x": 3.150300687622993,
-        "y": 0.8283691047485134
+        "x": 1.2156695260658457,
+        "y": 7.058371878970138
       },
       "nextControl": {
-        "x": 3.6465003119923987,
-        "y": 0.561742159781528
+        "x": 0.5335466785739252,
+        "y": 6.619571219922213
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 4.563978494623656,
-        "y": 0.6800752688172043
+        "x": 0.4996061195567352,
+        "y": 5.957199902963969
       },
       "prevControl": {
-        "x": 4.024060075298653,
-        "y": 0.7184125673769204
+        "x": 0.4510185467232066,
+        "y": 6.373464416901798
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "balls intake end"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1,
+      "rotationDegrees": -122.8126429714155
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "intakeUpEvent",
-      "waypointRelativePos": 0.03772037720377129,
-      "endWaypointRelativePos": null,
-      "command": null
-    },
-    {
       "name": "intakeDownEvent",
-      "waypointRelativePos": 1.8810988109881235,
+      "waypointRelativePos": 0.1,
       "endWaypointRelativePos": null,
       "command": null
     }
@@ -71,13 +70,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -122.51200000000001
   },
   "reversed": false,
-  "folder": "Front Bottom",
+  "folder": "Front Top",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 51.257592517258765
+    "rotation": -54.397690038137
   },
   "useDefaultConstraints": true
 }
