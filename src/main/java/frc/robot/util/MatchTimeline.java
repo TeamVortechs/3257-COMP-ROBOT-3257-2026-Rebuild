@@ -24,11 +24,14 @@ public class MatchTimeline {
   private Timer timer;
 
   private CommandXboxController controller;
+  private CommandXboxController secondController;
 
   private Optional<Alliance> teamThatWonAuto = Optional.empty();
 
-  public MatchTimeline(CommandXboxController commandXboxController) {
+  public MatchTimeline(
+      CommandXboxController commandXboxController, CommandXboxController secondController) {
     this.controller = commandXboxController;
+    this.secondController = secondController;
   }
 
   {
@@ -70,9 +73,11 @@ public class MatchTimeline {
     return new StartEndCommand(
             () -> {
               controller.getHID().setRumble(RumbleType.kBothRumble, 1);
+              secondController.getHID().setRumble(RumbleType.kBothRumble, 1);
             },
             () -> {
               controller.getHID().setRumble(RumbleType.kBothRumble, 0);
+              secondController.getHID().setRumble(RumbleType.kBothRumble, 0);
             })
         .withDeadline(new WaitCommand(1));
   }
