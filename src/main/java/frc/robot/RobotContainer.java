@@ -376,16 +376,18 @@ public class RobotContainer {
         .whileTrue(
             climb.setVoltageRun(
                 () -> operatorController.getLeftY() * ClimbConstants.CLIMB_UP_VOLTS));
+
     operatorController.leftBumper().onTrue(climb.setLockedInstant(true));
     operatorController.leftTrigger().onTrue(climb.setLockedInstant(false));
 
-    operatorController.rightBumper().whileTrue(drive.iteratePassingCommand(true));
+    operatorController.rightStick().whileTrue(drive.iteratePassingCommand(true));
+
+    operatorController.rightBumper().whileTrue(feeder.setPercentMotorRunCommand(FeederConstants.FEED_POWER));
     operatorController
         .rightTrigger()
         .whileTrue(
             shooter
-                .setManualSpeedCommand(78)
-                .alongWith(feeder.feedWhenShooterIsRevvedCommand(FeederConstants.FEED_POWER)));
+                .setManualSpeedRunCommand(78));
 
     operatorController.a().whileTrue(intake.setPositionCommand(IntakeConstants.INTAKE_UP_POSITION));
     operatorController
@@ -395,14 +397,14 @@ public class RobotContainer {
     operatorController
         .x()
         .whileTrue(
-            feeder.setPercentMotorCommand(-0.3).alongWith(shooter.setManualSpeedCommand(-10)));
+            feeder.setPercentMotorRunCommand(-0.3).alongWith(shooter.setManualSpeedRunCommand(-10)));
 
     operatorController
         .y()
-        .whileTrue(shooter.setAutomaticallyChargeFully(() -> shooter.isAutomaticallyChargeFully()));
+        .whileTrue(shooter.setAutomaticallyChargeFully(() -> !shooter.isAutomaticallyChargeFully()));
 
-    operatorController.povUp().whileTrue(belt.setPercentMotorOutputCommand(0.5));
-    operatorController.povDown().whileTrue(belt.setPercentMotorOutputCommand(-0.2));
+    operatorController.povUp().whileTrue(belt.setPercentMotorOutputRunCommand(0.5));
+    operatorController.povDown().whileTrue(belt.setPercentMotorOutputRunCommand(-0.2));
 
     // sysid bindings:
     configureSysIdBindings(sysID_controller, shooter.BuildSysIdRoutine());
