@@ -160,7 +160,8 @@ public class ShooterRotationManager {
   }
 
   public void setCalculateShootMove(boolean calculateShootOnMove) {
-    this.calculateShootOnMove = calculateShootOnMove;
+    // this.calculateShootOnMove = calculateShootOnMove;
+    calculateShootOnMove = false;
   }
 
   public Pose2d getEffectiveTarget() {

@@ -167,10 +167,12 @@ public class IntakeTalonFXIO implements IntakeIO {
   }
   /**
    * sets the position of the intake at a specified velocity
+   *
    * @param position1 position in CTRE angle units
    * @param velocity desired cruise velocity in meters per second
    */
-  public void setPositionControlWithVelocity(double position1, double velocity) { // IMPORTANT - POSITON1 NOT POSITION
+  public void setPositionControlWithVelocity(
+      double position1, double velocity) { // IMPORTANT - POSITON1 NOT POSITION
     targetPosition = position1;
 
     System.out.println("VERY SLOWLY setting position in FXIO to " + position1);

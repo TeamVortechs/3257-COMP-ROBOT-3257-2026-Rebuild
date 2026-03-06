@@ -8,7 +8,7 @@ import org.littletonrobotics.junction.Logger;
 
 public class GoalPoseManager {
   private int indexOfPassingPose;
-  private int maxIndexOfPassingPose = DriveConstants.PASSING_GOALS().size();
+  private int maxIndexOfPassingPose = DriveConstants.GET_PASSING_GOALS();
 
   // not autologged bc we only log it on the setter
   private boolean isPassing = false;
@@ -49,7 +49,7 @@ public class GoalPoseManager {
   public Pose2d getTargetPose() {
 
     if (isPassing) {
-      return DriveConstants.PASSING_GOALS().get(indexOfPassingPose);
+      return DriveConstants.GET_PASSING_GOAL(indexOfPassingPose);
     } else {
       return DriveConstants.GOAL_POSE.get();
     }

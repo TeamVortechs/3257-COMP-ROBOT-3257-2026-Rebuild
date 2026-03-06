@@ -75,7 +75,7 @@ public class Intake extends SubsystemBase {
     intakeIO.setPositionControl(targetPosition);
   }
 
-    public void setPositionWithVelocity(double targetPosition, double velocity) {
+  public void setPositionWithVelocity(double targetPosition, double velocity) {
     System.out.println("VERY SLOWLY setting position to " + targetPosition);
 
     if (targetPosition > IntakeConstants.MAX_POSITION) {
@@ -169,7 +169,8 @@ public class Intake extends SubsystemBase {
   }
 
   public Command setPositionWithVelocityCommand(double position, double velocity) {
-    return Commands.startRun(() -> this.setPositionWithVelocity(position, velocity), () -> {}, this);
+    return Commands.startRun(
+        () -> this.setPositionWithVelocity(position, velocity), () -> {}, this);
   }
 
   public Command setRollerVoltageAndPositionCommand(double position, double voltage) {
