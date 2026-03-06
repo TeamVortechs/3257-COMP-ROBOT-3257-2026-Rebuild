@@ -38,9 +38,6 @@ public interface IntakeIO {
 
     boolean isBrakedRoller = true;
     boolean isBrakedPosition = true;
-
-    double talonFXPOS;
-    double cancoderPOS;
   }
 
   // updates the given inputs with new values(advantage kit stuff)
