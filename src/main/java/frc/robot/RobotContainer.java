@@ -389,10 +389,10 @@ public class RobotContainer {
             shooter
                 .setManualSpeedRunCommand(78));
 
-    operatorController.a().whileTrue(intake.setPositionCommand(IntakeConstants.INTAKE_UP_POSITION));
+    operatorController.a().whileTrue(intake.setPositionCommand(IntakeConstants.INTAKE_HALFWAY_UP_POSITION));
     operatorController
         .b()
-        .whileTrue(intake.setPositionCommand(IntakeConstants.INTAKE_HALFWAY_UP_POSITION));
+        .whileTrue(intake.setPositionCommand(IntakeConstants.INTAKE_UP_POSITION));
 
     operatorController
         .x()
