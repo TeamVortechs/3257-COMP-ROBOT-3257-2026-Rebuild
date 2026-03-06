@@ -114,7 +114,7 @@
     },
     {
       "name": "While Intaking",
-      "minWaypointRelativePos": 1.0438695163104577,
+      "minWaypointRelativePos": 0.8908886389201427,
       "maxWaypointRelativePos": 2.040180401804019,
       "constraints": {
         "maxVelocity": 0.75,

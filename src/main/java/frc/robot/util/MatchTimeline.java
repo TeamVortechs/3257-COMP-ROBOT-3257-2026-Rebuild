@@ -44,11 +44,11 @@ public class MatchTimeline {
               logOutputs();
             });
 
-    logger.startPeriodic(1 / 4.0);
-
     Logger.recordOutput("MatchTimeline/currentPhase", MatchPhase.NO_PHASE.getDisplayName());
 
     matchChangeCallback = () -> {};
+
+    logger.startPeriodic(1 / 4.0);
 
     timer = new Timer();
   }
@@ -113,19 +113,21 @@ public class MatchTimeline {
    */
   public boolean hasWonAuto() {
 
-    if (teamThatWonAuto.isEmpty()) {
-      updateAutoWinner();
-    }
-
-    if (DriverStation.getAlliance() == null || DriverStation.getAlliance().isEmpty()) {
-      return false;
-    }
-
-    if (teamThatWonAuto.isPresent()) {
-      return teamThatWonAuto.get() == DriverStation.getAlliance().get();
-    }
-
     return false;
+
+    // if (teamThatWonAuto.isEmpty()) {
+    //   updateAutoWinner();
+    // }
+
+    // if (DriverStation.getAlliance() == null || DriverStation.getAlliance().isEmpty()) {
+    //   return false;
+    // }
+
+    // if (teamThatWonAuto.isPresent()) {
+    //   return teamThatWonAuto.get() == DriverStation.getAlliance().get();
+    // }
+
+    // return false;
   }
 
   public void updateAutoWinner() {

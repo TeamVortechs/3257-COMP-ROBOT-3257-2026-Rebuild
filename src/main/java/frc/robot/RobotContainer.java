@@ -353,14 +353,19 @@ public class RobotContainer {
         .leftTrigger()
         .whileTrue(
             intake
-                .setRollerVoltageAndPositionCommand(
-                    IntakeConstants.INTAKE_DOWN_POSITION, IntakeConstants.INTAKE_VOLTS)
-                .alongWith(belt.setPercentMotorOutputRunCommand(BeltConstants.INTAKE_POWER)));
+                .setPositionAndRollersCommandConsistentEnd(
+                    IntakeConstants.INTAKE_DOWN_POSITION, IntakeConstants.ROLLER_GOING_DOWN_VOLTS)
+                .andThen(
+                    Commands.parallel(
+                        belt.setPercentMotorOutputRunCommand(BeltConstants.INTAKE_POWER),
+                        intake.setRollerVoltageCommand(IntakeConstants.INTAKE_VOLTS))));
 
     // intake up position
     controller
         .leftBumper()
-        .whileTrue(intake.setPositionCommand(IntakeConstants.INTAKE_HALFWAY_UP_POSITION));
+        .onTrue(
+            intake.setPositionAndRollersCommandConsistentEnd(
+                IntakeConstants.INTAKE_HALFWAY_UP_POSITION, IntakeConstants.ROLLER_GOING_UP_VOLTS));
 
     controller.start().whileTrue(new InstantCommand(() -> drive.setPose(new Pose2d())));
 
@@ -519,7 +524,10 @@ public class RobotContainer {
     new EventTrigger("intakeDownEvent")
         .onTrue(new InstantCommand(() -> intake.setPosition(IntakeConstants.INTAKE_DOWN_POSITION)));
 
-    new EventTrigger("intakeUpEvent").onTrue(new InstantCommand(() -> intake.setPosition(0)));
+    new EventTrigger("intakeUpEvent")
+        .onTrue(
+            new InstantCommand(() -> intake.setPosition(0))
+                .andThen(intake.setRollerVoltageCommand(IntakeConstants.ROLLER_GOING_UP_VOLTS)));
 
     new EventTrigger("climbUpEvent")
         .onTrue(new InstantCommand(() -> climb.setVoltage(ClimbConstants.CLIMB_UP_VOLTS)));

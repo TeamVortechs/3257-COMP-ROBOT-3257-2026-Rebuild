@@ -77,8 +77,11 @@ public final class Constants {
     public static final double SUPPLY_CURRENT_LIMIT_CLIMB = 40.0;
     public static final double STATOR_CURRENT_LIMIT_CLIMB = 40.0;
 
-    public static final double SUPPLY_CURRENT_LIMIT_INTAKE = 40.0;
-    public static final double STATOR_CURRENT_LIMIT_INTAKE = 40.0;
+    public static final double SUPPLY_CURRENT_LIMIT_INTAKE_POSITION = 5.0;
+    public static final double STATOR_CURRENT_LIMIT_INTAKE_POSITION = 5.0;
+
+    public static final double SUPPLY_CURRENT_LIMIT_INTAKE_ROLLER = 40.0;
+    public static final double STATOR_CURRENT_LIMIT_INTAKE_ROLLER = 40.0;
   }
 
   public class DriveConstants {
@@ -472,6 +475,8 @@ public final class Constants {
     public static final double KD = 0;
     public static final double KG = 0.5;
 
+    public static final double ROLLER_GOING_DOWN_VOLTS = 0;
+    public static final double ROLLER_GOING_UP_VOLTS = 1;
     public static final double INTAKE_VOLTS = 12;
     public static final double EJECT_VOLTS = -8;
     public static final double INTAKE_DOWN_POSITION = 60;
@@ -519,20 +524,20 @@ public final class Constants {
       POSITION_CONFIG.MotorOutput.NeutralMode = NeutralModeValue.Brake;
       POSITION_CONFIG.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
       POSITION_CONFIG.CurrentLimits.SupplyCurrentLimit =
-          Constants.CurrentLimitConstants.SUPPLY_CURRENT_LIMIT_INTAKE;
+          Constants.CurrentLimitConstants.SUPPLY_CURRENT_LIMIT_INTAKE_POSITION;
       POSITION_CONFIG.CurrentLimits.SupplyCurrentLimitEnable = true;
       POSITION_CONFIG.CurrentLimits.StatorCurrentLimit =
-          Constants.CurrentLimitConstants.STATOR_CURRENT_LIMIT_INTAKE;
+          Constants.CurrentLimitConstants.STATOR_CURRENT_LIMIT_INTAKE_POSITION;
       POSITION_CONFIG.CurrentLimits.StatorCurrentLimitEnable = true;
 
       ROLLER_CONFIG = new TalonFXConfiguration();
       ROLLER_CONFIG.MotorOutput.NeutralMode = NeutralModeValue.Coast;
       ROLLER_CONFIG.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
       ROLLER_CONFIG.CurrentLimits.SupplyCurrentLimit =
-          Constants.CurrentLimitConstants.SUPPLY_CURRENT_LIMIT_INTAKE;
+          Constants.CurrentLimitConstants.SUPPLY_CURRENT_LIMIT_INTAKE_ROLLER;
       ROLLER_CONFIG.CurrentLimits.SupplyCurrentLimitEnable = true;
       ROLLER_CONFIG.CurrentLimits.StatorCurrentLimit =
-          Constants.CurrentLimitConstants.STATOR_CURRENT_LIMIT_INTAKE;
+          Constants.CurrentLimitConstants.STATOR_CURRENT_LIMIT_INTAKE_ROLLER;
       ROLLER_CONFIG.CurrentLimits.StatorCurrentLimitEnable = true;
     }
   }

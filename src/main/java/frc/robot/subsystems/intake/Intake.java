@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.IntakeConstants;
 import java.util.function.DoubleSupplier;
@@ -166,6 +167,18 @@ public class Intake extends SubsystemBase {
 
   public Command setPositionCommand(double position) {
     return Commands.startRun(() -> this.setPosition(position), () -> {}, this);
+  }
+
+  public Command setPositionCommandConsistentEnd(double position) {
+    return Commands.startRun(() -> this.setPosition(position), () -> {}, this)
+        .withDeadline(new WaitUntilCommand(() -> isOnTarget()));
+  }
+
+  public Command setPositionAndRollersCommandConsistentEnd(double position, double voltage) {
+    return Commands.parallel(
+            Commands.startRun(() -> this.setPosition(position), () -> {}),
+            Commands.startRun(() -> this.setRollersVoltage(voltage), () -> {}, this))
+        .withDeadline(new WaitUntilCommand(() -> isOnTarget()));
   }
 
   public Command setPositionWithVelocityCommand(double position, double velocity) {
