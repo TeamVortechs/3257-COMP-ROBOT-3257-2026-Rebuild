@@ -289,7 +289,7 @@ public class RobotContainer {
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
             drive,
-            () -> -controller.getLeftY(),
+            () -> -controller.getLeftY() ,
             () -> -controller.getLeftX(),
             () -> -controller.getRightX()));
 
@@ -342,7 +342,8 @@ public class RobotContainer {
             Commands.parallel(
                     aimTowardsTargetCommand,
                     shooter.setAutomaticCommandRun(),
-                    belt.setPercentMotorOutputRunCommand(BeltConstants.FEED_POWER, () -> feeder.getTargetSpeed() > 0),
+                    belt.setPercentMotorOutputRunCommand(
+                        BeltConstants.FEED_POWER, () -> feeder.getTargetSpeed() > 0),
                     feeder.feedWhenValidRunCommand(FeederConstants.FEED_POWER))
                 .withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
 
@@ -472,7 +473,9 @@ public class RobotContainer {
                         .withDeadline(new WaitCommand(3)))
                 .andThen(feeder.setPercentMotorCommand(0)),
             // second command(point towards target)
-            drive.joystickDriveAtTarget(drive, () -> 0, () -> 0)));
+            drive.joystickDriveAtTarget(drive, () -> 0, () -> 0),
+            belt.setPercentMotorOutputRunCommand(
+                BeltConstants.FEED_POWER, () -> feeder.getTargetSpeed() > 0)));
 
     /*
     version with moving intake:

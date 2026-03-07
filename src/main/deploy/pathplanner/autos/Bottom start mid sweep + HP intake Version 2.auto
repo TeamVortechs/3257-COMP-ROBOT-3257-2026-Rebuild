@@ -59,6 +59,12 @@
               }
             ]
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Bottom shoot to ending position"
+          }
         }
       ]
     }
