@@ -354,9 +354,7 @@ public class RobotContainer {
         .whileTrue(
             Commands.parallel(
                 intake.setRollerVoltageAndPositionCommand(
-                    IntakeConstants.INTAKE_DOWN_POSITION, IntakeConstants.EJECT_VOLTS),
-                belt.setPercentMotorOutputRunCommand(BeltConstants.EJECT_POWER)));
-
+                    IntakeConstants.INTAKE_DOWN_POSITION, IntakeConstants.EJECT_VOLTS)));
     // intake command
     controller
         .leftTrigger()
