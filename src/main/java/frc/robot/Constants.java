@@ -119,7 +119,7 @@ public final class Constants {
 
     public static final ProfiledPIDController ANGLE_CONTROLLER;
 
-    public static final double ORIENTATION_TOLERANCE = .1;
+    public static final double ORIENTATION_TOLERANCE = 0.2;
     // the time it takes between feeding and actual robot shoot. This is used to lead the robot
     // pose. Should be about 0.08 - 0.18 s
     public static final double KRELEASE_POSE_PREDICTION_SEC = 0; // to change .5

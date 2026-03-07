@@ -195,7 +195,7 @@ public class RobotContainer {
         feeder =
             new Feeder(
                 new FeederSimulationIO(),
-                () -> drive.isPointingToGoal() && !drive.isSkidding(),
+                () -> drive.isPointingToGoal(),
                 () -> shooter.isOnTarget(),
                 () -> true);
 
@@ -342,8 +342,7 @@ public class RobotContainer {
             Commands.parallel(
                     aimTowardsTargetCommand,
                     shooter.setAutomaticCommandRun(),
-                    drive.logDistance(),
-                    belt.setPercentMotorOutputRunCommand(BeltConstants.FEED_POWER),
+                    belt.setPercentMotorOutputRunCommand(BeltConstants.FEED_POWER, () -> feeder.getTargetSpeed() > 0),
                     feeder.feedWhenValidRunCommand(FeederConstants.FEED_POWER))
                 .withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
 

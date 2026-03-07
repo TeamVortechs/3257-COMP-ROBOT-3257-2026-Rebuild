@@ -86,6 +86,7 @@ public class Belt extends SubsystemBase {
         () -> {
           if (run.getAsBoolean()) {
             this.setPercentMotorOutput(speed);
+            return;
           }
 
           this.setPercentMotorOutput(0);
