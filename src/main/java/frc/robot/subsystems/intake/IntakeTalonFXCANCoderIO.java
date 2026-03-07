@@ -7,6 +7,7 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DynamicMotionMagicVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
+import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -21,6 +22,7 @@ import frc.robot.util.VortechsUtil;
 public class IntakeTalonFXCANCoderIO implements IntakeIO {
   private final TalonFX roller;
   private final TalonFX position;
+  private final CANcoder caNcoder;
 
   // StatusSignals allow for high-frequency, synchronous data collection
   private final StatusSignal<AngularVelocity> rollerVelocity;
@@ -47,6 +49,7 @@ public class IntakeTalonFXCANCoderIO implements IntakeIO {
   public IntakeTalonFXCANCoderIO(int canIdRoller, int canIdPosition, int canIdCANCoder) {
     roller = new TalonFX(canIdRoller);
     position = new TalonFX(canIdPosition);
+    caNcoder = new CANcoder(canIdCANCoder);
 
     mVoltageRequest =
         new DynamicMotionMagicVoltage(
@@ -181,7 +184,13 @@ public class IntakeTalonFXCANCoderIO implements IntakeIO {
   }
 
   public void resetEncoder(double positionVal) {
-    position.setPosition(positionVal);
+    // position.setPosition(positionVal);
+    caNcoder.setPosition(positionVal);
+    System.out.println("resetting encoder to " + positionVal);
+  }
+
+  public void resetEncoders() {
+    resetEncoder(IntakeConstants.MAX_POSITION);
   }
 
   public double getTargetPosition() {
@@ -194,10 +203,6 @@ public class IntakeTalonFXCANCoderIO implements IntakeIO {
   }
 
   // misc methods
-
-  public void resetEncoders() {
-    position.setPosition(IntakeConstants.MIN_POSITION);
-  }
 
   public void setBrakedRoller(boolean braked) {
     isBrakedRoller = braked;

@@ -465,7 +465,7 @@ public final class Constants {
     public static final double MIN_POSITION = 0.44; // o.373535
     public static final double MAX_POSITION = 1.13; // can also do -0.36
     public static final double MID_POSITION = -0.8;
- 
+
     public static final double INTAKE_DOWN_POSITION = MIN_POSITION;
     public static final double INTAKE_HALFWAY_UP_POSITION = MID_POSITION;
     public static final double INTAKE_UP_POSITION = MAX_POSITION;
