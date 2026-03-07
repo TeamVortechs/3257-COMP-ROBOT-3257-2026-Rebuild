@@ -161,9 +161,7 @@ public class RobotContainer {
         //         () -> true);
 
         belt = new Belt(new BeltTalonFXIO(25));
-        // belt = new Belt(new BeltIO() {
-
-        // });
+        // belt = new Belt(new BeltIO() {});
 
         climb = new Climb(new ClimbIO() {});
 
@@ -408,10 +406,11 @@ public class RobotContainer {
                 .alongWith(belt.setPercentMotorOutputRunCommand(BeltConstants.FEED_POWER)));
     operatorController.rightTrigger().whileTrue(shooter.setManualSpeedRunCommand(78));
 
-    operatorController
-        .b()
-        .onTrue(
-            intake.resetEncoderInstant(IntakeConstants.INTAKE_UP_POSITION).ignoringDisable(true));
+    // operatorController
+    //     .b()
+    //     .onTrue(
+    //
+    // intake.resetEncoderInstant(IntakeConstants.INTAKE_UP_POSITION).ignoringDisable(true));
 
     // operatorController
     //     .b()

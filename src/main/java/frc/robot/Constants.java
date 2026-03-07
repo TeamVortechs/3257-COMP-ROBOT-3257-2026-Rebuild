@@ -264,7 +264,7 @@ public final class Constants {
     // used in Shooter.java
     public static final double RAMP_RATE_VOLTS_SYSID = 2;
     public static final double DYNAMIC_STEP_VOLTS_SYSID = 8;
-    public static final double TOLERANCE = 1;
+    public static final double TOLERANCE = 4;
 
     public static final int MOTOR_ID = 24;
 
@@ -282,11 +282,11 @@ public final class Constants {
 
     // CHANGE !!
     public static final double KS = 0.0;
-    public static final double KV = 0.12681; // 0.13727;
-    public static final double KP = 0.15531; // 16011;
+    public static final double KV = 0.12743; // 0.13727;
+    public static final double KP = 0.18049; // 16011;
     public static final double KI = 0.0;
     public static final double KD = 0.0;
-    public static final double KA = 0.042402; // 050592;
+    public static final double KA = 0.042075; // 050592;
 
     public static final TalonFXConfiguration CONFIG;
     public static final Slot0Configs SLOT0CONFIGS;
@@ -462,13 +462,15 @@ public final class Constants {
 
     public static final double POSITION_TOLERANCE = 0.02;
 
-    public static final double MIN_POSITION = 0.44; // o.373535
-    public static final double MAX_POSITION = 1.13; // can also do -0.36
-    public static final double MID_POSITION = -0.8;
+    // 2
+    // 1.29
+    public static final double MIN_POSITION = -0.43; // o.373535
+    public static final double MAX_POSITION = 0.29; // can also do 0.36
+    public static final double MID_POSITION = -0.05;
 
-    public static final double INTAKE_DOWN_POSITION = MIN_POSITION;
+    public static final double INTAKE_DOWN_POSITION = MAX_POSITION;
     public static final double INTAKE_HALFWAY_UP_POSITION = MID_POSITION;
-    public static final double INTAKE_UP_POSITION = MAX_POSITION;
+    public static final double INTAKE_UP_POSITION = MIN_POSITION;
     // .-0.062
 
     public static final double CLAMP_MAX_VOLTS = 3;

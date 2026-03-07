@@ -59,6 +59,8 @@ public class IntakeTalonFXCANCoderIO implements IntakeIO {
             .withJerk(IntakeConstants.MOTION_MAGIC_JERK);
     // mPositionVoltage = new PositionVoltage(0);
 
+    // 1.29
+    // 2
     // Basic Configuration
     TalonFXConfiguration rollerConfig = Constants.IntakeConstants.ROLLER_CONFIG;
     TalonFXConfiguration positionConfig = Constants.IntakeConstants.POSITION_CONFIG;
@@ -74,8 +76,7 @@ public class IntakeTalonFXCANCoderIO implements IntakeIO {
     positionConfig.Feedback =
         new FeedbackConfigs()
             .withFeedbackRemoteSensorID(canIdCANCoder)
-            .withFeedbackSensorSource(FeedbackSensorSourceValue.RemoteCANcoder)
-            .withRotorToSensorRatio(1 / IntakeConstants.CANCODER_ROTOR_TO_SENSOR_RATIO);
+            .withFeedbackSensorSource(FeedbackSensorSourceValue.RemoteCANcoder);
 
     roller.getConfigurator().apply(rollerConfig);
     position.getConfigurator().apply(positionConfig);
