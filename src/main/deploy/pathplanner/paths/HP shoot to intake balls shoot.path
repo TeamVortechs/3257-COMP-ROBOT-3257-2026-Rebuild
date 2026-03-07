@@ -4,77 +4,77 @@
     {
       "anchor": {
         "x": 3.426279342723006,
-        "y": 5.696
+        "y": 2.534
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.8073605913378077,
-        "y": 5.646666784705592
+        "x": 2.5753345768960667,
+        "y": 3.9693157478932584
       },
       "isLocked": false,
-      "linkedName": "Top Shoot Ramp"
+      "linkedName": "Bottom Score"
     },
     {
       "anchor": {
-        "x": 0.4996061195567352,
-        "y": 7.15016185769308
+        "x": 0.7061199964887637,
+        "y": 5.1366642380617975
       },
       "prevControl": {
-        "x": 0.568073503065835,
-        "y": 8.005796956494764
+        "x": 3.0063163673439743,
+        "y": 4.542461689897429
       },
       "nextControl": {
-        "x": 0.3664851193691133,
-        "y": 5.486552204302769
+        "x": 0.4640660381953142,
+        "y": 5.199193281509407
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 0.5629283268960672,
-        "y": 5.877502984550562
+        "x": 0.7061199964887637,
+        "y": 6.468820488061798
       },
       "prevControl": {
-        "x": 0.6076629384084549,
-        "y": 6.159452892876663
+        "x": 0.5353011323735952,
+        "y": 6.059109989466292
       },
       "nextControl": {
-        "x": 0.4582817320129152,
-        "y": 5.217944382465172
+        "x": 0.9635719552582798,
+        "y": 7.086321201102082
       },
       "isLocked": false,
-      "linkedName": "balls intake end"
+      "linkedName": null
     },
     {
       "anchor": {
         "x": 3.426279342723006,
-        "y": 5.696
+        "y": 2.534
       },
       "prevControl": {
-        "x": 3.283758760592087,
-        "y": 6.133775143039985
+        "x": 2.426279342723006,
+        "y": 2.534
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Top Shoot Ramp"
+      "linkedName": "Bottom Score"
     }
   ],
   "rotationTargets": [
     {
       "waypointRelativePos": 1,
-      "rotationDegrees": -91.79633906770857
+      "rotationDegrees": 104.01217858439851
     },
     {
       "waypointRelativePos": 2,
-      "rotationDegrees": -90.3992104402448
+      "rotationDegrees": 86.26602311219384
     }
   ],
   "constraintZones": [
     {
-      "name": "Intake Zone",
-      "minWaypointRelativePos": 1.0459980429106053,
-      "maxWaypointRelativePos": 2.3340015540426253,
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 1.0125222006089314,
+      "maxWaypointRelativePos": 2.2730727757104163,
       "constraints": {
         "maxVelocity": 0.75,
         "maxAcceleration": 3.0,
@@ -89,7 +89,19 @@
   "eventMarkers": [
     {
       "name": "intakeDownEvent",
-      "waypointRelativePos": 0.1,
+      "waypointRelativePos": 0.2396238582543971,
+      "endWaypointRelativePos": null,
+      "command": null
+    },
+    {
+      "name": "intakeStartEvent",
+      "waypointRelativePos": 0.9493138954668479,
+      "endWaypointRelativePos": null,
+      "command": null
+    },
+    {
+      "name": "intakeStopEvent",
+      "waypointRelativePos": 2.2323505158998627,
       "endWaypointRelativePos": null,
       "command": null
     }
@@ -104,13 +116,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -54.397690038137
+    "rotation": 51.257592517258765
   },
   "reversed": false,
-  "folder": "Front Top",
+  "folder": "Front Bottom",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -54.397690038137
+    "rotation": 51.257592517258765
   },
   "useDefaultConstraints": true
 }
