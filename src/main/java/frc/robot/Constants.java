@@ -260,8 +260,8 @@ public final class Constants {
     public static final double SIM_TOLERANCE = 0.5;
 
     // used in Shooter.java
-    public static final double RAMP_RATE_VOLTS_SYSID = 5;
-    public static final double DYNAMIC_STEP_VOLTS_SYSID = 3;
+    public static final double RAMP_RATE_VOLTS_SYSID = 2;
+    public static final double DYNAMIC_STEP_VOLTS_SYSID = 8;
     public static final double TOLERANCE = 1;
 
     public static final int MOTOR_ID = 24;
@@ -280,11 +280,11 @@ public final class Constants {
 
     // CHANGE !!
     public static final double KS = 0.0;
-    public static final double KV = 0.12478; // 0.13727;
-    public static final double KP = 0.14084; // 16011;
+    public static final double KV = 0.12681; // 0.13727;
+    public static final double KP = 0.15531; // 16011;
     public static final double KI = 0.0;
     public static final double KD = 0.0;
-    public static final double KA = 0.032958; // 050592;
+    public static final double KA = 0.042402; // 050592;
 
     public static final TalonFXConfiguration CONFIG;
     public static final Slot0Configs SLOT0CONFIGS;
@@ -370,7 +370,7 @@ public final class Constants {
     // not real
     public static final int ID = 25;
 
-    public static final double FEED_POWER = 1;
+    public static final double FEED_POWER = 0.5;
     public static final double INTAKE_POWER = 1;
     public static final double DEFAULT_POWER = 0;
     public static final double EJECT_POWER = -1;

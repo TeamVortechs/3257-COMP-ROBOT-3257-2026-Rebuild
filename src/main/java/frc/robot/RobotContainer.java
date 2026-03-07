@@ -33,27 +33,33 @@ import frc.robot.Constants.ClimbConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.FeederConstants;
 import frc.robot.Constants.IntakeConstants;
+import frc.robot.Constants.ShooterConstants;
 import frc.robot.commands.DriveCommands;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.belt.Belt;
 import frc.robot.subsystems.belt.BeltIO;
 import frc.robot.subsystems.belt.BeltSimulationIO;
+import frc.robot.subsystems.belt.BeltTalonFXIO;
 import frc.robot.subsystems.climb.Climb;
 import frc.robot.subsystems.climb.ClimbIO;
 import frc.robot.subsystems.climb.ClimbSimulationIO;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
+import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
+import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.feeder.Feeder;
 import frc.robot.subsystems.feeder.FeederIO;
 import frc.robot.subsystems.feeder.FeederSimulationIO;
+import frc.robot.subsystems.feeder.FeederTalonFXIO;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeIO;
 import frc.robot.subsystems.intake.IntakeSimulationIO;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterIO;
 import frc.robot.subsystems.shooter.ShooterSimulationIO;
+import frc.robot.subsystems.shooter.ShooterTalonFXIO;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOPhotonVision;
@@ -111,48 +117,51 @@ public class RobotContainer {
         // Real robot, instantiate hardware IO implementations
         // ModuleIOTalonFX is intended for modules with TalonFX drive, TalonFX turn, and
         // a CANcoder
-        // drive =
-        //     new Drive(
-        //         new GyroIOPigeon2(),
-        //         new ModuleIOTalonFX(TunerConstants.FrontLeft),
-        //         new ModuleIOTalonFX(TunerConstants.FrontRight),
-        //         new ModuleIOTalonFX(TunerConstants.BackLeft),
-        //         new ModuleIOTalonFX(TunerConstants.BackRight));
         drive =
             new Drive(
-                new GyroIO() {},
-                new ModuleIO() {},
-                new ModuleIO() {},
-                new ModuleIO() {},
-                new ModuleIO() {});
+                new GyroIOPigeon2(),
+                new ModuleIOTalonFX(TunerConstants.FrontLeft),
+                new ModuleIOTalonFX(TunerConstants.FrontRight),
+                new ModuleIOTalonFX(TunerConstants.BackLeft),
+                new ModuleIOTalonFX(TunerConstants.BackRight));
+        // drive =
+        //     new Drive(
+        //         new GyroIO() {},
+        //         new ModuleIO() {},
+        //         new ModuleIO() {},
+        //         new ModuleIO() {},
+        //         new ModuleIO() {});
         // intake = new Intake(new IntakeTalonFXIO(IntakeConstants.INTAKE_ROLLER_MOTOR_ID, 22));
         intake = new Intake(new IntakeIO() {});
 
-        belt = new Belt(new BeltIO() {});
-
-        // shooter =
-        //     new Shooter(
-        //         new ShooterTalonFXIO(ShooterConstants.MOTOR_ID),
-        //         () -> drive.getDistanceToGoal(),
-        //         () -> drive.isWithinShooterAutomaticChargingZone());
         shooter =
             new Shooter(
-                new ShooterIO() {},
+                new ShooterTalonFXIO(ShooterConstants.MOTOR_ID),
                 () -> drive.getDistanceToGoal(),
                 () -> drive.isWithinShooterAutomaticChargingZone());
+        // shooter =
+        //     new Shooter(
+        //         new ShooterIO() {},
+        //         () -> drive.getDistanceToGoal(),
+        //         () -> drive.isWithinShooterAutomaticChargingZone());
 
-        // feeder =
-        //     new Feeder(
-        //         new FeederTalonFXIO(FeederConstants.MOTOR_ID),
-        //         () -> drive.isPointingToGoal(),
-        //         () -> shooter.isOnTarget(),
-        //         () -> true);
         feeder =
             new Feeder(
-                new FeederIO() {},
+                new FeederTalonFXIO(FeederConstants.MOTOR_ID),
                 () -> drive.isPointingToGoal(),
                 () -> shooter.isOnTarget(),
                 () -> true);
+        // feeder =
+        //     new Feeder(
+        //         new FeederIO() {},
+        //         () -> drive.isPointingToGoal(),
+        //         () -> shooter.isOnTarget(),
+        //         () -> true);
+
+        belt = new Belt(new BeltTalonFXIO(25));
+        // belt = new Belt(new BeltIO() {
+
+        // });
 
         climb = new Climb(new ClimbIO() {});
 
@@ -280,9 +289,9 @@ public class RobotContainer {
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
             drive,
-            () -> -controller.getLeftY() * 0.75,
-            () -> -controller.getLeftX() * 0.75,
-            () -> -controller.getRightX() * 0.6));
+            () -> -controller.getLeftY(),
+            () -> -controller.getLeftX(),
+            () -> -controller.getRightX()));
 
     // CONTROLLER:
 
@@ -292,8 +301,8 @@ public class RobotContainer {
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
                 drive,
-                () -> -controller.getLeftY() * 0.75,
-                () -> -controller.getLeftX() * 0.75,
+                () -> -controller.getLeftY(),
+                () -> -controller.getLeftX(),
                 () -> drive.getRotationOverBumper()));
 
     // Switch to X pattern when X button is pressed
@@ -333,10 +342,12 @@ public class RobotContainer {
             Commands.parallel(
                     aimTowardsTargetCommand,
                     shooter.setAutomaticCommandRun(),
-                    feeder.feedWhenValidRunCommand(FeederConstants.FEED_POWER),
                     drive.logDistance(),
-                    belt.setPercentMotorOutputRunCommand(BeltConstants.FEED_POWER))
+                    belt.setPercentMotorOutputRunCommand(BeltConstants.FEED_POWER),
+                    feeder.feedWhenValidRunCommand(FeederConstants.FEED_POWER))
                 .withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
+
+    controller.povRight().whileTrue(feeder.setPercentMotorRunCommand(1));
 
     // eject balls
     controller
@@ -408,6 +419,9 @@ public class RobotContainer {
 
     operatorController.povRight().onTrue(drive.setPassingIndexCommmand(1));
     operatorController.povLeft().onTrue(drive.setPassingIndexCommmand(0));
+
+    testController.a().whileTrue(feeder.setPercentMotorRunCommand(FeederConstants.FEED_POWER));
+    testController.b().whileTrue(belt.setPercentMotorOutputRunCommand(BeltConstants.FEED_POWER));
 
     // sysid bindings:
     configureSysIdBindings(sysID_controller, shooter.BuildSysIdRoutine());

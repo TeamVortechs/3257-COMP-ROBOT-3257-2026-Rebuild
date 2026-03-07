@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.BeltConstants;
+import java.util.function.BooleanSupplier;
 import org.littletonrobotics.junction.Logger;
 
 public class Belt extends SubsystemBase {
@@ -78,6 +79,18 @@ public class Belt extends SubsystemBase {
    */
   public Command setPercentMotorOutputRunCommand(double speed) {
     return Commands.startRun(() -> this.setPercentMotorOutput(speed), () -> {}, this);
+  }
+
+  public Command setPercentMotorOutputRunCommand(double speed, BooleanSupplier run) {
+    return Commands.run(
+        () -> {
+          if (run.getAsBoolean()) {
+            this.setPercentMotorOutput(speed);
+          }
+
+          this.setPercentMotorOutput(0);
+        },
+        this);
   }
 
   // the constants here should probably be more and move but that's later when this is transferred
