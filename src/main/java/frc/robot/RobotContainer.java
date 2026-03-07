@@ -197,7 +197,7 @@ public class RobotContainer {
         feeder =
             new Feeder(
                 new FeederSimulationIO(),
-                () -> drive.isPointingToGoal() && !drive.isSkidding(),
+                () -> drive.isPointingToGoal(),
                 () -> shooter.isOnTarget(),
                 () -> true);
 
@@ -291,7 +291,7 @@ public class RobotContainer {
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
             drive,
-            () -> -controller.getLeftY(),
+            () -> -controller.getLeftY() ,
             () -> -controller.getLeftX(),
             () -> -controller.getRightX()));
 
@@ -344,8 +344,8 @@ public class RobotContainer {
             Commands.parallel(
                     aimTowardsTargetCommand,
                     shooter.setAutomaticCommandRun(),
-                    drive.logDistance(),
-                    belt.setPercentMotorOutputRunCommand(BeltConstants.FEED_POWER),
+                    belt.setPercentMotorOutputRunCommand(
+                        BeltConstants.FEED_POWER, () -> feeder.getTargetSpeed() > 0),
                     feeder.feedWhenValidRunCommand(FeederConstants.FEED_POWER))
                 .withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
 
@@ -357,9 +357,7 @@ public class RobotContainer {
         .whileTrue(
             Commands.parallel(
                 intake.setRollerVoltageAndPositionCommand(
-                    IntakeConstants.INTAKE_DOWN_POSITION, IntakeConstants.EJECT_VOLTS),
-                belt.setPercentMotorOutputRunCommand(BeltConstants.EJECT_POWER)));
-
+                    IntakeConstants.INTAKE_DOWN_POSITION, IntakeConstants.EJECT_VOLTS)));
     // intake command
     controller
         .leftTrigger()
@@ -477,7 +475,9 @@ public class RobotContainer {
                         .withDeadline(new WaitCommand(3)))
                 .andThen(feeder.setPercentMotorCommand(0)),
             // second command(point towards target)
-            drive.joystickDriveAtTarget(drive, () -> 0, () -> 0)));
+            drive.joystickDriveAtTarget(drive, () -> 0, () -> 0),
+            belt.setPercentMotorOutputRunCommand(
+                BeltConstants.FEED_POWER, () -> feeder.getTargetSpeed() > 0)));
 
     /*
     version with moving intake:

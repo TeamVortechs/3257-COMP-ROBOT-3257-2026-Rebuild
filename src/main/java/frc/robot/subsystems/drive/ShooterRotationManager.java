@@ -55,7 +55,7 @@ public class ShooterRotationManager {
     // all of these methods automatically log values
 
     // logs is oriented, also calls get heaidng, not needed rn cus this is called in feeder
-    // isOriented();
+    isOriented();
 
     // logs distance
     getDistance();
@@ -112,6 +112,7 @@ public class ShooterRotationManager {
    * @param distance the distance in meters
    * @return the arm encoder value to aim towards
    */
+  @AutoLogOutput
   public boolean isOriented() {
 
     // im not sure if this should be current or predicted drive, I'll ask

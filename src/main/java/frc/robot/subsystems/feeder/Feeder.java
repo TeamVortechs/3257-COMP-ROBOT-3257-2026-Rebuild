@@ -50,6 +50,8 @@ public class Feeder extends SubsystemBase {
 
     debounceTimer = new Timer();
 
+    debounceTimer.restart();
+
     hardwareLogger =
         new Notifier(
             () -> {
