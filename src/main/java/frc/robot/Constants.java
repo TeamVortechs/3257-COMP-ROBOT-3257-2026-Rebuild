@@ -12,8 +12,10 @@ import static edu.wpi.first.units.Units.Seconds;
 import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -65,8 +67,8 @@ public final class Constants {
     // I decided not to mess with all that... so the limit is at 120. Check ModuleIOTalonFX.java for
     // more info
 
-    public static final double SUPPLY_CURRENT_LIMIT_SHOOTER = 40.0;
-    public static final double STATOR_CURRENT_LIMIT_SHOOTER = 40.0;
+    public static final double SUPPLY_CURRENT_LIMIT_SHOOTER = 500;
+    public static final double STATOR_CURRENT_LIMIT_SHOOTER = 60;
 
     public static final double SUPPLY_CURRENT_LIMIT_FEEDER = 40.0;
     public static final double STATOR_CURRENT_LIMIT_FEEDER = 40.0;
@@ -77,11 +79,11 @@ public final class Constants {
     public static final double SUPPLY_CURRENT_LIMIT_CLIMB = 40.0;
     public static final double STATOR_CURRENT_LIMIT_CLIMB = 40.0;
 
-    public static final double SUPPLY_CURRENT_LIMIT_INTAKE_POSITION = 5.0;
-    public static final double STATOR_CURRENT_LIMIT_INTAKE_POSITION = 5.0;
+    public static final double SUPPLY_CURRENT_LIMIT_INTAKE_POSITION = 300;
+    public static final double STATOR_CURRENT_LIMIT_INTAKE_POSITION = 100;
 
-    public static final double SUPPLY_CURRENT_LIMIT_INTAKE_ROLLER = 40.0;
-    public static final double STATOR_CURRENT_LIMIT_INTAKE_ROLLER = 40.0;
+    public static final double SUPPLY_CURRENT_LIMIT_INTAKE_ROLLER = 300;
+    public static final double STATOR_CURRENT_LIMIT_INTAKE_ROLLER = 80.0;
   }
 
   public class DriveConstants {
@@ -456,12 +458,18 @@ public final class Constants {
     // dummy values for now
     public static final double MAX_TARGET_SPEED = 100;
     public static final double MAX_MANUAL_SPEED = 100;
-    public static final double POS_TOLERANCE = 0.2;
+    // public static final double POS_TOLERANCE = 0.2;
 
-    public static final double POSITION_TOLERANCE = 0.1;
+    public static final double POSITION_TOLERANCE = 0.02;
 
-    public static final double MAX_POSITION = 60.5;
-    public static final double MIN_POSITION = -0.3687; //can also do -0.36
+    public static final double MIN_POSITION = 0.44; // o.373535
+    public static final double MAX_POSITION = 1.13; // can also do -0.36
+    public static final double MID_POSITION = -0.8;
+ 
+    public static final double INTAKE_DOWN_POSITION = MIN_POSITION;
+    public static final double INTAKE_HALFWAY_UP_POSITION = MID_POSITION;
+    public static final double INTAKE_UP_POSITION = MAX_POSITION;
+    // .-0.062
 
     public static final double CLAMP_MAX_VOLTS = 3;
     public static final double POSITION_THRESHOLD_STOP = 0.2;
@@ -470,18 +478,15 @@ public final class Constants {
     public static final double KS = 0;
     public static final double KV = 0.2;
     public static final double KA = 0;
-    public static final double KP = 0.3;
+    public static final double KP = 20;
     public static final double KI = 0;
     public static final double KD = 0;
     public static final double KG = 0.5;
 
-    public static final double ROLLER_GOING_DOWN_VOLTS = 0;
-    public static final double ROLLER_GOING_UP_VOLTS = 1;
+    public static final double ROLLER_GOING_DOWN_VOLTS = -12;
+    public static final double ROLLER_GOING_UP_VOLTS = 4.5;
     public static final double INTAKE_VOLTS = 12;
     public static final double EJECT_VOLTS = -8;
-    public static final double INTAKE_DOWN_POSITION = 60;
-    public static final double INTAKE_HALFWAY_UP_POSITION = 30;
-    public static final double INTAKE_UP_POSITION = 0;
 
     public static final double MOTION_MAGIC_CRUISE_VELOCITY = 3;
     public static final double MOTION_MAGIC_ACCELERATION = 2.5;
@@ -519,10 +524,12 @@ public final class Constants {
       SLOT0CONFIGS.kI = Constants.IntakeConstants.KI;
       SLOT0CONFIGS.kD = Constants.IntakeConstants.KD;
       SLOT0CONFIGS.kG = IntakeConstants.KG;
+      SLOT0CONFIGS.GravityType = GravityTypeValue.Arm_Cosine;
+      SLOT0CONFIGS.withStaticFeedforwardSign(StaticFeedforwardSignValue.UseVelocitySign);
 
       POSITION_CONFIG = new TalonFXConfiguration();
       POSITION_CONFIG.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-      POSITION_CONFIG.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+      POSITION_CONFIG.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
       POSITION_CONFIG.CurrentLimits.SupplyCurrentLimit =
           Constants.CurrentLimitConstants.SUPPLY_CURRENT_LIMIT_INTAKE_POSITION;
       POSITION_CONFIG.CurrentLimits.SupplyCurrentLimitEnable = true;

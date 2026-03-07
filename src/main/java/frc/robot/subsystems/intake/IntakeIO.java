@@ -38,6 +38,8 @@ public interface IntakeIO {
 
     boolean isBrakedRoller = true;
     boolean isBrakedPosition = true;
+
+    boolean isOnTarget = true;
   }
 
   // updates the given inputs with new values(advantage kit stuff)

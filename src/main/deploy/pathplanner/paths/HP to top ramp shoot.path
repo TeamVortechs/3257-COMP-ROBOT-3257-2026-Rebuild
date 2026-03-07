@@ -9,7 +9,7 @@
       "prevControl": null,
       "nextControl": {
         "x": 2.736211283116667,
-        "y": 3.1039942530402915
+        "y": 3.103994253040291
       },
       "isLocked": false,
       "linkedName": "Human player Intake Stationary"
@@ -33,7 +33,7 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 2.0,
+    "maxVelocity": 3.5,
     "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,

@@ -52,7 +52,7 @@
         "y": 5.685
       },
       "prevControl": {
-        "x": 5.1766824902041035,
+        "x": 5.176682490204104,
         "y": 5.667432765119629
       },
       "nextControl": {
@@ -159,7 +159,7 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 2.0,
+    "maxVelocity": 3.5,
     "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,

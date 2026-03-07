@@ -282,7 +282,7 @@ public class RobotContainer {
 
     // default commands
     shooter.setDefaultCommand(shooter.automaticallyChargeWhenNeededRunCommand(0, 0));
-    // intake.setDefaultCommand(intake.setRollerVoltageCommand(0));
+    intake.setDefaultCommand(intake.setRollerVoltageCommand(0));
     feeder.setDefaultCommand(feeder.setPercentMotorRunCommand(0));
     climb.setDefaultCommand(climb.setVoltageRun(0));
     belt.setDefaultCommand(belt.setPercentMotorOutputCommand(BeltConstants.DEFAULT_POWER));
@@ -291,7 +291,7 @@ public class RobotContainer {
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
             drive,
-            () -> -controller.getLeftY() ,
+            () -> -controller.getLeftY(),
             () -> -controller.getLeftX(),
             () -> -controller.getRightX()));
 
@@ -325,13 +325,18 @@ public class RobotContainer {
         .povUp()
         .whileTrue(intake.setPositionCommand(IntakeConstants.INTAKE_HALFWAY_UP_POSITION));
 
-    controller.povDown().whileTrue(intake.setPositionCommand(IntakeConstants.INTAKE_DOWN_POSITION));
-
     controller.povRight().whileTrue(intake.setPositionCommand(0));
     controller.povLeft().whileTrue(drive.iteratePassingCommand(true));
 
     @SuppressWarnings("unused")
     Command aimTowardsTargetCommand =
+        drive.joystickDriveAtTarget(
+            drive,
+            () -> -controller.getLeftY() * DriveConstants.K_JOYSTICK_WHEN_SHOOTING,
+            () -> -controller.getLeftX() * DriveConstants.K_JOYSTICK_WHEN_SHOOTING);
+
+    @SuppressWarnings("unused")
+    Command aimTowardsTargetCommand2 =
         drive.joystickDriveAtTarget(
             drive,
             () -> -controller.getLeftY() * DriveConstants.K_JOYSTICK_WHEN_SHOOTING,
@@ -347,6 +352,12 @@ public class RobotContainer {
                     belt.setPercentMotorOutputRunCommand(
                         BeltConstants.FEED_POWER, () -> feeder.getTargetSpeed() > 0),
                     feeder.feedWhenValidRunCommand(FeederConstants.FEED_POWER))
+                .withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
+
+    controller
+        .b()
+        .whileTrue(
+            Commands.parallel(aimTowardsTargetCommand2, shooter.setAutomaticCommandRun())
                 .withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
 
     controller.povRight().whileTrue(feeder.setPercentMotorRunCommand(1));
@@ -365,10 +376,7 @@ public class RobotContainer {
             intake
                 .setPositionAndRollersCommandConsistentEnd(
                     IntakeConstants.INTAKE_DOWN_POSITION, IntakeConstants.ROLLER_GOING_DOWN_VOLTS)
-                .andThen(
-                    Commands.parallel(
-                        belt.setPercentMotorOutputRunCommand(BeltConstants.INTAKE_POWER),
-                        intake.setRollerVoltageCommand(IntakeConstants.INTAKE_VOLTS))));
+                .andThen(intake.setRollerVoltageCommand(IntakeConstants.INTAKE_VOLTS)));
 
     // intake up position
     controller
@@ -394,14 +402,22 @@ public class RobotContainer {
 
     operatorController
         .rightBumper()
-        .whileTrue(feeder.setPercentMotorRunCommand(FeederConstants.FEED_POWER));
+        .whileTrue(
+            feeder
+                .setPercentMotorRunCommand(FeederConstants.FEED_POWER)
+                .alongWith(belt.setPercentMotorOutputRunCommand(BeltConstants.FEED_POWER)));
     operatorController.rightTrigger().whileTrue(shooter.setManualSpeedRunCommand(78));
 
     operatorController
-        .a()
-        .whileTrue(intake.setPositionCommand(IntakeConstants.INTAKE_HALFWAY_UP_POSITION));
-    operatorController.b().whileTrue(intake.setPositionCommand(IntakeConstants.INTAKE_UP_POSITION));
+        .b()
+        .onTrue(
+            intake.resetEncoderInstant(IntakeConstants.INTAKE_UP_POSITION).ignoringDisable(true));
 
+    // operatorController
+    //     .b()
+    //     .onTrue(
+    //         intake.setPositionAndRollersCommandConsistentEnd(
+    //             IntakeConstants.INTAKE_UP_POSITION, IntakeConstants.ROLLER_GOING_UP_VOLTS));
     operatorController
         .x()
         .whileTrue(
@@ -540,7 +556,11 @@ public class RobotContainer {
     new EventTrigger("intakeStopEvent")
         .onTrue(new InstantCommand(() -> intake.setRollersVoltage(0)));
     new EventTrigger("intakeDownEvent")
-        .onTrue(new InstantCommand(() -> intake.setPosition(IntakeConstants.INTAKE_DOWN_POSITION)));
+        .onTrue(
+            new InstantCommand(() -> intake.setPosition(IntakeConstants.INTAKE_DOWN_POSITION))
+                .alongWith(
+                    new InstantCommand(
+                        () -> intake.setRollersVoltage(IntakeConstants.ROLLER_GOING_DOWN_VOLTS))));
 
     new EventTrigger("intakeUpEvent")
         .onTrue(

@@ -5,8 +5,7 @@ import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.MotionMagicVoltage;
-import com.ctre.phoenix6.controls.PositionVoltage;
+import com.ctre.phoenix6.controls.DynamicMotionMagicVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
@@ -37,11 +36,11 @@ public class IntakeTalonFXCANCoderIO implements IntakeIO {
   private final StatusSignal<Temperature> positionTemperatureCelsius;
   private final StatusSignal<Temperature> rollerTemperatureCelsius;
 
-  private final MotionMagicVoltage mVoltageRequest;
+  private final DynamicMotionMagicVoltage mVoltageRequest;
 
-  private final PositionVoltage mPositionVoltage;
+  // private final PositionVoltage mPositionVoltage;
 
-  private boolean isBrakedRoller = true;
+  private boolean isBrakedRoller = false;
   private boolean isBrakedPosition = true;
   private double targetPosition = 0;
 
@@ -49,8 +48,13 @@ public class IntakeTalonFXCANCoderIO implements IntakeIO {
     roller = new TalonFX(canIdRoller);
     position = new TalonFX(canIdPosition);
 
-    mVoltageRequest = new MotionMagicVoltage(0);
-    mPositionVoltage = new PositionVoltage(0);
+    mVoltageRequest =
+        new DynamicMotionMagicVoltage(
+                0,
+                IntakeConstants.MOTION_MAGIC_CRUISE_VELOCITY,
+                IntakeConstants.MOTION_MAGIC_ACCELERATION)
+            .withJerk(IntakeConstants.MOTION_MAGIC_JERK);
+    // mPositionVoltage = new PositionVoltage(0);
 
     // Basic Configuration
     TalonFXConfiguration rollerConfig = Constants.IntakeConstants.ROLLER_CONFIG;
@@ -72,6 +76,7 @@ public class IntakeTalonFXCANCoderIO implements IntakeIO {
 
     roller.getConfigurator().apply(rollerConfig);
     position.getConfigurator().apply(positionConfig);
+    position.getConfigurator().apply(motionMagicConfigs);
 
     position.getConfigurator().apply(slot0Configs);
 
@@ -118,7 +123,7 @@ public class IntakeTalonFXCANCoderIO implements IntakeIO {
     inputsAutoLogged.positionSpeed = positionVelocity.getValueAsDouble();
     inputsAutoLogged.positionTemperatureCelsius = positionTemperatureCelsius.getValueAsDouble();
 
-    inputsAutoLogged.position = position.getRotorPosition().getValueAsDouble();
+    inputsAutoLogged.position = position.getPosition().getValueAsDouble();
     inputsAutoLogged.targetPosition = targetPosition;
 
     inputsAutoLogged.isBrakedRoller = isBrakedRoller;
@@ -160,9 +165,18 @@ public class IntakeTalonFXCANCoderIO implements IntakeIO {
   public void setPositionControl(double position1) { // IMPORTANT - POSITON1 NOT POSITION
     targetPosition = position1;
 
-    System.out.println("seting positin IO " + position1);
     // System.out.println("Input volt: "+inputVoltage+" Target Angle: "+targetAngle);
-    position.setControl(mPositionVoltage.withPosition(position1));
+    position.setControl(mVoltageRequest.withPosition(position1));
+    // System.out.println("Voltage being sent in PID Voltage");
+  }
+
+  public void setPositionControlWithVelocity(
+      double position1, double velocity) { // IMPORTANT - POSITON1 NOT POSITION
+    targetPosition = position1;
+
+    System.out.println("VERY SLOWLY setting position in FXIO to " + position1);
+    // System.out.println("Input volt: "+inputVoltage+" Target Angle: "+targetAngle);
+    position.setControl(mVoltageRequest.withPosition(position1).withVelocity(velocity));
     // System.out.println("Voltage being sent in PID Voltage");
   }
 
@@ -173,10 +187,16 @@ public class IntakeTalonFXCANCoderIO implements IntakeIO {
   public double getTargetPosition() {
     return targetPosition;
   }
+
+  public void stop() {
+    roller.stopMotor();
+    position.stopMotor();
+  }
+
   // misc methods
 
   public void resetEncoders() {
-    position.setPosition(0);
+    position.setPosition(IntakeConstants.MIN_POSITION);
   }
 
   public void setBrakedRoller(boolean braked) {
@@ -216,7 +236,7 @@ public class IntakeTalonFXCANCoderIO implements IntakeIO {
    * @return gets the position of the arm in radians
    */
   public double getPosition() {
-    return position.getRotorPosition().getValueAsDouble();
+    return position.getPosition().getValueAsDouble();
   }
 
   public boolean isMaxPosition() {

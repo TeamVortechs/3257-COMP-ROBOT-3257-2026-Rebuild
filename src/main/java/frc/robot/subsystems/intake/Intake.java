@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.IntakeConstants;
 import java.util.function.DoubleSupplier;
+import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 /** Intake subsystem responsible for the intake rolling mechanism */
@@ -105,11 +106,12 @@ public class Intake extends SubsystemBase {
     intakeIO.stop();
   }
 
+  @AutoLogOutput
   public boolean isOnTarget() {
 
     double diff = Math.abs(intakeIO.getTargetPosition() - intakeIO.getPosition());
 
-    return IntakeConstants.POS_TOLERANCE > diff;
+    return IntakeConstants.POSITION_TOLERANCE > diff;
   }
 
   /** resets encoders to read 0 and resets PID (setting it to begin at current height) */
