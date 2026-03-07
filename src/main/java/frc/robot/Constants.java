@@ -461,7 +461,7 @@ public final class Constants {
     public static final double POSITION_TOLERANCE = 0.1;
 
     public static final double MAX_POSITION = 60.5;
-    public static final double MIN_POSITION = 0;
+    public static final double MIN_POSITION = -0.3687; //can also do -0.36
 
     public static final double CLAMP_MAX_VOLTS = 3;
     public static final double POSITION_THRESHOLD_STOP = 0.2;

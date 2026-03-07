@@ -19,7 +19,7 @@ import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.util.VortechsUtil;
 
-public class IntakeTalonFXCANCoderIO {
+public class IntakeTalonFXCANCoderIO implements IntakeIO {
   private final TalonFX roller;
   private final TalonFX position;
 

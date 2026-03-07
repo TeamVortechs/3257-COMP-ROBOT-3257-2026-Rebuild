@@ -56,6 +56,7 @@ import frc.robot.subsystems.feeder.FeederTalonFXIO;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeIO;
 import frc.robot.subsystems.intake.IntakeSimulationIO;
+import frc.robot.subsystems.intake.IntakeTalonFXCANCoderIO;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterIO;
 import frc.robot.subsystems.shooter.ShooterSimulationIO;
@@ -131,8 +132,9 @@ public class RobotContainer {
         //         new ModuleIO() {},
         //         new ModuleIO() {},
         //         new ModuleIO() {});
-        // intake = new Intake(new IntakeTalonFXIO(IntakeConstants.INTAKE_ROLLER_MOTOR_ID, 22));
-        intake = new Intake(new IntakeIO() {});
+        intake =
+            new Intake(new IntakeTalonFXCANCoderIO(IntakeConstants.INTAKE_ROLLER_MOTOR_ID, 22, 29));
+        // intake = new Intake(new IntakeIO() {});
 
         shooter =
             new Shooter(
@@ -280,7 +282,7 @@ public class RobotContainer {
 
     // default commands
     shooter.setDefaultCommand(shooter.automaticallyChargeWhenNeededRunCommand(0, 0));
-    intake.setDefaultCommand(intake.setRollerVoltageCommand(0));
+    // intake.setDefaultCommand(intake.setRollerVoltageCommand(0));
     feeder.setDefaultCommand(feeder.setPercentMotorRunCommand(0));
     climb.setDefaultCommand(climb.setVoltageRun(0));
     belt.setDefaultCommand(belt.setPercentMotorOutputCommand(BeltConstants.DEFAULT_POWER));
