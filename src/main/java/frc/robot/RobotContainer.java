@@ -445,8 +445,13 @@ public class RobotContainer {
 
     Command oscillateIntake =
         new SequentialCommandGroup(
-                intake.setPositionCommandConsistentEnd(IntakeConstants.INTAKE_HALFWAY_UP_POSITION),
-                intake.setPositionCommandConsistentEnd(IntakeConstants.INTAKE_DOWN_POSITION))
+                intake.setPositionWithVelocityCommand(
+                    IntakeConstants.INTAKE_HALFWAY_UP_POSITION,
+                    IntakeConstants.OSCILLATION_VELOCITY),
+                new WaitCommand(IntakeConstants.WAIT_TIME_BETWEEN_INTAKE_OSCILLATION),
+                intake.setPositionWithVelocityCommand(
+                    IntakeConstants.INTAKE_DOWN_POSITION, IntakeConstants.OSCILLATION_VELOCITY),
+                new WaitCommand(IntakeConstants.WAIT_TIME_BETWEEN_INTAKE_OSCILLATION))
             .repeatedly();
     testController.rightBumper().whileTrue(oscillateIntake);
   }
