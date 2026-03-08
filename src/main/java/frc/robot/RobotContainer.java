@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -435,11 +436,19 @@ public class RobotContainer {
     operatorController.povRight().onTrue(drive.setPassingIndexCommmand(1));
     operatorController.povLeft().onTrue(drive.setPassingIndexCommmand(0));
 
+    // sysid bindings:
+    configureSysIdBindings(sysID_controller, shooter.BuildSysIdRoutine());
+
+    // additional testing bindings
     testController.a().whileTrue(feeder.setPercentMotorRunCommand(FeederConstants.FEED_POWER));
     testController.b().whileTrue(belt.setPercentMotorOutputRunCommand(BeltConstants.FEED_POWER));
 
-    // sysid bindings:
-    configureSysIdBindings(sysID_controller, shooter.BuildSysIdRoutine());
+    Command oscillateIntake =
+        new SequentialCommandGroup(
+                intake.setPositionCommandConsistentEnd(IntakeConstants.INTAKE_HALFWAY_UP_POSITION),
+                intake.setPositionCommandConsistentEnd(IntakeConstants.INTAKE_DOWN_POSITION))
+            .repeatedly();
+    testController.rightBumper().whileTrue(oscillateIntake);
   }
 
   /**
