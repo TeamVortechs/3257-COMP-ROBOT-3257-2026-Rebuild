@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.4999397590361445,
-        "y": 7.408
+        "x": 4.48276393831554,
+        "y": 7.612431791221827
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.861596930594147,
-        "y": 7.483761476864715
+        "x": 5.844421109873543,
+        "y": 7.6881932680865415
       },
       "isLocked": false,
       "linkedName": "Top Start"
@@ -141,7 +141,7 @@
   "eventMarkers": [
     {
       "name": "intakeDownEvent",
-      "waypointRelativePos": 0.3652605459057029,
+      "waypointRelativePos": 0.0,
       "endWaypointRelativePos": null,
       "command": null
     },

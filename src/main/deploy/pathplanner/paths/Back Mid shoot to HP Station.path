@@ -1,0 +1,89 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 2.0834638196915787,
+        "y": 2.275871886120997
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.1327850203746594,
+        "y": 1.256354008564569
+      },
+      "isLocked": false,
+      "linkedName": "Bottom Shoot Two"
+    },
+    {
+      "anchor": {
+        "x": 1.3195610913404514,
+        "y": 0.6835112692763936
+      },
+      "prevControl": {
+        "x": 1.6008544765754102,
+        "y": 0.6896925927203725
+      },
+      "nextControl": {
+        "x": 0.27427994849213366,
+        "y": 0.6605415829169349
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 0.8246381969157779,
+        "y": 0.6619928825622776
+      },
+      "prevControl": {
+        "x": 1.3625574096997606,
+        "y": 0.6658406300198604
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "HP station Facing"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1.0504871567758927,
+      "rotationDegrees": 180.0
+    }
+  ],
+  "constraintZones": [
+    {
+      "name": "Don't Hit HP station",
+      "minWaypointRelativePos": 0.7331838565022424,
+      "maxWaypointRelativePos": 2.0,
+      "constraints": {
+        "maxVelocity": 0.5,
+        "maxAcceleration": 3.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.5,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -178.61964592655556
+  },
+  "reversed": false,
+  "folder": "Front Bottom",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 35.67640822186198
+  },
+  "useDefaultConstraints": true
+}

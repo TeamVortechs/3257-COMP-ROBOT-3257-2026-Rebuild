@@ -21,13 +21,31 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "Front Bottom Start to HP station"
+                        "pathName": "Bottom Start, Mid intake revised"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "feedWhenValidAndStop"
                       }
                     },
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "Bottom Shoot to Human player station 2 shoot"
+                        "pathName": "Back Mid shoot to HP Station"
+                      }
+                    },
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 2.0
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "HP station Facing to Back mid shoot"
                       }
                     },
                     {

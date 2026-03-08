@@ -80,13 +80,13 @@ public class Intake extends SubsystemBase {
   public void setPositionWithVelocity(double targetPosition, double velocity) {
     System.out.println("VERY SLOWLY setting position to " + targetPosition);
 
-    if (targetPosition > IntakeConstants.MAX_POSITION) {
-      targetPosition = IntakeConstants.MAX_POSITION;
-    }
+    // if (targetPosition > IntakeConstants.MAX_POSITION) {
+    //   targetPosition = IntakeConstants.MAX_POSITION;
+    // }
 
-    if (targetPosition < IntakeConstants.MIN_POSITION) {
-      targetPosition = IntakeConstants.MIN_POSITION;
-    }
+    // if (targetPosition < IntakeConstants.MIN_POSITION) {
+    //   targetPosition = IntakeConstants.MIN_POSITION;
+    // }
 
     intakeIO.setPositionControlWithVelocity(targetPosition, velocity);
   }

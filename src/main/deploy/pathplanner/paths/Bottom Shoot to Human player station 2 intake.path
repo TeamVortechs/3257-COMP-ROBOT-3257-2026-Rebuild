@@ -8,11 +8,27 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.9868798732796025,
-        "y": 2.2530550147807893
+        "x": 3.147357245508092,
+        "y": 2.4492032166461497
       },
       "isLocked": false,
       "linkedName": "Bottom Score"
+    },
+    {
+      "anchor": {
+        "x": 0.4803440094899176,
+        "y": 2.3619454329774614
+      },
+      "prevControl": {
+        "x": 0.5079518910086289,
+        "y": 2.6104163666458655
+      },
+      "nextControl": {
+        "x": 0.4373072360616853,
+        "y": 1.9746144721233687
+      },
+      "isLocked": false,
+      "linkedName": null
     },
     {
       "anchor": {
@@ -20,21 +36,26 @@
         "y": 0.915138554216868
       },
       "prevControl": {
-        "x": 1.6085674391133313,
-        "y": 1.5522959032620496
+        "x": 0.5018623962040341,
+        "y": 1.2752669039145905
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": "Human player Intake Stationary"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1.0373001776198916,
+      "rotationDegrees": -90.0
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [
     {
       "name": "intakeDownEvent",
-      "waypointRelativePos": 0.05,
+      "waypointRelativePos": 0.1,
       "endWaypointRelativePos": null,
       "command": null
     }
@@ -55,7 +76,7 @@
   "folder": "Front Bottom",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 51.257592517258765
+    "rotation": 42.16582769183466
   },
   "useDefaultConstraints": true
 }

@@ -92,6 +92,18 @@
       "waypointRelativePos": 0.1,
       "endWaypointRelativePos": null,
       "command": null
+    },
+    {
+      "name": "intakeStartEvent",
+      "waypointRelativePos": 0.9504950495049442,
+      "endWaypointRelativePos": null,
+      "command": null
+    },
+    {
+      "name": "intakeStopEvent",
+      "waypointRelativePos": 2.2112211221122235,
+      "endWaypointRelativePos": null,
+      "command": null
     }
   ],
   "globalConstraints": {

@@ -71,7 +71,7 @@ public final class Constants {
     public static final double STATOR_CURRENT_LIMIT_SHOOTER = 60;
 
     public static final double SUPPLY_CURRENT_LIMIT_FEEDER = 40.0;
-    public static final double STATOR_CURRENT_LIMIT_FEEDER = 40.0;
+    public static final double STATOR_CURRENT_LIMIT_FEEDER = 120;
 
     public static final double SUPPLY_CURRENT_LIMIT_BELT = 40.0;
     public static final double STATOR_CURRENT_LIMIT_BELT = 40.0;
@@ -80,7 +80,7 @@ public final class Constants {
     public static final double STATOR_CURRENT_LIMIT_CLIMB = 40.0;
 
     public static final double SUPPLY_CURRENT_LIMIT_INTAKE_POSITION = 300;
-    public static final double STATOR_CURRENT_LIMIT_INTAKE_POSITION = 100;
+    public static final double STATOR_CURRENT_LIMIT_INTAKE_POSITION = 10000;
 
     public static final double SUPPLY_CURRENT_LIMIT_INTAKE_ROLLER = 300;
     public static final double STATOR_CURRENT_LIMIT_INTAKE_ROLLER = 80.0;
@@ -340,6 +340,7 @@ public final class Constants {
     public static final int MOTOR_ID = 23;
 
     public static final double FEED_POWER = 1;
+    public static final double EJECT_POWER_AUTO = -1;
 
     public static final Slot0Configs SLOT0CONFIGS;
     public static final TalonFXConfiguration CONFIG;
@@ -464,13 +465,12 @@ public final class Constants {
 
     // 2
     // 1.29
-    public static final double MIN_POSITION = -0.43; // o.373535
-    public static final double MAX_POSITION = 0.29; // can also do 0.36
-    public static final double MID_POSITION = -0.05;
+    public static final double MIN_POSITION = -10000; // o.373535
+    public static final double MAX_POSITION = 1000; // can also do 0.36
 
-    public static final double INTAKE_DOWN_POSITION = MAX_POSITION;
-    public static final double INTAKE_HALFWAY_UP_POSITION = MID_POSITION;
-    public static final double INTAKE_UP_POSITION = MIN_POSITION;
+    public static final double INTAKE_DOWN_POSITION = 0.737;
+    public static final double INTAKE_HALFWAY_UP_POSITION = 0.4;
+    public static final double INTAKE_UP_POSITION = 0.01;
     // .-0.062
 
     public static final double CLAMP_MAX_VOLTS = 3;
@@ -487,7 +487,7 @@ public final class Constants {
 
     public static final double ROLLER_GOING_DOWN_VOLTS = -12;
     public static final double ROLLER_GOING_UP_VOLTS = 4.5;
-    public static final double INTAKE_VOLTS = 12;
+    public static final double INTAKE_VOLTS = 10;
     public static final double EJECT_VOLTS = -8;
 
     public static final double MOTION_MAGIC_CRUISE_VELOCITY = 3;

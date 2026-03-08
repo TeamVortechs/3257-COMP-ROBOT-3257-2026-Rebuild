@@ -438,7 +438,13 @@ public class RobotContainer {
     testController.a().whileTrue(feeder.setPercentMotorRunCommand(FeederConstants.FEED_POWER));
     testController.b().whileTrue(belt.setPercentMotorOutputRunCommand(BeltConstants.FEED_POWER));
 
-    // sysid bindings:
+    testController
+        .x()
+        .whileTrue(
+            shooter.setManualSpeedRunCommand(58).alongWith(feeder.feedWhenValidRunCommand(1)));
+
+    // sysid bindings:[]\
+
     configureSysIdBindings(sysID_controller, shooter.BuildSysIdRoutine());
   }
 
@@ -569,6 +575,13 @@ public class RobotContainer {
     new EventTrigger("climbUpEvent")
         .onTrue(new InstantCommand(() -> climb.setVoltage(ClimbConstants.CLIMB_UP_VOLTS)));
     new EventTrigger("climbStopEvent").onTrue(new InstantCommand(() -> climb.setVoltage(0)));
+
+    new EventTrigger("reverseFeederEvent")
+        .onTrue(
+            new InstantCommand(
+                () -> feeder.setPercentMotorOutput(FeederConstants.EJECT_POWER_AUTO)));
+    new EventTrigger("stopFeederEvent")
+        .onTrue(new InstantCommand(() -> feeder.setPercentMotorOutput(0)));
   }
 
   // this shoudl be in a helper method or somewhere in robot container
