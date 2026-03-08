@@ -443,17 +443,27 @@ public class RobotContainer {
     testController.a().whileTrue(feeder.setPercentMotorRunCommand(FeederConstants.FEED_POWER));
     testController.b().whileTrue(belt.setPercentMotorOutputRunCommand(BeltConstants.FEED_POWER));
 
+    // TODO: see if this will require adding InterruptBehavior of canceling any other intake
+    // commands while the intake is running so that it doesn't scrindongulode our intake mid-way
+    // through its travel
     Command oscillateIntake =
         new SequentialCommandGroup(
-                intake.setPositionWithVelocityCommand(
+                intake.setPositionWithVelocityAndRollersCommandConsistentEnd(
                     IntakeConstants.INTAKE_HALFWAY_UP_POSITION,
-                    IntakeConstants.OSCILLATION_VELOCITY),
+                    IntakeConstants.OSCILLATION_VELOCITY,
+                    IntakeConstants.ROLLER_GOING_UP_VOLTS),
                 new WaitCommand(IntakeConstants.WAIT_TIME_BETWEEN_INTAKE_OSCILLATION),
-                intake.setPositionWithVelocityCommand(
-                    IntakeConstants.INTAKE_DOWN_POSITION, IntakeConstants.OSCILLATION_VELOCITY),
+                intake.setPositionWithVelocityAndRollersCommandConsistentEnd(
+                    IntakeConstants.INTAKE_DOWN_POSITION,
+                    IntakeConstants.OSCILLATION_VELOCITY,
+                    IntakeConstants.ROLLER_GOING_DOWN_VOLTS),
                 new WaitCommand(IntakeConstants.WAIT_TIME_BETWEEN_INTAKE_OSCILLATION))
             .repeatedly();
-    testController.rightBumper().whileTrue(oscillateIntake);
+    testController
+        .rightBumper()
+        .whileTrue(
+            oscillateIntake.alongWith( // not sure if running belt is desired
+                belt.setPercentMotorOutputRunCommand(BeltConstants.FEED_POWER)));
   }
 
   /**

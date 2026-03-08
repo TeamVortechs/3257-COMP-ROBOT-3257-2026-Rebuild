@@ -497,7 +497,7 @@ public final class Constants {
     public static final Time WAIT_TIME_TO_PULL_INTAKE = Seconds.of(2);
     public static final double MOTION_MAGIC_SLOWED_VELOCITY = 1.5;
     // constants for the oscillateIntake command
-    public static final Time WAIT_TIME_BETWEEN_INTAKE_OSCILLATION = Seconds.of(3);
+    public static final Time WAIT_TIME_BETWEEN_INTAKE_OSCILLATION = Seconds.of(0.5);
     public static final double OSCILLATION_VELOCITY = 1;
 
     public static final double RAMP_RATE_VOLTS_ROLLER_SYSID = 0.25;
