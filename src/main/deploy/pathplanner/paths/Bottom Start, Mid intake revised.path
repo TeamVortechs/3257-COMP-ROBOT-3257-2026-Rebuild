@@ -48,16 +48,16 @@
     },
     {
       "anchor": {
-        "x": 4.902372479240808,
-        "y": 2.3081494661921704
+        "x": 6.354863582443654,
+        "y": 2.4480189798339267
       },
       "prevControl": {
-        "x": 5.263440636180669,
-        "y": 2.3890197522950487
+        "x": 6.795990510083037,
+        "y": 2.5018149466192163
       },
       "nextControl": {
-        "x": 4.5656151946023815,
-        "y": 2.232724210786793
+        "x": 6.012300874681194,
+        "y": 2.4062430398628956
       },
       "isLocked": false,
       "linkedName": null
@@ -106,36 +106,11 @@
       "rotationDegrees": 136.06980080764362
     },
     {
-      "waypointRelativePos": 2.2238010657193485,
-      "rotationDegrees": 178.625
-    },
-    {
-      "waypointRelativePos": 2.6856127886323473,
-      "rotationDegrees": 180.0
-    },
-    {
-      "waypointRelativePos": 2.804979253112027,
-      "rotationDegrees": 138.6694962687395
-    },
-    {
-      "waypointRelativePos": 4.016829052258649,
-      "rotationDegrees": 139.01041265948635
+      "waypointRelativePos": 2.4713656387665224,
+      "rotationDegrees": 144.01045939277387
     }
   ],
   "constraintZones": [
-    {
-      "name": "Over Bumper",
-      "minWaypointRelativePos": 2.8419282511210753,
-      "maxWaypointRelativePos": 4.131165919282514,
-      "constraints": {
-        "maxVelocity": 1.5,
-        "maxAcceleration": 3.0,
-        "maxAngularVelocity": 540.0,
-        "maxAngularAcceleration": 720.0,
-        "nominalVoltage": 12.0,
-        "unlimited": false
-      }
-    },
     {
       "name": "While Intaking",
       "minWaypointRelativePos": 0.8908886389201427,
@@ -166,19 +141,19 @@
     },
     {
       "name": "reverseFeederEvent",
-      "waypointRelativePos": 0.8458942632170952,
-      "endWaypointRelativePos": null,
-      "command": null
-    },
-    {
-      "name": "stopFeederEvent",
-      "waypointRelativePos": 1.4069506726457446,
+      "waypointRelativePos": 4.086322869955151,
       "endWaypointRelativePos": null,
       "command": null
     },
     {
       "name": "intakeStopEvent",
       "waypointRelativePos": 4.2,
+      "endWaypointRelativePos": null,
+      "command": null
+    },
+    {
+      "name": "stopFeederEvent",
+      "waypointRelativePos": 4.265695067264635,
       "endWaypointRelativePos": null,
       "command": null
     }

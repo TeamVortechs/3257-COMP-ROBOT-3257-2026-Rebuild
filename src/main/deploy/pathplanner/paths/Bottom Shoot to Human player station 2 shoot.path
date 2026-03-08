@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 0.6901281660270737,
-        "y": 1.0177359737119915
+        "x": 0.7504809226028226,
+        "y": 0.9602422822231096
       },
       "isLocked": false,
       "linkedName": "Human player Intake Stationary"
@@ -20,8 +20,8 @@
         "y": 2.534
       },
       "prevControl": {
-        "x": 2.8314955318734683,
-        "y": 2.1787533531102747
+        "x": 2.8854346217543907,
+        "y": 2.0162792245910386
       },
       "nextControl": null,
       "isLocked": false,

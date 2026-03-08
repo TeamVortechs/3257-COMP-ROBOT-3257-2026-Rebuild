@@ -360,9 +360,14 @@ public class RobotContainer {
 
     controller.povRight().whileTrue(feeder.setPercentMotorRunCommand(1));
 
-    // eject balls
     controller
         .rightBumper()
+        .onTrue(shooter.setAutomaticallyChargeFully(() -> true))
+        .onFalse(shooter.setAutomaticallyChargeFully(() -> false));
+
+    // eject balls
+    controller
+        .a()
         .whileTrue(
             Commands.parallel(
                 intake.setRollerVoltageAndPositionCommand(

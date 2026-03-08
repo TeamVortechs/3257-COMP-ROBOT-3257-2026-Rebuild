@@ -156,6 +156,18 @@
       "waypointRelativePos": 2.3122923588039885,
       "endWaypointRelativePos": null,
       "command": null
+    },
+    {
+      "name": "reverseFeederEvent",
+      "waypointRelativePos": 3.4966592427617087,
+      "endWaypointRelativePos": null,
+      "command": null
+    },
+    {
+      "name": "stopFeederEvent",
+      "waypointRelativePos": 4.0,
+      "endWaypointRelativePos": null,
+      "command": null
     }
   ],
   "globalConstraints": {

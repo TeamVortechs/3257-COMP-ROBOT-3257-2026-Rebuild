@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.8246381969157779,
-        "y": 0.6619928825622776
+        "x": 0.4803440094899176,
+        "y": 0.9202135231316719
       },
       "prevControl": null,
       "nextControl": {
-        "x": 0.9182651385627446,
-        "y": 0.8972140813305284
+        "x": 1.1112056223334852,
+        "y": 1.3509226473601734
       },
       "isLocked": false,
       "linkedName": "HP station Facing"
@@ -20,8 +20,8 @@
         "y": 2.275871886120997
       },
       "prevControl": {
-        "x": 1.1158453509197053,
-        "y": 1.5049537606009558
+        "x": 1.0058049253751333,
+        "y": 0.7147875559257095
       },
       "nextControl": null,
       "isLocked": false,
@@ -48,7 +48,7 @@
   "folder": "Front Bottom",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -178.61964592655556
+    "rotation": -89.20427644726071
   },
   "useDefaultConstraints": true
 }
