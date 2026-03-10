@@ -92,7 +92,11 @@ public final class Constants {
 
     private static void characterizeAirtimeMap() {
       // bad balue
-      AIRTIME_MAP.put(2.3, 0.9);
+      AIRTIME_MAP.put(1.63, 0.86375);
+      AIRTIME_MAP.put(2.252, 0.951);
+      AIRTIME_MAP.put(2.89, 1.049);
+      AIRTIME_MAP.put(3.5, 1.098);
+
     }
 
     public static final double SHOOTER_ROTATION_MANAGER_LOGGING_FREQUENCY =
