@@ -68,7 +68,7 @@ public final class Constants {
     // more info
 
     public static final double SUPPLY_CURRENT_LIMIT_SHOOTER = 500;
-    public static final double STATOR_CURRENT_LIMIT_SHOOTER = 80;
+    public static final double STATOR_CURRENT_LIMIT_SHOOTER = 100;
 
     public static final double SUPPLY_CURRENT_LIMIT_FEEDER = 40.0;
     public static final double STATOR_CURRENT_LIMIT_FEEDER = 120;
@@ -314,7 +314,7 @@ public final class Constants {
       var motionMagicConfigs = CONFIG.MotionMagic;
       motionMagicConfigs.MotionMagicCruiseVelocity = 100; // Target cruise velocity of 80 rps
       motionMagicConfigs.MotionMagicAcceleration =
-          40; // Target acceleration of 160 rps/s (0.5 seconds)
+          70; // Target acceleration of 160 rps/s (0.5 seconds)
       motionMagicConfigs.MotionMagicJerk = 1600; // Target jerk of 1600 rps/s/s (0.1 seconds)
     }
   }
@@ -459,7 +459,7 @@ public final class Constants {
     // dummy values for now
     public static final double MAX_TARGET_SPEED = 100;
     public static final double MAX_MANUAL_SPEED = 100;
-    // public static final double POS_TOLERANCE = 0.2;
+    // public static final double POSx_TOLERANCE = 0.2;
 
     public static final double POSITION_TOLERANCE = 0.02;
 
@@ -468,9 +468,9 @@ public final class Constants {
     public static final double MIN_POSITION = -10000; // o.373535
     public static final double MAX_POSITION = 1000; // can also do 0.36
 
-    public static final double INTAKE_DOWN_POSITION = 0.481;
-    public static final double INTAKE_HALFWAY_UP_POSITION = 0.187;
-    public static final double INTAKE_UP_POSITION = -0.263;
+    public static final double INTAKE_DOWN_POSITION = -0.41;
+    public static final double INTAKE_HALFWAY_UP_POSITION = -0.721;
+    public static final double INTAKE_UP_POSITION = -0.267;
     // .-0.062
 
     public static final double CLAMP_MAX_VOLTS = 3;

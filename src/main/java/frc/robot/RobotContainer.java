@@ -446,7 +446,7 @@ public class RobotContainer {
     testController
         .x()
         .whileTrue(
-            shooter.setManualSpeedRunCommand(58).alongWith(feeder.feedWhenValidRunCommand(1)));
+            shooter.setManualSpeedRunCommand(59).alongWith(feeder.feedWhenValidRunCommand(1)));
 
     // sysid bindings:[]\
 

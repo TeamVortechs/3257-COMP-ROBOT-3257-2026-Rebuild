@@ -33,19 +33,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "Bottom Shoot to Human player station 2 intake"
-                      }
-                    },
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 3.0
-                      }
-                    },
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "Bottom Shoot to Human player station 2 shoot"
+                        "pathName": "Bottom score mid sweep"
                       }
                     },
                     {
@@ -58,12 +46,6 @@
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Bottom shoot to ending position"
           }
         }
       ]
