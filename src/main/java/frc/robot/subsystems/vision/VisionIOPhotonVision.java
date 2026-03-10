@@ -12,6 +12,7 @@ import static frc.robot.subsystems.vision.VisionConstants.*;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -54,6 +55,7 @@ public class VisionIOPhotonVision implements VisionIO {
 
       // Add pose observation
       if (result.multitagResult.isPresent()) { // Multitag result
+        System.out.println("legally a multitag result");
         var multitagResult = result.multitagResult.get();
 
         // Calculate robot pose
@@ -82,6 +84,16 @@ public class VisionIOPhotonVision implements VisionIO {
 
       } else if (!result.targets.isEmpty()) { // Single tag result
         var target = result.targets.get(0);
+
+        // this kinda sucks that i have to do it in here for solely photonvision,
+        // but photonvision can't filter tags through the UI. i'm screening out
+        // all singleton tags on the TRENCHes because they tend to blow the robot up
+
+        if (Arrays.binarySearch(bannedTags, target.fiducialId) >= 0) { // if the tag is in the list of banned tags,
+          System.out.println("hell nah i ain't getting no tag from this foo");
+          return; // just stop the result. don't even try taking it
+        }
+        System.out.println("i'm taking this single-tag result w binary search result of " + Arrays.binarySearch(bannedTags, target.fiducialId));
 
         // Calculate robot pose
         var tagPose = aprilTagLayout.getTagPose(target.fiducialId);

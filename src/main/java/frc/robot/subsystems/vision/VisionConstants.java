@@ -7,6 +7,8 @@
 
 package frc.robot.subsystems.vision;
 
+import java.util.Arrays;
+
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -46,6 +48,9 @@ public class VisionConstants {
   // Basic filtering thresholds
   public static double maxAmbiguity = 0.2; // formerly 0.3; reduced to lower risk of Bad Things
   public static double maxZError = 0.75;
+  public static int[] bannedTags = { // THIS MUST BE A SORTED LIST! I WILL BEAT YOU UP IF IT IS NOT
+    1, 6, 7, 12, 17, 22, 23, 28,
+  }; // all singleton tags on each TRENCH
 
   // Standard deviation baselines, for 1 meter distance and 1 tag
   // (Adjusted automatically based on distance and # of tags)
