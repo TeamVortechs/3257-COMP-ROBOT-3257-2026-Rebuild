@@ -56,7 +56,6 @@ import frc.robot.subsystems.feeder.FeederTalonFXIO;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeIO;
 import frc.robot.subsystems.intake.IntakeSimulationIO;
-import frc.robot.subsystems.intake.IntakeTalonFXCANCoderIO;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterIO;
 import frc.robot.subsystems.shooter.ShooterSimulationIO;
@@ -132,9 +131,10 @@ public class RobotContainer {
         //         new ModuleIO() {},
         //         new ModuleIO() {},
         //         new ModuleIO() {});
-        intake =
-            new Intake(new IntakeTalonFXCANCoderIO(IntakeConstants.INTAKE_ROLLER_MOTOR_ID, 22, 29));
-        // intake = new Intake(new IntakeIO() {});
+        // intake =
+        //     new Intake(new IntakeTalonFXCANCoderIO(IntakeConstants.INTAKE_ROLLER_MOTOR_ID, 22,
+        // 29));
+        intake = new Intake(new IntakeIO() {});
 
         shooter =
             new Shooter(
@@ -446,7 +446,12 @@ public class RobotContainer {
     testController
         .x()
         .whileTrue(
-            shooter.setManualSpeedRunCommand(59).alongWith(feeder.feedWhenValidRunCommand(1)));
+            shooter
+                .setTestCommandRun()
+                .alongWith(feeder.feedWhenValidRunCommand(1))
+                .alongWith(
+                    belt.setPercentMotorOutputRunCommand(
+                        BeltConstants.FEED_POWER, () -> feeder.getTargetSpeed() > 0)));
 
     // sysid bindings:[]\
 

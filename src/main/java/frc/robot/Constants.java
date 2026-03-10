@@ -68,7 +68,7 @@ public final class Constants {
     // more info
 
     public static final double SUPPLY_CURRENT_LIMIT_SHOOTER = 500;
-    public static final double STATOR_CURRENT_LIMIT_SHOOTER = 100;
+    public static final double STATOR_CURRENT_LIMIT_SHOOTER = 100000;
 
     public static final double SUPPLY_CURRENT_LIMIT_FEEDER = 40.0;
     public static final double STATOR_CURRENT_LIMIT_FEEDER = 120;
@@ -278,15 +278,18 @@ public final class Constants {
 
     public static final double PERCENTAGE_OF_DISTANCE_WHEN_CHARGING = 0.6;
 
+    public static final double SD_MANUAL_SPEED_SETTING = 70;
+    public static final String SD_MANUAL_SPEED_KEY = "shooterManualSpeed";
+
     // the time that the feeder waits before shooting once it is valis
 
     // CHANGE !!
-    public static final double KS = 0.0;
-    public static final double KV = 0.12743; // 0.13727;
-    public static final double KP = 0.18049; // 16011;
+    public static final double KS = 0.021277;
+    public static final double KV = 0.13001; // 0.13727;
+    public static final double KP = 0.1677; // 16011;
     public static final double KI = 0.0;
     public static final double KD = 0.0;
-    public static final double KA = 0.042075; // 050592;
+    public static final double KA = 0.03725; // 050592;
 
     public static final TalonFXConfiguration CONFIG;
     public static final Slot0Configs SLOT0CONFIGS;
@@ -469,7 +472,7 @@ public final class Constants {
     public static final double MAX_POSITION = 1000; // can also do 0.36
 
     public static final double INTAKE_DOWN_POSITION = -0.41;
-    public static final double INTAKE_HALFWAY_UP_POSITION = -0.721;
+    public static final double INTAKE_HALFWAY_UP_POSITION = -0.645;
     public static final double INTAKE_UP_POSITION = -0.267;
     // .-0.062
 
