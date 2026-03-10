@@ -7,17 +7,22 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Seconds;
+
 import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.units.measure.*;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -25,7 +30,6 @@ import frc.robot.generated.TunerConstants;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
-import org.littletonrobotics.junction.Logger;
 
 /**
  * This class defines the runtime mode used by AdvantageKit. The mode is always "real" when running
@@ -54,12 +58,41 @@ public final class Constants {
     REPLAY
   }
 
+  public class CurrentLimitConstants {
+    // public static final double SUPPLY_CURRENT_LIMIT_DRIVE = 40.0;
+    // public static final double STATOR_CURRENT_LIMIT_DRIVE = 40.0;
+
+    // Drive doesn't have these limits here. That's because it has limit constants from another
+    // file.
+    // I decided not to mess with all that... so the limit is at 120. Check ModuleIOTalonFX.java for
+    // more info
+
+    public static final double SUPPLY_CURRENT_LIMIT_SHOOTER = 500;
+    public static final double STATOR_CURRENT_LIMIT_SHOOTER = 100;
+
+    public static final double SUPPLY_CURRENT_LIMIT_FEEDER = 40.0;
+    public static final double STATOR_CURRENT_LIMIT_FEEDER = 120;
+
+    public static final double SUPPLY_CURRENT_LIMIT_BELT = 40.0;
+    public static final double STATOR_CURRENT_LIMIT_BELT = 40.0;
+
+    public static final double SUPPLY_CURRENT_LIMIT_CLIMB = 40.0;
+    public static final double STATOR_CURRENT_LIMIT_CLIMB = 40.0;
+
+    public static final double SUPPLY_CURRENT_LIMIT_INTAKE_POSITION = 300;
+    public static final double STATOR_CURRENT_LIMIT_INTAKE_POSITION = 10000;
+
+    public static final double SUPPLY_CURRENT_LIMIT_INTAKE_ROLLER = 300;
+    public static final double STATOR_CURRENT_LIMIT_INTAKE_ROLLER = 80.0;
+  }
+
   public class DriveConstants {
 
     private static final InterpolatingDoubleTreeMap AIRTIME_MAP = new InterpolatingDoubleTreeMap();
 
     private static void characterizeAirtimeMap() {
-      AIRTIME_MAP.put(0.0, 0.0);
+      // bad balue
+      AIRTIME_MAP.put(2.3, 0.9);
     }
 
     public static final double SHOOTER_ROTATION_MANAGER_LOGGING_FREQUENCY =
@@ -88,7 +121,7 @@ public final class Constants {
 
     public static final ProfiledPIDController ANGLE_CONTROLLER;
 
-    public static final double ORIENTATION_TOLERANCE = .1;
+    public static final double ORIENTATION_TOLERANCE = 0.2;
     // the time it takes between feeding and actual robot shoot. This is used to lead the robot
     // pose. Should be about 0.08 - 0.18 s
     public static final double KRELEASE_POSE_PREDICTION_SEC = 0; // to change .5
@@ -96,22 +129,22 @@ public final class Constants {
     // we should test by looking at values. this can also be a distance lookup table. This corrects
     // for robot speed by changing the target location. This constant is supposed ot emmulate fligth
     // time
-    public static final double KFLIGHT_COMPENSATION_SEC(double distance) {
+    public static final double getTimeInAir(double distance) {
 
       double val = AIRTIME_MAP.get(distance);
 
-      Logger.recordOutput("DriveConstants/MostRecentAirTimeEstimation", val);
-      // return val;
-
-      return 0;
+      // realistic for a midpoint shot
+      return 0.9;
     }
+
+    public static final double SHOOT_ON_MOVE_TOLERANCE = 0.05;
 
     // the maximum allowed difference allowed between acceleraomter and encoders before it is
     // considered skid
     public static final double SKID_THRESHOLD = 1000;
 
     public static final double DEADBAND = 0.1;
-    public static final double ANGLE_KP = 10; // 12
+    public static final double ANGLE_KP = 4; // 12
     public static final double ANGLE_KD = 0.4;
     public static final double ANGLE_MAX_ACCELERATION = 20.0;
     public static final double ANGLE_MAX_VELOCITY = 8.0;
@@ -122,6 +155,11 @@ public final class Constants {
 
     public static final Translation2d CENTER_POINT = new Translation2d(8.27, 4.115);
 
+    // this is the rotation the drive will turn to when travelling over the bumpers, depending on
+    // what side of the field(red or blue)
+    // this is optimal bc it's smoother going at an angle rather than straight in
+    public static final double RED_SIDE_DEGREES = 135;
+    public static final double BLUE_SIDE_DEGREES = 45;
     // find this
     public static final Pose2d GOAL_POSE_BLUE = new Pose2d(4.622, 4.03, new Rotation2d());
     public static final Pose2d GOAL_POSE_RED = new Pose2d(11.917, 4.030, new Rotation2d());
@@ -129,46 +167,45 @@ public final class Constants {
     private static List<Pose2d> PASSING_GOALS_STORAGE = null;
     private static List<String> PASSING_GOALS_NAME_STORAGE = null;
 
-    public static boolean SWICH_PASSING_GOALS = false;
-
     public static final List<String> PASSING_GOALS_NAMES() {
 
       if (PASSING_GOALS_NAME_STORAGE == null) {
         PASSING_GOALS_NAME_STORAGE = new ArrayList<>();
         PASSING_GOALS_NAME_STORAGE.add("Back left");
         PASSING_GOALS_NAME_STORAGE.add("Back right");
-        PASSING_GOALS_NAME_STORAGE.add("Front left");
-        PASSING_GOALS_NAME_STORAGE.add("Front right");
       }
 
       return PASSING_GOALS_NAME_STORAGE;
     }
 
-    public static final List<Pose2d> PASSING_GOALS() {
+    public static final int GET_PASSING_GOALS() {
+      GET_PASSING_GOAL(0);
+      return PASSING_GOALS_STORAGE.size();
+    }
+
+    public static final Pose2d GET_PASSING_GOAL(int index) {
 
       if (PASSING_GOALS_STORAGE == null) {
         PASSING_GOALS_STORAGE = new ArrayList<>();
-        PASSING_GOALS_STORAGE.add(new Pose2d(2.5, 6.5, new Rotation2d()));
-        PASSING_GOALS_STORAGE.add(new Pose2d(2.5, 2.5, new Rotation2d()));
-        PASSING_GOALS_STORAGE.add(new Pose2d(7, 6.5, new Rotation2d()));
-        PASSING_GOALS_STORAGE.add(new Pose2d(7, 2.5, new Rotation2d()));
+        PASSING_GOALS_STORAGE.add(new Pose2d(0.5, 6.8, new Rotation2d()));
+        PASSING_GOALS_STORAGE.add(new Pose2d(0.5, 1.2, new Rotation2d()));
       }
+
+      Pose2d returnPose = PASSING_GOALS_STORAGE.get(index);
 
       // add flip logic here
       // double xToFlip = 5;
       // double yToFlip = 5;
       // double x;
       // double y;
-      if (SWICH_PASSING_GOALS) {
-        for (int i = 0; i < PASSING_GOALS_STORAGE.size(); i++) {
-          PASSING_GOALS_STORAGE.set(
-              i,
-              PASSING_GOALS_STORAGE.get(i).rotateAround(CENTER_POINT, Rotation2d.fromDegrees(180)));
-        }
-        SWICH_PASSING_GOALS = false;
+      if (DriverStation.getAlliance() != null
+          && DriverStation.getAlliance().isPresent()
+          && DriverStation.getAlliance().get() == Alliance.Red) {
+
+        returnPose = returnPose.rotateAround(CENTER_POINT, Rotation2d.fromDegrees(180));
       }
 
-      return PASSING_GOALS_STORAGE;
+      return returnPose;
     }
 
     // this is ugly but all it does is return target pose based on the team
@@ -222,13 +259,11 @@ public final class Constants {
   public class ShooterConstants {
     public static final double FREQUENCY_HZ = Constants.HIGH_PRIORITY_FREQUENCY_HZ;
 
-    public static final double CURRENT_LIMIT = 40.0;
-
     public static final double SIM_TOLERANCE = 0.5;
 
     // used in Shooter.java
-    public static final double RAMP_RATE_VOLTS_SYSID = 5;
-    public static final double DYNAMIC_STEP_VOLTS_SYSID = 3;
+    public static final double RAMP_RATE_VOLTS_SYSID = 2;
+    public static final double DYNAMIC_STEP_VOLTS_SYSID = 8;
     public static final double TOLERANCE = 4;
 
     public static final int MOTOR_ID = 24;
@@ -247,11 +282,11 @@ public final class Constants {
 
     // CHANGE !!
     public static final double KS = 0.0;
-    public static final double KV = 0.13727;
-    public static final double KP = 0.16011;
+    public static final double KV = 0.12743; // 0.13727;
+    public static final double KP = 0.18049; // 16011;
     public static final double KI = 0.0;
     public static final double KD = 0.0;
-    public static final double KA = 0.050592;
+    public static final double KA = 0.042075; // 050592;
 
     public static final TalonFXConfiguration CONFIG;
     public static final Slot0Configs SLOT0CONFIGS;
@@ -263,8 +298,12 @@ public final class Constants {
       CLOSE_LOOP_RAMP_CONFIG = new ClosedLoopRampsConfigs();
       CONFIG.MotorOutput.NeutralMode = NeutralModeValue.Coast;
       CONFIG.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-      CONFIG.CurrentLimits.SupplyCurrentLimit = Constants.ShooterConstants.CURRENT_LIMIT;
+      CONFIG.CurrentLimits.SupplyCurrentLimit =
+          Constants.CurrentLimitConstants.SUPPLY_CURRENT_LIMIT_SHOOTER;
       CONFIG.CurrentLimits.SupplyCurrentLimitEnable = true;
+      CONFIG.CurrentLimits.StatorCurrentLimit =
+          Constants.CurrentLimitConstants.STATOR_CURRENT_LIMIT_SHOOTER;
+      CONFIG.CurrentLimits.StatorCurrentLimitEnable = true;
       SLOT0CONFIGS.kS = Constants.ShooterConstants.KS;
       SLOT0CONFIGS.kV = Constants.ShooterConstants.KV;
       SLOT0CONFIGS.kP = Constants.ShooterConstants.KP;
@@ -275,7 +314,7 @@ public final class Constants {
       var motionMagicConfigs = CONFIG.MotionMagic;
       motionMagicConfigs.MotionMagicCruiseVelocity = 100; // Target cruise velocity of 80 rps
       motionMagicConfigs.MotionMagicAcceleration =
-          20; // Target acceleration of 160 rps/s (0.5 seconds)
+          70; // Target acceleration of 160 rps/s (0.5 seconds)
       motionMagicConfigs.MotionMagicJerk = 1600; // Target jerk of 1600 rps/s/s (0.1 seconds)
     }
   }
@@ -288,7 +327,6 @@ public final class Constants {
 
     public static final double VALIDITY_DEBOUNCE_TIME_SEC = 0.2;
 
-    public static final double CURRENT_LIMIT = 40.0;
     public static final double SIM_TOLERANCE = 0.5;
 
     public static final double FEEDER_ID = 23;
@@ -302,6 +340,7 @@ public final class Constants {
     public static final int MOTOR_ID = 23;
 
     public static final double FEED_POWER = 1;
+    public static final double EJECT_POWER_AUTO = -1;
 
     public static final Slot0Configs SLOT0CONFIGS;
     public static final TalonFXConfiguration CONFIG;
@@ -312,8 +351,12 @@ public final class Constants {
 
       CONFIG.MotorOutput.NeutralMode = NeutralModeValue.Brake;
       CONFIG.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
-      CONFIG.CurrentLimits.SupplyCurrentLimit = Constants.FeederConstants.CURRENT_LIMIT;
+      CONFIG.CurrentLimits.SupplyCurrentLimit =
+          Constants.CurrentLimitConstants.SUPPLY_CURRENT_LIMIT_FEEDER;
       CONFIG.CurrentLimits.SupplyCurrentLimitEnable = true;
+      CONFIG.CurrentLimits.StatorCurrentLimit =
+          Constants.CurrentLimitConstants.STATOR_CURRENT_LIMIT_FEEDER;
+      CONFIG.CurrentLimits.StatorCurrentLimitEnable = true;
     }
   }
 
@@ -323,16 +366,17 @@ public final class Constants {
 
     public static double FREQUENCY_HZ = Constants.LOW_PRIORITY_FREQUENCY_HZ;
 
-    public static final double CURRENT_LIMIT = 40.0;
-
     // used in Belt.java
     public static final double RAMP_RATE_VOLTS_SYSID = 0.25;
     public static final double DYNAMIC_STEP_VOLTS_SYSID = 1;
 
     // not real
-    public static final int ID = 6;
+    public static final int ID = 25;
 
-    public static final double FEED_POWER = 0.1;
+    public static final double FEED_POWER = 0.5;
+    public static final double INTAKE_POWER = 1;
+    public static final double DEFAULT_POWER = 0;
+    public static final double EJECT_POWER = -1;
 
     public static final double TOLERANCE = 0.1;
 
@@ -342,8 +386,12 @@ public final class Constants {
       CONFIG = new TalonFXConfiguration();
       CONFIG.MotorOutput.NeutralMode = NeutralModeValue.Coast;
       CONFIG.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-      CONFIG.CurrentLimits.SupplyCurrentLimit = Constants.BeltConstants.CURRENT_LIMIT;
+      CONFIG.CurrentLimits.SupplyCurrentLimit =
+          Constants.CurrentLimitConstants.SUPPLY_CURRENT_LIMIT_BELT;
+      CONFIG.CurrentLimits.StatorCurrentLimit =
+          Constants.CurrentLimitConstants.STATOR_CURRENT_LIMIT_BELT;
       CONFIG.CurrentLimits.SupplyCurrentLimitEnable = true;
+      CONFIG.CurrentLimits.StatorCurrentLimitEnable = true;
     }
   }
 
@@ -351,12 +399,12 @@ public final class Constants {
   public class ClimbConstants {
     public static final double FREQUENCY_HZ = Constants.VERY_LOW_PRIORITY_FREQUENCY_HZ;
 
-    public static final double CURRENT_LIMIT = 40.0;
     // used in Belt.java
     public static final double RAMP_RATE_VOLTS_SYSID = 0.1;
     public static final double DYNAMIC_STEP_VOLTS_SYSID = 0.25;
 
-    public static final double FEED_POWER = 0.1;
+    public static final double CLIMB_UP_VOLTS = 0.1;
+    public static final double CLIMB_DOWN_VOLTS = -0.1;
 
     public static final double MIN_POSITION_LEFT = 0;
     public static final double MAX_POSITION_LEFT = 1;
@@ -386,8 +434,12 @@ public final class Constants {
       CONFIG = new TalonFXConfiguration();
       CONFIG.MotorOutput.NeutralMode = NeutralModeValue.Brake;
       CONFIG.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-      CONFIG.CurrentLimits.SupplyCurrentLimit = Constants.ClimbConstants.CURRENT_LIMIT;
+      CONFIG.CurrentLimits.SupplyCurrentLimit =
+          Constants.CurrentLimitConstants.SUPPLY_CURRENT_LIMIT_CLIMB;
+      CONFIG.CurrentLimits.StatorCurrentLimit =
+          Constants.CurrentLimitConstants.STATOR_CURRENT_LIMIT_CLIMB;
       CONFIG.CurrentLimits.SupplyCurrentLimitEnable = true;
+      CONFIG.CurrentLimits.StatorCurrentLimitEnable = true;
 
       SLOT0CONFIGS = new Slot0Configs();
       SLOT0CONFIGS.kS = Constants.ClimbConstants.KS;
@@ -407,27 +459,43 @@ public final class Constants {
     // dummy values for now
     public static final double MAX_TARGET_SPEED = 100;
     public static final double MAX_MANUAL_SPEED = 100;
-    public static final double POS_TOLERANCE = 0.2;
+    // public static final double POSx_TOLERANCE = 0.2;
 
-    public static final double POSITION_TOLERANCE = 0.1;
+    public static final double POSITION_TOLERANCE = 0.02;
 
-    public static final double MAX_POSITION = 1;
-    public static final double MIN_POSITION = 0;
+    // 2
+    // 1.29
+    public static final double MIN_POSITION = -10000; // o.373535
+    public static final double MAX_POSITION = 1000; // can also do 0.36
+
+    public static final double INTAKE_DOWN_POSITION = -0.41;
+    public static final double INTAKE_HALFWAY_UP_POSITION = -0.721;
+    public static final double INTAKE_UP_POSITION = -0.267;
+    // .-0.062
+
+    public static final double CLAMP_MAX_VOLTS = 3;
+    public static final double POSITION_THRESHOLD_STOP = 0.2;
 
     // CHANGE !!
-    public static final double KS = 0.25;
-    public static final double KV = 0.12;
-    public static final double KA = 0.01;
-    public static final double KP = 12;
+    public static final double KS = 0;
+    public static final double KV = 0.2;
+    public static final double KA = 0;
+    public static final double KP = 20;
     public static final double KI = 0;
-    public static final double KD = 0.1;
+    public static final double KD = 0;
+    public static final double KG = 0.5;
 
+    public static final double ROLLER_GOING_DOWN_VOLTS = -12;
+    public static final double ROLLER_GOING_UP_VOLTS = 4.5;
     public static final double INTAKE_VOLTS = 8;
-    public static final double INTAKE_POSITION = 0.5;
+    public static final double EJECT_VOLTS = -8;
 
     public static final double MOTION_MAGIC_CRUISE_VELOCITY = 3;
     public static final double MOTION_MAGIC_ACCELERATION = 2.5;
     public static final double MOTION_MAGIC_JERK = 10;
+    // for slowing down the intake when attempting to close while firing
+    public static final Time WAIT_TIME_TO_PULL_INTAKE = Seconds.of(2);
+    public static final double MOTION_MAGIC_SLOWED_VELOCITY = 1.5;
 
     public static final double RAMP_RATE_VOLTS_ROLLER_SYSID = 0.25;
     public static final double DYNAMIC_STEP_VOLTS_ROLLER_SYSID = 1;
@@ -441,9 +509,13 @@ public final class Constants {
     public static final double DYNAMIC_STEP_VOLTS_POSITION_SYSID = 0.25;
     public static final TalonFXConfiguration ROLLER_CONFIG;
     public static final Slot0Configs SLOT0CONFIGS;
+    public static final TalonFXConfiguration POSITION_CONFIG;
 
     public static final int INTAKE_ROLLER_MOTOR_ID = 21;
     public static final int INTAKE_POSITION_MOTOR_ID = 22;
+    public static final int INTAKE_CANCODER_ID = 29;
+
+    public static final double CANCODER_ROTOR_TO_SENSOR_RATIO = 1; // used to be 30
 
     static {
       SLOT0CONFIGS = new Slot0Configs();
@@ -453,12 +525,29 @@ public final class Constants {
       SLOT0CONFIGS.kP = Constants.IntakeConstants.KP;
       SLOT0CONFIGS.kI = Constants.IntakeConstants.KI;
       SLOT0CONFIGS.kD = Constants.IntakeConstants.KD;
+      SLOT0CONFIGS.kG = IntakeConstants.KG;
+      SLOT0CONFIGS.GravityType = GravityTypeValue.Arm_Cosine;
+      SLOT0CONFIGS.withStaticFeedforwardSign(StaticFeedforwardSignValue.UseVelocitySign);
+
+      POSITION_CONFIG = new TalonFXConfiguration();
+      POSITION_CONFIG.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+      POSITION_CONFIG.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+      POSITION_CONFIG.CurrentLimits.SupplyCurrentLimit =
+          Constants.CurrentLimitConstants.SUPPLY_CURRENT_LIMIT_INTAKE_POSITION;
+      POSITION_CONFIG.CurrentLimits.SupplyCurrentLimitEnable = true;
+      POSITION_CONFIG.CurrentLimits.StatorCurrentLimit =
+          Constants.CurrentLimitConstants.STATOR_CURRENT_LIMIT_INTAKE_POSITION;
+      POSITION_CONFIG.CurrentLimits.StatorCurrentLimitEnable = true;
 
       ROLLER_CONFIG = new TalonFXConfiguration();
       ROLLER_CONFIG.MotorOutput.NeutralMode = NeutralModeValue.Coast;
       ROLLER_CONFIG.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
-      ROLLER_CONFIG.CurrentLimits.SupplyCurrentLimit = Constants.ClimbConstants.CURRENT_LIMIT;
+      ROLLER_CONFIG.CurrentLimits.SupplyCurrentLimit =
+          Constants.CurrentLimitConstants.SUPPLY_CURRENT_LIMIT_INTAKE_ROLLER;
       ROLLER_CONFIG.CurrentLimits.SupplyCurrentLimitEnable = true;
+      ROLLER_CONFIG.CurrentLimits.StatorCurrentLimit =
+          Constants.CurrentLimitConstants.STATOR_CURRENT_LIMIT_INTAKE_ROLLER;
+      ROLLER_CONFIG.CurrentLimits.StatorCurrentLimitEnable = true;
     }
   }
 }

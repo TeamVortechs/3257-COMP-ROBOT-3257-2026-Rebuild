@@ -8,7 +8,7 @@ import org.littletonrobotics.junction.Logger;
 
 public class GoalPoseManager {
   private int indexOfPassingPose;
-  private int maxIndexOfPassingPose = DriveConstants.PASSING_GOALS().size();
+  private int maxIndexOfPassingPose = DriveConstants.GET_PASSING_GOALS();
 
   // not autologged bc we only log it on the setter
   private boolean isPassing = false;
@@ -18,6 +18,10 @@ public class GoalPoseManager {
     Logger.recordOutput("GoalPoseManager/PassingPoseName", getPassingPoseName());
     Logger.recordOutput("GoalPoseManager/targetPose", getTargetPose());
     Logger.recordOutput("GoalPoseManager/isPassing", isPassing);
+  }
+
+  public void setPassingPoseIndex(int index) {
+    indexOfPassingPose = index;
   }
 
   // operations
@@ -38,7 +42,7 @@ public class GoalPoseManager {
     }
 
     Logger.recordOutput("GoalPoseManager/PassingPoseName", getPassingPoseName());
-    Logger.recordOutput("GoalPoseManager/targetPose", getTargetPose());
+    // Logger.recordOutput("GoalPoseManager/targetPose", getTargetPose());
   }
 
   // getters
@@ -49,7 +53,7 @@ public class GoalPoseManager {
   public Pose2d getTargetPose() {
 
     if (isPassing) {
-      return DriveConstants.PASSING_GOALS().get(indexOfPassingPose);
+      return DriveConstants.GET_PASSING_GOAL(indexOfPassingPose);
     } else {
       return DriveConstants.GOAL_POSE.get();
     }
@@ -64,5 +68,9 @@ public class GoalPoseManager {
   // commands
   public Command iteratePassingPoseCommand(boolean forwards) {
     return new InstantCommand(() -> iteratePassingPose(forwards));
+  }
+
+  public Command setPassingPoseIndexCommand(int index) {
+    return new InstantCommand(() -> setPassingPoseIndex(index));
   }
 }

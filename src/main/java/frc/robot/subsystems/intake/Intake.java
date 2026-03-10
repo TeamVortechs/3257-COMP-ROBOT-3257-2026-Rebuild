@@ -10,9 +10,12 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.IntakeConstants;
 import java.util.function.DoubleSupplier;
+import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 /** Intake subsystem responsible for the intake rolling mechanism */
@@ -61,6 +64,7 @@ public class Intake extends SubsystemBase {
   }
 
   public void setPosition(double targetPosition) {
+    System.out.println("setting position to " + targetPosition);
 
     if (targetPosition > IntakeConstants.MAX_POSITION) {
       targetPosition = IntakeConstants.MAX_POSITION;
@@ -71,6 +75,24 @@ public class Intake extends SubsystemBase {
     }
 
     intakeIO.setPositionControl(targetPosition);
+  }
+
+  public void setPositionWithVelocity(double targetPosition, double velocity) {
+    System.out.println("VERY SLOWLY setting position to " + targetPosition);
+
+    // if (targetPosition > IntakeConstants.MAX_POSITION) {
+    //   targetPosition = IntakeConstants.MAX_POSITION;
+    // }
+
+    // if (targetPosition < IntakeConstants.MIN_POSITION) {
+    //   targetPosition = IntakeConstants.MIN_POSITION;
+    // }
+
+    intakeIO.setPositionControlWithVelocity(targetPosition, velocity);
+  }
+
+  public void resetEncoder(double newPosition) {
+    intakeIO.resetEncoder(newPosition);
   }
 
   /** sets the roller motors, -1-1 */
@@ -84,16 +106,21 @@ public class Intake extends SubsystemBase {
     intakeIO.stop();
   }
 
+  @AutoLogOutput
   public boolean isOnTarget() {
 
     double diff = Math.abs(intakeIO.getTargetPosition() - intakeIO.getPosition());
 
-    return IntakeConstants.POS_TOLERANCE > diff;
+    return IntakeConstants.POSITION_TOLERANCE > diff;
   }
 
   /** resets encoders to read 0 and resets PID (setting it to begin at current height) */
   public void resetEncoders() {
     intakeIO.resetEncoders();
+  }
+
+  public void setPositionVoltage(double volt) {
+    intakeIO.setPositionVoltage(volt);
   }
 
   // gets the roller speed
@@ -121,8 +148,44 @@ public class Intake extends SubsystemBase {
         this);
   }
 
+  public Command pullInIntakeRunCommand() {
+    return Commands.parallel(
+        Commands.waitSeconds(2),
+        Commands.startRun(
+            () -> {
+              this.setPosition(0);
+            },
+            () -> {},
+            this));
+  }
+
+  public Command resetEncoderInstant(double newPosition) {
+    return new InstantCommand(
+            () -> {
+              resetEncoder(newPosition);
+            })
+        .ignoringDisable(true);
+  }
+
   public Command setPositionCommand(double position) {
     return Commands.startRun(() -> this.setPosition(position), () -> {}, this);
+  }
+
+  public Command setPositionCommandConsistentEnd(double position) {
+    return Commands.startRun(() -> this.setPosition(position), () -> {}, this)
+        .withDeadline(new WaitUntilCommand(() -> isOnTarget()));
+  }
+
+  public Command setPositionAndRollersCommandConsistentEnd(double position, double voltage) {
+    return Commands.parallel(
+            Commands.startRun(() -> this.setPosition(position), () -> {}),
+            Commands.startRun(() -> this.setRollersVoltage(voltage), () -> {}, this))
+        .withDeadline(new WaitUntilCommand(() -> isOnTarget()));
+  }
+
+  public Command setPositionWithVelocityCommand(double position, double velocity) {
+    return Commands.startRun(
+        () -> this.setPositionWithVelocity(position, velocity), () -> {}, this);
   }
 
   public Command setRollerVoltageAndPositionCommand(double position, double voltage) {
@@ -134,6 +197,24 @@ public class Intake extends SubsystemBase {
   // resets the encoders of the wrist
   public Command resetEncodersCommand() {
     return new InstantCommand(() -> this.resetEncoders());
+  }
+
+  public Command setPositionVoltageRunCommand(double volt) {
+    return Commands.startRun(() -> this.setPositionVoltage(volt), () -> {}, this);
+  }
+
+  private Command setPositionVoltageRunCommandNoRequirement(double volt) {
+    return Commands.startRun(() -> this.setPositionVoltage(volt), () -> {});
+  }
+
+  public Command intakeRetractWhileShooting(Command waitingCommand, double rollerVolts) {
+
+    return Commands.race(
+        setRollerVoltageCommand(rollerVolts),
+        waitingCommand.andThen(
+            setPositionVoltageRunCommandNoRequirement(4)
+                .withDeadline(
+                    new WaitCommand(2)))); // I don't like this magic number. I am displeased.
   }
 
   // intakes until the canrange finds distance less than the given distance

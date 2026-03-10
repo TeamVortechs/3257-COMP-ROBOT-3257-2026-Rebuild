@@ -38,16 +38,12 @@ public class ClimbSimulationIO implements ClimbIO {
     rightMotorSim.update(0.02);
 
     inputs.motorLeftPosition = leftMotorSim.getAngularPositionRotations();
-    inputs.motorRightPosition = rightMotorSim.getAngularPositionRotations();
 
     inputs.motorLeftCurrentSupplyAmps = leftMotorSim.getCurrentDrawAmps();
-    inputs.motorRightCurrentSupplyAmps = rightMotorSim.getCurrentDrawAmps();
 
     inputs.motorLeftVolts = leftMotorSim.getInputVoltage();
-    inputs.motorRightVolts = rightMotorSim.getInputVoltage();
 
     inputs.motorLeftSpeed = leftMotorSim.getAngularVelocityRPM();
-    inputs.motorRightSpeed = rightMotorSim.getAngularVelocityRPM();
 
     inputs.servoTargetPosition = servoTargetPosition;
 
@@ -62,38 +58,14 @@ public class ClimbSimulationIO implements ClimbIO {
   }
 
   @Override
-  public void setSpeeds(double leftSpeed, double rightSpeed) {
-    leftMotorSim.setInputVoltage(leftSpeed / 502.747);
-    rightMotorSim.setInputVoltage(rightSpeed / 502.747);
+  public void setVoltage(double leftSpeed) {
+    leftMotorSim.setInputVoltage(leftSpeed);
 
     manual = true;
   }
 
   @Override
-  public void setPositions(double leftPosition, double rightPosition) {
-    manual = false;
-    targetLeftPos = leftPosition;
-    targetRightPos = rightPosition;
-  }
-
-  @Override
-  public void setLeftVoltage(double leftVoltage) {
-    leftMotorSim.setInputVoltage(leftVoltage);
-  }
-
-  @Override
   public void setServo(double position) {
     servoTargetPosition = position;
-  }
-
-  @Override
-  public void setRightVoltage(double rightVoltage) {
-    rightMotorSim.setInputVoltage(rightVoltage);
-  }
-
-  @Override
-  public void stop() {
-    leftMotorSim.setInputVoltage(0);
-    rightMotorSim.setInputVoltage(0);
   }
 }

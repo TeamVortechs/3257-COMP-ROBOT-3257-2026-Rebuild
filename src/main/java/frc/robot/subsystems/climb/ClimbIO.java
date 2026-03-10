@@ -6,24 +6,18 @@ public interface ClimbIO {
   @AutoLog
   public static class ClimbIOInputs {
     public double motorLeftPosition = 0.0;
-    public double motorRightPosition = 0.0;
 
     public double motorLeftCurrentSupplyAmps = 0.0;
-    public double motorRightCurrentSupplyAmps = 0.0;
 
     public double motorLeftCurrentStatorAmps = 0;
-    public double motorRightCurrentStatorAmps = 0;
 
     public double motorLeftVolts = 0.0;
-    public double motorRightVolts = 0.0;
 
     public double motorLeftSpeed = 0.0;
-    public double motorRightSpeed = 0.0;
 
     public boolean isBraked = true;
 
     public double motorLeftTemperatureCelsius = 0.0;
-    public double motorRightTemperatureCelsius = 0.0;
 
     public double servoTargetPosition = 0.0;
   }
@@ -33,25 +27,9 @@ public interface ClimbIO {
   /**
    * set speed of each motor... needs to be configured to move by distance instead of speed
    *
-   * @param leftSpeed
-   * @param rightSpeed
+   * @param voltage
    */
-  public default void setSpeeds(double leftSpeed, double rightSpeed) {}
-
-  /**
-   * set pos of motors
-   *
-   * @param leftPosition
-   * @param rightPosition
-   */
-  public default void setPositions(double leftPosition, double rightPosition) {}
-
-  /**
-   * set voltage of left motor
-   *
-   * @param leftVoltage
-   */
-  public default void setLeftVoltage(double leftVoltage) {}
+  public default void setVoltage(double voltage) {}
 
   /**
    * set position of servo
@@ -59,15 +37,6 @@ public interface ClimbIO {
    * @param position
    */
   public default void setServo(double position) {}
-
-  /**
-   * set right voltage
-   *
-   * @param rightVoltage
-   */
-  public default void setRightVoltage(double rightVoltage) {}
-  /** stop the motors/servos, shutdown scenario? */
-  public default void stop() {}
 
   public default void setBraked(boolean braked) {}
 }

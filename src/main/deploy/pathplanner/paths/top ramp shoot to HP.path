@@ -1,0 +1,59 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 3.426279342723006,
+        "y": 5.696
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 3.019400404909887,
+        "y": 5.0409620661233845
+      },
+      "isLocked": false,
+      "linkedName": "Top Shoot Ramp"
+    },
+    {
+      "anchor": {
+        "x": 0.4621506024096387,
+        "y": 0.915138554216868
+      },
+      "prevControl": {
+        "x": 0.96858834596779,
+        "y": 1.1329889861863591
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Human player Intake Stationary"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1,
+      "rotationDegrees": 0.0
+    }
+  ],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.5,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -90.0
+  },
+  "reversed": false,
+  "folder": "Front Top",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": -54.397690038137
+  },
+  "useDefaultConstraints": true
+}

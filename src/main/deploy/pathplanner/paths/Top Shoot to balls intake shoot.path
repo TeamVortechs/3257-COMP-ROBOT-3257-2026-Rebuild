@@ -1,0 +1,61 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 0.5629283268960672,
+        "y": 5.877502984550562
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 0.8081668031668726,
+        "y": 5.92606315090503
+      },
+      "isLocked": false,
+      "linkedName": "balls intake end"
+    },
+    {
+      "anchor": {
+        "x": 3.426279342723006,
+        "y": 5.696
+      },
+      "prevControl": {
+        "x": 3.1919286286202966,
+        "y": 5.608938281664384
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Top Shoot Ramp"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "intakeDownEvent",
+      "waypointRelativePos": 0.05,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.5,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -54.397690038137
+  },
+  "reversed": false,
+  "folder": "Front Top",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": -122.51244126161416
+  },
+  "useDefaultConstraints": true
+}

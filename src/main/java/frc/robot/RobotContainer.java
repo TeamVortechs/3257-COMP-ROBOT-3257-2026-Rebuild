@@ -7,34 +7,39 @@
 
 package frc.robot;
 
+import static frc.robot.subsystems.vision.VisionConstants.photon0Name;
+import static frc.robot.subsystems.vision.VisionConstants.photon1Name;
+import static frc.robot.subsystems.vision.VisionConstants.robotToPhoton0;
+import static frc.robot.subsystems.vision.VisionConstants.robotToPhoton1;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.events.EventTrigger;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants.BeltConstants;
+import frc.robot.Constants.ClimbConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.FeederConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.commands.DriveCommands;
-import frc.robot.commands.communication.ControllerVibrateCommand;
-import frc.robot.commands.communication.TellCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.belt.Belt;
 import frc.robot.subsystems.belt.BeltIO;
 import frc.robot.subsystems.belt.BeltSimulationIO;
+import frc.robot.subsystems.belt.BeltTalonFXIO;
 import frc.robot.subsystems.climb.Climb;
 import frc.robot.subsystems.climb.ClimbIO;
 import frc.robot.subsystems.climb.ClimbSimulationIO;
@@ -51,18 +56,15 @@ import frc.robot.subsystems.feeder.FeederTalonFXIO;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeIO;
 import frc.robot.subsystems.intake.IntakeSimulationIO;
-import frc.robot.subsystems.intake.IntakeTalonFXOnlyRollerIO;
+import frc.robot.subsystems.intake.IntakeTalonFXCANCoderIO;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterIO;
 import frc.robot.subsystems.shooter.ShooterSimulationIO;
 import frc.robot.subsystems.shooter.ShooterTalonFXIO;
 import frc.robot.subsystems.vision.Vision;
-import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOPhotonVision;
-import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
 import frc.robot.util.MatchTimeline;
-import java.util.Optional;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -86,8 +88,6 @@ public class RobotContainer {
 
   private final Climb climb;
 
-  private final MatchTimeline matchTimeline = new MatchTimeline();
-
   private final Vision vision;
 
   // private final Climb climb;
@@ -109,10 +109,7 @@ public class RobotContainer {
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
 
-  private static void flipAllPoses() {
-    Constants.DriveConstants.SWICH_PASSING_GOALS = true;
-    Constants.DriveConstants.PASSING_GOALS();
-  }
+  private final MatchTimeline matchTimeline = new MatchTimeline(operatorController, controller);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -128,17 +125,27 @@ public class RobotContainer {
                 new ModuleIOTalonFX(TunerConstants.FrontRight),
                 new ModuleIOTalonFX(TunerConstants.BackLeft),
                 new ModuleIOTalonFX(TunerConstants.BackRight));
-
+        // drive =
+        //     new Drive(
+        //         new GyroIO() {},
+        //         new ModuleIO() {},
+        //         new ModuleIO() {},
+        //         new ModuleIO() {},
+        //         new ModuleIO() {});
         intake =
-            new Intake(new IntakeTalonFXOnlyRollerIO(IntakeConstants.INTAKE_ROLLER_MOTOR_ID, 0));
-
-        belt = new Belt(new BeltIO() {});
+            new Intake(new IntakeTalonFXCANCoderIO(IntakeConstants.INTAKE_ROLLER_MOTOR_ID, 22, 29));
+        // intake = new Intake(new IntakeIO() {});
 
         shooter =
             new Shooter(
                 new ShooterTalonFXIO(ShooterConstants.MOTOR_ID),
                 () -> drive.getDistanceToGoal(),
                 () -> drive.isWithinShooterAutomaticChargingZone());
+        // shooter =
+        //     new Shooter(
+        //         new ShooterIO() {},
+        //         () -> drive.getDistanceToGoal(),
+        //         () -> drive.isWithinShooterAutomaticChargingZone());
 
         feeder =
             new Feeder(
@@ -146,33 +153,23 @@ public class RobotContainer {
                 () -> drive.isPointingToGoal(),
                 () -> shooter.isOnTarget(),
                 () -> true);
+        // feeder =
+        //     new Feeder(
+        //         new FeederIO() {},
+        //         () -> drive.isPointingToGoal(),
+        //         () -> shooter.isOnTarget(),
+        //         () -> true);
+
+        belt = new Belt(new BeltTalonFXIO(25));
+        // belt = new Belt(new BeltIO() {});
 
         climb = new Climb(new ClimbIO() {});
-        // The ModuleIOTalonFXS implementation provides an example implementation for
-        // TalonFXS controller connected to a CANdi with a PWM encoder. The
-        // implementations
-        // of ModuleIOTalonFX, ModuleIOTalonFXS, and ModuleIOSpark (from the Spark
-        // swerve
-        // template) can be freely intermixed to support alternative hardware
-        // arrangements.
-        // Please see the AdvantageKit template documentation for more information:
-        // https://docs.advantagekit.org/getting-started/template-projects/talonfx-swerve-template#custom-module-implementations
-        //
-        // drive =
-        // new Drive(
-        // new GyroIOPigeon2(),
-        // new ModuleIOTalonFXS(TunerConstants.FrontLeft),
-        // new ModuleIOTalonFXS(TunerConstants.FrontRight),
-        // new ModuleIOTalonFXS(TunerConstants.BackLeft),
-        // new ModuleIOTalonFXS(TunerConstants.BackRight));
 
         vision =
             new Vision(
                 drive::addVisionMeasurement,
-                new VisionIOPhotonVision(
-                    VisionConstants.photon0Name, VisionConstants.robotToPhoton0),
-                new VisionIOPhotonVision(
-                    VisionConstants.photon1Name, VisionConstants.robotToPhoton1));
+                new VisionIOPhotonVision(photon0Name, robotToPhoton0),
+                new VisionIOPhotonVision(photon1Name, robotToPhoton1));
         break;
 
       case SIM:
@@ -198,20 +195,23 @@ public class RobotContainer {
         feeder =
             new Feeder(
                 new FeederSimulationIO(),
-                () -> drive.isPointingToGoal() && !drive.isSkidding(),
+                () -> drive.isPointingToGoal(),
                 () -> shooter.isOnTarget(),
                 () -> true);
 
         climb = new Climb(new ClimbSimulationIO());
 
         // climb = new Climb(new ClimbSimulationIO());
-        vision =
-            new Vision(
-                drive::addVisionMeasurement,
-                new VisionIOPhotonVisionSim(
-                    VisionConstants.photon0Name, VisionConstants.robotToPhoton0, drive::getPose),
-                new VisionIOPhotonVisionSim(
-                    VisionConstants.photon1Name, VisionConstants.robotToPhoton1, drive::getPose));
+        // vision =
+        //     new Vision(
+        //         drive::addVisionMeasurement,
+        //         new VisionIOPhotonVisionSim(
+        //             VisionConstants.photon0Name, VisionConstants.robotToPhoton0, drive::getPose),
+        //         new VisionIOPhotonVisionSim(
+        //             VisionConstants.photon1Name, VisionConstants.robotToPhoton1,
+        // drive::getPose));
+
+        vision = new Vision(drive::addVisionMeasurement, new VisionIO() {});
 
         break;
 
@@ -243,7 +243,7 @@ public class RobotContainer {
         break;
     }
 
-    SmartDashboard.putData("Flip Poses", Commands.runOnce(() -> flipAllPoses()));
+    registerNamedCommandsAuto(); // register named commands for auto (pathplanner)
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
@@ -266,11 +266,8 @@ public class RobotContainer {
 
     // Configure the button bindings
     configureButtonBindings();
-    registerNamedCommandsAuto(); // register named commands for auto (pathplanner)
-    Optional<Alliance> ally = DriverStation.getAlliance();
-    if (ally != null && ally.isPresent() && ally.get() == Alliance.Red) {
-      flipAllPoses();
-    }
+
+    // matchTimeline.start();
   }
 
   /**
@@ -281,6 +278,13 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
 
+    // default commands
+    shooter.setDefaultCommand(shooter.automaticallyChargeWhenNeededRunCommand(0, 0));
+    intake.setDefaultCommand(intake.setRollerVoltageCommand(0));
+    feeder.setDefaultCommand(feeder.setPercentMotorRunCommand(0));
+    climb.setDefaultCommand(climb.setVoltageRun(0));
+    belt.setDefaultCommand(belt.setPercentMotorOutputCommand(BeltConstants.DEFAULT_POWER));
+
     // Default command, normal field-relative drive
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
@@ -288,6 +292,8 @@ public class RobotContainer {
             () -> -controller.getLeftY(),
             () -> -controller.getLeftX(),
             () -> -controller.getRightX()));
+
+    // CONTROLLER:
 
     // Lock to 0° when A button is held
     controller
@@ -297,14 +303,14 @@ public class RobotContainer {
                 drive,
                 () -> -controller.getLeftY(),
                 () -> -controller.getLeftX(),
-                () -> Rotation2d.fromDegrees(45)));
+                () -> drive.getRotationOverBumper()));
 
     // Switch to X pattern when X button is pressed
     controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
 
     // Reset gyro to 0° when B button is pressed
     controller
-        .b()
+        .start()
         .onTrue(
             Commands.runOnce(
                     () ->
@@ -313,20 +319,12 @@ public class RobotContainer {
                     drive)
                 .ignoringDisable(true));
 
-    // intake
-    intake.setDefaultCommand(intake.setRollerVoltageCommand(0));
-
     controller
-        .leftTrigger()
-        .whileTrue(intake.setRollerVoltageCommand(IntakeConstants.INTAKE_VOLTS));
+        .povUp()
+        .whileTrue(intake.setPositionCommand(IntakeConstants.INTAKE_HALFWAY_UP_POSITION));
 
-    operatorController
-        .rightBumper()
-        .whileTrue(feeder.setPercentMotorRunCommand(Constants.FeederConstants.FEED_POWER));
-
-    shooter.setDefaultCommand(shooter.setVoltageRunCommand(0));
-
-    feeder.setDefaultCommand(feeder.setPercentMotorRunCommand(0));
+    controller.povRight().whileTrue(intake.setPositionCommand(0));
+    controller.povLeft().whileTrue(drive.iteratePassingCommand(true));
 
     @SuppressWarnings("unused")
     Command aimTowardsTargetCommand =
@@ -335,28 +333,124 @@ public class RobotContainer {
             () -> -controller.getLeftY() * DriveConstants.K_JOYSTICK_WHEN_SHOOTING,
             () -> -controller.getLeftX() * DriveConstants.K_JOYSTICK_WHEN_SHOOTING);
 
-    // configureSysIdBindings(sysID_controller, shooter.BuildSysIdRoutine());
+    @SuppressWarnings("unused")
+    Command aimTowardsTargetCommand2 =
+        drive.joystickDriveAtTarget(
+            drive,
+            () -> -controller.getLeftY() * DriveConstants.K_JOYSTICK_WHEN_SHOOTING,
+            () -> -controller.getLeftX() * DriveConstants.K_JOYSTICK_WHEN_SHOOTING);
 
+    // shoot commands
     controller
         .rightTrigger()
         .whileTrue(
             Commands.parallel(
-                aimTowardsTargetCommand,
-                shooter.setAutomaticCommandRun(),
-                intake.setRollerVoltageCommand(IntakeConstants.INTAKE_VOLTS),
-                feeder.feedWhenValidRunCommand(FeederConstants.FEED_POWER)));
+                    aimTowardsTargetCommand,
+                    shooter.setAutomaticCommandRun(),
+                    belt.setPercentMotorOutputRunCommand(
+                        BeltConstants.FEED_POWER, () -> feeder.getTargetSpeed() > 0),
+                    feeder.feedWhenValidRunCommand(FeederConstants.FEED_POWER))
+                .withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
 
-    controller.leftBumper().whileTrue(intake.setRollerVoltageCommand(-8));
-    // controller.povDown().whileTrue(shooter.setManualSpeedRunCommand(82));
+    controller
+        .b()
+        .whileTrue(
+            Commands.parallel(aimTowardsTargetCommand2, shooter.setAutomaticCommandRun())
+                .withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
+
+    controller.povRight().whileTrue(feeder.setPercentMotorRunCommand(1));
+
+    controller
+        .rightBumper()
+        .onTrue(shooter.setAutomaticallyChargeFully(() -> true))
+        .onFalse(shooter.setAutomaticallyChargeFully(() -> false));
+
+    // eject balls
+    controller
+        .a()
+        .whileTrue(
+            Commands.parallel(
+                intake.setRollerVoltageAndPositionCommand(
+                    IntakeConstants.INTAKE_DOWN_POSITION, IntakeConstants.EJECT_VOLTS)));
+    // intake command
+    controller
+        .leftTrigger()
+        .whileTrue(
+            intake
+                .setPositionAndRollersCommandConsistentEnd(
+                    IntakeConstants.INTAKE_DOWN_POSITION, IntakeConstants.ROLLER_GOING_DOWN_VOLTS)
+                .andThen(intake.setRollerVoltageCommand(IntakeConstants.INTAKE_VOLTS)));
+
+    // intake up position
+    controller
+        .leftBumper()
+        .onTrue(
+            intake.setPositionAndRollersCommandConsistentEnd(
+                IntakeConstants.INTAKE_HALFWAY_UP_POSITION, IntakeConstants.ROLLER_GOING_UP_VOLTS));
+
+    controller.start().whileTrue(new InstantCommand(() -> drive.setPose(new Pose2d())));
+
+    // operator controller
+    // climb
+    operatorController
+        .leftStick()
+        .whileTrue(
+            climb.setVoltageRun(
+                () -> operatorController.getLeftY() * ClimbConstants.CLIMB_UP_VOLTS));
+
+    operatorController.leftBumper().onTrue(climb.setLockedInstant(true));
+    operatorController.leftTrigger().onTrue(climb.setLockedInstant(false));
+
+    operatorController.rightStick().whileTrue(drive.iteratePassingCommand(true));
+
+    operatorController
+        .rightBumper()
+        .whileTrue(
+            feeder
+                .setPercentMotorRunCommand(FeederConstants.FEED_POWER)
+                .alongWith(belt.setPercentMotorOutputRunCommand(BeltConstants.FEED_POWER)));
+    operatorController.rightTrigger().whileTrue(shooter.setManualSpeedRunCommand(78));
+
     // operatorController
-    //     .y()
-    //     .onTrue(shooter.setAutomaticallyChargeFully(() ->
-    // !shooter.isAutomaticallyChargeFully()));
+    //     .b()
+    //     .onTrue(
+    //
+    // intake.resetEncoderInstant(IntakeConstants.INTAKE_UP_POSITION).ignoringDisable(true));
 
-    operatorController.leftBumper().onTrue(drive.iteratePassingCommand(false));
-    operatorController.rightBumper().onTrue(drive.iteratePassingCommand(true));
+    // operatorController
+    //     .b()
+    //     .onTrue(
+    //         intake.setPositionAndRollersCommandConsistentEnd(
+    //             IntakeConstants.INTAKE_UP_POSITION, IntakeConstants.ROLLER_GOING_UP_VOLTS));
+    operatorController
+        .x()
+        .whileTrue(
+            feeder
+                .setPercentMotorRunCommand(-0.3)
+                .alongWith(shooter.setManualSpeedRunCommand(-10)));
 
-    //   controller.povRight().toggleOnTrue(drive.iteratePassingCommand(true));
+    operatorController
+        .y()
+        .whileTrue(
+            shooter.setAutomaticallyChargeFully(() -> !shooter.isAutomaticallyChargeFully()));
+
+    operatorController.povUp().whileTrue(belt.setPercentMotorOutputRunCommand(0.5));
+    operatorController.povDown().whileTrue(belt.setPercentMotorOutputRunCommand(-0.2));
+
+    operatorController.povRight().onTrue(drive.setPassingIndexCommmand(1));
+    operatorController.povLeft().onTrue(drive.setPassingIndexCommmand(0));
+
+    testController.a().whileTrue(feeder.setPercentMotorRunCommand(FeederConstants.FEED_POWER));
+    testController.b().whileTrue(belt.setPercentMotorOutputRunCommand(BeltConstants.FEED_POWER));
+
+    testController
+        .x()
+        .whileTrue(
+            shooter.setManualSpeedRunCommand(59).alongWith(feeder.feedWhenValidRunCommand(1)));
+
+    // sysid bindings:[]\
+
+    configureSysIdBindings(sysID_controller, shooter.BuildSysIdRoutine());
   }
 
   /**
@@ -389,60 +483,110 @@ public class RobotContainer {
   }
 
   private void registerNamedCommandsAuto() {
-    boolean isReal = true;
-    // if (Constants.currentMode == Mode.SIM) isReal = false;
 
-    // feed commands
-    addNamedCommand(
-        "feedStart", feeder.setPercentMotorRunCommand(FeederConstants.FEED_POWER), isReal);
-    addNamedCommand(
-        "feedWhenValid", feeder.feedWhenValidRunCommand(FeederConstants.FEED_POWER), isReal);
-    addNamedCommand("feedStop", feeder.setPercentMotorRunCommand(0), isReal);
+    NamedCommands.registerCommand("shooterAutomatic", shooter.setAutomaticCommandRun());
+    NamedCommands.registerCommand("shooterStop", shooter.setManualSpeedCommand(0));
 
-    addNamedCommand(
-        "beltStart", belt.setPercentMotorOutputRunCommand(BeltConstants.FEED_POWER), isReal);
-    addNamedCommand("beltStop", belt.setPercentMotorOutputRunCommand(0), isReal);
+    NamedCommands.registerCommand(
+        "feedWhenValid", feeder.feedWhenValidRunCommand(FeederConstants.FEED_POWER));
 
-    addNamedCommand(
-        "intakeStart", intake.setRollerVoltageCommand(IntakeConstants.INTAKE_VOLTS), isReal);
-    addNamedCommand("intakeStop", intake.setRollerVoltageCommand(0), isReal);
+    NamedCommands.registerCommand(
+        "feedWhenValidAndStop",
+        Commands.race(
+            // first command(feedwhen valid and stop)
+            new WaitUntilCommand(() -> shooter.isOnTarget())
+                .andThen(
+                    feeder
+                        .feedWhenValidRunCommand(FeederConstants.FEED_POWER)
+                        .withDeadline(new WaitCommand(3)))
+                .andThen(feeder.setPercentMotorCommand(0)),
+            // second command(point towards target)
+            drive.joystickDriveAtTarget(drive, () -> 0, () -> 0),
+            belt.setPercentMotorOutputRunCommand(
+                BeltConstants.FEED_POWER, () -> feeder.getTargetSpeed() > 0)));
 
-    addNamedCommand("shooterStop", shooter.setManualSpeedRunCommand(0), isReal);
-    addNamedCommand("shooterPreset1", shooter.setManualSpeedRunCommand(1), isReal);
-    addNamedCommand("shooterAutomatic", shooter.setAutomaticCommandRun(), isReal);
+    /*
+    version with moving intake:
+         NamedCommands.registerCommand(
+        "feedWhenValidAndStop",
+        new WaitUntilCommand(() -> shooter.isOnTarget())
+            .andThen(
+                feeder
+                    .feedWhenValidRunCommand(FeederConstants.FEED_POWER)
+                    .withDeadline(intake.intakeRetractWhileShooting(new InstantCommand(), 4)))
+            .andThen(feeder.setPercentMotorCommand(0)));
+     */
 
-    addNamedCommand("driveOverrideRotation", drive.overrideRotationCommand(), isReal);
+    NamedCommands.registerCommand("feedStop", feeder.setPercentMotorCommand(0));
+
+    NamedCommands.registerCommand(
+        "intakeStart", intake.setRollerVoltageCommand(IntakeConstants.INTAKE_VOLTS));
+
+    NamedCommands.registerCommand(
+        "intakeStartAndDown",
+        intake.setRollerVoltageAndPositionCommand(
+            IntakeConstants.INTAKE_DOWN_POSITION, IntakeConstants.INTAKE_VOLTS));
+
+    NamedCommands.registerCommand(
+        "intakeStop", new InstantCommand(() -> intake.setRollersVoltage(0)));
+
+    NamedCommands.registerCommand(
+        "intakeDown",
+        intake
+            .setPositionCommand(IntakeConstants.INTAKE_DOWN_POSITION)
+            .withDeadline(new WaitUntilCommand(() -> intake.isOnTarget())));
+
+    NamedCommands.registerCommand(
+        "intakeUp",
+        intake
+            .setPositionCommand(IntakeConstants.INTAKE_HALFWAY_UP_POSITION)
+            .withDeadline(new WaitUntilCommand(() -> intake.isOnTarget())));
+
+    NamedCommands.registerCommand("shooterStop", shooter.setManualSpeedCommand(0));
+
+    NamedCommands.registerCommand(
+        "waitForShooterOnTarget", new WaitUntilCommand(() -> shooter.isOnTarget()));
+
+    NamedCommands.registerCommand("driveOverrideRotation", drive.overrideRotationCommand());
     // new EventTrigger("driveOverrideRotation").onTrue(drive.overrideRotationCommand());
 
-    addNamedCommand("driveResetOverrides", drive.removeRotationOverrideCommand(), isReal);
-    // new EventTrigger("driveResetOverrides").onTrue(drive.removeRotationOverrideCommand());
-  }
+    NamedCommands.registerCommand("driveResetOverrides", drive.removeRotationOverrideCommand());
 
-  public void addNamedCommand(String commandName, Command command, boolean isReal) {
+    NamedCommands.registerCommand("climbUp", climb.setVoltageRun(ClimbConstants.CLIMB_UP_VOLTS));
+    NamedCommands.registerCommand("climbStop", climb.setVoltageInstant(0));
+    NamedCommands.registerCommand(
+        "climbDownWhenNeeded",
+        new WaitUntilCommand(() -> matchTimeline.getTimeSinceStart() > 18)
+            .andThen(climb.setVoltageRun(ClimbConstants.CLIMB_DOWN_VOLTS)));
 
-    if (isReal) {
-      NamedCommands.registerCommand(
-          // commandName, command.andThen(new TellCommand("just ran " + commandName)));
-          commandName, command);
+    new EventTrigger("intakeStartEvent")
+        .onTrue(
+            new InstantCommand(
+                () -> intake.setRollersVoltage(Constants.IntakeConstants.INTAKE_VOLTS)));
+    new EventTrigger("intakeStopEvent")
+        .onTrue(new InstantCommand(() -> intake.setRollersVoltage(0)));
+    new EventTrigger("intakeDownEvent")
+        .onTrue(
+            new InstantCommand(() -> intake.setPosition(IntakeConstants.INTAKE_DOWN_POSITION))
+                .alongWith(
+                    new InstantCommand(
+                        () -> intake.setRollersVoltage(IntakeConstants.ROLLER_GOING_DOWN_VOLTS))));
 
-      new EventTrigger(commandName + "Event").onTrue(command);
-    } else {
-      // registers the named commands to print something out instead of actually running anything
-      NamedCommands.registerCommand(
-          commandName,
-          new TellCommand(commandName + " auto command")
-              .andThen(
-                  new ControllerVibrateCommand(1, controller).withDeadline(new WaitCommand(0.2)))
-              .alongWith(command));
+    new EventTrigger("intakeUpEvent")
+        .onTrue(
+            new InstantCommand(() -> intake.setPosition(0))
+                .andThen(intake.setRollerVoltageCommand(IntakeConstants.ROLLER_GOING_UP_VOLTS)));
 
-      //   new EventTrigger(commandName)
-      //       .onTrue(
-      //           new TellCommand(commandName + " auto event trigger command")
-      //               .andThen(
-      //                   new ControllerVibrateCommand(1, controller)
-      //                       .withDeadline(new WaitCommand(0.2)))
-      //               .andThen(new WaitCommand(0.3)));
-    }
+    new EventTrigger("climbUpEvent")
+        .onTrue(new InstantCommand(() -> climb.setVoltage(ClimbConstants.CLIMB_UP_VOLTS)));
+    new EventTrigger("climbStopEvent").onTrue(new InstantCommand(() -> climb.setVoltage(0)));
+
+    new EventTrigger("reverseFeederEvent")
+        .onTrue(
+            new InstantCommand(
+                () -> feeder.setPercentMotorOutput(FeederConstants.EJECT_POWER_AUTO)));
+    new EventTrigger("stopFeederEvent")
+        .onTrue(new InstantCommand(() -> feeder.setPercentMotorOutput(0)));
   }
 
   // this shoudl be in a helper method or somewhere in robot container

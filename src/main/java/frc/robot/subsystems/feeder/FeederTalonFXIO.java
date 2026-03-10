@@ -107,7 +107,8 @@ public class FeederTalonFXIO implements FeederIO {
 
   @Override
   public boolean isOnTargetSpeed() {
-    return Math.abs(getSpeed() - targetSpeed) < Constants.FeederConstants.POSITION_TOLERANCE;
+    // return Math.abs(getSpeed() - targetSpeed) < Constants.FeederConstants.POSITION_TOLERANCE;
+    return true; // the above method does not work at all
   }
 
   @Override
@@ -123,5 +124,10 @@ public class FeederTalonFXIO implements FeederIO {
     }
 
     motor.setNeutralMode(neutralModeValue);
+  }
+
+  @Override
+  public double getTargetSpeed() {
+    return targetSpeed;
   }
 }

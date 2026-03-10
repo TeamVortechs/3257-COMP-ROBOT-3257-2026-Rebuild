@@ -4,7 +4,7 @@ import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.DynamicMotionMagicVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -13,7 +13,9 @@ import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Temperature;
 import edu.wpi.first.units.measure.Voltage;
 import frc.robot.Constants;
+import frc.robot.Constants.IntakeConstants;
 // CHANGE PID VALUES !!!!
+import frc.robot.util.VortechsUtil;
 
 public class IntakeTalonFXIO implements IntakeIO {
 
@@ -34,7 +36,9 @@ public class IntakeTalonFXIO implements IntakeIO {
   private final StatusSignal<Temperature> positionTemperatureCelsius;
   private final StatusSignal<Temperature> rollerTemperatureCelsius;
 
-  private final MotionMagicVoltage mVoltageRequest;
+  private final DynamicMotionMagicVoltage mVoltageRequest;
+
+  // private final PositionVoltage mPositionVoltage;
 
   private boolean isBrakedRoller = true;
   private boolean isBrakedPosition = true;
@@ -44,23 +48,31 @@ public class IntakeTalonFXIO implements IntakeIO {
     roller = new TalonFX(canIdRoller);
     position = new TalonFX(canIdPosition);
 
-    mVoltageRequest = new MotionMagicVoltage(0);
+    mVoltageRequest =
+        new DynamicMotionMagicVoltage(
+                0,
+                IntakeConstants.MOTION_MAGIC_CRUISE_VELOCITY,
+                IntakeConstants.MOTION_MAGIC_ACCELERATION)
+            .withJerk(IntakeConstants.MOTION_MAGIC_JERK);
+    // mPositionVoltage = new PositionVoltage(0);
 
     // Basic Configuration
-    TalonFXConfiguration config = Constants.IntakeConstants.ROLLER_CONFIG;
+    TalonFXConfiguration rollerConfig = Constants.IntakeConstants.ROLLER_CONFIG;
+    TalonFXConfiguration positionConfig = Constants.IntakeConstants.POSITION_CONFIG;
     Slot0Configs slot0Configs = Constants.IntakeConstants.SLOT0CONFIGS;
 
-    var motionMagicConfigs = config.MotionMagic;
+    var motionMagicConfigs = rollerConfig.MotionMagic;
     motionMagicConfigs.MotionMagicCruiseVelocity =
         Constants.IntakeConstants.MOTION_MAGIC_CRUISE_VELOCITY;
     motionMagicConfigs.MotionMagicAcceleration =
         Constants.IntakeConstants.MOTION_MAGIC_ACCELERATION;
     motionMagicConfigs.MotionMagicJerk = Constants.IntakeConstants.MOTION_MAGIC_JERK;
 
-    roller.getConfigurator().apply(config);
-    position.getConfigurator().apply(config);
-    roller.getConfigurator().apply(slot0Configs);
+    roller.getConfigurator().apply(rollerConfig);
+    position.getConfigurator().apply(positionConfig);
+
     position.getConfigurator().apply(slot0Configs);
+    position.getConfigurator().apply(motionMagicConfigs);
 
     // Initialize signals for AdvantageKit
     rollerVelocity = roller.getVelocity();
@@ -128,21 +140,60 @@ public class IntakeTalonFXIO implements IntakeIO {
     roller.setControl(new VoltageOut(volt));
   }
 
-  public void setPositionVoltage(double volt) {
-    position.setControl(new VoltageOut(volt));
+  public void setPositionVoltage(double volts) {
+    VortechsUtil.clamp(volts, IntakeConstants.CLAMP_MAX_VOLTS);
+
+    if (volts > 0
+        && getPosition() > IntakeConstants.MAX_POSITION - IntakeConstants.POSITION_THRESHOLD_STOP) {
+      volts = 0;
+    }
+
+    if (volts < 0
+        && getPosition() < IntakeConstants.MIN_POSITION + IntakeConstants.POSITION_THRESHOLD_STOP) {
+      volts = 0;
+    }
+
+    position.setControl(new VoltageOut(volts));
   }
 
   // sets the position of the arm.
   public void setPositionControl(double position1) { // IMPORTANT - POSITON1 NOT POSITION
     targetPosition = position1;
+
+    System.out.println("seting positin IO " + position1);
     // System.out.println("Input volt: "+inputVoltage+" Target Angle: "+targetAngle);
     position.setControl(mVoltageRequest.withPosition(position1));
     // System.out.println("Voltage being sent in PID Voltage");
+  }
+  /**
+   * sets the position of the intake at a specified velocity
+   *
+   * @param position1 position in CTRE angle units
+   * @param velocity desired cruise velocity in meters per second
+   */
+  public void setPositionControlWithVelocity(
+      double position1, double velocity) { // IMPORTANT - POSITON1 NOT POSITION
+    targetPosition = position1;
+
+    System.out.println("VERY SLOWLY setting position in FXIO to " + position1);
+    // System.out.println("Input volt: "+inputVoltage+" Target Angle: "+targetAngle);
+    position.setControl(mVoltageRequest.withPosition(position1).withVelocity(velocity));
+    // System.out.println("Voltage being sent in PID Voltage");
+  }
+
+  public void resetEncoder(double positionVal) {
+    position.setPosition(positionVal);
   }
 
   public double getTargetPosition() {
     return targetPosition;
   }
+
+  public void stop() {
+    roller.stopMotor();
+    position.stopMotor();
+  }
+
   // misc methods
 
   public void resetEncoders() {

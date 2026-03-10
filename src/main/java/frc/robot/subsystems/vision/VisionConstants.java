@@ -32,7 +32,7 @@ public class VisionConstants {
       new Transform3d(
           -0.3429, // 13.5 in
           0.282575, // 11 and 1/8 in
-          0.51435,
+          0.52705, // 20 3/4 in
           new Rotation3d(0.0, -Units.degreesToRadians(25.3), -Units.degreesToRadians(35)));
   public static Transform3d
       robotToPhoton1 = // !! WARNING !! rough estimates. i punched this in at 9:10 PM; recheck
@@ -40,11 +40,11 @@ public class VisionConstants {
           new Transform3d(
               -0.3429,
               -0.282575,
-              0.51435,
+              0.52705,
               new Rotation3d(0.0, -Units.degreesToRadians(25.3), Units.degreesToRadians(35)));
 
   // Basic filtering thresholds
-  public static double maxAmbiguity = 0.3;
+  public static double maxAmbiguity = 0.2; // formerly 0.3; reduced to lower risk of Bad Things
   public static double maxZError = 0.75;
 
   // Standard deviation baselines, for 1 meter distance and 1 tag

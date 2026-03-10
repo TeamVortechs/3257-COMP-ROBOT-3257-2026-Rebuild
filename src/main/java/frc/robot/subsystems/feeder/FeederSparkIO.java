@@ -51,4 +51,9 @@ public class FeederSparkIO implements FeederIO {
   public void setVoltage(double voltage) {
     m_motor.setVoltage(voltage);
   }
+
+  @Override
+  public double getTargetSpeed() {
+    return targetSpeed;
+  }
 }

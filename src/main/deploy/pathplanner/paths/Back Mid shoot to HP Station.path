@@ -1,0 +1,88 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 2.0834638196915787,
+        "y": 2.275871886120997
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.833788709888125,
+        "y": 2.263130632468655
+      },
+      "isLocked": false,
+      "linkedName": "Bottom Shoot Two"
+    },
+    {
+      "anchor": {
+        "x": 0.8246381969157779,
+        "y": 2.125243179122183
+      },
+      "prevControl": {
+        "x": 2.4104078327135237,
+        "y": 2.3916318963311953
+      },
+      "nextControl": {
+        "x": 0.41098728780942545,
+        "y": 2.0557551951416166
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 0.4803440094899176,
+        "y": 0.9202135231316719
+      },
+      "prevControl": {
+        "x": 0.4373072360616852,
+        "y": 1.4474139976275193
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "HP station Facing"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.6079295154185039,
+      "rotationDegrees": -90.0
+    }
+  ],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "intakeStartEvent",
+      "waypointRelativePos": 0.9287305122494426,
+      "endWaypointRelativePos": null,
+      "command": null
+    },
+    {
+      "name": "intakeStopEvent",
+      "waypointRelativePos": 2.0,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.5,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -89.20427644726071
+  },
+  "reversed": false,
+  "folder": "Front Bottom",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 35.67640822186198
+  },
+  "useDefaultConstraints": true
+}

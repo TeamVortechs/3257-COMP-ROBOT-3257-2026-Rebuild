@@ -38,6 +38,8 @@ public interface IntakeIO {
 
     boolean isBrakedRoller = true;
     boolean isBrakedPosition = true;
+
+    boolean isOnTarget = true;
   }
 
   // updates the given inputs with new values(advantage kit stuff)
@@ -86,6 +88,15 @@ public interface IntakeIO {
    * @param position rotations
    */
   public default void setPositionControl(double position) {}
+
+  /**
+   * attempts to use a slower speed for the position motor (set by MotionMagic; differs in sim)
+   *
+   * @param position rotations
+   */
+  public default void setPositionControlWithVelocity(double position, double velocity) {}
+
+  public default void resetEncoder(double position) {}
 
   /**
    * gets target position of the position motor

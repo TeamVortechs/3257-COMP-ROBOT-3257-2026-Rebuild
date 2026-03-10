@@ -44,4 +44,8 @@ public interface FeederIO {
   public default void setVoltage(double voltage) {}
 
   public default void setBraked(boolean braked) {}
+
+  public default double getTargetSpeed() {
+    return 0;
+  }
 }

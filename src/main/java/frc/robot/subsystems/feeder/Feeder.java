@@ -50,6 +50,8 @@ public class Feeder extends SubsystemBase {
 
     debounceTimer = new Timer();
 
+    debounceTimer.restart();
+
     hardwareLogger =
         new Notifier(
             () -> {
@@ -86,6 +88,14 @@ public class Feeder extends SubsystemBase {
     return feederIO.getSpeed();
   }
 
+  public double getTargetSpeed() {
+    return feederIO.getTargetSpeed();
+  }
+
+  /**
+   * @return target speed
+   */
+
   // HELPER METHODS
   private boolean calculateValidityToFeed() {
     // this stuff should wait on debounce, probably not shooter on speed though
@@ -100,7 +110,7 @@ public class Feeder extends SubsystemBase {
             && shooterOnVelocity.getAsBoolean();
 
     Logger.recordOutput("Feeder/IsValidToFeed", isValid);
-    Logger.recordOutput("DebounceTime", debounceTimer.get());
+    Logger.recordOutput("Feeder/DebounceTime", debounceTimer.get());
 
     return isValid;
   }
