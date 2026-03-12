@@ -55,7 +55,6 @@ public class VisionIOPhotonVision implements VisionIO {
 
       // Add pose observation
       if (result.multitagResult.isPresent()) { // Multitag result
-        System.out.println("legally a multitag result");
         var multitagResult = result.multitagResult.get();
 
         // Calculate robot pose
