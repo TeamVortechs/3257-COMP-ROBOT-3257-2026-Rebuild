@@ -210,8 +210,7 @@ public class RobotContainer {
                 new VisionIOPhotonVisionSim(
                     VisionConstants.photon0Name, VisionConstants.robotToPhoton0, drive::getPose),
                 new VisionIOPhotonVisionSim(
-                    VisionConstants.photon1Name, VisionConstants.robotToPhoton1,
-        drive::getPose));
+                    VisionConstants.photon1Name, VisionConstants.robotToPhoton1, drive::getPose));
 
         // vision = new Vision(drive::addVisionMeasurement, new VisionIO() {});
 

@@ -82,18 +82,13 @@ public class VisionIOPhotonVision implements VisionIO {
                 totalTagDistance / result.targets.size(), // Average tag distance
                 PoseObservationType.PHOTONVISION)); // Observation type
 
-      } else if (!result.targets.isEmpty()) { // Single tag result
+      } else if (!result.targets.isEmpty()
+          // this kinda sucks that i have to do it in here for solely photonvision,
+          // but photonvision can't filter tags through the UI. i'm screening out
+          // all singleton tags on the TRENCHes because they tend to blow the robot up
+          && Arrays.binarySearch(bannedTags, result.targets.get(0).fiducialId)
+              < 0) { // Single tag result
         var target = result.targets.get(0);
-
-        // this kinda sucks that i have to do it in here for solely photonvision,
-        // but photonvision can't filter tags through the UI. i'm screening out
-        // all singleton tags on the TRENCHes because they tend to blow the robot up
-
-        if (Arrays.binarySearch(bannedTags, target.fiducialId) >= 0) { // if the tag is in the list of banned tags,
-          System.out.println("hell nah i ain't getting no tag from this foo");
-          return; // just stop the result. don't even try taking it
-        }
-        System.out.println("i'm taking this single-tag result w binary search result of " + Arrays.binarySearch(bannedTags, target.fiducialId));
 
         // Calculate robot pose
         var tagPose = aprilTagLayout.getTagPose(target.fiducialId);

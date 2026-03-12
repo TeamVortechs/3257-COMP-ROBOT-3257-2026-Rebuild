@@ -7,8 +7,6 @@
 
 package frc.robot.subsystems.vision;
 
-import java.util.Arrays;
-
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Rotation3d;
