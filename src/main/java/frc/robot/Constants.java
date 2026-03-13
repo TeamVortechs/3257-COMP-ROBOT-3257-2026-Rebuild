@@ -96,7 +96,6 @@ public final class Constants {
       AIRTIME_MAP.put(2.252, 0.951);
       AIRTIME_MAP.put(2.89, 1.049);
       AIRTIME_MAP.put(3.5, 1.098);
-
     }
 
     public static final double SHOOTER_ROTATION_MANAGER_LOGGING_FREQUENCY =
@@ -475,9 +474,9 @@ public final class Constants {
     public static final double MIN_POSITION = -10000; // o.373535
     public static final double MAX_POSITION = 1000; // can also do 0.36
 
-    public static final double INTAKE_DOWN_POSITION = -0.41;
-    public static final double INTAKE_HALFWAY_UP_POSITION = -0.645;
-    public static final double INTAKE_UP_POSITION = -0.267;
+    public static final double INTAKE_DOWN_POSITION = -0.413;
+    public static final double INTAKE_HALFWAY_UP_POSITION = -0.754;
+    public static final double INTAKE_UP_POSITION = -0.168;
     // .-0.062
 
     public static final double CLAMP_MAX_VOLTS = 3;
@@ -494,7 +493,7 @@ public final class Constants {
 
     public static final double ROLLER_GOING_DOWN_VOLTS = -12;
     public static final double ROLLER_GOING_UP_VOLTS = 4.5;
-    public static final double INTAKE_VOLTS = 8;
+    public static final double INTAKE_VOLTS = 12;
     public static final double EJECT_VOLTS = -8;
 
     public static final double MOTION_MAGIC_CRUISE_VELOCITY = 3;
@@ -506,9 +505,6 @@ public final class Constants {
 
     public static final double RAMP_RATE_VOLTS_ROLLER_SYSID = 0.25;
     public static final double DYNAMIC_STEP_VOLTS_ROLLER_SYSID = 1;
-
-    public static final int ROLLER_ID = 21;
-    public static final int POSITION_ID = 22;
 
     public static final double ROLLER_STALLED_VOLTS = 20.0;
     // lower cus this has hardstops

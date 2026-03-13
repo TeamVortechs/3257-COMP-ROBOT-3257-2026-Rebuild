@@ -56,6 +56,7 @@ import frc.robot.subsystems.feeder.FeederTalonFXIO;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeIO;
 import frc.robot.subsystems.intake.IntakeSimulationIO;
+import frc.robot.subsystems.intake.IntakeTalonFXCANCoderIO;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterIO;
 import frc.robot.subsystems.shooter.ShooterSimulationIO;
@@ -131,10 +132,13 @@ public class RobotContainer {
         //         new ModuleIO() {},
         //         new ModuleIO() {},
         //         new ModuleIO() {});
-        // intake =
-        //     new Intake(new IntakeTalonFXCANCoderIO(IntakeConstants.INTAKE_ROLLER_MOTOR_ID, 22,
-        // 29));
-        intake = new Intake(new IntakeIO() {});
+        intake =
+            new Intake(
+                new IntakeTalonFXCANCoderIO(
+                    IntakeConstants.INTAKE_ROLLER_MOTOR_ID,
+                    IntakeConstants.INTAKE_POSITION_MOTOR_ID,
+                    IntakeConstants.INTAKE_CANCODER_ID));
+        // intake = new Intake(new IntakeIO() {});
 
         shooter =
             new Shooter(
@@ -291,7 +295,7 @@ public class RobotContainer {
             drive,
             () -> -controller.getLeftY(),
             () -> -controller.getLeftX(),
-            () -> -controller.getRightX()));
+            () -> -controller.getRightX() * 0.7));
 
     // CONTROLLER:
 
@@ -379,6 +383,7 @@ public class RobotContainer {
             intake
                 .setPositionAndRollersCommandConsistentEnd(
                     IntakeConstants.INTAKE_DOWN_POSITION, IntakeConstants.ROLLER_GOING_DOWN_VOLTS)
+                // .andThen(new PrintCommand("it ended"))
                 .andThen(intake.setRollerVoltageCommand(IntakeConstants.INTAKE_VOLTS)));
 
     // intake up position
@@ -389,6 +394,8 @@ public class RobotContainer {
                 IntakeConstants.INTAKE_HALFWAY_UP_POSITION, IntakeConstants.ROLLER_GOING_UP_VOLTS));
 
     controller.start().whileTrue(new InstantCommand(() -> drive.setPose(new Pose2d())));
+
+    controller.x().whileTrue(drive.stayAtPoseCommand());
 
     // operator controller
     // climb

@@ -55,8 +55,7 @@ public class Shooter extends SubsystemBase {
     this.distToSpeedTable = new InterpolatingDoubleTreeMap();
     // TO DO: populate distToSpeedTable with real valeus
 
-
-    //comp ones
+    // comp ones
     // this.speedToTableInit(3.065, 67);
     // this.speedToTableInit(2.60, 60);
     // this.speedToTableInit(3.38, 71);

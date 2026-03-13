@@ -50,6 +50,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.Mode;
+import frc.robot.commands.PathfindToPoseCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.util.LocalADStarAK;
 import java.util.concurrent.locks.Lock;
@@ -67,6 +68,9 @@ public class Drive extends SubsystemBase {
 
   // puttign this in container because it's already like this and when we change drive it'll be good
   // to have it easily changed. Also it's probably more readable this way
+
+  private Pose2d setPose = new Pose2d();
+
   private ShooterRotationManager shooterRotationManager;
   private GoalPoseManager goalPoseManager;
 
@@ -169,6 +173,14 @@ public class Drive extends SubsystemBase {
           return getHeadingToGoal();
         }
       };
+
+  public Command stayAtPoseCommand() {
+    return new InstantCommand(
+            () -> {
+              setPose = new Pose2d(getPose().getTranslation(), getHeadingToGoal());
+            })
+        .andThen(new PathfindToPoseCommand(this, () -> setPose, false));
+  }
 
   public Command joystickDriveAtTarget(
       Drive drive, DoubleSupplier xSupplier, DoubleSupplier ySupplier) {
