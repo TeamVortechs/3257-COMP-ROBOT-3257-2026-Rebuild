@@ -129,6 +129,9 @@ public final class Constants {
     // pose. Should be about 0.08 - 0.18 s
     public static final double KRELEASE_POSE_PREDICTION_SEC = 0; // to change .5
 
+    // y position that splits this in half
+    public static final double HALF_MAP_Y = 4.059;
+
     // we should test by looking at values. this can also be a distance lookup table. This corrects
     // for robot speed by changing the target location. This constant is supposed ot emmulate fligth
     // time
@@ -146,7 +149,7 @@ public final class Constants {
     // considered skid
     public static final double SKID_THRESHOLD = 1000;
 
-    //used for auto teargetting
+    // used for auto teargetting
     public static final double DEADBAND = 0.1;
     public static final double ANGLE_KP = 4; // 12
     public static final double ANGLE_KD = 0.4;

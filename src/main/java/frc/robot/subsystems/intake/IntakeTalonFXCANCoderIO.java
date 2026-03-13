@@ -17,7 +17,6 @@ import edu.wpi.first.units.measure.Temperature;
 import edu.wpi.first.units.measure.Voltage;
 import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;
-import frc.robot.util.VortechsUtil;
 
 public class IntakeTalonFXCANCoderIO implements IntakeIO {
   private final TalonFX roller;
@@ -77,6 +76,18 @@ public class IntakeTalonFXCANCoderIO implements IntakeIO {
         new FeedbackConfigs()
             .withFeedbackRemoteSensorID(canIdCANCoder)
             .withFeedbackSensorSource(FeedbackSensorSourceValue.RemoteCANcoder);
+
+    positionConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
+    positionConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold =
+        IntakeConstants.MAX_POSITION - IntakeConstants.POSITION_THRESHOLD_STOP;
+
+    positionConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
+    positionConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold =
+        IntakeConstants.MIN_POSITION + IntakeConstants.POSITION_THRESHOLD_STOP;
+
+    // Replace VortechsUtil.clamp with Hardware Voltage Limits
+    positionConfig.Voltage.PeakForwardVoltage = IntakeConstants.CLAMP_MAX_VOLTS;
+    positionConfig.Voltage.PeakReverseVoltage = -IntakeConstants.CLAMP_MAX_VOLTS;
 
     roller.getConfigurator().apply(rollerConfig);
     position.getConfigurator().apply(positionConfig);
@@ -150,17 +161,22 @@ public class IntakeTalonFXCANCoderIO implements IntakeIO {
   }
 
   public void setPositionVoltage(double volts) {
-    VortechsUtil.clamp(volts, IntakeConstants.CLAMP_MAX_VOLTS);
 
-    if (volts > 0
-        && getPosition() > IntakeConstants.MAX_POSITION - IntakeConstants.POSITION_THRESHOLD_STOP) {
-      volts = 0;
-    }
+    // replaced all this with limit logic at initialization
 
-    if (volts < 0
-        && getPosition() < IntakeConstants.MIN_POSITION + IntakeConstants.POSITION_THRESHOLD_STOP) {
-      volts = 0;
-    }
+    // VortechsUtil.clamp(volts, IntakeConstants.CLAMP_MAX_VOLTS);
+
+    // if (volts > 0
+    //     && getPosition() > IntakeConstants.MAX_POSITION -
+    // IntakeConstants.POSITION_THRESHOLD_STOP) {
+    //   volts = 0;
+    // }
+
+    // if (volts < 0
+    //     && getPosition() < IntakeConstants.MIN_POSITION +
+    // IntakeConstants.POSITION_THRESHOLD_STOP) {
+    //   volts = 0;
+    // }
 
     position.setControl(new VoltageOut(volts));
   }
@@ -178,7 +194,7 @@ public class IntakeTalonFXCANCoderIO implements IntakeIO {
       double position1, double velocity) { // IMPORTANT - POSITON1 NOT POSITION
     targetPosition = position1;
 
-    System.out.println("VERY SLOWLY setting position in FXIO to " + position1);
+    // System.out.println("VERY SLOWLY setting position in FXIO to " + position1);
     // System.out.println("Input volt: "+inputVoltage+" Target Angle: "+targetAngle);
     position.setControl(mVoltageRequest.withPosition(position1).withVelocity(velocity));
     // System.out.println("Voltage being sent in PID Voltage");
@@ -234,9 +250,9 @@ public class IntakeTalonFXCANCoderIO implements IntakeIO {
   }
 
   // gets the highest possible height of the arm in radians
-  public double getMaxPosition() {
-    return Constants.IntakeConstants.MAX_POSITION;
-  }
+  // public double getMaxPosition() {
+  //   return Constants.IntakeConstants.MAX_POSITION;
+  // }
 
   /**
    * @return gets the position of the arm in radians
@@ -245,10 +261,10 @@ public class IntakeTalonFXCANCoderIO implements IntakeIO {
     return position.getPosition().getValueAsDouble();
   }
 
-  public boolean isMaxPosition() {
-    return Math.abs(getPosition() - getMaxPosition())
-        < Constants.IntakeConstants.POSITION_TOLERANCE;
-  }
+  // public boolean isMaxPosition() {
+  //   return Math.abs(getPosition() - getMaxPosition())
+  //       < Constants.IntakeConstants.POSITION_TOLERANCE;
+  // }
 
   public double getSpeed() {
     return roller.getVelocity().getValueAsDouble();
@@ -257,5 +273,9 @@ public class IntakeTalonFXCANCoderIO implements IntakeIO {
   public boolean checkIfStalled() {
     return (roller.getMotorVoltage().getValueAsDouble()
         > Constants.IntakeConstants.ROLLER_STALLED_VOLTS);
+  }
+
+  public double getRollerMotorVoltage() {
+    return roller.getMotorVoltage().getValueAsDouble();
   }
 }
