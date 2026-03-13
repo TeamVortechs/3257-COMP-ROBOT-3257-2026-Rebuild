@@ -104,15 +104,15 @@ public final class Constants {
 
     public static final double FREQUENCY_UPDATE_ACC =
         20.00; // how many times per sec should we log accelerometer
-    public static final double transKp = 2;
+    public static final double transKp = 5;
     public static final double transKi = 0;
     public static final double transKd = 0;
 
     public static final double transTopSpeed = 1.5;
     public static final double transAccMax = 2;
 
-    // rot const
-    public static final double rotKp = 1.7;
+    // rot const, used for moving to setpoint
+    public static final double rotKp = 7;
     public static final double rotKi = 0;
     public static final double rotKd = 0;
 
@@ -147,9 +147,11 @@ public final class Constants {
     // considered skid
     public static final double SKID_THRESHOLD = 1000;
 
+    //used for auto teargetting
     public static final double DEADBAND = 0.1;
     public static final double ANGLE_KP = 4; // 12
     public static final double ANGLE_KD = 0.4;
+
     public static final double ANGLE_MAX_ACCELERATION = 20.0;
     public static final double ANGLE_MAX_VELOCITY = 8.0;
     public static final double FF_START_DELAY = 2.0; // Secs

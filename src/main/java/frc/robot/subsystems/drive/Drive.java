@@ -50,6 +50,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.Mode;
+import frc.robot.commands.DriveCommands;
 import frc.robot.generated.TunerConstants;
 import frc.robot.util.LocalADStarAK;
 import java.util.concurrent.locks.Lock;
@@ -378,7 +379,7 @@ public class Drive extends SubsystemBase {
 
     PPHolonomicDriveController pathplannerController =
         new PPHolonomicDriveController(
-            new PIDConstants(5.0, 0.0, 0.0), new PIDConstants(7, 0.0, 0.0));
+            new PIDConstants(DriveConstants.transKp, DriveConstants.transKi, DriveConstants.transKd), new PIDConstants(DriveConstants.rotKp, DriveConstants.rotKi, DriveConstants.rotKd));
     // Configure AutoBuilder for PathPlanner
     AutoBuilder.configure(
         this::getPose,
