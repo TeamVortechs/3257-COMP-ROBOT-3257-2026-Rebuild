@@ -386,6 +386,10 @@ public class RobotContainer {
                 // .andThen(new PrintCommand("it ended"))
                 .andThen(intake.setRollerVoltageCommand(IntakeConstants.INTAKE_VOLTS)));
 
+    // controller
+    //     .leftTrigger()
+    //     .whileTrue(intake.setRollerVoltageCommand(IntakeConstants.INTAKE_VOLTS));
+
     // intake up position
     controller
         .leftBumper()

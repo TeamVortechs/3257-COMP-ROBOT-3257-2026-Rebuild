@@ -9,7 +9,6 @@ import com.ctre.phoenix6.controls.DynamicMotionMagicVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
@@ -22,7 +21,7 @@ import frc.robot.util.VortechsUtil;
 public class IntakeTalonFXCANCoderIO implements IntakeIO {
   private final TalonFX roller;
   private final TalonFX position;
-  private final CANcoder caNcoder;
+  private final CANcoder canCoder;
 
   // StatusSignals allow for high-frequency, synchronous data collection
   private final StatusSignal<AngularVelocity> rollerVelocity;
@@ -49,7 +48,7 @@ public class IntakeTalonFXCANCoderIO implements IntakeIO {
   public IntakeTalonFXCANCoderIO(int canIdRoller, int canIdPosition, int canIdCANCoder) {
     roller = new TalonFX(canIdRoller);
     position = new TalonFX(canIdPosition);
-    caNcoder = new CANcoder(canIdCANCoder);
+    canCoder = new CANcoder(canIdCANCoder);
 
     mVoltageRequest =
         new DynamicMotionMagicVoltage(
@@ -73,10 +72,12 @@ public class IntakeTalonFXCANCoderIO implements IntakeIO {
         Constants.IntakeConstants.MOTION_MAGIC_ACCELERATION;
     motionMagicConfigs.MotionMagicJerk = Constants.IntakeConstants.MOTION_MAGIC_JERK;
 
-    positionConfig.Feedback =
-        new FeedbackConfigs()
-            .withFeedbackRemoteSensorID(canIdCANCoder)
-            .withFeedbackSensorSource(FeedbackSensorSourceValue.RemoteCANcoder);
+    positionConfig.Feedback = new FeedbackConfigs().withFusedCANcoder(canCoder);
+    positionConfig.Feedback.RotorToSensorRatio =
+        24; // check if these are correct; move into constants later
+    // positionConfig.Feedback.SensorToMechanismRatio = 2;
+    // .withFeedbackRemoteSensorID(canIdCANCoder)
+    // .withFeedbackSensorSource(FeedbackSensorSourceValue.RemoteCANcoder);
 
     roller.getConfigurator().apply(rollerConfig);
     position.getConfigurator().apply(positionConfig);
@@ -186,7 +187,7 @@ public class IntakeTalonFXCANCoderIO implements IntakeIO {
 
   public void resetEncoder(double positionVal) {
     // position.setPosition(positionVal);
-    caNcoder.setPosition(positionVal);
+    canCoder.setPosition(positionVal);
     System.out.println("resetting encoder to " + positionVal);
   }
 

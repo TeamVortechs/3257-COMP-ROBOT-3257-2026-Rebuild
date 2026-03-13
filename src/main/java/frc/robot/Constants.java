@@ -146,7 +146,7 @@ public final class Constants {
     // considered skid
     public static final double SKID_THRESHOLD = 1000;
 
-    //used for auto teargetting
+    // used for auto teargetting
     public static final double DEADBAND = 0.1;
     public static final double ANGLE_KP = 4; // 12
     public static final double ANGLE_KD = 0.4;
@@ -476,8 +476,8 @@ public final class Constants {
     public static final double MIN_POSITION = -10000; // o.373535
     public static final double MAX_POSITION = 1000; // can also do 0.36
 
-    public static final double INTAKE_DOWN_POSITION = -0.413;
-    public static final double INTAKE_HALFWAY_UP_POSITION = -0.754;
+    public static final double INTAKE_DOWN_POSITION = -0.9375;
+    public static final double INTAKE_HALFWAY_UP_POSITION = -1.352;
     public static final double INTAKE_UP_POSITION = -0.168;
     // .-0.062
 
