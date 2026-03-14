@@ -25,9 +25,11 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.units.measure.*;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj.RobotBase;
 import frc.robot.generated.TunerConstants;
-import frc.robot.util.SettableConstant;
+import frc.robot.util.SmartConstant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
@@ -121,13 +123,24 @@ public final class Constants {
     public static final double ANGLE_KD = 0.4;
     public static final double ANGLE_DEADBAND = 0.1;
 
+    public static final SmartConstant ANGLE_KP_SETTABLE = new SmartConstant("DriveSettableConstantAngleKP", ANGLE_KP);
+    public static final SmartConstant ANGLE_KI_SETTABLE = new SmartConstant("DriveSettableConstantAngleKI", ANGLE_KI);
+    public static final SmartConstant ANGLE_KD_SETTABLE = new SmartConstant("DriveSettableConstantAngleKD", ANGLE_KD);
+
+    public static Command remakeAnglePIDController() {
+      return new InstantCommand(() -> {
+      ANGLE_CONTROLLER = new ProfiledPIDController(ANGLE_KP_SETTABLE.get(), ANGLE_KI_SETTABLE.get(), ANGLE_KD_SETTABLE.get(), new TrapezoidProfile.Constraints(ANGLE_MAX_VELOCITY, ANGLE_MAX_ACCELERATION));
+      ANGLE_CONTROLLER.enableContinuousInput(-Math.PI, Math.PI);}
+      );
+    }
+
     public static final double ANGLE_MAX_ACCELERATION = 20.0;
     public static final double ANGLE_MAX_VELOCITY = 8.0;
 
     public static final double ORIENTATION_TOLERANCE = 0.2;
 
     // this gets made with the other constants
-    public static final ProfiledPIDController ANGLE_CONTROLLER;
+    public static ProfiledPIDController ANGLE_CONTROLLER;
 
     // the time it takes between feeding and actual robot shoot. This is used to lead the robot
     // pose. Should be about 0.08 - 0.18 s
@@ -291,8 +304,8 @@ public final class Constants {
 
     public static final double PERCENTAGE_OF_DISTANCE_WHEN_CHARGING = 0.6;
 
-    public static final SettableConstant SHOOTER_TEST_SPEED =
-        new SettableConstant("shooter test speed", 70);
+    public static final SmartConstant SHOOTER_TEST_SPEED =
+        new SmartConstant("shooter test speed", 70);
 
     // the time that the feeder waits before shooting once it is valis
 
