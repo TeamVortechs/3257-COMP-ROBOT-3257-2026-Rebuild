@@ -316,15 +316,15 @@ public class Drive extends SubsystemBase {
     return new InstantCommand(
         () -> {
           PPHolonomicDriveController pathplannerController =
-        new PPHolonomicDriveController(
-            new PIDConstants(
-                DriveConstants.TRANS_KP_SETTABLE.get(),
-                DriveConstants.TRANS_KI_SETTABLE.get(),
-                DriveConstants.TRANS_KD_SETTABLE.get()),
-            new PIDConstants(
-                DriveConstants.ANGLE_KP_SETTABLE.get(),
-                DriveConstants.ANGLE_KI_SETTABLE.get(),
-                DriveConstants.ANGLE_KD_SETTABLE.get()));
+              new PPHolonomicDriveController(
+                  new PIDConstants(
+                      DriveConstants.TRANS_KP_SETTABLE.get(),
+                      DriveConstants.TRANS_KI_SETTABLE.get(),
+                      DriveConstants.TRANS_KD_SETTABLE.get()),
+                  new PIDConstants(
+                      DriveConstants.ANGLE_KP_SETTABLE.get(),
+                      DriveConstants.ANGLE_KI_SETTABLE.get(),
+                      DriveConstants.ANGLE_KD_SETTABLE.get()));
 
           AutoBuilder.configure(
               this::getPose,
@@ -385,9 +385,9 @@ public class Drive extends SubsystemBase {
   // TunerConstants doesn't include these constants, so they are declared locally
 
   // PathPlanner config constants
-  private static final double ROBOT_MASS_KG = 74.088;
-  private static final double ROBOT_MOI = 6.883;
-  private static final double WHEEL_COF = 1.2;
+  private static final double ROBOT_MASS_KG = DriveConstants.ROBOT_WEIGHT;
+  private static final double ROBOT_MOI = DriveConstants.ROBOT_MOI;
+  private static final double WHEEL_COF = DriveConstants.WHEEL_COF;
   private static final RobotConfig PP_CONFIG =
       new RobotConfig(
           ROBOT_MASS_KG,

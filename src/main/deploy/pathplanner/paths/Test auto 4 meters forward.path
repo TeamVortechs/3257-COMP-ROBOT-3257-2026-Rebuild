@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.4803440094899176,
-        "y": 0.9202135231316719
+        "x": 4.0,
+        "y": 4.018861209964412
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.111205622333485,
-        "y": 1.3509226473601736
+        "x": 2.9446884834644296,
+        "y": 4.01054896071083
       },
       "isLocked": false,
-      "linkedName": "HP station Facing"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.417603795966786,
-        "y": 2.200557532621589
+        "x": 0.0,
+        "y": 4.019
       },
       "prevControl": {
-        "x": 2.3399449016503406,
-        "y": 0.6394732024263015
+        "x": 1.0549573161137178,
+        "y": 4.025180633919136
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Bottom Shoot Two"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 57.6367092379243
+    "rotation": 180.0
   },
   "reversed": false,
-  "folder": "Front Bottom",
+  "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -89.20427644726071
+    "rotation": 180.0
   },
   "useDefaultConstraints": true
 }

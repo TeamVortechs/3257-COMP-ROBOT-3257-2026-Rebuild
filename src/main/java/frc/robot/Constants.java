@@ -91,6 +91,11 @@ public final class Constants {
 
   public class DriveConstants {
 
+    // pathplanner constants
+    public static final double ROBOT_WEIGHT = 50.8;
+    public static final double ROBOT_MOI = 6.883;
+    public static final double WHEEL_COF = 1.2;
+
     private static final InterpolatingDoubleTreeMap AIRTIME_MAP = new InterpolatingDoubleTreeMap();
 
     private static void characterizeAirtimeMap() {
