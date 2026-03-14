@@ -143,7 +143,7 @@ public class RobotContainer {
 
         shooter =
             new Shooter(
-                new ShooterTalonFXIO(ShooterConstants.MOTOR_ID),
+                new ShooterTalonFXIO(ShooterConstants.MOTOR_ID, ShooterConstants.FOLLOWER_MOTOR_ID),
                 () -> drive.getDistanceToGoal(),
                 () -> drive.isWithinShooterAutomaticChargingZone());
         // shooter =

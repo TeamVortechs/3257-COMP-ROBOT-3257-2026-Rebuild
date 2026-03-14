@@ -4,9 +4,11 @@ import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
@@ -17,7 +19,8 @@ import frc.robot.Constants;
 import frc.robot.Constants.ShooterConstants;
 
 public class ShooterTalonFXIO implements ShooterIO {
-  private final TalonFX motor;
+  private final TalonFX mainMotor;
+  private final TalonFX followerMotor;
 
   // StatusSignals allow for high-frequency, synchronous data collection
   private final StatusSignal<AngularVelocity> velocity;
@@ -34,25 +37,29 @@ public class ShooterTalonFXIO implements ShooterIO {
 
   // private PIDController PIDController = new PIDController(0.9, 0, 0.1);
 
-  public ShooterTalonFXIO(int canId) {
-    motor = new TalonFX(canId);
+  public ShooterTalonFXIO(int MainMotorCANID, int FollowerMotorCANID) {
+    mainMotor = new TalonFX(MainMotorCANID);
+    followerMotor = new TalonFX(FollowerMotorCANID);
 
     // Basic Configuration
     TalonFXConfiguration config = Constants.ShooterConstants.CONFIG;
     Slot0Configs slot0Configs = Constants.ShooterConstants.SLOT0CONFIGS;
 
-    motor.getConfigurator().apply(config);
+    mainMotor.getConfigurator().apply(config);
+    mainMotor.getConfigurator().apply(slot0Configs);
+    mainMotor.getConfigurator().apply(ShooterConstants.CLOSE_LOOP_RAMP_CONFIG);
 
-    motor.getConfigurator().apply(slot0Configs);
-
-    motor.getConfigurator().apply(ShooterConstants.CLOSE_LOOP_RAMP_CONFIG);
+    followerMotor.getConfigurator().apply(config);
+    followerMotor.getConfigurator().apply(slot0Configs);
+    followerMotor.getConfigurator().apply(ShooterConstants.CLOSE_LOOP_RAMP_CONFIG);
+    followerMotor.setControl(new Follower(mainMotor.getDeviceID(), MotorAlignmentValue.Opposed));
 
     // Initialize signals for AdvantageKit
-    velocity = motor.getVelocity();
-    motorVoltage = motor.getMotorVoltage();
-    supplyCurrent = motor.getSupplyCurrent();
-    statorCurrent = motor.getStatorCurrent();
-    temperatureCelsius = motor.getDeviceTemp();
+    velocity = mainMotor.getVelocity();
+    motorVoltage = mainMotor.getMotorVoltage();
+    supplyCurrent = mainMotor.getSupplyCurrent();
+    statorCurrent = mainMotor.getStatorCurrent();
+    temperatureCelsius = mainMotor.getDeviceTemp();
 
     // Optimize CAN bus usage by refreshing these signals together
     BaseStatusSignal.setUpdateFrequencyForAll(
@@ -91,14 +98,14 @@ public class ShooterTalonFXIO implements ShooterIO {
   public void setSpeed(double speed) {
     targetSpeed = speed;
     // motor.set(speed);
-    motor.setControl(mVelocityRequest.withVelocity(speed));
+    mainMotor.setControl(mVelocityRequest.withVelocity(speed));
     // motor.setControl(new DutyCycleOut(speed));
   }
 
   @Override
   public void setVoltage(double voltage) {
     // motor.setVoltage(voltage);
-    motor.setControl(new VoltageOut(voltage));
+    mainMotor.setControl(new VoltageOut(voltage));
     // motor.setControl(new DutyCycleOut(voltage));
   }
 
@@ -123,6 +130,6 @@ public class ShooterTalonFXIO implements ShooterIO {
       neutralModeValue = NeutralModeValue.Coast;
     }
 
-    motor.setNeutralMode(neutralModeValue);
+    mainMotor.setNeutralMode(neutralModeValue);
   }
 }

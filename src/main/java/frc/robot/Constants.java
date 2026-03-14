@@ -310,6 +310,7 @@ public final class Constants {
     public static final double TOLERANCE = 4;
 
     public static final int MOTOR_ID = 24;
+    public static final int FOLLOWER_MOTOR_ID = 28;
 
     // this is higher rn cus it's in sim. We can model this as a linear function based on distance
     // if we're having trouble adjusting but right now I'm not cus it's a variable that mgiht not be
