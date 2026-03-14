@@ -9,19 +9,13 @@
           "data": {
             "commands": [
               {
-                "type": "named",
-                "data": {
-                  "name": "shooterAutomatic"
-                }
-              },
-              {
                 "type": "sequential",
                 "data": {
                   "commands": [
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "Bottom Start, Mid intake revised"
+                        "pathName": "Front Top Start, mid intake"
                       }
                     },
                     {
@@ -33,19 +27,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "Back Mid shoot to HP Station"
-                      }
-                    },
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 2.0
-                      }
-                    },
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "HP station Facing to Back mid shoot"
+                        "pathName": "Top Shoot Mid again"
                       }
                     },
                     {

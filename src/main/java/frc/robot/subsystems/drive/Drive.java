@@ -329,16 +329,24 @@ public class Drive extends SubsystemBase {
   }
 
   public Command removeRotationOverrideCommand() {
-    return new InstantCommand(() -> PPHolonomicDriveController.clearFeedbackOverrides());
+    return new InstantCommand(() -> clearRotationOverrides());
   }
 
   private void overrideRotationFeedback() {
+
+    Logger.recordOutput("Drive/OverridenRotation", true);
 
     PPHolonomicDriveController.overrideRotationFeedback(
         () ->
             // 100.0
             shooterRotationManager.getRotationFeedbackOverride());
   }
+
+  private void clearRotationOverrides() {
+    Logger.recordOutput("Drive/OverridenRotation", false);
+    PPHolonomicDriveController.clearFeedbackOverrides();
+  }
+
   // TunerConstants doesn't include these constants, so they are declared locally
 
   // PathPlanner config constants

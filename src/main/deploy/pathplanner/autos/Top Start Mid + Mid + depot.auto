@@ -9,12 +9,6 @@
           "data": {
             "commands": [
               {
-                "type": "named",
-                "data": {
-                  "name": "shooterAutomatic"
-                }
-              },
-              {
                 "type": "sequential",
                 "data": {
                   "commands": [
@@ -33,7 +27,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "top shoot intake balls shoot"
+                        "pathName": "Top shoot mid again + depot"
                       }
                     },
                     {
@@ -51,7 +45,7 @@
       ]
     }
   },
-  "resetOdom": false,
+  "resetOdom": true,
   "folder": null,
   "choreoAuto": false
 }

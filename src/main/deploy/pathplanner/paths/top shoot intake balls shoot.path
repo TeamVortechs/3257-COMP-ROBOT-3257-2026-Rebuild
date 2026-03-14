@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.426279342723006,
-        "y": 5.696
+        "x": 3.24736559139785,
+        "y": 6.122075268817205
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.8073605913378077,
-        "y": 5.646666784705592
+        "x": 3.6284468400126517,
+        "y": 6.072742053522797
       },
       "isLocked": false,
       "linkedName": "Top Shoot Ramp"
@@ -48,12 +48,12 @@
     },
     {
       "anchor": {
-        "x": 3.426279342723006,
-        "y": 5.696
+        "x": 3.24736559139785,
+        "y": 6.122075268817205
       },
       "prevControl": {
-        "x": 3.283758760592087,
-        "y": 6.133775143039985
+        "x": 3.104845009266931,
+        "y": 6.55985041185719
       },
       "nextControl": null,
       "isLocked": false,
@@ -116,13 +116,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -54.397690038137
+    "rotation": -55.80679915434133
   },
   "reversed": false,
   "folder": "Front Top",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -54.397690038137
+    "rotation": -55.80679915434133
   },
   "useDefaultConstraints": true
 }

@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -515,7 +516,9 @@ public class RobotContainer {
             // second command(point towards target)
             drive.joystickDriveAtTarget(drive, () -> 0, () -> 0),
             belt.setPercentMotorOutputRunCommand(
-                BeltConstants.FEED_POWER, () -> feeder.getTargetSpeed() > 0)));
+                BeltConstants.FEED_POWER, () -> feeder.getTargetSpeed() > 0),
+            shooter.setAutomaticCommandRun())
+            .andThen(shooter.setManualSpeedCommand(0)));
 
     /*
     version with moving intake:
@@ -583,6 +586,23 @@ public class RobotContainer {
                 .alongWith(
                     new InstantCommand(
                         () -> intake.setRollersVoltage(IntakeConstants.ROLLER_GOING_DOWN_VOLTS))));
+
+    new EventTrigger("shootOnMove")
+        //makes the drive rotate correctly
+        .onTrue(drive.overrideRotationCommand())
+        .onFalse(drive.removeRotationOverrideCommand())
+
+        //starts shooter + feeder + belts
+        .whileTrue(Commands.parallel(new RunCommand(() -> {shooter.setAutomaticSpeed(1);}),
+        feeder.feedWhenValidRunCommandAutoEvent(FeederConstants.FEED_POWER),
+        belt.setPercentMotorOutputRunCommandAutoEvent(1, () -> feeder.getTargetSpeed() > 0)));
+
+    new EventTrigger("revShooterEvent")
+        .whileTrue(
+            new RunCommand(
+                () -> {
+                  shooter.setAutomaticSpeed(1);
+                }));
 
     new EventTrigger("intakeUpEvent")
         .onTrue(
