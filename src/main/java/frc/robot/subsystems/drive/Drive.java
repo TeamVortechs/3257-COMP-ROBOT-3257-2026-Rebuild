@@ -585,10 +585,14 @@ public class Drive extends SubsystemBase {
     Logger.recordOutput("SwerveStates/SetpointsOptimized", setpointStates);
   }
 
-  /** Runs the drive in a straight line with the specified drive output. */
+  /**
+   * Runs the drive in a straight line with the specified drive output. THIS HAS BEEN TEMPORARILY
+   * CHANGED TO ALLOW FOR STEER AND TURN CHARACTERIZATIONS
+   */
   public void runCharacterization(double output) {
     for (int i = 0; i < 4; i++) {
-      modules[i].runCharacterization(output);
+      // modules[i].runCharacterization(output);
+      modules[i].runAngularCharacterization(output);
     }
   }
 

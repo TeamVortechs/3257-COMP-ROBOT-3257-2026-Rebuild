@@ -88,10 +88,10 @@ public class Module {
     io.setTurnPosition(Rotation2d.kZero);
   }
 
-  public void runTurnMotorCharacterization(double output) {
-    io.setDriveOpenLoop(0.0);
-    io.setTurnOpenLoop(output);
-  }
+  // public void runTurnMotorCharacterization(double output) {
+  //   io.setDriveOpenLoop(0.0);
+  //   io.setTurnOpenLoop(output);
+  // }
 
   public void runAngularCharacterization(double output) {
     io.setDriveOpenLoop(output);
