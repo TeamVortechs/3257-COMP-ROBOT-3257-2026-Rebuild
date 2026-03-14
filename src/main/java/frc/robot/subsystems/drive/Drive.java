@@ -312,6 +312,41 @@ public class Drive extends SubsystemBase {
     return goalPoseManager.setPassingPoseIndexCommand(index);
   }
 
+  public Command reconfigureAutobuilder() {
+    return new InstantCommand(
+        () -> {
+          PPHolonomicDriveController pathplannerController =
+        new PPHolonomicDriveController(
+            new PIDConstants(
+                DriveConstants.TRANS_KP_SETTABLE.get(),
+                DriveConstants.TRANS_KI_SETTABLE.get(),
+                DriveConstants.TRANS_KD_SETTABLE.get()),
+            new PIDConstants(
+                DriveConstants.ANGLE_KP_SETTABLE.get(),
+                DriveConstants.ANGLE_KI_SETTABLE.get(),
+                DriveConstants.ANGLE_KD_SETTABLE.get()));
+
+          AutoBuilder.configure(
+              this::getPose,
+              this::setPose,
+              this::getChassisSpeeds,
+              this::runVelocity,
+              pathplannerController,
+              PP_CONFIG,
+              () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
+              this);
+          Pathfinding.setPathfinder(new LocalADStarAK());
+          PathPlannerLogging.setLogActivePathCallback(
+              (activePath) -> {
+                Logger.recordOutput("Odometry/Trajectory", activePath.toArray(new Pose2d[0]));
+              });
+          PathPlannerLogging.setLogTargetPoseCallback(
+              (targetPose) -> {
+                Logger.recordOutput("Odometry/TrajectorySetpoint", targetPose);
+              });
+        });
+  }
+
   /**
    * This is really ugly. I'm putting this in my own periodic so we can easily add this logic into
    * the cdoe when we change the drive code.

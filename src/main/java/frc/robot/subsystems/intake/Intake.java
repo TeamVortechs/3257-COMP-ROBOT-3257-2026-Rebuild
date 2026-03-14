@@ -226,6 +226,17 @@ public class Intake extends SubsystemBase {
                     new WaitCommand(2)))); // I don't like this magic number. I am displeased.
   }
 
+  /*
+   * Moves intake down with a set voltage and then resets the position on ends
+   */
+  public Command resetEncoderRoutineCommand(double voltage) {
+    return setPositionVoltageRunCommand(voltage)
+        .finallyDo(
+            () -> {
+              resetEncoder(IntakeConstants.INTAKE_DOWN_POSITION);
+            });
+  }
+
   // intakes until the canrange finds distance less than the given distance
   // public Command intakeUntilCanRangeIsDetected(double speed, double distance) {
   //   return new RunCommand(() -> this.setTargetSpeed(speed), this)

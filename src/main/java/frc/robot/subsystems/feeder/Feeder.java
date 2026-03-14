@@ -154,8 +154,9 @@ public class Feeder extends SubsystemBase {
         this);
   }
 
-    /**
-   * feeds when the drive, limelight, and shooter are ontarget. USED DURIGN AUTO SINCE THIS DOESN'T HAVE REQUIREMENTS
+  /**
+   * feeds when the drive, limelight, and shooter are ontarget. USED DURIGN AUTO SINCE THIS DOESN'T
+   * HAVE REQUIREMENTS
    *
    * @param percentage the percentage of battery to supply to the feeder
    * @return the command
