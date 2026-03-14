@@ -164,7 +164,7 @@ public class RobotContainer {
         //         () -> shooter.isOnTarget(),
         //         () -> true);
 
-        belt = new Belt(new BeltTalonFXIO(25));
+        belt = new Belt(new BeltTalonFXIO(BeltConstants.ID));
         // belt = new Belt(new BeltIO() {});
 
         climb = new Climb(new ClimbIO() {});
