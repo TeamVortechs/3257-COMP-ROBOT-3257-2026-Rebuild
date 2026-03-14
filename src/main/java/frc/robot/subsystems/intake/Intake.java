@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;
 import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.AutoLogOutput;
@@ -53,7 +54,7 @@ public class Intake extends SubsystemBase {
     // check to see if the module is stalling; if so, then stop the motors and cancel the next
     // movement
 
-    if (intakeIO.checkIfStalled()) {
+    if (checkIfStalled()) {
       System.out.println("Intake HAS STALLED ");
       intakeIO.stop();
       return;
@@ -132,6 +133,14 @@ public class Intake extends SubsystemBase {
     return intakeIO.getPosition();
   }
 
+  public boolean isMaxPosition() {
+    return Math.abs(getPosition() - Constants.IntakeConstants.MAX_POSITION)
+        < Constants.IntakeConstants.POSITION_TOLERANCE;
+  }
+
+  public boolean checkIfStalled() {
+    return (intakeIO.getRollerMotorVoltage() > Constants.IntakeConstants.ROLLER_STALLED_VOLTS);
+  }
   // commands
 
   // sets the manual override speed of this command. Uses a regular double

@@ -50,6 +50,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.Mode;
+import frc.robot.commands.PathfindToPoseCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.util.LocalADStarAK;
 import java.util.concurrent.locks.Lock;
@@ -67,6 +68,9 @@ public class Drive extends SubsystemBase {
 
   // puttign this in container because it's already like this and when we change drive it'll be good
   // to have it easily changed. Also it's probably more readable this way
+
+  private Pose2d setPose = new Pose2d();
+
   private ShooterRotationManager shooterRotationManager;
   private GoalPoseManager goalPoseManager;
 
@@ -99,6 +103,17 @@ public class Drive extends SubsystemBase {
 
   public Rotation2d getHeadingToPassing() {
     goalPoseManager.setIsPassing(true);
+
+    if (getPose().getY() > DriveConstants.HALF_MAP_Y) {
+      // setPassingIndexCommmand(0).schedule();
+      // this iss the
+      goalPoseManager.setPassingPoseIndex(0);
+    } else {
+      goalPoseManager.setPassingPoseIndex(1);
+
+      // setPassingIndexCommmand(1).schedule();
+    }
+
     return shooterRotationManager.getHeading();
   }
 
@@ -159,7 +174,7 @@ public class Drive extends SubsystemBase {
     return isSkidding;
   }
 
-  private static final double DEADBAND = DriveConstants.DEADBAND;
+  private static final double DEADBAND = DriveConstants.ANGLE_DEADBAND;
 
   private Supplier<Rotation2d> rotationSupplier =
       () -> {
@@ -169,6 +184,14 @@ public class Drive extends SubsystemBase {
           return getHeadingToGoal();
         }
       };
+
+  public Command stayAtPoseCommand() {
+    return new InstantCommand(
+            () -> {
+              setPose = new Pose2d(getPose().getTranslation(), getHeadingToGoal());
+            })
+        .andThen(new PathfindToPoseCommand(this, () -> setPose, false));
+  }
 
   public Command joystickDriveAtTarget(
       Drive drive, DoubleSupplier xSupplier, DoubleSupplier ySupplier) {
@@ -306,16 +329,24 @@ public class Drive extends SubsystemBase {
   }
 
   public Command removeRotationOverrideCommand() {
-    return new InstantCommand(() -> PPHolonomicDriveController.clearFeedbackOverrides());
+    return new InstantCommand(() -> clearRotationOverrides());
   }
 
   private void overrideRotationFeedback() {
+
+    Logger.recordOutput("Drive/OverridenRotation", true);
 
     PPHolonomicDriveController.overrideRotationFeedback(
         () ->
             // 100.0
             shooterRotationManager.getRotationFeedbackOverride());
   }
+
+  private void clearRotationOverrides() {
+    Logger.recordOutput("Drive/OverridenRotation", false);
+    PPHolonomicDriveController.clearFeedbackOverrides();
+  }
+
   // TunerConstants doesn't include these constants, so they are declared locally
 
   // PathPlanner config constants
@@ -378,7 +409,10 @@ public class Drive extends SubsystemBase {
 
     PPHolonomicDriveController pathplannerController =
         new PPHolonomicDriveController(
-            new PIDConstants(5.0, 0.0, 0.0), new PIDConstants(7, 0.0, 0.0));
+            new PIDConstants(
+                DriveConstants.TRANS_KP, DriveConstants.TRANS_KI, DriveConstants.TRANS_KD),
+            new PIDConstants(
+                DriveConstants.ANGLE_KP, DriveConstants.ANGLE_KI, DriveConstants.ANGLE_KD));
     // Configure AutoBuilder for PathPlanner
     AutoBuilder.configure(
         this::getPose,

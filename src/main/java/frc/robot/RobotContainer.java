@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -135,7 +136,11 @@ public class RobotContainer {
         //         new ModuleIO() {},
         //         new ModuleIO() {});
         intake =
-            new Intake(new IntakeTalonFXCANCoderIO(IntakeConstants.INTAKE_ROLLER_MOTOR_ID, 22, 29));
+            new Intake(
+                new IntakeTalonFXCANCoderIO(
+                    IntakeConstants.INTAKE_ROLLER_MOTOR_ID,
+                    IntakeConstants.INTAKE_POSITION_MOTOR_ID,
+                    IntakeConstants.INTAKE_CANCODER_ID));
         // intake = new Intake(new IntakeIO() {});
 
         shooter =
@@ -162,7 +167,7 @@ public class RobotContainer {
         //         () -> shooter.isOnTarget(),
         //         () -> true);
 
-        belt = new Belt(new BeltTalonFXIO(25));
+        belt = new Belt(new BeltTalonFXIO(BeltConstants.ID));
         // belt = new Belt(new BeltIO() {});
 
         climb = new Climb(new ClimbIO() {});
@@ -292,7 +297,7 @@ public class RobotContainer {
             drive,
             () -> -controller.getLeftY(),
             () -> -controller.getLeftX(),
-            () -> -controller.getRightX()));
+            () -> -controller.getRightX() * 0.7));
 
     // CONTROLLER:
 
@@ -380,6 +385,7 @@ public class RobotContainer {
             intake
                 .setPositionAndRollersCommandConsistentEnd(
                     IntakeConstants.INTAKE_DOWN_POSITION, IntakeConstants.ROLLER_GOING_DOWN_VOLTS)
+                // .andThen(new PrintCommand("it ended"))
                 .andThen(intake.setRollerVoltageCommand(IntakeConstants.INTAKE_VOLTS)));
 
     // intake up position
@@ -390,6 +396,8 @@ public class RobotContainer {
                 IntakeConstants.INTAKE_HALFWAY_UP_POSITION, IntakeConstants.ROLLER_GOING_UP_VOLTS));
 
     controller.start().whileTrue(new InstantCommand(() -> drive.setPose(new Pose2d())));
+
+    controller.x().whileTrue(drive.stayAtPoseCommand());
 
     // operator controller
     // climb
@@ -447,7 +455,12 @@ public class RobotContainer {
     testController
         .x()
         .whileTrue(
-            shooter.setManualSpeedRunCommand(59).alongWith(feeder.feedWhenValidRunCommand(1)));
+            shooter
+                .setManualSpeedRunCommand(() -> ShooterConstants.SHOOTER_TEST_SPEED.get())
+                .alongWith(feeder.feedWhenValidRunCommand(1))
+                .alongWith(
+                    belt.setPercentMotorOutputRunCommand(
+                        BeltConstants.FEED_POWER, () -> feeder.getTargetSpeed() > 0)));
 
     // sysid bindings:[]\
 
@@ -504,7 +517,9 @@ public class RobotContainer {
             // second command(point towards target)
             drive.joystickDriveAtTarget(drive, () -> 0, () -> 0),
             belt.setPercentMotorOutputRunCommand(
-                BeltConstants.FEED_POWER, () -> feeder.getTargetSpeed() > 0)));
+                BeltConstants.FEED_POWER, () -> feeder.getTargetSpeed() > 0),
+            shooter.setAutomaticCommandRun())
+            .andThen(shooter.setManualSpeedCommand(0)));
 
     /*
     version with moving intake:
@@ -572,6 +587,23 @@ public class RobotContainer {
                 .alongWith(
                     new InstantCommand(
                         () -> intake.setRollersVoltage(IntakeConstants.ROLLER_GOING_DOWN_VOLTS))));
+
+    new EventTrigger("shootOnMove")
+        //makes the drive rotate correctly
+        .onTrue(drive.overrideRotationCommand())
+        .onFalse(drive.removeRotationOverrideCommand())
+
+        //starts shooter + feeder + belts
+        .whileTrue(Commands.parallel(new RunCommand(() -> {shooter.setAutomaticSpeed(1);}),
+        feeder.feedWhenValidRunCommandAutoEvent(FeederConstants.FEED_POWER),
+        belt.setPercentMotorOutputRunCommandAutoEvent(1, () -> feeder.getTargetSpeed() > 0)));
+
+    new EventTrigger("revShooterEvent")
+        .whileTrue(
+            new RunCommand(
+                () -> {
+                  shooter.setAutomaticSpeed(1);
+                }));
 
     new EventTrigger("intakeUpEvent")
         .onTrue(

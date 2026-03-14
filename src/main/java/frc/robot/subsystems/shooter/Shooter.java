@@ -53,34 +53,17 @@ public class Shooter extends SubsystemBase {
 
     this.distToSpeedTable = new InterpolatingDoubleTreeMap();
     // TO DO: populate distToSpeedTable with real valeus
-    // this.speedToTableInit(3.2004, 75); // dummy val
-    // this.speedToTableInit(2.8956, 70);
-    // this.speedToTableInit(2.5654, 65);
-    // this.speedToTableInit(2.159, 60);
-    // this.speedToTableInit(5.9, 82);
-    // this.speedToTableInit(4.6, 79);
-    // this.speedToTableInit(4.16013, 78);
-    // this.speedToTableInit(3.61, 76);
-    // this.speedToTableInit(3.4, 74);
-    // this.speedToTableInit(3.06667, 67);
-    // this.speedToTableInit(2.75212, 64);
-    // this.speedToTableInit(2.46118, 62);
-    // this.speedToTableInit(2.3, 59);
-    // this.speedToTableInit(2.19676, 60);
-    // this.speedToTableInit(1.8034, 62.5);
 
-    // this.speedToTableInit(1.806, 54);
-    // this.speedToTableInit(2.063, 58.5);
-    // this.speedToTableInit(2.747, 62);
-    // this.speedToTableInit(3.288, 65);
-    // this.speedToTableInit(3.709, 67);
-    // this.speedToTableInit(4.209, 73);
-    // this.speedToTableInit(4.627, 77);
+    // comp ones
+    // this.speedToTableInit(3.065, 67);
+    // this.speedToTableInit(2.60, 60);
+    // this.speedToTableInit(3.38, 71);
+    // this.speedToTableInit(2.039, 58);
 
-    this.speedToTableInit(3.065, 67);
-    this.speedToTableInit(2.60, 60);
-    this.speedToTableInit(3.38, 71);
-    this.speedToTableInit(2.039, 58);
+    this.speedToTableInit(1.63, 57.5);
+    this.speedToTableInit(2.252, 59.5);
+    this.speedToTableInit(2.89, 64.5);
+    this.speedToTableInit(3.5, 68.5);
 
     this.withinAutomaticChargingZone = withinAutomaticChargingZone;
 
@@ -165,6 +148,21 @@ public class Shooter extends SubsystemBase {
     return Commands.startRun(
         () -> {
           this.setManualSpeed(speed);
+        },
+        () -> {},
+        this);
+  }
+
+  /**
+   * sets the manual speed of the flywheel, runs multiple times
+   *
+   * @param speed the speed of the flywheel
+   * @return the finished command
+   */
+  public Command setManualSpeedRunCommand(DoubleSupplier speed) {
+    return Commands.startRun(
+        () -> {
+          this.setManualSpeed(speed.getAsDouble());
         },
         () -> {},
         this);

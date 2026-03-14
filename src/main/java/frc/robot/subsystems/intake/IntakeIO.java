@@ -129,30 +129,12 @@ public interface IntakeIO {
   public default void setBrakedPosition(boolean braked) {}
 
   /**
-   * gets the highest possible height of the arm in radians
-   *
-   * @return highest poss height of arm in radians
-   */
-  public default double getMaxPosition() {
-    return 0;
-  }
-
-  /**
    * get position of the position motor
    *
    * @return
    */
   public default double getPosition() {
     return 0;
-  }
-
-  /**
-   * checks if position motor is within certain tolerance of the max position
-   *
-   * @return
-   */
-  public default boolean isMaxPosition() {
-    return false;
   }
 
   /**
@@ -163,13 +145,11 @@ public interface IntakeIO {
   }
 
   /**
-   * returns true if motor is stalled
-   *
-   * <p>does this by seeing if the requested volts is above a certain amnt
+   * get the voltage of the roller motor, unit Volts, range -40 to 40
    *
    * @return
    */
-  public default boolean checkIfStalled() {
-    return false;
+  public default double getRollerMotorVoltage() {
+    return 0;
   }
 }

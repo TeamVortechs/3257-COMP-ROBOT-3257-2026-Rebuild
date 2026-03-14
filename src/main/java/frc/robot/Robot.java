@@ -155,13 +155,13 @@ public class Robot extends LoggedRobot {
   @Override
   public void teleopPeriodic() {
 
-    // Logger.recordOutput(
-    //     "Distance/asdfadsf",
-    //     robotContainer
-    //         .getDrive()
-    //         .getPose()
-    //         .getTranslation()
-    //         .getDistance(DriveConstants.GOAL_POSE_RED.getTranslation()));
+    Logger.recordOutput(
+        "Distance/asdfadsf",
+        robotContainer
+            .getDrive()
+            .getPose()
+            .getTranslation()
+            .getDistance(DriveConstants.GOAL_POSE_BLUE.getTranslation()));
   }
 
   /** This function is called once when test mode is enabled. */
