@@ -403,7 +403,8 @@ public class Drive extends SubsystemBase {
         new PPHolonomicDriveController(
             new PIDConstants(
                 DriveConstants.TRANS_KP, DriveConstants.TRANS_KI, DriveConstants.TRANS_KD),
-            new PIDConstants(DriveConstants.ANGLE_KP, DriveConstants.ANGLE_KI, DriveConstants.ANGLE_KD));
+            new PIDConstants(
+                DriveConstants.ANGLE_KP, DriveConstants.ANGLE_KI, DriveConstants.ANGLE_KD));
     // Configure AutoBuilder for PathPlanner
     AutoBuilder.configure(
         this::getPose,

@@ -454,7 +454,7 @@ public class RobotContainer {
         .x()
         .whileTrue(
             shooter
-                .setTestCommandRun()
+                .setManualSpeedRunCommand(() -> ShooterConstants.SHOOTER_TEST_SPEED.get())
                 .alongWith(feeder.feedWhenValidRunCommand(1))
                 .alongWith(
                     belt.setPercentMotorOutputRunCommand(

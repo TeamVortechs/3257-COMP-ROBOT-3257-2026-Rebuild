@@ -6,7 +6,6 @@ import static edu.wpi.first.units.Units.Volts;
 import com.ctre.phoenix6.SignalLogger;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.wpilibj.Notifier;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -78,9 +77,6 @@ public class Shooter extends SubsystemBase {
     logger.startPeriodic(1 / ShooterConstants.FREQUENCY_HZ);
 
     setAutomaticallyChargeFully(false);
-
-    SmartDashboard.putNumber(
-        ShooterConstants.SD_MANUAL_SPEED_KEY, ShooterConstants.SD_MANUAL_SPEED_SETTING);
   }
 
   @Override
@@ -157,6 +153,21 @@ public class Shooter extends SubsystemBase {
         this);
   }
 
+  /**
+   * sets the manual speed of the flywheel, runs multiple times
+   *
+   * @param speed the speed of the flywheel
+   * @return the finished command
+   */
+  public Command setManualSpeedRunCommand(DoubleSupplier speed) {
+    return Commands.startRun(
+        () -> {
+          this.setManualSpeed(speed.getAsDouble());
+        },
+        () -> {},
+        this);
+  }
+
   public Command setVoltageRunCommand(double voltage) {
     return Commands.startRun(() -> this.setVoltage(voltage), () -> {}, this);
   }
@@ -171,17 +182,6 @@ public class Shooter extends SubsystemBase {
         () -> {
           setAutomaticSpeed(1);
         },
-        this);
-  }
-
-  public Command setTestCommandRun() {
-    return Commands.startRun(
-        () -> {
-          setManualSpeed(
-              SmartDashboard.getNumber(
-                  ShooterConstants.SD_MANUAL_SPEED_KEY, ShooterConstants.SD_MANUAL_SPEED_SETTING));
-        },
-        () -> {},
         this);
   }
 

@@ -27,6 +27,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.RobotBase;
 import frc.robot.generated.TunerConstants;
+import frc.robot.util.SettableConstant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
@@ -104,7 +105,7 @@ public final class Constants {
     public static final double FREQUENCY_UPDATE_ACC =
         20.00; // how many times per sec should we log accelerometer
 
-    //pid constants
+    // pid constants
     public static final double TRANS_KP = 5;
     public static final double TRANS_KI = 0;
     public static final double TRANS_KD = 0;
@@ -125,7 +126,7 @@ public final class Constants {
 
     public static final double ORIENTATION_TOLERANCE = 0.2;
 
-    //this gets made with the other constants
+    // this gets made with the other constants
     public static final ProfiledPIDController ANGLE_CONTROLLER;
 
     // the time it takes between feeding and actual robot shoot. This is used to lead the robot
@@ -150,18 +151,18 @@ public final class Constants {
       return 0.9;
     }
 
-    //tolerance for the shoot on move binary search. TS IS NOT HTE DRIVETRAIN MOVE TO ANGLE TOLERANCE
+    // tolerance for the shoot on move binary search. TS IS NOT HTE DRIVETRAIN MOVE TO ANGLE
+    // TOLERANCE
     public static final double SHOOT_ON_MOVE_TOLERANCE = 0.05;
 
     // the maximum allowed difference allowed between acceleraomter and encoders before it is
     // considered skid
     public static final double SKID_THRESHOLD = 1000;
 
-    //SHOOT ON MOVE CONSTATNS.
+    // SHOOT ON MOVE CONSTATNS.
     // used for auto teargetting
 
-
-    //idrk what this does but we should never to use/change these
+    // idrk what this does but we should never to use/change these
     public static final double FF_START_DELAY = 2.0; // Secs
     public static final double FF_RAMP_RATE = 0.1; // Volts/Sec
     public static final double WHEEL_RADIUS_MAX_VELOCITY = 0.25; // Rad/Sec
@@ -241,7 +242,6 @@ public final class Constants {
     public static final double X_POSE_TO_PASS = 5.5;
     public static final double HALF_MAP_Y = 4.059;
 
-
     // from our library
     public static final double ODOMETRY_FREQUENCY =
         TunerConstants.kCANBus.isNetworkFD() ? 250.0 : 100.0;
@@ -291,8 +291,8 @@ public final class Constants {
 
     public static final double PERCENTAGE_OF_DISTANCE_WHEN_CHARGING = 0.6;
 
-    public static final double SD_MANUAL_SPEED_SETTING = 70;
-    public static final String SD_MANUAL_SPEED_KEY = "shooterManualSpeed";
+    public static final SettableConstant SHOOTER_TEST_SPEED =
+        new SettableConstant("shooter test speed", 70);
 
     // the time that the feeder waits before shooting once it is valis
 
