@@ -9,11 +9,13 @@ import com.ctre.phoenix6.controls.DynamicMotionMagicVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Temperature;
 import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.wpilibj.CAN;
 import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.util.VortechsUtil;
@@ -72,12 +74,14 @@ public class IntakeTalonFXCANCoderIO implements IntakeIO {
         Constants.IntakeConstants.MOTION_MAGIC_ACCELERATION;
     motionMagicConfigs.MotionMagicJerk = Constants.IntakeConstants.MOTION_MAGIC_JERK;
 
-    positionConfig.Feedback = new FeedbackConfigs().withFusedCANcoder(canCoder);
-    positionConfig.Feedback.RotorToSensorRatio =
-        24; // check if these are correct; move into constants later
-    // positionConfig.Feedback.SensorToMechanismRatio = 2;
-    // .withFeedbackRemoteSensorID(canIdCANCoder)
-    // .withFeedbackSensorSource(FeedbackSensorSourceValue.RemoteCANcoder);
+
+    // constants to handle persistent position tracking
+    canCoder.getConfigurator().apply(IntakeConstants.CANCODER_CONFIG);
+
+    positionConfig.Feedback.FeedbackRemoteSensorID = canCoder.getDeviceID();
+    positionConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
+    positionConfig.Feedback.SensorToMechanismRatio = IntakeConstants.CANCODER_SENSOR_TO_MECHANISM_RATIO;
+    positionConfig.Feedback.RotorToSensorRatio = IntakeConstants.CANCODER_ROTOR_TO_SENSOR_RATIO;
 
     roller.getConfigurator().apply(rollerConfig);
     position.getConfigurator().apply(positionConfig);

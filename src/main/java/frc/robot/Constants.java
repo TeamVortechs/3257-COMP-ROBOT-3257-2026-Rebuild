@@ -9,12 +9,14 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.Seconds;
 
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -515,12 +517,16 @@ public final class Constants {
     public static final TalonFXConfiguration ROLLER_CONFIG;
     public static final Slot0Configs SLOT0CONFIGS;
     public static final TalonFXConfiguration POSITION_CONFIG;
+    public static final CANcoderConfiguration CANCODER_CONFIG;
 
     public static final int INTAKE_ROLLER_MOTOR_ID = 21;
     public static final int INTAKE_POSITION_MOTOR_ID = 22;
     public static final int INTAKE_CANCODER_ID = 29;
 
-    public static final double CANCODER_ROTOR_TO_SENSOR_RATIO = 1; // used to be 30
+    public static final double CANCODER_ROTOR_TO_SENSOR_RATIO = 24; // used to be 30
+    public static final double CANCODER_SENSOR_TO_MECHANISM_RATIO = 2;
+    public static final double CANCODER_DISCONTINUITY_POINT = 0.835;
+    public static final double CANCODER_MAGNET_OFFSET = 0.47; // !!!IMPORTANT TODO DUMMY VALUE FIX THIS PLS
 
     static {
       SLOT0CONFIGS = new Slot0Configs();
@@ -532,7 +538,7 @@ public final class Constants {
       SLOT0CONFIGS.kD = Constants.IntakeConstants.KD;
       SLOT0CONFIGS.kG = IntakeConstants.KG;
       SLOT0CONFIGS.GravityType = GravityTypeValue.Arm_Cosine;
-      SLOT0CONFIGS.withStaticFeedforwardSign(StaticFeedforwardSignValue.UseVelocitySign);
+      SLOT0CONFIGS.StaticFeedforwardSign = StaticFeedforwardSignValue.UseVelocitySign;
 
       POSITION_CONFIG = new TalonFXConfiguration();
       POSITION_CONFIG.MotorOutput.NeutralMode = NeutralModeValue.Brake;
@@ -553,6 +559,11 @@ public final class Constants {
       ROLLER_CONFIG.CurrentLimits.StatorCurrentLimit =
           Constants.CurrentLimitConstants.STATOR_CURRENT_LIMIT_INTAKE_ROLLER;
       ROLLER_CONFIG.CurrentLimits.StatorCurrentLimitEnable = true;
+
+      CANCODER_CONFIG = new CANcoderConfiguration();
+      CANCODER_CONFIG.MagnetSensor.AbsoluteSensorDiscontinuityPoint = CANCODER_DISCONTINUITY_POINT; // (0+0.67)/2 + 0.5
+      CANCODER_CONFIG.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
+      CANCODER_CONFIG.MagnetSensor.MagnetOffset = CANCODER_MAGNET_OFFSET;
     }
   }
 }
