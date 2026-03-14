@@ -30,16 +30,16 @@ public class VisionConstants {
   // !!!! TODO: GET NEW TRANSFORMS FOR NEW ROBOT !!!!
   public static Transform3d robotToPhoton0 =
       new Transform3d(
-          -0.3429, // 13.5 in
-          0.282575, // 11 and 1/8 in
+          -0.3277108, // 12.902 in (CAD)
+          0.2804922, // 11.043 in (CAD)
           0.52705, // 20 3/4 in
           new Rotation3d(0.0, -Units.degreesToRadians(25.3), -Units.degreesToRadians(35)));
   public static Transform3d
       robotToPhoton1 = // !! WARNING !! rough estimates. i punched this in at 9:10 PM; recheck
           // better
           new Transform3d(
-              -0.3429,
-              -0.282575,
+              -0.3277108,
+              -0.2804922,
               0.52705,
               new Rotation3d(0.0, -Units.degreesToRadians(25.3), Units.degreesToRadians(35)));
 

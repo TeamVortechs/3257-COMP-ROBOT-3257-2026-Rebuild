@@ -25,9 +25,9 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.units.measure.*;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj.RobotBase;
 import frc.robot.generated.TunerConstants;
 import frc.robot.util.SmartConstant;
 import java.util.ArrayList;
@@ -123,15 +123,24 @@ public final class Constants {
     public static final double ANGLE_KD = 0.4;
     public static final double ANGLE_DEADBAND = 0.1;
 
-    public static final SmartConstant ANGLE_KP_SETTABLE = new SmartConstant("DriveSettableConstantAngleKP", ANGLE_KP);
-    public static final SmartConstant ANGLE_KI_SETTABLE = new SmartConstant("DriveSettableConstantAngleKI", ANGLE_KI);
-    public static final SmartConstant ANGLE_KD_SETTABLE = new SmartConstant("DriveSettableConstantAngleKD", ANGLE_KD);
+    public static final SmartConstant ANGLE_KP_SETTABLE =
+        new SmartConstant("DriveSettableConstantAngleKP", ANGLE_KP);
+    public static final SmartConstant ANGLE_KI_SETTABLE =
+        new SmartConstant("DriveSettableConstantAngleKI", ANGLE_KI);
+    public static final SmartConstant ANGLE_KD_SETTABLE =
+        new SmartConstant("DriveSettableConstantAngleKD", ANGLE_KD);
 
     public static Command remakeAnglePIDController() {
-      return new InstantCommand(() -> {
-      ANGLE_CONTROLLER = new ProfiledPIDController(ANGLE_KP_SETTABLE.get(), ANGLE_KI_SETTABLE.get(), ANGLE_KD_SETTABLE.get(), new TrapezoidProfile.Constraints(ANGLE_MAX_VELOCITY, ANGLE_MAX_ACCELERATION));
-      ANGLE_CONTROLLER.enableContinuousInput(-Math.PI, Math.PI);}
-      );
+      return new InstantCommand(
+          () -> {
+            ANGLE_CONTROLLER =
+                new ProfiledPIDController(
+                    ANGLE_KP_SETTABLE.get(),
+                    ANGLE_KI_SETTABLE.get(),
+                    ANGLE_KD_SETTABLE.get(),
+                    new TrapezoidProfile.Constraints(ANGLE_MAX_VELOCITY, ANGLE_MAX_ACCELERATION));
+            ANGLE_CONTROLLER.enableContinuousInput(-Math.PI, Math.PI);
+          });
     }
 
     public static final double ANGLE_MAX_ACCELERATION = 20.0;

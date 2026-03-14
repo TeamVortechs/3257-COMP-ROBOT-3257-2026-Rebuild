@@ -94,7 +94,7 @@ public class Belt extends SubsystemBase {
         this);
   }
 
-    public Command setPercentMotorOutputRunCommandAutoEvent(double speed, BooleanSupplier run) {
+  public Command setPercentMotorOutputRunCommandAutoEvent(double speed, BooleanSupplier run) {
     return Commands.run(
         () -> {
           if (run.getAsBoolean()) {

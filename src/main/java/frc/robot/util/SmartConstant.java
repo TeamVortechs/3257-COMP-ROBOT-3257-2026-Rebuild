@@ -2,9 +2,7 @@ package frc.robot.util;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-/**
- *constant that uses smartdashboard so u can set it during runtime
- */
+/** constant that uses smartdashboard so u can set it during runtime */
 public class SmartConstant {
 
   private double defaultValue;

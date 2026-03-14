@@ -507,18 +507,18 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "feedWhenValidAndStop",
         Commands.race(
-            // first command(feedwhen valid and stop)
-            new WaitUntilCommand(() -> shooter.isOnTarget())
-                .andThen(
-                    feeder
-                        .feedWhenValidRunCommand(FeederConstants.FEED_POWER)
-                        .withDeadline(new WaitCommand(3)))
-                .andThen(feeder.setPercentMotorCommand(0)),
-            // second command(point towards target)
-            drive.joystickDriveAtTarget(drive, () -> 0, () -> 0),
-            belt.setPercentMotorOutputRunCommand(
-                BeltConstants.FEED_POWER, () -> feeder.getTargetSpeed() > 0),
-            shooter.setAutomaticCommandRun())
+                // first command(feedwhen valid and stop)
+                new WaitUntilCommand(() -> shooter.isOnTarget())
+                    .andThen(
+                        feeder
+                            .feedWhenValidRunCommand(FeederConstants.FEED_POWER)
+                            .withDeadline(new WaitCommand(3)))
+                    .andThen(feeder.setPercentMotorCommand(0)),
+                // second command(point towards target)
+                drive.joystickDriveAtTarget(drive, () -> 0, () -> 0),
+                belt.setPercentMotorOutputRunCommand(
+                    BeltConstants.FEED_POWER, () -> feeder.getTargetSpeed() > 0),
+                shooter.setAutomaticCommandRun())
             .andThen(shooter.setManualSpeedCommand(0)));
 
     /*
@@ -589,14 +589,20 @@ public class RobotContainer {
                         () -> intake.setRollersVoltage(IntakeConstants.ROLLER_GOING_DOWN_VOLTS))));
 
     new EventTrigger("shootOnMove")
-        //makes the drive rotate correctly
+        // makes the drive rotate correctly
         .onTrue(drive.overrideRotationCommand())
         .onFalse(drive.removeRotationOverrideCommand())
 
-        //starts shooter + feeder + belts
-        .whileTrue(Commands.parallel(new RunCommand(() -> {shooter.setAutomaticSpeed(1);}),
-        feeder.feedWhenValidRunCommandAutoEvent(FeederConstants.FEED_POWER),
-        belt.setPercentMotorOutputRunCommandAutoEvent(1, () -> feeder.getTargetSpeed() > 0)));
+        // starts shooter + feeder + belts
+        .whileTrue(
+            Commands.parallel(
+                new RunCommand(
+                    () -> {
+                      shooter.setAutomaticSpeed(1);
+                    }),
+                feeder.feedWhenValidRunCommandAutoEvent(FeederConstants.FEED_POWER),
+                belt.setPercentMotorOutputRunCommandAutoEvent(
+                    1, () -> feeder.getTargetSpeed() > 0)));
 
     new EventTrigger("revShooterEvent")
         .whileTrue(
