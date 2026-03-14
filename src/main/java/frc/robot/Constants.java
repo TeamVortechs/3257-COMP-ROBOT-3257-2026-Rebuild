@@ -103,34 +103,41 @@ public final class Constants {
 
     public static final double FREQUENCY_UPDATE_ACC =
         20.00; // how many times per sec should we log accelerometer
-    public static final double transKp = 5;
-    public static final double transKi = 0;
-    public static final double transKd = 0;
 
-    public static final double transTopSpeed = 1.5;
-    public static final double transAccMax = 2;
+    //pid constants
+    public static final double TRANS_KP = 5;
+    public static final double TRANS_KI = 0;
+    public static final double TRANS_KD = 0;
 
-    // rot const, used for moving to setpoint
-    public static final double rotKp = 7;
-    public static final double rotKi = 0;
-    public static final double rotKd = 0;
+    public static final double TRANS_TOP_SPEED = 1.5;
+    public static final double TRANS_ACC_MAX = 2;
 
-    public static final double rotTopSpeed = 100;
-    public static final double rotAccMax = 110;
+    public static final double TRANS_TOLERANCE = 0.01;
 
-    // tolerances
-    public static final double rotationTolerance = 0.1;
-    public static final double translationTolerance = 0.01;
+    // rot const, used for moving to setpoint/auto targetting
+    public static final double ANGLE_KP = 4;
+    public static final double ANGLE_KI = 0;
+    public static final double ANGLE_KD = 0.4;
+    public static final double ANGLE_DEADBAND = 0.1;
 
-    public static final ProfiledPIDController ANGLE_CONTROLLER;
+    public static final double ANGLE_MAX_ACCELERATION = 20.0;
+    public static final double ANGLE_MAX_VELOCITY = 8.0;
 
     public static final double ORIENTATION_TOLERANCE = 0.2;
+
+    //this gets made with the other constants
+    public static final ProfiledPIDController ANGLE_CONTROLLER;
+
     // the time it takes between feeding and actual robot shoot. This is used to lead the robot
     // pose. Should be about 0.08 - 0.18 s
     public static final double KRELEASE_POSE_PREDICTION_SEC = 0; // to change .5
 
+    public static final double K_JOYSTICK_WHEN_SHOOTING = 1;
+    public static final double K_JOYSTICK_WHEN_PASSING = 1;
+    public static final double K_JOYSTICK_ROTATION = 0.7;
+    public static final double K_JOYSTICK_TRANSLATION = 1;
+
     // y position that splits this in half
-    public static final double HALF_MAP_Y = 4.059;
 
     // we should test by looking at values. this can also be a distance lookup table. This corrects
     // for robot speed by changing the target location. This constant is supposed ot emmulate fligth
@@ -143,19 +150,18 @@ public final class Constants {
       return 0.9;
     }
 
+    //tolerance for the shoot on move binary search. TS IS NOT HTE DRIVETRAIN MOVE TO ANGLE TOLERANCE
     public static final double SHOOT_ON_MOVE_TOLERANCE = 0.05;
 
     // the maximum allowed difference allowed between acceleraomter and encoders before it is
     // considered skid
     public static final double SKID_THRESHOLD = 1000;
 
+    //SHOOT ON MOVE CONSTATNS.
     // used for auto teargetting
-    public static final double DEADBAND = 0.1;
-    public static final double ANGLE_KP = 4; // 12
-    public static final double ANGLE_KD = 0.4;
 
-    public static final double ANGLE_MAX_ACCELERATION = 20.0;
-    public static final double ANGLE_MAX_VELOCITY = 8.0;
+
+    //idrk what this does but we should never to use/change these
     public static final double FF_START_DELAY = 2.0; // Secs
     public static final double FF_RAMP_RATE = 0.1; // Volts/Sec
     public static final double WHEEL_RADIUS_MAX_VELOCITY = 0.25; // Rad/Sec
@@ -233,9 +239,8 @@ public final class Constants {
     // the zone where we choose to more agressively charge the shooter
     public static final double X_POSE_TO_CHARGE = 5.5;
     public static final double X_POSE_TO_PASS = 5.5;
+    public static final double HALF_MAP_Y = 4.059;
 
-    public static final double K_JOYSTICK_WHEN_SHOOTING = 1;
-    public static final double K_JOYSTICK_WHEN_PASSING = 1;
 
     // from our library
     public static final double ODOMETRY_FREQUENCY =
@@ -255,7 +260,7 @@ public final class Constants {
       ANGLE_CONTROLLER =
           new ProfiledPIDController(
               ANGLE_KP,
-              0.0,
+              ANGLE_KI,
               ANGLE_KD,
               new TrapezoidProfile.Constraints(ANGLE_MAX_VELOCITY, ANGLE_MAX_ACCELERATION));
       ANGLE_CONTROLLER.enableContinuousInput(-Math.PI, Math.PI);

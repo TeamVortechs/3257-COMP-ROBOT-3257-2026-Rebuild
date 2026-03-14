@@ -34,18 +34,18 @@ public class PathfindToPoseCommand extends Command {
   // PIDController
   private final PIDController translationController =
       new PIDController(
-          Constants.DriveConstants.transKp,
-          Constants.DriveConstants.transKi,
-          Constants.DriveConstants.transKd);
+          Constants.DriveConstants.TRANS_KP,
+          Constants.DriveConstants.TRANS_KI,
+          Constants.DriveConstants.TRANS_KD);
 
   private final PIDController thetaController =
       new PIDController(
-          Constants.DriveConstants.rotKp,
-          Constants.DriveConstants.rotKi,
-          Constants.DriveConstants.rotKd);
+          Constants.DriveConstants.ANGLE_KP,
+          Constants.DriveConstants.ANGLE_KI,
+          Constants.DriveConstants.ANGLE_KD);
 
-  private final double translationTolerance = Constants.DriveConstants.translationTolerance;
-  private final double rotationTolerance = Constants.DriveConstants.rotationTolerance;
+  private final double translationTolerance = Constants.DriveConstants.TRANS_TOLERANCE;
+  private final double rotationTolerance = Constants.DriveConstants.ORIENTATION_TOLERANCE;
 
   private final boolean endOnTarget;
   private Consumer<Boolean> onTarget = null;
@@ -200,20 +200,20 @@ public class PathfindToPoseCommand extends Command {
     xVelocity =
         MathUtil.clamp(
             xVelocity,
-            -Constants.DriveConstants.transTopSpeed,
-            Constants.DriveConstants.transTopSpeed);
+            -Constants.DriveConstants.TRANS_TOP_SPEED,
+            Constants.DriveConstants.TRANS_TOP_SPEED);
 
     yVelocity =
         MathUtil.clamp(
             yVelocity,
-            -Constants.DriveConstants.transTopSpeed,
-            Constants.DriveConstants.transTopSpeed);
+            -Constants.DriveConstants.TRANS_TOP_SPEED,
+            Constants.DriveConstants.TRANS_TOP_SPEED);
 
     thetaVelocity =
         MathUtil.clamp(
             thetaVelocity,
-            -Constants.DriveConstants.rotTopSpeed,
-            Constants.DriveConstants.rotTopSpeed);
+            -Constants.DriveConstants.ANGLE_MAX_VELOCITY,
+            Constants.DriveConstants.ANGLE_MAX_VELOCITY);
 
     return new ChassisSpeeds(xVelocity, yVelocity, thetaVelocity);
   }

@@ -31,7 +31,7 @@ import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
 public class DriveCommands {
-  private static final double DEADBAND = DriveConstants.DEADBAND;
+  private static final double DEADBAND = DriveConstants.ANGLE_DEADBAND;
   private static final double ANGLE_KP = DriveConstants.ANGLE_KP;
   private static final double ANGLE_KD = DriveConstants.ANGLE_KD;
   private static final double ANGLE_MAX_VELOCITY = DriveConstants.ANGLE_MAX_VELOCITY;

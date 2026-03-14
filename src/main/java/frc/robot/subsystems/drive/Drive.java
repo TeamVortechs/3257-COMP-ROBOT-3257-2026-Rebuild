@@ -174,7 +174,7 @@ public class Drive extends SubsystemBase {
     return isSkidding;
   }
 
-  private static final double DEADBAND = DriveConstants.DEADBAND;
+  private static final double DEADBAND = DriveConstants.ANGLE_DEADBAND;
 
   private Supplier<Rotation2d> rotationSupplier =
       () -> {
@@ -402,8 +402,8 @@ public class Drive extends SubsystemBase {
     PPHolonomicDriveController pathplannerController =
         new PPHolonomicDriveController(
             new PIDConstants(
-                DriveConstants.transKp, DriveConstants.transKi, DriveConstants.transKd),
-            new PIDConstants(DriveConstants.rotKp, DriveConstants.rotKi, DriveConstants.rotKd));
+                DriveConstants.TRANS_KP, DriveConstants.TRANS_KI, DriveConstants.TRANS_KD),
+            new PIDConstants(DriveConstants.ANGLE_KP, DriveConstants.ANGLE_KI, DriveConstants.ANGLE_KD));
     // Configure AutoBuilder for PathPlanner
     AutoBuilder.configure(
         this::getPose,
