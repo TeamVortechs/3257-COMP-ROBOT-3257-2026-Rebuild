@@ -301,6 +301,15 @@ public class RobotContainer {
     // CONTROLLER:
 
     // Lock to 0° when A button is held
+    // controller
+    //     .rightStick()
+    //     .whileTrue(
+    //         DriveCommands.joystickDriveAtAngle(
+    //             drive,
+    //             () -> -controller.getLeftY(),
+    //             () -> -controller.getLeftX(),
+    //             () -> drive.getRotationOverBumper()));
+
     controller
         .rightStick()
         .whileTrue(
@@ -308,7 +317,7 @@ public class RobotContainer {
                 drive,
                 () -> -controller.getLeftY(),
                 () -> -controller.getLeftX(),
-                () -> drive.getRotationOverBumper()));
+                () -> new Rotation2d(-controller.getLeftY(), -controller.getLeftX())));
 
     // Switch to X pattern when X button is pressed
     controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
