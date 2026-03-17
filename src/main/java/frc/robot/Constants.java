@@ -123,7 +123,7 @@ public final class Constants {
     public static final double TRANS_TOLERANCE = 0.01;
 
     // rot const, used for moving to setpoint/auto targetting
-    public static final double ANGLE_KP = 4;
+    public static final double ANGLE_KP = 2;
     public static final double ANGLE_KI = 0;
     public static final double ANGLE_KD = 0.4;
     public static final double ANGLE_DEADBAND = 0.1;
@@ -328,12 +328,12 @@ public final class Constants {
     // the time that the feeder waits before shooting once it is valis
 
     // CHANGE !!
-    public static final double KS = 0.021277;
-    public static final double KV = 0.13001; // 0.13727;
-    public static final double KP = 0.1677; // 16011;
+    public static final double KS = 0.1021;
+    public static final double KV = 0.12071; // 0.13727;
+    public static final double KP = 0.10991; // 16011;
     public static final double KI = 0.0;
     public static final double KD = 0.0;
-    public static final double KA = 0.03725; // 050592;
+    public static final double KA = 0.016241; // 050592;
 
     public static final TalonFXConfiguration CONFIG;
     public static final Slot0Configs SLOT0CONFIGS;
@@ -515,9 +515,9 @@ public final class Constants {
     public static final double MIN_POSITION = -10000; // o.373535
     public static final double MAX_POSITION = 1000; // can also do 0.36
 
-    public static final double INTAKE_DOWN_POSITION = -0.413;
-    public static final double INTAKE_HALFWAY_UP_POSITION = -0.754;
-    public static final double INTAKE_UP_POSITION = -0.168;
+    public static final double INTAKE_DOWN_POSITION = 0.841;
+    public static final double INTAKE_HALFWAY_UP_POSITION = 0.6;
+    public static final double INTAKE_UP_POSITION = 0.156;
     // .-0.062
 
     public static final double CLAMP_MAX_VOLTS = 3;
