@@ -503,6 +503,9 @@ public final class Constants {
   public class IntakeConstants {
     public static final double FREQUENCY_HZ = Constants.LOW_PRIORITY_FREQUENCY_HZ;
 
+
+    public static final double TIME_TO_WAIT_BEFORE_RETRACT_ON_SHOOT = 0.5;
+
     // dummy values for now
     public static final double MAX_TARGET_SPEED = 100;
     public static final double MAX_MANUAL_SPEED = 100;

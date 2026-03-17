@@ -363,7 +363,8 @@ public class RobotContainer {
                     shooter.setAutomaticCommandRun(),
                     belt.setPercentMotorOutputRunCommand(
                         BeltConstants.FEED_POWER, () -> feeder.getTargetSpeed() > 0),
-                    feeder.feedWhenValidRunCommand(FeederConstants.FEED_POWER))
+                    feeder.feedWhenValidRunCommand(FeederConstants.FEED_POWER),
+                    intake.intakeRetractWhileShooting())
                 .withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
 
     controller
@@ -519,19 +520,29 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "feedWhenValidAndStop",
         Commands.race(
-                // first command(feedwhen valid and stop)
+                // first part of the command, wait's until it is on target
                 new WaitUntilCommand(() -> shooter.isOnTarget())
+
+                    // feed for 3 secs
                     .andThen(
                         feeder
                             .feedWhenValidRunCommand(FeederConstants.FEED_POWER)
-                            .withDeadline(new WaitCommand(3)))
-                    .andThen(feeder.setPercentMotorCommand(0)),
+                            .withDeadline(new WaitCommand(3))),
+
                 // second command(point towards target)
                 drive.joystickDriveAtTarget(drive, () -> 0, () -> 0),
+
+                // third command, run rollers when valid
                 belt.setPercentMotorOutputRunCommand(
                     BeltConstants.FEED_POWER, () -> feeder.getTargetSpeed() > 0),
+
+                // fourth, start shooter
                 shooter.setAutomaticCommandRun())
-            .andThen(shooter.setManualSpeedCommand(0)));
+
+            // at the very end stop the shooter, rollers, and belt
+            .andThen(shooter.setManualSpeedCommand(0))
+            .andThen(feeder.setPercentMotorCommand(0))
+            .andThen(belt.setPercentMotorOutputCommand(0)));
 
     /*
     version with moving intake:
@@ -603,7 +614,14 @@ public class RobotContainer {
     new EventTrigger("shootOnMove")
         // makes the drive rotate correctly
         .onTrue(drive.overrideRotationCommand())
-        .onFalse(drive.removeRotationOverrideCommand())
+        .onFalse(
+            drive
+                .removeRotationOverrideCommand()
+
+                // stop the mechanisms
+                .andThen(shooter.setManualSpeedCommand(0))
+                .andThen(feeder.setPercentMotorCommand(0))
+                .andThen(belt.setPercentMotorOutputCommand(0)))
 
         // starts shooter + feeder + belts
         .whileTrue(

@@ -216,14 +216,12 @@ public class Intake extends SubsystemBase {
     return Commands.startRun(() -> this.setPositionVoltage(volt), () -> {});
   }
 
-  public Command intakeRetractWhileShooting(Command waitingCommand, double rollerVolts) {
+  public Command intakeRetractWhileShooting() {
 
-    return Commands.race(
-        setRollerVoltageCommand(rollerVolts),
-        waitingCommand.andThen(
-            setPositionVoltageRunCommandNoRequirement(4)
-                .withDeadline(
-                    new WaitCommand(2)))); // I don't like this magic number. I am displeased.
+    return new WaitCommand(IntakeConstants.TIME_TO_WAIT_BEFORE_RETRACT_ON_SHOOT).andThen(
+        setPositionCommand(
+            IntakeConstants
+                .INTAKE_HALFWAY_UP_POSITION)); // I don't like this magic number. I am displeased.
   }
 
   /*
