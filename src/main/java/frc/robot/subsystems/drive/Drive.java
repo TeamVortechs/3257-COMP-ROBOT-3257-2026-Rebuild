@@ -193,8 +193,8 @@ public class Drive extends SubsystemBase {
         .andThen(new PathfindToPoseCommand(this, () -> setPose, false));
   }
 
-  public Command joystickDriveAtTarget(
-      Drive drive, DoubleSupplier xSupplier, DoubleSupplier ySupplier) {
+  public Command joystickDriveAtTarget(DoubleSupplier xSupplier, DoubleSupplier ySupplier) {
+    var drive = this;
 
     // Create PID controller
     ProfiledPIDController angleController = DriveConstants.ANGLE_CONTROLLER;

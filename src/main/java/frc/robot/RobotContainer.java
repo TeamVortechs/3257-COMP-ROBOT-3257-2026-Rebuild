@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -347,14 +348,14 @@ public class RobotContainer {
     @SuppressWarnings("unused")
     Command aimTowardsTargetCommand =
         drive.joystickDriveAtTarget(
-            drive,
+            // drive,
             () -> -controller.getLeftY() * DriveConstants.K_JOYSTICK_WHEN_SHOOTING,
             () -> -controller.getLeftX() * DriveConstants.K_JOYSTICK_WHEN_SHOOTING);
 
     @SuppressWarnings("unused")
     Command aimTowardsTargetCommand2 =
         drive.joystickDriveAtTarget(
-            drive,
+            // drive,
             () -> -controller.getLeftY() * DriveConstants.K_JOYSTICK_WHEN_SHOOTING,
             () -> -controller.getLeftX() * DriveConstants.K_JOYSTICK_WHEN_SHOOTING);
 
@@ -457,27 +458,27 @@ public class RobotContainer {
     operatorController.povRight().onTrue(drive.setPassingIndexCommmand(1));
     operatorController.povLeft().onTrue(drive.setPassingIndexCommmand(0));
 
-    testController.a().whileTrue(feeder.setPercentMotorRunCommand(FeederConstants.FEED_POWER));
-    testController.b().whileTrue(belt.setPercentMotorOutputRunCommand(BeltConstants.FEED_POWER));
+    // testController.a().whileTrue(feeder.setPercentMotorRunCommand(FeederConstants.FEED_POWER));
+    // testController.b().whileTrue(belt.setPercentMotorOutputRunCommand(BeltConstants.FEED_POWER));
 
-    testController
-        .x()
-        .whileTrue(
-            shooter
-                .setManualSpeedRunCommand(() -> ShooterConstants.SHOOTER_TEST_SPEED.get())
-                .alongWith(feeder.feedWhenValidRunCommand(1))
-                .alongWith(
-                    belt.setPercentMotorOutputRunCommand(
-                        BeltConstants.FEED_POWER, () -> feeder.getTargetSpeed() > 0)));
+    // testController
+    //     .x()
+    //     .whileTrue(
+    //         shooter
+    //             .setManualSpeedRunCommand(() -> ShooterConstants.SHOOTER_TEST_SPEED.get())
+    //             .alongWith(feeder.feedWhenValidRunCommand(1))
+    //             .alongWith(
+    //                 belt.setPercentMotorOutputRunCommand(
+    //                     BeltConstants.FEED_POWER, () -> feeder.getTargetSpeed() > 0)));
 
-    testController.y().whileTrue(intake.resetEncoderRoutineCommand(2));
-    testController.a().onTrue(DriveConstants.remakeAnglePIDController());
-    testController.rightTrigger().onTrue(drive.reconfigureAutobuilder());
-    testController.b().whileTrue(intake.setPositionCommand(IntakeConstants.INTAKE_UP_POSITION));
+    // testController.y().whileTrue(intake.resetEncoderRoutineCommand(2));
+    // testController.a().onTrue(DriveConstants.remakeAnglePIDController());
+    // testController.rightTrigger().onTrue(drive.reconfigureAutobuilder());
+    // testController.b().whileTrue(intake.setPositionCommand(IntakeConstants.INTAKE_UP_POSITION));
 
-    // sysid bindings:[]\
+    // sysid bindings:
 
-    configureSysIdBindings(sysID_controller, shooter.BuildSysIdRoutine());
+    // configureSysIdBindings(sysID_controller, shooter.BuildSysIdRoutine());
   }
 
   /**
@@ -517,32 +518,32 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "feedWhenValid", feeder.feedWhenValidRunCommand(FeederConstants.FEED_POWER));
 
-    // NamedCommands.registerCommand(
-    //     "feedWhenValidAndStop",
-    //     Commands.race(
-    //             // first part of the command, wait's until it is on target
-    //             new WaitUntilCommand(() -> shooter.isOnTarget())
+    NamedCommands.registerCommand(
+        "feedWhenValidAndStop",
+        Commands.race(
+                // first part of the command, wait's until it is on target
+                new WaitUntilCommand(() -> shooter.isOnTarget())
 
-    //                 // feed for 3 secs
-    //                 .andThen(
-    //                     feeder
-    //                         .feedWhenValidRunCommand(FeederConstants.FEED_POWER)
-    //                         .withDeadline(new WaitCommand(3))),
+                    // feed for 3 secs
+                    .andThen(
+                        feeder
+                            .feedWhenValidRunCommand(FeederConstants.FEED_POWER)
+                            .withDeadline(new WaitCommand(3))),
 
-    //             // second command(point towards target)
-    //             drive.joystickDriveAtTarget(drive, () -> 0, () -> 0),
+                // second command(point towards target)
+                drive.joystickDriveAtTarget(() -> 0, () -> 0),
 
-    //             // third command, run rollers when valid
-    //             belt.setPercentMotorOutputRunCommand(
-    //                 BeltConstants.FEED_POWER, () -> feeder.getTargetSpeed() > 0),
+                // third command, run rollers when valid
+                belt.setPercentMotorOutputRunCommand(
+                    BeltConstants.FEED_POWER, () -> feeder.getTargetSpeed() > 0),
 
-    //             // fourth, start shooter
-    //             shooter.setAutomaticCommandRun())
+                // fourth, start shooter
+                shooter.setAutomaticCommandRun())
 
-    //         // at the very end stop the shooter, rollers, and belt
-    //         .andThen(shooter.setManualSpeedCommand(0))
-    //         .andThen(feeder.setPercentMotorCommand(0))
-    //         .andThen(belt.setPercentMotorOutputCommand(0)));
+            // at the very end stop the shooter, rollers, and belt
+            .andThen(shooter.setManualSpeedCommand(0))
+            .andThen(feeder.setPercentMotorCommand(0))
+            .andThen(belt.setPercentMotorOutputCommand(0)));
 
     /*
     version with moving intake:

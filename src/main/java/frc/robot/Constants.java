@@ -327,7 +327,7 @@ public final class Constants {
 
     // the time that the feeder waits before shooting once it is valis
 
-    // CHANGE !!
+    // CHANGE !
     public static final double KS = 0.1021;
     public static final double KV = 0.12071;
     public static final double KP = 0.5; // 10991

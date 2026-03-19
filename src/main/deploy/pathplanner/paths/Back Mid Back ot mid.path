@@ -171,7 +171,7 @@
     },
     {
       "waypointRelativePos": 4.936056838365899,
-      "rotationDegrees": 76.95841512656368
+      "rotationDegrees": 76.9584151265637
     },
     {
       "waypointRelativePos": 5.114537444933966,
@@ -213,7 +213,7 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 3.5,
+    "maxVelocity": 2.0,
     "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
