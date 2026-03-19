@@ -162,7 +162,7 @@ public class Robot extends LoggedRobot {
             .getDrive()
             .getPose()
             .getTranslation()
-            .getDistance(DriveConstants.GOAL_POSE_BLUE.getTranslation()));
+            .getDistance(DriveConstants.GOAL_POSE.get().getTranslation()));
   }
 
   /** This function is called once when test mode is enabled. */

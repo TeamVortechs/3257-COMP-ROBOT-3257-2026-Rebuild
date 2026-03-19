@@ -329,11 +329,11 @@ public final class Constants {
 
     // CHANGE !!
     public static final double KS = 0.1021;
-    public static final double KV = 0.12071; // 0.13727;
-    public static final double KP = 0.10991; // 16011;
+    public static final double KV = 0.12071;
+    public static final double KP = 0.5; // 10991
     public static final double KI = 0.0;
     public static final double KD = 0.0;
-    public static final double KA = 0.016241; // 050592;
+    public static final double KA = 0.016241;
 
     public static final TalonFXConfiguration CONFIG;
     public static final Slot0Configs SLOT0CONFIGS;
@@ -420,7 +420,7 @@ public final class Constants {
     // not real
     public static final int ID = 25;
 
-    public static final double FEED_POWER = 0.5;
+    public static final double FEED_POWER = 0.8;
     public static final double INTAKE_POWER = 1;
     public static final double DEFAULT_POWER = 0;
     public static final double EJECT_POWER = -1;
@@ -503,7 +503,6 @@ public final class Constants {
   public class IntakeConstants {
     public static final double FREQUENCY_HZ = Constants.LOW_PRIORITY_FREQUENCY_HZ;
 
-
     public static final double TIME_TO_WAIT_BEFORE_RETRACT_ON_SHOOT = 0.5;
 
     // dummy values for now
@@ -519,8 +518,8 @@ public final class Constants {
     public static final double MAX_POSITION = 1000; // can also do 0.36
 
     public static final double INTAKE_DOWN_POSITION = 0.841;
-    public static final double INTAKE_HALFWAY_UP_POSITION = 0.6;
-    public static final double INTAKE_UP_POSITION = 0.156;
+    public static final double INTAKE_HALFWAY_UP_POSITION = 0.841; // 0.6
+    public static final double INTAKE_UP_POSITION = 0.841; // 0.156
     // .-0.062
 
     public static final double CLAMP_MAX_VOLTS = 3;

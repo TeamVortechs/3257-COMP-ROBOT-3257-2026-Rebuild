@@ -218,10 +218,12 @@ public class Intake extends SubsystemBase {
 
   public Command intakeRetractWhileShooting() {
 
-    return new WaitCommand(IntakeConstants.TIME_TO_WAIT_BEFORE_RETRACT_ON_SHOOT).andThen(
-        setPositionCommand(
-            IntakeConstants
-                .INTAKE_HALFWAY_UP_POSITION)); // I don't like this magic number. I am displeased.
+    return new WaitCommand(IntakeConstants.TIME_TO_WAIT_BEFORE_RETRACT_ON_SHOOT)
+        .andThen(
+            setPositionCommand(
+                IntakeConstants
+                    .INTAKE_HALFWAY_UP_POSITION)); // I don't like this magic number. I am
+    // displeased.
   }
 
   /*
