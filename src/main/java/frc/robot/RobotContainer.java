@@ -24,7 +24,6 @@ import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -323,7 +322,7 @@ public class RobotContainer {
                 drive,
                 () -> -controller.getLeftY(),
                 () -> -controller.getLeftX(),
-                () -> new Rotation2d(-controller.getLeftY(), -controller.getLeftX())));
+                () -> new Rotation2d(-controller.getLeftY(), -controller.getLeftX()).times(-1)));
 
     // Switch to X pattern when X button is pressed
     controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
@@ -392,8 +391,8 @@ public class RobotContainer {
         .whileTrue(
             Commands.parallel(
                 intake.setRollerVoltageAndPositionCommand(
-                    IntakeConstants.INTAKE_DOWN_POSITION, IntakeConstants.EJECT_VOLTS)));
-    // intake command
+                    IntakeConstants.INTAKE_DOWN_POSITION, IntakeConstants.EJECT_VOLTS).alongWith(belt.setPercentMotorOutputCommand(BeltConstants.EJECT_POWER))));
+    // intake comman''''''''''''''''''''''''''''''''''''''d''''''''''''''''''''''''''''''''''''''
     controller
         .leftTrigger()
         .whileTrue(
