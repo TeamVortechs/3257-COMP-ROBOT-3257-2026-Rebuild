@@ -124,6 +124,10 @@ public class Intake extends SubsystemBase {
     intakeIO.setPositionVoltage(volt);
   }
 
+  public void setPositionVoltage(DoubleSupplier volt) {
+    intakeIO.setPositionVoltage(volt.getAsDouble());
+  }
+
   // gets the roller speed
   public double getRollerSpeed() {
     return intakeIO.getSpeed();
@@ -188,6 +192,14 @@ public class Intake extends SubsystemBase {
   public Command setPositionAndRollersCommandConsistentEnd(double position, double voltage) {
     return Commands.parallel(
             Commands.startRun(() -> this.setPosition(position), () -> {}),
+            Commands.startRun(() -> this.setRollersVoltage(voltage), () -> {}, this))
+        .withDeadline(new WaitUntilCommand(() -> isOnTarget()));
+  }
+  // good grief that's verbose
+  public Command setPositionWithVelocityAndRollersCommandConsistentEnd(
+      double position, double velocity, double voltage) {
+    return Commands.parallel(
+            Commands.startRun(() -> this.setPositionWithVelocity(position, velocity), () -> {}),
             Commands.startRun(() -> this.setRollersVoltage(voltage), () -> {}, this))
         .withDeadline(new WaitUntilCommand(() -> isOnTarget()));
   }

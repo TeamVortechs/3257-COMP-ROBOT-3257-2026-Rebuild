@@ -229,25 +229,29 @@ public final class Constants {
     }
 
     public static final Pose2d GET_PASSING_GOAL(int index) {
+      Pose2d returnPose;
 
       if (PASSING_GOALS_STORAGE == null) {
         PASSING_GOALS_STORAGE = new ArrayList<>();
-        PASSING_GOALS_STORAGE.add(new Pose2d(0.5, 6.8, new Rotation2d()));
-        PASSING_GOALS_STORAGE.add(new Pose2d(0.5, 1.2, new Rotation2d()));
+        PASSING_GOALS_STORAGE.add(new Pose2d(3.6, 6.0, new Rotation2d()));
+        PASSING_GOALS_STORAGE.add(new Pose2d(3.6, 2.0, new Rotation2d()));
       }
 
-      Pose2d returnPose = PASSING_GOALS_STORAGE.get(index);
-
-      // add flip logic here
-      // double xToFlip = 5;
-      // double yToFlip = 5;
-      // double x;
-      // double y;
+      // if the alliance is verifiably red,
       if (DriverStation.getAlliance() != null
           && DriverStation.getAlliance().isPresent()
           && DriverStation.getAlliance().get() == Alliance.Red) {
 
-        returnPose = returnPose.rotateAround(CENTER_POINT, Rotation2d.fromDegrees(180));
+        // get the opposite passing pose, then rotate the whole thing around 180 degrees
+        // this should mimic flipping it over an axis
+        returnPose =
+            PASSING_GOALS_STORAGE
+                // next index mod 2
+                // this wraps index = 1 + 1 back to index = 0
+                .get((index + 1) % 2)
+                .rotateAround(CENTER_POINT, Rotation2d.fromDegrees(180));
+      } else {
+        returnPose = PASSING_GOALS_STORAGE.get(index);
       }
 
       return returnPose;
@@ -508,6 +512,7 @@ public final class Constants {
     // dummy values for now
     public static final double MAX_TARGET_SPEED = 100;
     public static final double MAX_MANUAL_SPEED = 100;
+    public static final double MAX_MANUAL_VOLTS = 2;
     // public static final double POSx_TOLERANCE = 0.2;
 
     public static final double POSITION_TOLERANCE = 0.02;
@@ -546,6 +551,9 @@ public final class Constants {
     // for slowing down the intake when attempting to close while firing
     public static final Time WAIT_TIME_TO_PULL_INTAKE = Seconds.of(2);
     public static final double MOTION_MAGIC_SLOWED_VELOCITY = 1.5;
+    // constants for the oscillateIntake command
+    public static final Time WAIT_TIME_BETWEEN_INTAKE_OSCILLATION = Seconds.of(0.5);
+    public static final double OSCILLATION_VELOCITY = 1;
 
     public static final double RAMP_RATE_VOLTS_ROLLER_SYSID = 0.25;
     public static final double DYNAMIC_STEP_VOLTS_ROLLER_SYSID = 1;
