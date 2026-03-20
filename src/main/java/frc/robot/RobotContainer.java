@@ -40,6 +40,7 @@ import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.belt.Belt;
 import frc.robot.subsystems.belt.BeltIO;
 import frc.robot.subsystems.belt.BeltSimulationIO;
+import frc.robot.subsystems.belt.BeltTalonFXIO;
 import frc.robot.subsystems.climb.Climb;
 import frc.robot.subsystems.climb.ClimbIO;
 import frc.robot.subsystems.climb.ClimbSimulationIO;
@@ -56,6 +57,7 @@ import frc.robot.subsystems.feeder.FeederTalonFXIO;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeIO;
 import frc.robot.subsystems.intake.IntakeSimulationIO;
+import frc.robot.subsystems.intake.IntakeTalonFXCANCoderIO;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterIO;
 import frc.robot.subsystems.shooter.ShooterSimulationIO;
@@ -168,8 +170,8 @@ public class RobotContainer {
         //         () -> shooter.isOnTarget(),
         //         () -> true);
 
-        // belt = new Belt(new BeltTalonFXIO(BeltConstants.ID));
-        belt = new Belt(new BeltIO() {});
+        belt = new Belt(new BeltTalonFXIO(BeltConstants.ID));
+        // belt = new Belt(new BeltIO() {});
 
         climb = new Climb(new ClimbIO() {});
 
@@ -392,7 +394,7 @@ public class RobotContainer {
                     .setRollerVoltageAndPositionCommand(
                         IntakeConstants.INTAKE_DOWN_POSITION, IntakeConstants.EJECT_VOLTS)
                     .alongWith(belt.setPercentMotorOutputCommand(BeltConstants.EJECT_POWER))));
-    // intake comman''''''''''''''''''''''''''''''''''''''d''''''''''''''''''''''''''''''''''''''
+    // intake command
     controller
         .leftTrigger()
         .whileTrue(
