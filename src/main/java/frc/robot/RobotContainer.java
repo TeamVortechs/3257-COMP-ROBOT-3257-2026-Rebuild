@@ -433,7 +433,7 @@ public class RobotContainer {
                         // square the up/down input for finer control
                         // after squaring, keep same sign as the input so up/down works
                         () -> // use the negative so forward = down and back = up
-                            Math.signum(operatorController.getLeftY())
+                        Math.signum(operatorController.getLeftY())
                                 * Math.pow(operatorController.getLeftY(), 2)
                                 *
                                 // i would REALLY not want the intake to run at more than 2V but
@@ -490,24 +490,26 @@ public class RobotContainer {
     // TODO: see if this will require adding InterruptBehavior of canceling any other intake
     // commands while the intake is running so that it doesn't scrindongulode our intake mid-way
     // through its travel
-    Command oscillateIntake =
-        new SequentialCommandGroup(
-                intake.setPositionWithVelocityAndRollersCommandConsistentEnd(
-                    IntakeConstants.INTAKE_HALFWAY_UP_POSITION,
-                    IntakeConstants.OSCILLATION_VELOCITY,
-                    IntakeConstants.ROLLER_GOING_UP_VOLTS),
-                new WaitCommand(IntakeConstants.WAIT_TIME_BETWEEN_INTAKE_OSCILLATION),
-                intake.setPositionWithVelocityAndRollersCommandConsistentEnd(
-                    IntakeConstants.INTAKE_DOWN_POSITION,
-                    IntakeConstants.OSCILLATION_VELOCITY,
-                    IntakeConstants.ROLLER_GOING_DOWN_VOLTS),
-                new WaitCommand(IntakeConstants.WAIT_TIME_BETWEEN_INTAKE_OSCILLATION))
-            .repeatedly();
-    testController
-        .rightBumper()
-        .whileTrue(
-            oscillateIntake.alongWith( // not sure if running belt is desired
-                belt.setPercentMotorOutputRunCommand(BeltConstants.FEED_POWER)));
+    // 3-19-26: mechanical said no. i'm keeping the command and its test here
+    // in the case mechanical says yes in the future.
+    // Command oscillateIntake =
+    //     new SequentialCommandGroup(
+    //             intake.setPositionWithVelocityAndRollersCommandConsistentEnd(
+    //                 IntakeConstants.INTAKE_HALFWAY_UP_POSITION,
+    //                 IntakeConstants.OSCILLATION_VELOCITY,
+    //                 IntakeConstants.ROLLER_GOING_UP_VOLTS),
+    //             new WaitCommand(IntakeConstants.WAIT_TIME_BETWEEN_INTAKE_OSCILLATION),
+    //             intake.setPositionWithVelocityAndRollersCommandConsistentEnd(
+    //                 IntakeConstants.INTAKE_DOWN_POSITION,
+    //                 IntakeConstants.OSCILLATION_VELOCITY,
+    //                 IntakeConstants.ROLLER_GOING_DOWN_VOLTS),
+    //             new WaitCommand(IntakeConstants.WAIT_TIME_BETWEEN_INTAKE_OSCILLATION))
+    //         .repeatedly();
+    // testController
+    //     .rightBumper()
+    //     .whileTrue(
+    //         oscillateIntake.alongWith( // not sure if running belt is desired
+    //             belt.setPercentMotorOutputRunCommand(BeltConstants.FEED_POWER)));
   }
 
   /**
