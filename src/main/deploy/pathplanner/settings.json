@@ -6,11 +6,12 @@
     "Back Bottom",
     "Front Bottom",
     "Front Bottom Mid",
+    "Front Top",
     "Mid",
-    "Front Top"
+    "Under trench autos"
   ],
   "autoFolders": [],
-  "defaultMaxVel": 2.0,
+  "defaultMaxVel": 3.5,
   "defaultMaxAccel": 3.0,
   "defaultMaxAngVel": 540.0,
   "defaultMaxAngAccel": 720.0,

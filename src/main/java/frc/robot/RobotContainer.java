@@ -538,7 +538,8 @@ public class RobotContainer {
                     BeltConstants.FEED_POWER, () -> feeder.getTargetSpeed() > 0),
 
                 // fourth, start shooter
-                shooter.setAutomaticCommandRun())
+                shooter.setAutomaticCommandRun(),
+                intake.intakeRetractWhileShooting())
 
             // at the very end stop the shooter, rollers, and belt
             .andThen(shooter.setManualSpeedCommand(0))
@@ -605,12 +606,13 @@ public class RobotContainer {
                 () -> intake.setRollersVoltage(Constants.IntakeConstants.INTAKE_VOLTS)));
     new EventTrigger("intakeStopEvent")
         .onTrue(new InstantCommand(() -> intake.setRollersVoltage(0)));
+
     new EventTrigger("intakeDownEvent")
+        .onTrue(new InstantCommand(() -> intake.setPosition(IntakeConstants.INTAKE_DOWN_POSITION)));
+
+    new EventTrigger("intakeClearEvent")
         .onTrue(
-            new InstantCommand(() -> intake.setPosition(IntakeConstants.INTAKE_DOWN_POSITION))
-                .alongWith(
-                    new InstantCommand(
-                        () -> intake.setRollersVoltage(IntakeConstants.ROLLER_GOING_DOWN_VOLTS))));
+            new InstantCommand(() -> intake.setPosition(IntakeConstants.INTAKE_CLEAR_POSITION)));
 
     new EventTrigger("shootOnMove")
         // makes the drive rotate correctly
