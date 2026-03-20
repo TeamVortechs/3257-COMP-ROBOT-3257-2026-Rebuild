@@ -186,33 +186,33 @@ public class MatchTimeline {
     return 0;
   }
 
-double matchTimes[] = {20, 33, 58, 83, 108, 133, 163};
+  double matchTimes[] = {20, 33, 58, 83, 108, 133, 163};
 
-public double timeUntilNextPhaseUPDATED() {
-  double matchTime = DriverStation.getMatchTime();
-  double timeSinceStart = 0;
+  public double timeUntilNextPhaseUPDATED() {
+    double matchTime = DriverStation.getMatchTime();
+    double timeSinceStart = 0;
 
-  if (DriverStation.isAutonomous()) {
-    timeSinceStart = 20 - matchTime;
-  } else if (DriverStation.isTeleop()) {
-    timeSinceStart = 203 - matchTime;
-  } else {
+    if (DriverStation.isAutonomous()) {
+      timeSinceStart = 20 - matchTime;
+    } else if (DriverStation.isTeleop()) {
+      timeSinceStart = 203 - matchTime;
+    } else {
+      return 0;
+    }
+
+    if (timeSinceStart < 0) {
+      timeSinceStart = 0;
+    }
+
+    for (double i : matchTimes) {
+      if (timeSinceStart > i) {
+        continue;
+      } else {
+        return Math.round(Math.abs(i - timeSinceStart));
+      }
+    }
     return 0;
   }
-
-  if (timeSinceStart < 0) {
-    timeSinceStart = 0;
-  }
-
-  for (double i : matchTimes) {
-    if (timeSinceStart > i) {
-      continue;
-    } else {
-      return Math.round(Math.abs(i - timeSinceStart));
-    }
-  }
-  return 0;
-}
 
   interface MatchChangeCallback {
     void run();
