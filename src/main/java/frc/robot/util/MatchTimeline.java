@@ -60,6 +60,8 @@ public class MatchTimeline {
     Logger.recordOutput("MatchTimeline/timeUntilNextPhase", timeUntilNextPhase());
     Logger.recordOutput("MatchTimeline/isWinningAuto", hasWonAuto());
     Logger.recordOutput("MatchTimeline/canScore", canScore());
+    Logger.recordOutput("MatchTimeline/NEWTIMER", timeUntilNextPhaseUPDATED());
+    Logger.recordOutput("MatchTimeline/driverstationtimer", DriverStation.getMatchTime());
   }
 
   public void start() {
@@ -169,20 +171,48 @@ public class MatchTimeline {
     return false;
   }
 
-  double timeSinceStart;
-  double matchTimes[] = {20, 33, 58, 83, 108, 133, 163};
+  double timeSinceStart2;
+  double matchTimes2[] = {20, 33, 58, 83, 108, 133, 163};
 
   public double timeUntilNextPhase() {
-    timeSinceStart = getTimeSinceStart();
-    for (double i : matchTimes) {
-      if (timeSinceStart > i) {
+    timeSinceStart2 = getTimeSinceStart();
+    for (double i : matchTimes2) {
+      if (timeSinceStart2 > i) {
         continue;
       } else {
-        return Math.round(Math.abs(timeSinceStart - i));
+        return Math.round(Math.abs(timeSinceStart2 - i));
       }
     }
     return 0;
   }
+
+double matchTimes[] = {20, 33, 58, 83, 108, 133, 163};
+
+public double timeUntilNextPhaseUPDATED() {
+  double matchTime = DriverStation.getMatchTime();
+  double timeSinceStart = 0;
+
+  if (DriverStation.isAutonomous()) {
+    timeSinceStart = 20 - matchTime;
+  } else if (DriverStation.isTeleop()) {
+    timeSinceStart = 203 - matchTime;
+  } else {
+    return 0;
+  }
+
+  if (timeSinceStart < 0) {
+    timeSinceStart = 0;
+  }
+
+  for (double i : matchTimes) {
+    if (timeSinceStart > i) {
+      continue;
+    } else {
+      return Math.round(Math.abs(i - timeSinceStart));
+    }
+  }
+  return 0;
+}
 
   interface MatchChangeCallback {
     void run();
