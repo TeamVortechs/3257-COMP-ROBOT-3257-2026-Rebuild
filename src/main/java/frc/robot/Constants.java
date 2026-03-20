@@ -508,6 +508,7 @@ public final class Constants {
     // dummy values for now
     public static final double MAX_TARGET_SPEED = 100;
     public static final double MAX_MANUAL_SPEED = 100;
+    public static final double MAX_MANUAL_VOLTS = 2;
     // public static final double POSx_TOLERANCE = 0.2;
 
     public static final double POSITION_TOLERANCE = 0.02;

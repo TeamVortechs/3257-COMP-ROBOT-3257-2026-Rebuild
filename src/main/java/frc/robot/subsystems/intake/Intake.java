@@ -124,6 +124,10 @@ public class Intake extends SubsystemBase {
     intakeIO.setPositionVoltage(volt);
   }
 
+  public void setPositionVoltage(DoubleSupplier volt) {
+    intakeIO.setPositionVoltage(volt.getAsDouble());
+  }
+
   // gets the roller speed
   public double getRollerSpeed() {
     return intakeIO.getSpeed();

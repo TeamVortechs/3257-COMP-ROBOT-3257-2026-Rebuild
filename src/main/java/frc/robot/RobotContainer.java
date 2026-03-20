@@ -411,14 +411,35 @@ public class RobotContainer {
 
     // operator controller
     // climb
+    // operatorController
+    //     .leftStick()
+    //     .whileTrue(
+    //         climb.setVoltageRun(
+    //             () -> operatorController.getLeftY() * ClimbConstants.CLIMB_UP_VOLTS));
+
+    // operatorController.leftBumper().onTrue(climb.setLockedInstant(true));
+    // operatorController.leftTrigger().onTrue(climb.setLockedInstant(false));
+
+    // these climb commands are going unused. i'll repurpose them for unsticking the intake
+    // while holding down left stick,
+    // left stick forward --> intake down
+    // left stick back --> intake up
     operatorController
         .leftStick()
         .whileTrue(
-            climb.setVoltageRun(
-                () -> operatorController.getLeftY() * ClimbConstants.CLIMB_UP_VOLTS));
-
-    operatorController.leftBumper().onTrue(climb.setLockedInstant(true));
-    operatorController.leftTrigger().onTrue(climb.setLockedInstant(false));
+            new RunCommand(
+                () ->
+                    intake.setPositionVoltage(
+                        // square the up/down input for finer control
+                        // after squaring, keep same sign as the input so up/down works
+                        () -> // use the negative so forward = down and back = up
+                            Math.signum(operatorController.getLeftY())
+                                * Math.pow(operatorController.getLeftY(), 2)
+                                *
+                                // i would REALLY not want the intake to run at more than 2V but
+                                // ngl if we're using this we might have to
+                                IntakeConstants.MAX_MANUAL_VOLTS),
+                intake));
 
     operatorController.rightStick().whileTrue(drive.iteratePassingCommand(true));
 
