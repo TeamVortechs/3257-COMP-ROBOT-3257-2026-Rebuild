@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -458,27 +459,34 @@ public class RobotContainer {
     operatorController.povRight().onTrue(drive.setPassingIndexCommmand(1));
     operatorController.povLeft().onTrue(drive.setPassingIndexCommmand(0));
 
-    // testController.a().whileTrue(feeder.setPercentMotorRunCommand(FeederConstants.FEED_POWER));
-    // testController.b().whileTrue(belt.setPercentMotorOutputRunCommand(BeltConstants.FEED_POWER));
-
-    // testController
-    //     .x()
-    //     .whileTrue(
-    //         shooter
-    //             .setManualSpeedRunCommand(() -> ShooterConstants.SHOOTER_TEST_SPEED.get())
-    //             .alongWith(feeder.feedWhenValidRunCommand(1))
-    //             .alongWith(
-    //                 belt.setPercentMotorOutputRunCommand(
-    //                     BeltConstants.FEED_POWER, () -> feeder.getTargetSpeed() > 0)));
-
-    // testController.y().whileTrue(intake.resetEncoderRoutineCommand(2));
-    // testController.a().onTrue(DriveConstants.remakeAnglePIDController());
-    // testController.rightTrigger().onTrue(drive.reconfigureAutobuilder());
-    // testController.b().whileTrue(intake.setPositionCommand(IntakeConstants.INTAKE_UP_POSITION));
-
     // sysid bindings:
+    configureSysIdBindings(sysID_controller, shooter.BuildSysIdRoutine());
 
-    // configureSysIdBindings(sysID_controller, shooter.BuildSysIdRoutine());
+    // additional testing bindings
+    testController.a().whileTrue(feeder.setPercentMotorRunCommand(FeederConstants.FEED_POWER));
+    testController.b().whileTrue(belt.setPercentMotorOutputRunCommand(BeltConstants.FEED_POWER));
+
+    // TODO: see if this will require adding InterruptBehavior of canceling any other intake
+    // commands while the intake is running so that it doesn't scrindongulode our intake mid-way
+    // through its travel
+    Command oscillateIntake =
+        new SequentialCommandGroup(
+                intake.setPositionWithVelocityAndRollersCommandConsistentEnd(
+                    IntakeConstants.INTAKE_HALFWAY_UP_POSITION,
+                    IntakeConstants.OSCILLATION_VELOCITY,
+                    IntakeConstants.ROLLER_GOING_UP_VOLTS),
+                new WaitCommand(IntakeConstants.WAIT_TIME_BETWEEN_INTAKE_OSCILLATION),
+                intake.setPositionWithVelocityAndRollersCommandConsistentEnd(
+                    IntakeConstants.INTAKE_DOWN_POSITION,
+                    IntakeConstants.OSCILLATION_VELOCITY,
+                    IntakeConstants.ROLLER_GOING_DOWN_VOLTS),
+                new WaitCommand(IntakeConstants.WAIT_TIME_BETWEEN_INTAKE_OSCILLATION))
+            .repeatedly();
+    testController
+        .rightBumper()
+        .whileTrue(
+            oscillateIntake.alongWith( // not sure if running belt is desired
+                belt.setPercentMotorOutputRunCommand(BeltConstants.FEED_POWER)));
   }
 
   /**
