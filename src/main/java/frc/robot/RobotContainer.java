@@ -455,8 +455,6 @@ public class RobotContainer {
                 intake))
         .onFalse(new InstantCommand(() -> intake.setPositionVoltage(0)));
 
-
-
     operatorController.rightTrigger().whileTrue(shooter.setManualSpeedRunCommand(78));
 
     // operatorController
@@ -476,7 +474,6 @@ public class RobotContainer {
             feeder
                 .setPercentMotorRunCommand(-0.3)
                 .alongWith(shooter.setManualSpeedRunCommand(-10)));
-    
 
     operatorController
         .y()
@@ -485,8 +482,12 @@ public class RobotContainer {
 
     operatorController.a().whileTrue(intake.setRollerVoltageCommand(12));
 
-    operatorController.povUp().whileTrue(intake.setPositionCommand(IntakeConstants.DEEP_INTAKE_UP_POSITION));
-    operatorController.povDown().whileTrue(intake.setPositionCommand(IntakeConstants.INTAKE_HALFWAY_LOWER_POSITION));
+    operatorController
+        .povUp()
+        .whileTrue(intake.setPositionCommand(IntakeConstants.DEEP_INTAKE_UP_POSITION));
+    operatorController
+        .povDown()
+        .whileTrue(intake.setPositionCommand(IntakeConstants.INTAKE_HALFWAY_LOWER_POSITION));
 
     // sysid bindings:
     configureSysIdBindings(sysID_controller, shooter.BuildSysIdRoutine());
