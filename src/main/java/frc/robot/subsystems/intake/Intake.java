@@ -235,7 +235,7 @@ public class Intake extends SubsystemBase {
             setPositionWithVelocityCommand(
                     IntakeConstants.INTAKE_HALFWAY_UP_POSITION,
                     IntakeConstants.MOTION_MAGIC_SLOWED_VELOCITY)
-                .alongWith(Commands.startRun(() -> setRollersVoltage(-1), () -> {})))
+                .alongWith(Commands.startRun(() -> setRollersVoltage(1), () -> {})))
         .finallyDo(() -> setPosition(getPosition())); // I don't like this magic number. I am
     // displeased.
   }

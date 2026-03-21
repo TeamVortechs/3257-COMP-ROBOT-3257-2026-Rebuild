@@ -524,6 +524,8 @@ public final class Constants {
 
     public static final double INTAKE_DOWN_POSITION = 0.846;
     public static final double INTAKE_HALFWAY_UP_POSITION = 0.380; // 0.6
+    public static final double DEEP_INTAKE_UP_POSITION = 0.2;
+    public static final double INTAKE_HALFWAY_LOWER_POSITION = 0.5;
     public static final double INTAKE_CLEAR_POSITION = 0.75;
     public static final double INTAKE_UP_POSITION = 0.156; // 0.156
     // .-0.062
@@ -545,9 +547,9 @@ public final class Constants {
     public static final double INTAKE_VOLTS = 12;
     public static final double EJECT_VOLTS = -8;
 
-    public static final double MOTION_MAGIC_CRUISE_VELOCITY = 3;
-    public static final double MOTION_MAGIC_ACCELERATION = 2.5;
-    public static final double MOTION_MAGIC_JERK = 10;
+    public static final double MOTION_MAGIC_CRUISE_VELOCITY = 10;
+    public static final double MOTION_MAGIC_ACCELERATION = 5;
+    public static final double MOTION_MAGIC_JERK = 100000000.0;
     // for slowing down the intake when attempting to close while firing
     public static final Time WAIT_TIME_TO_PULL_INTAKE = Seconds.of(2);
     public static final double MOTION_MAGIC_SLOWED_VELOCITY = 0.25; // originally 1.5
