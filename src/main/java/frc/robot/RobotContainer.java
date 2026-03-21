@@ -399,8 +399,9 @@ public class RobotContainer {
     controller
         .leftTrigger()
         .whileTrue(
-            intake.setRollerVoltageAndPositionCommand(
-                IntakeConstants.INTAKE_DOWN_POSITION, IntakeConstants.INTAKE_VOLTS));
+            intake
+                .setPositionCommandConsistentEnd(IntakeConstants.INTAKE_DOWN_POSITION)
+                .andThen(intake.setRollerVoltageCommand(IntakeConstants.INTAKE_VOLTS)));
 
     // intake up position
     controller
@@ -412,6 +413,19 @@ public class RobotContainer {
     controller.x().whileTrue(drive.stayAtPoseCommand());
 
     // operator controller
+
+    // TEMP BIND: make the intake go up real slow
+    operatorController
+        .start()
+        .whileTrue(
+            new RunCommand(
+                () ->
+                    intake.setPositionWithVelocity(
+                        IntakeConstants.INTAKE_HALFWAY_UP_POSITION,
+                        IntakeConstants.MOTION_MAGIC_SLOWED_VELOCITY),
+                intake))
+        .onFalse(new InstantCommand(() -> intake.setPositionVoltage(0), intake));
+
     // climb
     // operatorController
     //     .leftStick()
