@@ -522,7 +522,7 @@ public final class Constants {
     public static final double MIN_POSITION = -10000; // o.373535
     public static final double MAX_POSITION = 1000; // can also do 0.36
 
-    public static final double INTAKE_DOWN_POSITION = 0.841;
+    public static final double INTAKE_DOWN_POSITION = 0.846;
     public static final double INTAKE_HALFWAY_UP_POSITION = 0.6; // 0.6
     public static final double INTAKE_CLEAR_POSITION = 0.75;
     public static final double INTAKE_UP_POSITION = 0.156; // 0.156
