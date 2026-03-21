@@ -370,7 +370,7 @@ public class RobotContainer {
                     belt.setPercentMotorOutputRunCommand(
                         BeltConstants.FEED_POWER, () -> feeder.getTargetSpeed() > 0),
                     feeder.feedWhenValidRunCommand(FeederConstants.FEED_POWER),
-                    intake.intakeRetractWhileShooting())
+                    intake.intakeRetractWhileShooting(() -> feeder.getTargetSpeed() > 0))
                 .withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
 
     controller
@@ -584,7 +584,7 @@ public class RobotContainer {
 
                 // fourth, start shooter
                 shooter.setAutomaticCommandRun(),
-                intake.intakeRetractWhileShooting())
+                intake.intakeRetractWhileShooting(() -> feeder.getTargetSpeed() > 0))
 
             // at the very end stop the shooter, rollers, and belt
             .andThen(shooter.setManualSpeedCommand(0))

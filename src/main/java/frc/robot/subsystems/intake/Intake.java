@@ -10,11 +10,11 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
@@ -228,13 +228,15 @@ public class Intake extends SubsystemBase {
     return Commands.startRun(() -> this.setPositionVoltage(volt), () -> {});
   }
 
-  public Command intakeRetractWhileShooting() {
+  public Command intakeRetractWhileShooting(BooleanSupplier canStart) {
 
-    return new WaitCommand(IntakeConstants.TIME_TO_WAIT_BEFORE_RETRACT_ON_SHOOT)
+    return new WaitUntilCommand(() -> canStart.getAsBoolean())
         .andThen(
-            setPositionCommand(
-                IntakeConstants
-                    .INTAKE_HALFWAY_UP_POSITION)); // I don't like this magic number. I am
+            setPositionWithVelocityCommand(
+                    IntakeConstants.INTAKE_HALFWAY_UP_POSITION,
+                    IntakeConstants.MOTION_MAGIC_SLOWED_VELOCITY)
+                .alongWith(Commands.startRun(() -> setRollersVoltage(-1), () -> {})))
+        .finallyDo(() -> setPosition(getPosition())); // I don't like this magic number. I am
     // displeased.
   }
 

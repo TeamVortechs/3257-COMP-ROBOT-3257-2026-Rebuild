@@ -515,7 +515,7 @@ public final class Constants {
     public static final double MAX_MANUAL_VOLTS = 2;
     // public static final double POSx_TOLERANCE = 0.2;
 
-    public static final double POSITION_TOLERANCE = 0.02;
+    public static final double POSITION_TOLERANCE = 0.1;
 
     // 2
     // 1.29
