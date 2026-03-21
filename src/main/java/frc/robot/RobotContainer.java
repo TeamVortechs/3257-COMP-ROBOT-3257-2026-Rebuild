@@ -18,9 +18,9 @@ import com.pathplanner.lib.events.EventTrigger;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -382,7 +382,10 @@ public class RobotContainer {
                     drive,
                     () -> -controller.getLeftY() * DriveConstants.K_JOYSTICK_WHEN_SHOOTING,
                     () -> -controller.getLeftX() * DriveConstants.K_JOYSTICK_WHEN_SHOOTING,
-                    () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue ? Rotation2d.k180deg : Rotation2d.kZero)
+                    () ->
+                        DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue
+                            ? Rotation2d.k180deg
+                            : Rotation2d.kZero)
                 .alongWith(
                     shooter
                         .setManualSpeedCommand(83)
@@ -520,6 +523,22 @@ public class RobotContainer {
     // additional testing bindings
     testController.a().whileTrue(feeder.setPercentMotorRunCommand(FeederConstants.FEED_POWER));
     testController.b().whileTrue(belt.setPercentMotorOutputRunCommand(BeltConstants.FEED_POWER));
+
+    testController
+        .y()
+        .whileTrue(
+            shooter
+                .setManualSpeedRunCommand(() -> ShooterConstants.SHOOTER_TEST_SPEED.get())
+                .alongWith(
+                    new WaitUntilCommand(() -> shooter.isOnTarget())
+                        .andThen(
+                            feeder
+                                .setPercentMotorRunCommand(FeederConstants.FEED_POWER)
+                                .alongWith(
+                                    intake.intakeRetractWhileShooting(
+                                        () -> feeder.getTargetSpeed() > 0)))));
+
+    // 2.645
 
     // TODO: see if this will require adding InterruptBehavior of canceling any other intake
     // commands while the intake is running so that it doesn't scrindongulode our intake mid-way
