@@ -550,7 +550,7 @@ public final class Constants {
     public static final double MOTION_MAGIC_JERK = 10;
     // for slowing down the intake when attempting to close while firing
     public static final Time WAIT_TIME_TO_PULL_INTAKE = Seconds.of(2);
-    public static final double MOTION_MAGIC_SLOWED_VELOCITY = 0.0001;
+    public static final double MOTION_MAGIC_SLOWED_VELOCITY = 0.5; // originally 1.5
     // constants for the oscillateIntake command
     public static final Time WAIT_TIME_BETWEEN_INTAKE_OSCILLATION = Seconds.of(0.5);
     public static final double OSCILLATION_VELOCITY = 1;
@@ -573,6 +573,7 @@ public final class Constants {
     public static final double CANCODER_ROTOR_TO_SENSOR_RATIO = 1; // used to be 30
 
     static {
+      // PID constants, gravity type, static feedforward sign
       SLOT0CONFIGS = new Slot0Configs();
       SLOT0CONFIGS.kS = Constants.IntakeConstants.KS;
       SLOT0CONFIGS.kV = Constants.IntakeConstants.KV;
@@ -584,6 +585,7 @@ public final class Constants {
       SLOT0CONFIGS.GravityType = GravityTypeValue.Arm_Cosine;
       SLOT0CONFIGS.withStaticFeedforwardSign(StaticFeedforwardSignValue.UseVelocitySign);
 
+      // CTRE constants: brake, invert, current limits
       POSITION_CONFIG = new TalonFXConfiguration();
       POSITION_CONFIG.MotorOutput.NeutralMode = NeutralModeValue.Brake;
       POSITION_CONFIG.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
@@ -594,6 +596,12 @@ public final class Constants {
           Constants.CurrentLimitConstants.STATOR_CURRENT_LIMIT_INTAKE_POSITION;
       POSITION_CONFIG.CurrentLimits.StatorCurrentLimitEnable = true;
 
+      // motion magic constants
+      POSITION_CONFIG.MotionMagic.MotionMagicCruiseVelocity = MOTION_MAGIC_CRUISE_VELOCITY;
+      POSITION_CONFIG.MotionMagic.MotionMagicAcceleration = MOTION_MAGIC_ACCELERATION;
+      POSITION_CONFIG.MotionMagic.MotionMagicJerk = MOTION_MAGIC_JERK;
+
+      // CTRE constants for the rollers
       ROLLER_CONFIG = new TalonFXConfiguration();
       ROLLER_CONFIG.MotorOutput.NeutralMode = NeutralModeValue.Coast;
       ROLLER_CONFIG.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;

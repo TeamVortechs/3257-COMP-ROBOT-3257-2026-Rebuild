@@ -5,7 +5,7 @@ import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.DynamicMotionMagicVoltage;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -37,7 +37,7 @@ public class IntakeTalonFXCANCoderIO implements IntakeIO {
   private final StatusSignal<Temperature> positionTemperatureCelsius;
   private final StatusSignal<Temperature> rollerTemperatureCelsius;
 
-  private final DynamicMotionMagicVoltage mVoltageRequest;
+  private final MotionMagicVoltage mVoltageRequest;
 
   // private final PositionVoltage mPositionVoltage;
 
@@ -50,12 +50,7 @@ public class IntakeTalonFXCANCoderIO implements IntakeIO {
     position = new TalonFX(canIdPosition);
     caNcoder = new CANcoder(canIdCANCoder);
 
-    mVoltageRequest =
-        new DynamicMotionMagicVoltage(
-                0,
-                IntakeConstants.MOTION_MAGIC_CRUISE_VELOCITY,
-                IntakeConstants.MOTION_MAGIC_ACCELERATION)
-            .withJerk(IntakeConstants.MOTION_MAGIC_JERK);
+    mVoltageRequest = new MotionMagicVoltage(0);
     // mPositionVoltage = new PositionVoltage(0);
 
     // 1.29
@@ -185,6 +180,11 @@ public class IntakeTalonFXCANCoderIO implements IntakeIO {
   public void setPositionControl(double position1) { // IMPORTANT - POSITON1 NOT POSITION
     targetPosition = position1;
 
+    // dumb attempt at workaround due to no CANivore
+    var motionMagicConfigs = IntakeConstants.POSITION_CONFIG.MotionMagic;
+    motionMagicConfigs.MotionMagicCruiseVelocity = IntakeConstants.MOTION_MAGIC_CRUISE_VELOCITY;
+    position.getConfigurator().apply(motionMagicConfigs);
+
     // System.out.println("Input volt: "+inputVoltage+" Target Angle: "+targetAngle);
     position.setControl(mVoltageRequest.withPosition(position1));
     // System.out.println("Voltage being sent in PID Voltage");
@@ -194,9 +194,15 @@ public class IntakeTalonFXCANCoderIO implements IntakeIO {
       double position1, double velocity) { // IMPORTANT - POSITON1 NOT POSITION
     targetPosition = position1;
 
+    // dumb attempt at workaround due to no CANivore
+    var motionMagicConfigs = IntakeConstants.POSITION_CONFIG.MotionMagic.clone();
+    motionMagicConfigs.MotionMagicCruiseVelocity = velocity;
+    position.getConfigurator().apply(motionMagicConfigs);
+
+    // PLEASE I BEG OF YOU comment this out when we're done with it
     // System.out.println("VERY SLOWLY setting position in FXIO to " + position1);
     // System.out.println("Input volt: "+inputVoltage+" Target Angle: "+targetAngle);
-    position.setControl(mVoltageRequest.withPosition(position1).withVelocity(velocity));
+    position.setControl(mVoltageRequest.withPosition(position1));
     // System.out.println("Voltage being sent in PID Voltage");
   }
 

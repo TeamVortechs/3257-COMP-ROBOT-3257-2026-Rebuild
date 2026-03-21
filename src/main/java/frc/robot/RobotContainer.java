@@ -418,12 +418,9 @@ public class RobotContainer {
     operatorController
         .start()
         .whileTrue(
-            new RunCommand(
-                () ->
-                    intake.setPositionWithVelocity(
-                        IntakeConstants.INTAKE_HALFWAY_UP_POSITION,
-                        IntakeConstants.MOTION_MAGIC_SLOWED_VELOCITY),
-                intake))
+            intake.setPositionWithVelocityCommand(
+                IntakeConstants.INTAKE_HALFWAY_UP_POSITION,
+                IntakeConstants.MOTION_MAGIC_SLOWED_VELOCITY))
         .onFalse(new InstantCommand(() -> intake.setPositionVoltage(0), intake));
 
     // climb
