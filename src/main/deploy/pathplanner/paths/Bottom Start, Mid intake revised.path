@@ -157,7 +157,7 @@
     },
     {
       "name": "reverseFeederEvent",
-      "waypointRelativePos": 4.086322869955151,
+      "waypointRelativePos": 3.646993318485488,
       "endWaypointRelativePos": null,
       "command": null
     },
@@ -169,7 +169,7 @@
     },
     {
       "name": "stopFeederEvent",
-      "waypointRelativePos": 4.265695067264635,
+      "waypointRelativePos": 5.0,
       "endWaypointRelativePos": null,
       "command": null
     }

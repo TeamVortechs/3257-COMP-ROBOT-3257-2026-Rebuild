@@ -441,7 +441,8 @@ public class RobotContainer {
                                 // i would REALLY not want the intake to run at more than 2V but
                                 // ngl if we're using this we might have to
                                 IntakeConstants.MAX_MANUAL_VOLTS),
-                intake));
+                intake))
+        .onFalse(new InstantCommand(() -> intake.setPositionVoltage(0)));
 
     operatorController.rightStick().whileTrue(drive.iteratePassingCommand(true));
 
