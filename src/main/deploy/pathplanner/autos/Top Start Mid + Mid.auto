@@ -35,6 +35,12 @@
                       "data": {
                         "name": "feedWhenValidAndStop"
                       }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Top Shoot to ending position"
+                      }
                     }
                   ]
                 }

@@ -17,8 +17,10 @@ import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.events.EventTrigger;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -374,6 +376,29 @@ public class RobotContainer {
                 .withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
 
     controller
+        .y()
+        .whileTrue(
+            DriveCommands.joystickDriveAtAngle(
+                    drive,
+                    () -> -controller.getLeftY() * DriveConstants.K_JOYSTICK_WHEN_SHOOTING,
+                    () -> -controller.getLeftX() * DriveConstants.K_JOYSTICK_WHEN_SHOOTING,
+                    () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue ? Rotation2d.k180deg : Rotation2d.kZero)
+                .alongWith(
+                    shooter
+                        .setManualSpeedCommand(83)
+                        .alongWith(
+                            new WaitUntilCommand(() -> shooter.isOnTarget())
+                                .andThen(
+                                    feeder
+                                        .setPercentMotorRunCommand(FeederConstants.FEED_POWER)
+                                        .alongWith(
+                                            intake.intakeRetractWhileShooting(
+                                                () -> feeder.getTargetSpeed() > 0)))))
+                .alongWith(
+                    belt.setPercentMotorOutputRunCommand(
+                        BeltConstants.FEED_POWER, () -> feeder.getTargetSpeed() > 0)));
+
+    controller
         .b()
         .whileTrue(
             Commands.parallel(aimTowardsTargetCommand2, shooter.setAutomaticCommandRun())
@@ -554,6 +579,10 @@ public class RobotContainer {
 
     NamedCommands.registerCommand("shooterAutomatic", shooter.setAutomaticCommandRun());
     NamedCommands.registerCommand("shooterStop", shooter.setManualSpeedCommand(0));
+
+    // NamedCommands.registerCommand("intakeDownFirstTime",
+    // intake.setPositionVoltageRunCommand(6).withDeadline(new WaitUntilCommand(() ->
+    // intake.getPosition() > IntakeConstants.INTAKE_HALFWAY_UP_POSITION)));
 
     NamedCommands.registerCommand(
         "feedWhenValid", feeder.feedWhenValidRunCommand(FeederConstants.FEED_POWER));

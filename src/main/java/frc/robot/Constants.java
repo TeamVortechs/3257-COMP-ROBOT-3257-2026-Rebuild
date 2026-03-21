@@ -522,7 +522,7 @@ public final class Constants {
     public static final double MIN_POSITION = -10000; // o.373535
     public static final double MAX_POSITION = 1000; // can also do 0.36
 
-    public static final double INTAKE_DOWN_POSITION = 0.865;
+    public static final double INTAKE_DOWN_POSITION = 0.878;
     public static final double INTAKE_HALFWAY_UP_POSITION = 0.380; // 0.6
     public static final double DEEP_INTAKE_UP_POSITION = 0.2;
     public static final double INTAKE_HALFWAY_LOWER_POSITION = 0.5;
@@ -553,6 +553,7 @@ public final class Constants {
     // for slowing down the intake when attempting to close while firing
     public static final Time WAIT_TIME_TO_PULL_INTAKE = Seconds.of(2);
     public static final double MOTION_MAGIC_SLOWED_VELOCITY = 1.5; // originally 1.5
+    public static final double MOTION_MAGIC_SLOWED_VELOCITY_SECOND_TIME = 1.25;
     // constants for the oscillateIntake command
     public static final Time WAIT_TIME_BETWEEN_INTAKE_OSCILLATION = Seconds.of(0.5);
     public static final double OSCILLATION_VELOCITY = 1;

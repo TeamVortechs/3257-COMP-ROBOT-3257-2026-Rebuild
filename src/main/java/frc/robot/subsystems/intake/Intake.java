@@ -204,6 +204,12 @@ public class Intake extends SubsystemBase {
         .withDeadline(new WaitUntilCommand(() -> isOnTarget()));
   }
 
+  // good grief that's verbose
+  public Command setPositionWithVelocityCommandConsistentEnd(double position, double velocity) {
+    return Commands.startRun(() -> this.setPositionWithVelocity(position, velocity), () -> {}, this)
+        .withDeadline(new WaitUntilCommand(() -> isOnTarget()));
+  }
+
   public Command setPositionWithVelocityCommand(double position, double velocity) {
     return Commands.startRun(
         () -> this.setPositionWithVelocity(position, velocity), () -> {}, this);
@@ -232,9 +238,17 @@ public class Intake extends SubsystemBase {
 
     return new WaitUntilCommand(() -> canStart.getAsBoolean())
         .andThen(
-            setPositionWithVelocityCommand(
-                    IntakeConstants.INTAKE_HALFWAY_UP_POSITION,
+            setPositionWithVelocityCommandConsistentEnd(
+                    IntakeConstants.INTAKE_HALFWAY_LOWER_POSITION,
                     IntakeConstants.MOTION_MAGIC_SLOWED_VELOCITY)
+                .andThen(
+                    setPositionWithVelocityCommandConsistentEnd(
+                        IntakeConstants.INTAKE_DOWN_POSITION,
+                        IntakeConstants.MOTION_MAGIC_SLOWED_VELOCITY))
+                .andThen(
+                    setPositionWithVelocityCommandConsistentEnd(
+                        IntakeConstants.INTAKE_HALFWAY_UP_POSITION,
+                        IntakeConstants.MOTION_MAGIC_SLOWED_VELOCITY_SECOND_TIME))
                 .alongWith(Commands.startRun(() -> setRollersVoltage(3), () -> {})))
         .finallyDo(() -> setPosition(getPosition())); // I don't like this magic number. I am
     // displeased.
