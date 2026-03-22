@@ -304,7 +304,7 @@ public class RobotContainer {
             drive,
             () -> -controller.getLeftY(),
             () -> -controller.getLeftX(),
-            () -> -controller.getRightX() * 0.7));
+            () -> -controller.getRightX() * 0.8));
 
     // CONTROLLER:
 
