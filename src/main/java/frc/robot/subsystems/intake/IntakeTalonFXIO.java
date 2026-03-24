@@ -238,11 +238,6 @@ public class IntakeTalonFXIO implements IntakeIO {
     roller.setNeutralMode(neutralModeValue);
   }
 
-  // gets the highest possible height of the arm in radians
-  // public double getMaxPosition() {
-  //   return Constants.IntakeConstants.MAX_POSITION;
-  // }
-
   /**
    * @return gets the position of the arm in radians
    */
@@ -250,11 +245,9 @@ public class IntakeTalonFXIO implements IntakeIO {
     return position.getPosition().getValueAsDouble();
   }
 
-  // public boolean isMaxPosition() {
-  //   return Math.abs(getPosition() - getMaxPosition())
-  //       < Constants.IntakeConstants.POSITION_TOLERANCE;
-  // }
-
+  /**
+   * @return Gets the speed of the roller in rotations/sec
+   */
   public double getSpeed() {
     return roller.getVelocity().getValueAsDouble();
   }

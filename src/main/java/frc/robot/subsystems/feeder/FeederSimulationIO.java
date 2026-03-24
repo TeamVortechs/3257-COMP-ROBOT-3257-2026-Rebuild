@@ -5,13 +5,11 @@ import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 
 public class FeederSimulationIO implements FeederIO {
-  // the motor that spins the things to shoot balls?
   private final DCMotorSim rollerMotorsSim;
   private double targetSpeed = 0;
   private boolean isOnTarget = false;
 
   public FeederSimulationIO() {
-    // now this motor exists in advantage kit?
     this.rollerMotorsSim =
         new DCMotorSim(
             LinearSystemId.createDCMotorSystem(DCMotor.getKrakenX60(1), 0.001, 1),
@@ -35,9 +33,6 @@ public class FeederSimulationIO implements FeederIO {
 
   @Override
   public void setPercentMotorOutput(double speed) {
-    // no clue if this works... but it's in last years arm code, so i used the set voltage
-
-    // rollerMotorsSim.setInputVoltage(speed * 12); // lol i hope that works
     setVoltage(speed / 502.747);
     targetSpeed = speed;
   }
@@ -47,7 +42,6 @@ public class FeederSimulationIO implements FeederIO {
     rollerMotorsSim.setInputVoltage(voltage);
   }
 
-  // might as well include ts W tech
   public void stop() {
     targetSpeed = 0;
     setVoltage(0);
@@ -57,7 +51,6 @@ public class FeederSimulationIO implements FeederIO {
     return rollerMotorsSim.getAngularVelocityRPM();
   }
 
-  // possibly completely unnecessary for feeder?
   @Override
   public boolean isOnTargetSpeed() {
     return Math.abs(getSpeed() - targetSpeed) < .05;

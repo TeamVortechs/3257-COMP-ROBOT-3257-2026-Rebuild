@@ -29,14 +29,13 @@ public class Shooter extends SubsystemBase {
   private ShooterIO shooterIO;
   private ShooterIOInputsAutoLogged inputs;
 
-  // TO DO: add values to table
   private final InterpolatingDoubleTreeMap distToSpeedTable;
 
   private BooleanSupplier withinAutomaticChargingZone;
 
   private final Notifier logger;
 
-  // wether or not the shooter automatically charges to
+  // whether or not the shooter automatically charges to
   private boolean automaticallyChargeFully = false;
 
   /**
@@ -115,6 +114,10 @@ public class Shooter extends SubsystemBase {
     shooterIO.setSpeed(speed);
   }
 
+  /**
+   * Sets voltage of the shooter, units: Volts(NOT PERCENT OUTPUT)
+   * @param voltage
+   */
   public void setVoltage(double voltage) {
     shooterIO.setVoltage(voltage);
   }
