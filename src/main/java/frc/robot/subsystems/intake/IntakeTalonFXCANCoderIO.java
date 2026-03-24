@@ -5,7 +5,7 @@ import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.DynamicMotionMagicVoltage;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -17,7 +17,6 @@ import edu.wpi.first.units.measure.Temperature;
 import edu.wpi.first.units.measure.Voltage;
 import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;
-import frc.robot.util.VortechsUtil;
 
 public class IntakeTalonFXCANCoderIO implements IntakeIO {
   private final TalonFX roller;
@@ -38,7 +37,7 @@ public class IntakeTalonFXCANCoderIO implements IntakeIO {
   private final StatusSignal<Temperature> positionTemperatureCelsius;
   private final StatusSignal<Temperature> rollerTemperatureCelsius;
 
-  private final DynamicMotionMagicVoltage mVoltageRequest;
+  private final MotionMagicVoltage mVoltageRequest;
 
   // private final PositionVoltage mPositionVoltage;
 
@@ -51,12 +50,7 @@ public class IntakeTalonFXCANCoderIO implements IntakeIO {
     position = new TalonFX(canIdPosition);
     caNcoder = new CANcoder(canIdCANCoder);
 
-    mVoltageRequest =
-        new DynamicMotionMagicVoltage(
-                0,
-                IntakeConstants.MOTION_MAGIC_CRUISE_VELOCITY,
-                IntakeConstants.MOTION_MAGIC_ACCELERATION)
-            .withJerk(IntakeConstants.MOTION_MAGIC_JERK);
+    mVoltageRequest = new MotionMagicVoltage(0);
     // mPositionVoltage = new PositionVoltage(0);
 
     // 1.29
@@ -77,6 +71,18 @@ public class IntakeTalonFXCANCoderIO implements IntakeIO {
         new FeedbackConfigs()
             .withFeedbackRemoteSensorID(canIdCANCoder)
             .withFeedbackSensorSource(FeedbackSensorSourceValue.RemoteCANcoder);
+
+    positionConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
+    positionConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold =
+        IntakeConstants.MAX_POSITION - IntakeConstants.POSITION_THRESHOLD_STOP;
+
+    positionConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
+    positionConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold =
+        IntakeConstants.MIN_POSITION + IntakeConstants.POSITION_THRESHOLD_STOP;
+
+    // Replace VortechsUtil.clamp with Hardware Voltage Limits
+    positionConfig.Voltage.PeakForwardVoltage = IntakeConstants.CLAMP_MAX_VOLTS;
+    positionConfig.Voltage.PeakReverseVoltage = -IntakeConstants.CLAMP_MAX_VOLTS;
 
     roller.getConfigurator().apply(rollerConfig);
     position.getConfigurator().apply(positionConfig);
@@ -150,17 +156,22 @@ public class IntakeTalonFXCANCoderIO implements IntakeIO {
   }
 
   public void setPositionVoltage(double volts) {
-    VortechsUtil.clamp(volts, IntakeConstants.CLAMP_MAX_VOLTS);
 
-    if (volts > 0
-        && getPosition() > IntakeConstants.MAX_POSITION - IntakeConstants.POSITION_THRESHOLD_STOP) {
-      volts = 0;
-    }
+    // replaced all this with limit logic at initialization
 
-    if (volts < 0
-        && getPosition() < IntakeConstants.MIN_POSITION + IntakeConstants.POSITION_THRESHOLD_STOP) {
-      volts = 0;
-    }
+    // VortechsUtil.clamp(volts, IntakeConstants.CLAMP_MAX_VOLTS);
+
+    // if (volts > 0
+    //     && getPosition() > IntakeConstants.MAX_POSITION -
+    // IntakeConstants.POSITION_THRESHOLD_STOP) {
+    //   volts = 0;
+    // }
+
+    // if (volts < 0
+    //     && getPosition() < IntakeConstants.MIN_POSITION +
+    // IntakeConstants.POSITION_THRESHOLD_STOP) {
+    //   volts = 0;
+    // }
 
     position.setControl(new VoltageOut(volts));
   }
@@ -168,6 +179,11 @@ public class IntakeTalonFXCANCoderIO implements IntakeIO {
   // sets the position of the arm.
   public void setPositionControl(double position1) { // IMPORTANT - POSITON1 NOT POSITION
     targetPosition = position1;
+
+    // dumb attempt at workaround due to no CANivore
+    var motionMagicConfigs = IntakeConstants.POSITION_CONFIG.MotionMagic;
+    motionMagicConfigs.MotionMagicCruiseVelocity = IntakeConstants.MOTION_MAGIC_CRUISE_VELOCITY;
+    position.getConfigurator().apply(motionMagicConfigs);
 
     // System.out.println("Input volt: "+inputVoltage+" Target Angle: "+targetAngle);
     position.setControl(mVoltageRequest.withPosition(position1));
@@ -178,9 +194,15 @@ public class IntakeTalonFXCANCoderIO implements IntakeIO {
       double position1, double velocity) { // IMPORTANT - POSITON1 NOT POSITION
     targetPosition = position1;
 
-    System.out.println("VERY SLOWLY setting position in FXIO to " + position1);
+    // dumb attempt at workaround due to no CANivore
+    var motionMagicConfigs = IntakeConstants.POSITION_CONFIG.MotionMagic.clone();
+    motionMagicConfigs.MotionMagicCruiseVelocity = velocity;
+    position.getConfigurator().apply(motionMagicConfigs);
+
+    // PLEASE I BEG OF YOU comment this out when we're done with it
+    // System.out.println("VERY SLOWLY setting position in FXIO to " + position1);
     // System.out.println("Input volt: "+inputVoltage+" Target Angle: "+targetAngle);
-    position.setControl(mVoltageRequest.withPosition(position1).withVelocity(velocity));
+    position.setControl(mVoltageRequest.withPosition(position1));
     // System.out.println("Voltage being sent in PID Voltage");
   }
 
@@ -234,9 +256,9 @@ public class IntakeTalonFXCANCoderIO implements IntakeIO {
   }
 
   // gets the highest possible height of the arm in radians
-  public double getMaxPosition() {
-    return Constants.IntakeConstants.MAX_POSITION;
-  }
+  // public double getMaxPosition() {
+  //   return Constants.IntakeConstants.MAX_POSITION;
+  // }
 
   /**
    * @return gets the position of the arm in radians
@@ -245,10 +267,10 @@ public class IntakeTalonFXCANCoderIO implements IntakeIO {
     return position.getPosition().getValueAsDouble();
   }
 
-  public boolean isMaxPosition() {
-    return Math.abs(getPosition() - getMaxPosition())
-        < Constants.IntakeConstants.POSITION_TOLERANCE;
-  }
+  // public boolean isMaxPosition() {
+  //   return Math.abs(getPosition() - getMaxPosition())
+  //       < Constants.IntakeConstants.POSITION_TOLERANCE;
+  // }
 
   public double getSpeed() {
     return roller.getVelocity().getValueAsDouble();
@@ -257,5 +279,9 @@ public class IntakeTalonFXCANCoderIO implements IntakeIO {
   public boolean checkIfStalled() {
     return (roller.getMotorVoltage().getValueAsDouble()
         > Constants.IntakeConstants.ROLLER_STALLED_VOLTS);
+  }
+
+  public double getRollerMotorVoltage() {
+    return roller.getMotorVoltage().getValueAsDouble();
   }
 }

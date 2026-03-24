@@ -94,6 +94,18 @@ public class Belt extends SubsystemBase {
         this);
   }
 
+  public Command setPercentMotorOutputRunCommandAutoEvent(double speed, BooleanSupplier run) {
+    return Commands.run(
+        () -> {
+          if (run.getAsBoolean()) {
+            this.setPercentMotorOutput(speed);
+            return;
+          }
+
+          this.setPercentMotorOutput(0);
+        });
+  }
+
   // the constants here should probably be more and move but that's later when this is transferred
   // to the right project
   // add this to the robot class or this won't work: SignalLogger.setPath("/media/sda1/");

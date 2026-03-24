@@ -14,11 +14,8 @@ import edu.wpi.first.units.measure.Temperature;
 import edu.wpi.first.units.measure.Voltage;
 import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;
-// CHANGE PID VALUES !!!!
-import frc.robot.util.VortechsUtil;
 
 public class IntakeTalonFXIO implements IntakeIO {
-
   private final TalonFX roller;
   private final TalonFX position;
 
@@ -40,7 +37,7 @@ public class IntakeTalonFXIO implements IntakeIO {
 
   // private final PositionVoltage mPositionVoltage;
 
-  private boolean isBrakedRoller = true;
+  private boolean isBrakedRoller = false;
   private boolean isBrakedPosition = true;
   private double targetPosition = 0;
 
@@ -56,6 +53,8 @@ public class IntakeTalonFXIO implements IntakeIO {
             .withJerk(IntakeConstants.MOTION_MAGIC_JERK);
     // mPositionVoltage = new PositionVoltage(0);
 
+    // 1.29
+    // 2
     // Basic Configuration
     TalonFXConfiguration rollerConfig = Constants.IntakeConstants.ROLLER_CONFIG;
     TalonFXConfiguration positionConfig = Constants.IntakeConstants.POSITION_CONFIG;
@@ -68,11 +67,23 @@ public class IntakeTalonFXIO implements IntakeIO {
         Constants.IntakeConstants.MOTION_MAGIC_ACCELERATION;
     motionMagicConfigs.MotionMagicJerk = Constants.IntakeConstants.MOTION_MAGIC_JERK;
 
+    positionConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
+    positionConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold =
+        IntakeConstants.MAX_POSITION - IntakeConstants.POSITION_THRESHOLD_STOP;
+
+    positionConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
+    positionConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold =
+        IntakeConstants.MIN_POSITION + IntakeConstants.POSITION_THRESHOLD_STOP;
+
+    // Replace VortechsUtil.clamp with Hardware Voltage Limits
+    positionConfig.Voltage.PeakForwardVoltage = IntakeConstants.CLAMP_MAX_VOLTS;
+    positionConfig.Voltage.PeakReverseVoltage = -IntakeConstants.CLAMP_MAX_VOLTS;
+
     roller.getConfigurator().apply(rollerConfig);
     position.getConfigurator().apply(positionConfig);
+    position.getConfigurator().apply(motionMagicConfigs);
 
     position.getConfigurator().apply(slot0Configs);
-    position.getConfigurator().apply(motionMagicConfigs);
 
     // Initialize signals for AdvantageKit
     rollerVelocity = roller.getVelocity();
@@ -104,7 +115,6 @@ public class IntakeTalonFXIO implements IntakeIO {
         positionTemperatureCelsius);
   }
 
-  // updates the given inputs with new values(advantage kit stuff)
   public void updateInputs(IntakeIOInputsAutoLogged inputsAutoLogged) {
     inputsAutoLogged.rollerAmpsStator = rollerStatorCurrent.getValueAsDouble();
     inputsAutoLogged.rollerAmpsSupply = rollerSupplyCurrent.getValueAsDouble();
@@ -118,7 +128,7 @@ public class IntakeTalonFXIO implements IntakeIO {
     inputsAutoLogged.positionSpeed = positionVelocity.getValueAsDouble();
     inputsAutoLogged.positionTemperatureCelsius = positionTemperatureCelsius.getValueAsDouble();
 
-    inputsAutoLogged.position = position.getRotorPosition().getValueAsDouble();
+    inputsAutoLogged.position = position.getPosition().getValueAsDouble();
     inputsAutoLogged.targetPosition = targetPosition;
 
     inputsAutoLogged.isBrakedRoller = isBrakedRoller;
@@ -141,17 +151,22 @@ public class IntakeTalonFXIO implements IntakeIO {
   }
 
   public void setPositionVoltage(double volts) {
-    VortechsUtil.clamp(volts, IntakeConstants.CLAMP_MAX_VOLTS);
 
-    if (volts > 0
-        && getPosition() > IntakeConstants.MAX_POSITION - IntakeConstants.POSITION_THRESHOLD_STOP) {
-      volts = 0;
-    }
+    // replaced all this with limit logic at initialization
 
-    if (volts < 0
-        && getPosition() < IntakeConstants.MIN_POSITION + IntakeConstants.POSITION_THRESHOLD_STOP) {
-      volts = 0;
-    }
+    // VortechsUtil.clamp(volts, IntakeConstants.CLAMP_MAX_VOLTS);
+
+    // if (volts > 0
+    //     && getPosition() > IntakeConstants.MAX_POSITION -
+    // IntakeConstants.POSITION_THRESHOLD_STOP) {
+    //   volts = 0;
+    // }
+
+    // if (volts < 0
+    //     && getPosition() < IntakeConstants.MIN_POSITION +
+    // IntakeConstants.POSITION_THRESHOLD_STOP) {
+    //   volts = 0;
+    // }
 
     position.setControl(new VoltageOut(volts));
   }
@@ -160,22 +175,16 @@ public class IntakeTalonFXIO implements IntakeIO {
   public void setPositionControl(double position1) { // IMPORTANT - POSITON1 NOT POSITION
     targetPosition = position1;
 
-    System.out.println("seting positin IO " + position1);
     // System.out.println("Input volt: "+inputVoltage+" Target Angle: "+targetAngle);
     position.setControl(mVoltageRequest.withPosition(position1));
     // System.out.println("Voltage being sent in PID Voltage");
   }
-  /**
-   * sets the position of the intake at a specified velocity
-   *
-   * @param position1 position in CTRE angle units
-   * @param velocity desired cruise velocity in meters per second
-   */
+
   public void setPositionControlWithVelocity(
       double position1, double velocity) { // IMPORTANT - POSITON1 NOT POSITION
     targetPosition = position1;
 
-    System.out.println("VERY SLOWLY setting position in FXIO to " + position1);
+    // System.out.println("VERY SLOWLY setting position in FXIO to " + position1);
     // System.out.println("Input volt: "+inputVoltage+" Target Angle: "+targetAngle);
     position.setControl(mVoltageRequest.withPosition(position1).withVelocity(velocity));
     // System.out.println("Voltage being sent in PID Voltage");
@@ -183,6 +192,11 @@ public class IntakeTalonFXIO implements IntakeIO {
 
   public void resetEncoder(double positionVal) {
     position.setPosition(positionVal);
+    System.out.println("resetting encoder to " + positionVal);
+  }
+
+  public void resetEncoders() {
+    resetEncoder(IntakeConstants.MAX_POSITION);
   }
 
   public double getTargetPosition() {
@@ -195,10 +209,6 @@ public class IntakeTalonFXIO implements IntakeIO {
   }
 
   // misc methods
-
-  public void resetEncoders() {
-    position.setPosition(0);
-  }
 
   public void setBrakedRoller(boolean braked) {
     isBrakedRoller = braked;
@@ -229,21 +239,21 @@ public class IntakeTalonFXIO implements IntakeIO {
   }
 
   // gets the highest possible height of the arm in radians
-  public double getMaxPosition() {
-    return Constants.IntakeConstants.MAX_POSITION;
-  }
+  // public double getMaxPosition() {
+  //   return Constants.IntakeConstants.MAX_POSITION;
+  // }
 
   /**
    * @return gets the position of the arm in radians
    */
   public double getPosition() {
-    return position.getRotorPosition().getValueAsDouble();
+    return position.getPosition().getValueAsDouble();
   }
 
-  public boolean isMaxPosition() {
-    return Math.abs(getPosition() - getMaxPosition())
-        < Constants.IntakeConstants.POSITION_TOLERANCE;
-  }
+  // public boolean isMaxPosition() {
+  //   return Math.abs(getPosition() - getMaxPosition())
+  //       < Constants.IntakeConstants.POSITION_TOLERANCE;
+  // }
 
   public double getSpeed() {
     return roller.getVelocity().getValueAsDouble();
@@ -252,5 +262,9 @@ public class IntakeTalonFXIO implements IntakeIO {
   public boolean checkIfStalled() {
     return (roller.getMotorVoltage().getValueAsDouble()
         > Constants.IntakeConstants.ROLLER_STALLED_VOLTS);
+  }
+
+  public double getRollerMotorVoltage() {
+    return roller.getMotorVoltage().getValueAsDouble();
   }
 }

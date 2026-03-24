@@ -9,25 +9,37 @@
           "data": {
             "commands": [
               {
-                "type": "named",
-                "data": {
-                  "name": "shooterAutomatic"
-                }
-              },
-              {
                 "type": "sequential",
                 "data": {
                   "commands": [
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "Mid to fire"
+                        "pathName": "Front Top Start, mid intake"
                       }
                     },
                     {
                       "type": "named",
                       "data": {
                         "name": "feedWhenValidAndStop"
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Top Shoot Mid again"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "feedWhenValidAndStop"
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Top Shoot to ending position"
                       }
                     }
                   ]

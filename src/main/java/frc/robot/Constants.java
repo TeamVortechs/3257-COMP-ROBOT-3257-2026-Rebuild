@@ -26,7 +26,10 @@ import edu.wpi.first.units.measure.*;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.generated.TunerConstants;
+import frc.robot.util.SmartConstant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
@@ -68,7 +71,7 @@ public final class Constants {
     // more info
 
     public static final double SUPPLY_CURRENT_LIMIT_SHOOTER = 500;
-    public static final double STATOR_CURRENT_LIMIT_SHOOTER = 100;
+    public static final double STATOR_CURRENT_LIMIT_SHOOTER = 100000;
 
     public static final double SUPPLY_CURRENT_LIMIT_FEEDER = 40.0;
     public static final double STATOR_CURRENT_LIMIT_FEEDER = 120;
@@ -88,11 +91,19 @@ public final class Constants {
 
   public class DriveConstants {
 
+    // pathplanner constants
+    public static final double ROBOT_WEIGHT = 58.060;
+    public static final double ROBOT_MOI = 7.218;
+    public static final double WHEEL_COF = 1.2;
+
     private static final InterpolatingDoubleTreeMap AIRTIME_MAP = new InterpolatingDoubleTreeMap();
 
     private static void characterizeAirtimeMap() {
       // bad balue
-      AIRTIME_MAP.put(2.3, 0.9);
+      AIRTIME_MAP.put(1.63, 0.86375);
+      AIRTIME_MAP.put(2.252, 0.951);
+      AIRTIME_MAP.put(2.89, 1.049);
+      AIRTIME_MAP.put(3.5, 1.098);
     }
 
     public static final double SHOOTER_ROTATION_MANAGER_LOGGING_FREQUENCY =
@@ -100,31 +111,64 @@ public final class Constants {
 
     public static final double FREQUENCY_UPDATE_ACC =
         20.00; // how many times per sec should we log accelerometer
-    public static final double transKp = 2;
-    public static final double transKi = 0;
-    public static final double transKd = 0;
 
-    public static final double transTopSpeed = 1.5;
-    public static final double transAccMax = 2;
+    // pid constants
+    public static final double TRANS_KP = 5;
+    public static final double TRANS_KI = 0;
+    public static final double TRANS_KD = 0;
 
-    // rot const
-    public static final double rotKp = 1.7;
-    public static final double rotKi = 0;
-    public static final double rotKd = 0;
+    public static final double TRANS_TOP_SPEED = 1.5;
+    public static final double TRANS_ACC_MAX = 2;
 
-    public static final double rotTopSpeed = 100;
-    public static final double rotAccMax = 110;
+    public static final double TRANS_TOLERANCE = 0.01;
 
-    // tolerances
-    public static final double rotationTolerance = 0.1;
-    public static final double translationTolerance = 0.01;
+    // rot const, used for moving to setpoint/auto targetting
+    public static final double ANGLE_KP = 2;
+    public static final double ANGLE_KI = 0;
+    public static final double ANGLE_KD = 0.4;
+    public static final double ANGLE_DEADBAND = 0.1;
 
-    public static final ProfiledPIDController ANGLE_CONTROLLER;
+    public static final SmartConstant ANGLE_KP_SETTABLE =
+        new SmartConstant("DriveSettableConstantAngleKP", ANGLE_KP);
+    public static final SmartConstant ANGLE_KI_SETTABLE =
+        new SmartConstant("DriveSettableConstantAngleKI", ANGLE_KI);
+    public static final SmartConstant ANGLE_KD_SETTABLE =
+        new SmartConstant("DriveSettableConstantAngleKD", ANGLE_KD);
+
+    public static final SmartConstant TRANS_KP_SETTABLE =
+        new SmartConstant("DriveSettableConstantTransKP", TRANS_KP);
+    public static final SmartConstant TRANS_KI_SETTABLE =
+        new SmartConstant("DriveSettableConstantTransKI", TRANS_KI);
+    public static final SmartConstant TRANS_KD_SETTABLE =
+        new SmartConstant("DriveSettableConstantTransKD", TRANS_KD);
+
+    public static Command remakeAnglePIDController() {
+      return new InstantCommand(
+          () -> {
+            ANGLE_CONTROLLER.setP(ANGLE_KP_SETTABLE.get());
+            ANGLE_CONTROLLER.setI(ANGLE_KI_SETTABLE.get());
+            ANGLE_CONTROLLER.setD(ANGLE_KD_SETTABLE.get());
+          });
+    }
+
+    public static final double ANGLE_MAX_ACCELERATION = 20.0;
+    public static final double ANGLE_MAX_VELOCITY = 8.0;
 
     public static final double ORIENTATION_TOLERANCE = 0.2;
+
+    // this gets made with the other constants
+    public static final ProfiledPIDController ANGLE_CONTROLLER;
+
     // the time it takes between feeding and actual robot shoot. This is used to lead the robot
     // pose. Should be about 0.08 - 0.18 s
     public static final double KRELEASE_POSE_PREDICTION_SEC = 0; // to change .5
+
+    public static final double K_JOYSTICK_WHEN_SHOOTING = 1;
+    public static final double K_JOYSTICK_WHEN_PASSING = 1;
+    public static final double K_JOYSTICK_ROTATION = 0.7;
+    public static final double K_JOYSTICK_TRANSLATION = 1;
+
+    // y position that splits this in half
 
     // we should test by looking at values. this can also be a distance lookup table. This corrects
     // for robot speed by changing the target location. This constant is supposed ot emmulate fligth
@@ -137,17 +181,18 @@ public final class Constants {
       return 0.9;
     }
 
+    // tolerance for the shoot on move binary search. TS IS NOT HTE DRIVETRAIN MOVE TO ANGLE
+    // TOLERANCE
     public static final double SHOOT_ON_MOVE_TOLERANCE = 0.05;
 
     // the maximum allowed difference allowed between acceleraomter and encoders before it is
     // considered skid
     public static final double SKID_THRESHOLD = 1000;
 
-    public static final double DEADBAND = 0.1;
-    public static final double ANGLE_KP = 4; // 12
-    public static final double ANGLE_KD = 0.4;
-    public static final double ANGLE_MAX_ACCELERATION = 20.0;
-    public static final double ANGLE_MAX_VELOCITY = 8.0;
+    // SHOOT ON MOVE CONSTATNS.
+    // used for auto teargetting
+
+    // idrk what this does but we should never to use/change these
     public static final double FF_START_DELAY = 2.0; // Secs
     public static final double FF_RAMP_RATE = 0.1; // Volts/Sec
     public static final double WHEEL_RADIUS_MAX_VELOCITY = 0.25; // Rad/Sec
@@ -184,25 +229,29 @@ public final class Constants {
     }
 
     public static final Pose2d GET_PASSING_GOAL(int index) {
+      Pose2d returnPose;
 
       if (PASSING_GOALS_STORAGE == null) {
         PASSING_GOALS_STORAGE = new ArrayList<>();
-        PASSING_GOALS_STORAGE.add(new Pose2d(0.5, 6.8, new Rotation2d()));
-        PASSING_GOALS_STORAGE.add(new Pose2d(0.5, 1.2, new Rotation2d()));
+        PASSING_GOALS_STORAGE.add(new Pose2d(3.6, 6.0, new Rotation2d()));
+        PASSING_GOALS_STORAGE.add(new Pose2d(3.6, 2.0, new Rotation2d()));
       }
 
-      Pose2d returnPose = PASSING_GOALS_STORAGE.get(index);
-
-      // add flip logic here
-      // double xToFlip = 5;
-      // double yToFlip = 5;
-      // double x;
-      // double y;
+      // if the alliance is verifiably red,
       if (DriverStation.getAlliance() != null
           && DriverStation.getAlliance().isPresent()
           && DriverStation.getAlliance().get() == Alliance.Red) {
 
-        returnPose = returnPose.rotateAround(CENTER_POINT, Rotation2d.fromDegrees(180));
+        // get the opposite passing pose, then rotate the whole thing around 180 degrees
+        // this should mimic flipping it over an axis
+        returnPose =
+            PASSING_GOALS_STORAGE
+                // next index mod 2
+                // this wraps index = 1 + 1 back to index = 0
+                .get((index + 1) % 2)
+                .rotateAround(CENTER_POINT, Rotation2d.fromDegrees(180));
+      } else {
+        returnPose = PASSING_GOALS_STORAGE.get(index);
       }
 
       return returnPose;
@@ -225,9 +274,7 @@ public final class Constants {
     // the zone where we choose to more agressively charge the shooter
     public static final double X_POSE_TO_CHARGE = 5.5;
     public static final double X_POSE_TO_PASS = 5.5;
-
-    public static final double K_JOYSTICK_WHEN_SHOOTING = 1;
-    public static final double K_JOYSTICK_WHEN_PASSING = 1;
+    public static final double HALF_MAP_Y = 4.059;
 
     // from our library
     public static final double ODOMETRY_FREQUENCY =
@@ -247,7 +294,7 @@ public final class Constants {
       ANGLE_CONTROLLER =
           new ProfiledPIDController(
               ANGLE_KP,
-              0.0,
+              ANGLE_KI,
               ANGLE_KD,
               new TrapezoidProfile.Constraints(ANGLE_MAX_VELOCITY, ANGLE_MAX_ACCELERATION));
       ANGLE_CONTROLLER.enableContinuousInput(-Math.PI, Math.PI);
@@ -267,6 +314,7 @@ public final class Constants {
     public static final double TOLERANCE = 4;
 
     public static final int MOTOR_ID = 24;
+    public static final int FOLLOWER_MOTOR_ID = 28;
 
     // this is higher rn cus it's in sim. We can model this as a linear function based on distance
     // if we're having trouble adjusting but right now I'm not cus it's a variable that mgiht not be
@@ -278,15 +326,18 @@ public final class Constants {
 
     public static final double PERCENTAGE_OF_DISTANCE_WHEN_CHARGING = 0.6;
 
+    public static final SmartConstant SHOOTER_TEST_SPEED =
+        new SmartConstant("shooter test speed", 70);
+
     // the time that the feeder waits before shooting once it is valis
 
-    // CHANGE !!
-    public static final double KS = 0.0;
-    public static final double KV = 0.12743; // 0.13727;
-    public static final double KP = 0.18049; // 16011;
+    // CHANGE !
+    public static final double KS = 0.1021;
+    public static final double KV = 0.12071;
+    public static final double KP = 0.5; // 10991
     public static final double KI = 0.0;
     public static final double KD = 0.0;
-    public static final double KA = 0.042075; // 050592;
+    public static final double KA = 0.016241;
 
     public static final TalonFXConfiguration CONFIG;
     public static final Slot0Configs SLOT0CONFIGS;
@@ -373,8 +424,8 @@ public final class Constants {
     // not real
     public static final int ID = 25;
 
-    public static final double FEED_POWER = 0.5;
-    public static final double INTAKE_POWER = 1;
+    public static final double FEED_POWER = 0.8;
+    public static final double INTAKE_POWER = 0;
     public static final double DEFAULT_POWER = 0;
     public static final double EJECT_POWER = -1;
 
@@ -456,21 +507,27 @@ public final class Constants {
   public class IntakeConstants {
     public static final double FREQUENCY_HZ = Constants.LOW_PRIORITY_FREQUENCY_HZ;
 
+    public static final double TIME_TO_WAIT_BEFORE_RETRACT_ON_SHOOT = 1.5;
+
     // dummy values for now
     public static final double MAX_TARGET_SPEED = 100;
     public static final double MAX_MANUAL_SPEED = 100;
+    public static final double MAX_MANUAL_VOLTS = 2;
     // public static final double POSx_TOLERANCE = 0.2;
 
-    public static final double POSITION_TOLERANCE = 0.02;
+    public static final double POSITION_TOLERANCE = 0.1;
 
     // 2
     // 1.29
     public static final double MIN_POSITION = -10000; // o.373535
     public static final double MAX_POSITION = 1000; // can also do 0.36
 
-    public static final double INTAKE_DOWN_POSITION = -0.41;
-    public static final double INTAKE_HALFWAY_UP_POSITION = -0.721;
-    public static final double INTAKE_UP_POSITION = -0.267;
+    public static final double INTAKE_DOWN_POSITION = 0.878;
+    public static final double INTAKE_HALFWAY_UP_POSITION = 0.380; // 0.6
+    public static final double DEEP_INTAKE_UP_POSITION = 0.2;
+    public static final double INTAKE_HALFWAY_LOWER_POSITION = 0.5;
+    public static final double INTAKE_CLEAR_POSITION = 0.75;
+    public static final double INTAKE_UP_POSITION = 0.156; // 0.156
     // .-0.062
 
     public static final double CLAMP_MAX_VOLTS = 3;
@@ -487,21 +544,22 @@ public final class Constants {
 
     public static final double ROLLER_GOING_DOWN_VOLTS = -12;
     public static final double ROLLER_GOING_UP_VOLTS = 4.5;
-    public static final double INTAKE_VOLTS = 8;
+    public static final double INTAKE_VOLTS = 12;
     public static final double EJECT_VOLTS = -8;
 
-    public static final double MOTION_MAGIC_CRUISE_VELOCITY = 3;
-    public static final double MOTION_MAGIC_ACCELERATION = 2.5;
-    public static final double MOTION_MAGIC_JERK = 10;
+    public static final double MOTION_MAGIC_CRUISE_VELOCITY = 10;
+    public static final double MOTION_MAGIC_ACCELERATION = 5;
+    public static final double MOTION_MAGIC_JERK = 100000000.0;
     // for slowing down the intake when attempting to close while firing
     public static final Time WAIT_TIME_TO_PULL_INTAKE = Seconds.of(2);
-    public static final double MOTION_MAGIC_SLOWED_VELOCITY = 1.5;
+    public static final double MOTION_MAGIC_SLOWED_VELOCITY = 1.5; // originally 1.5
+    public static final double MOTION_MAGIC_SLOWED_VELOCITY_SECOND_TIME = 1.25;
+    // constants for the oscillateIntake command
+    public static final Time WAIT_TIME_BETWEEN_INTAKE_OSCILLATION = Seconds.of(0.5);
+    public static final double OSCILLATION_VELOCITY = 1;
 
     public static final double RAMP_RATE_VOLTS_ROLLER_SYSID = 0.25;
     public static final double DYNAMIC_STEP_VOLTS_ROLLER_SYSID = 1;
-
-    public static final int ROLLER_ID = 21;
-    public static final int POSITION_ID = 22;
 
     public static final double ROLLER_STALLED_VOLTS = 20.0;
     // lower cus this has hardstops
@@ -518,6 +576,7 @@ public final class Constants {
     public static final double CANCODER_ROTOR_TO_SENSOR_RATIO = 1; // used to be 30
 
     static {
+      // PID constants, gravity type, static feedforward sign
       SLOT0CONFIGS = new Slot0Configs();
       SLOT0CONFIGS.kS = Constants.IntakeConstants.KS;
       SLOT0CONFIGS.kV = Constants.IntakeConstants.KV;
@@ -529,6 +588,7 @@ public final class Constants {
       SLOT0CONFIGS.GravityType = GravityTypeValue.Arm_Cosine;
       SLOT0CONFIGS.withStaticFeedforwardSign(StaticFeedforwardSignValue.UseVelocitySign);
 
+      // CTRE constants: brake, invert, current limits
       POSITION_CONFIG = new TalonFXConfiguration();
       POSITION_CONFIG.MotorOutput.NeutralMode = NeutralModeValue.Brake;
       POSITION_CONFIG.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
@@ -539,6 +599,12 @@ public final class Constants {
           Constants.CurrentLimitConstants.STATOR_CURRENT_LIMIT_INTAKE_POSITION;
       POSITION_CONFIG.CurrentLimits.StatorCurrentLimitEnable = true;
 
+      // motion magic constants
+      POSITION_CONFIG.MotionMagic.MotionMagicCruiseVelocity = MOTION_MAGIC_CRUISE_VELOCITY;
+      POSITION_CONFIG.MotionMagic.MotionMagicAcceleration = MOTION_MAGIC_ACCELERATION;
+      POSITION_CONFIG.MotionMagic.MotionMagicJerk = MOTION_MAGIC_JERK;
+
+      // CTRE constants for the rollers
       ROLLER_CONFIG = new TalonFXConfiguration();
       ROLLER_CONFIG.MotorOutput.NeutralMode = NeutralModeValue.Coast;
       ROLLER_CONFIG.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;

@@ -10,10 +10,11 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
@@ -53,7 +54,7 @@ public class Intake extends SubsystemBase {
     // check to see if the module is stalling; if so, then stop the motors and cancel the next
     // movement
 
-    if (intakeIO.checkIfStalled()) {
+    if (checkIfStalled()) {
       System.out.println("Intake HAS STALLED ");
       intakeIO.stop();
       return;
@@ -123,6 +124,10 @@ public class Intake extends SubsystemBase {
     intakeIO.setPositionVoltage(volt);
   }
 
+  public void setPositionVoltage(DoubleSupplier volt) {
+    intakeIO.setPositionVoltage(volt.getAsDouble());
+  }
+
   // gets the roller speed
   public double getRollerSpeed() {
     return intakeIO.getSpeed();
@@ -132,6 +137,14 @@ public class Intake extends SubsystemBase {
     return intakeIO.getPosition();
   }
 
+  public boolean isMaxPosition() {
+    return Math.abs(getPosition() - Constants.IntakeConstants.MAX_POSITION)
+        < Constants.IntakeConstants.POSITION_TOLERANCE;
+  }
+
+  public boolean checkIfStalled() {
+    return (intakeIO.getRollerMotorVoltage() > Constants.IntakeConstants.ROLLER_STALLED_VOLTS);
+  }
   // commands
 
   // sets the manual override speed of this command. Uses a regular double
@@ -182,6 +195,20 @@ public class Intake extends SubsystemBase {
             Commands.startRun(() -> this.setRollersVoltage(voltage), () -> {}, this))
         .withDeadline(new WaitUntilCommand(() -> isOnTarget()));
   }
+  // good grief that's verbose
+  public Command setPositionWithVelocityAndRollersCommandConsistentEnd(
+      double position, double velocity, double voltage) {
+    return Commands.parallel(
+            Commands.startRun(() -> this.setPositionWithVelocity(position, velocity), () -> {}),
+            Commands.startRun(() -> this.setRollersVoltage(voltage), () -> {}, this))
+        .withDeadline(new WaitUntilCommand(() -> isOnTarget()));
+  }
+
+  // good grief that's verbose
+  public Command setPositionWithVelocityCommandConsistentEnd(double position, double velocity) {
+    return Commands.startRun(() -> this.setPositionWithVelocity(position, velocity), () -> {}, this)
+        .withDeadline(new WaitUntilCommand(() -> isOnTarget()));
+  }
 
   public Command setPositionWithVelocityCommand(double position, double velocity) {
     return Commands.startRun(
@@ -207,14 +234,35 @@ public class Intake extends SubsystemBase {
     return Commands.startRun(() -> this.setPositionVoltage(volt), () -> {});
   }
 
-  public Command intakeRetractWhileShooting(Command waitingCommand, double rollerVolts) {
+  public Command intakeRetractWhileShooting(BooleanSupplier canStart) {
 
-    return Commands.race(
-        setRollerVoltageCommand(rollerVolts),
-        waitingCommand.andThen(
-            setPositionVoltageRunCommandNoRequirement(4)
-                .withDeadline(
-                    new WaitCommand(2)))); // I don't like this magic number. I am displeased.
+    return new WaitUntilCommand(() -> canStart.getAsBoolean())
+        .andThen(
+            setPositionWithVelocityCommandConsistentEnd(
+                    IntakeConstants.INTAKE_HALFWAY_LOWER_POSITION,
+                    IntakeConstants.MOTION_MAGIC_SLOWED_VELOCITY)
+                .andThen(
+                    setPositionWithVelocityCommandConsistentEnd(
+                        IntakeConstants.INTAKE_DOWN_POSITION,
+                        IntakeConstants.MOTION_MAGIC_SLOWED_VELOCITY))
+                .andThen(
+                    setPositionWithVelocityCommandConsistentEnd(
+                        IntakeConstants.INTAKE_HALFWAY_UP_POSITION,
+                        IntakeConstants.MOTION_MAGIC_SLOWED_VELOCITY_SECOND_TIME))
+                .alongWith(Commands.startRun(() -> setRollersVoltage(3), () -> {})))
+        .finallyDo(() -> setPosition(getPosition())); // I don't like this magic number. I am
+    // displeased.
+  }
+
+  /*
+   * Moves intake down with a set voltage and then resets the position on ends
+   */
+  public Command resetEncoderRoutineCommand(double voltage) {
+    return setPositionVoltageRunCommand(voltage)
+        .finallyDo(
+            () -> {
+              resetEncoder(IntakeConstants.INTAKE_DOWN_POSITION);
+            });
   }
 
   // intakes until the canrange finds distance less than the given distance

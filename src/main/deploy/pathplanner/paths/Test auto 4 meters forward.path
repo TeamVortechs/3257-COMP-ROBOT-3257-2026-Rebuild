@@ -3,42 +3,35 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.5629283268960672,
-        "y": 5.877502984550562
+        "x": 4.0,
+        "y": 4.018861209964412
       },
       "prevControl": null,
       "nextControl": {
-        "x": 0.8081668031668726,
-        "y": 5.92606315090503
+        "x": 2.9446884834644296,
+        "y": 4.01054896071083
       },
       "isLocked": false,
-      "linkedName": "balls intake end"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.858125741399763,
-        "y": 6.568790035587188
+        "x": 0.0,
+        "y": 4.019
       },
       "prevControl": {
-        "x": 2.6237750272970537,
-        "y": 6.481728317251572
+        "x": 1.0549573161137178,
+        "y": 4.025180633919136
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Top Shoot Ramp"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [
-    {
-      "name": "intakeDownEvent",
-      "waypointRelativePos": 0.05,
-      "endWaypointRelativePos": null,
-      "command": null
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 3.5,
     "maxAcceleration": 3.0,
@@ -49,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -55.80679915434133
+    "rotation": 180.0
   },
   "reversed": false,
-  "folder": "Front Top",
+  "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -122.51244126161416
+    "rotation": 180.0
   },
   "useDefaultConstraints": true
 }

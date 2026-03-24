@@ -64,32 +64,32 @@
     },
     {
       "anchor": {
-        "x": 5.461225806451613,
-        "y": 5.878258064516129
+        "x": 6.6668801897983405,
+        "y": 7.268137603795967
       },
       "prevControl": {
-        "x": 5.7112254066203425,
-        "y": 5.877810945432349
+        "x": 7.290913404507711,
+        "y": 6.751696322657177
       },
       "nextControl": {
-        "x": 3.699869589911123,
-        "y": 5.881408213465243
+        "x": 6.151104985771799,
+        "y": 7.694986048507588
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.978817204301076,
-        "y": 5.878258064516129
+        "x": 4.48276393831554,
+        "y": 7.569395017793594
       },
       "prevControl": {
-        "x": 4.329787481932442,
-        "y": 5.808861484031368
+        "x": 5.031482799525505,
+        "y": 7.547876631079478
       },
       "nextControl": {
-        "x": 3.657913327860858,
-        "y": 5.941709681671715
+        "x": 2.391659733930969,
+        "y": 7.651399104240047
       },
       "isLocked": false,
       "linkedName": null
@@ -110,10 +110,6 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.8,
-      "rotationDegrees": -90.0
-    },
-    {
       "waypointRelativePos": 2.0,
       "rotationDegrees": -113.48925709285463
     },
@@ -122,11 +118,11 @@
       "rotationDegrees": -112.56288649628688
     },
     {
-      "waypointRelativePos": 3.466367713004489,
+      "waypointRelativePos": 4.287224669603523,
       "rotationDegrees": 180.0
     },
     {
-      "waypointRelativePos": 4.973094170403599,
+      "waypointRelativePos": 5.228193832599136,
       "rotationDegrees": 180.0
     }
   ],
@@ -160,32 +156,26 @@
       "command": null
     },
     {
-      "name": "revShooterEvent",
-      "waypointRelativePos": 3.704797047970473,
-      "endWaypointRelativePos": 6.0,
-      "command": null
-    },
-    {
-      "name": "intakeClearEvent",
-      "waypointRelativePos": 3.9220489977728255,
+      "name": "reverseFeederEvent",
+      "waypointRelativePos": 4.526445264452647,
       "endWaypointRelativePos": null,
       "command": null
     },
     {
-      "name": "reverseFeederEvent",
-      "waypointRelativePos": 3.9755011135857403,
+      "name": "revShooterEvent",
+      "waypointRelativePos": 4.817371937639209,
+      "endWaypointRelativePos": 6.0,
+      "command": null
+    },
+    {
+      "name": "stopFeederEvent",
+      "waypointRelativePos": 5.195571955719591,
       "endWaypointRelativePos": null,
       "command": null
     },
     {
       "name": "intakeStopEvent",
       "waypointRelativePos": 5.367773677736794,
-      "endWaypointRelativePos": null,
-      "command": null
-    },
-    {
-      "name": "stopFeederEvent",
-      "waypointRelativePos": 6.0,
       "endWaypointRelativePos": null,
       "command": null
     }
@@ -203,7 +193,7 @@
     "rotation": -55.80679915434133
   },
   "reversed": false,
-  "folder": "Front Top",
+  "folder": "Under trench autos",
   "idealStartingState": {
     "velocity": 0,
     "rotation": -90.0

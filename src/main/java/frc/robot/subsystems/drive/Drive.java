@@ -50,6 +50,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.Mode;
+import frc.robot.commands.PathfindToPoseCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.util.LocalADStarAK;
 import java.util.concurrent.locks.Lock;
@@ -67,6 +68,9 @@ public class Drive extends SubsystemBase {
 
   // puttign this in container because it's already like this and when we change drive it'll be good
   // to have it easily changed. Also it's probably more readable this way
+
+  private Pose2d setPose = new Pose2d();
+
   private ShooterRotationManager shooterRotationManager;
   private GoalPoseManager goalPoseManager;
 
@@ -99,6 +103,17 @@ public class Drive extends SubsystemBase {
 
   public Rotation2d getHeadingToPassing() {
     goalPoseManager.setIsPassing(true);
+
+    if (getPose().getY() > DriveConstants.HALF_MAP_Y) {
+      // setPassingIndexCommmand(0).schedule();
+      // this iss the
+      goalPoseManager.setPassingPoseIndex(0);
+    } else {
+      goalPoseManager.setPassingPoseIndex(1);
+
+      // setPassingIndexCommmand(1).schedule();
+    }
+
     return shooterRotationManager.getHeading();
   }
 
@@ -159,7 +174,7 @@ public class Drive extends SubsystemBase {
     return isSkidding;
   }
 
-  private static final double DEADBAND = DriveConstants.DEADBAND;
+  private static final double DEADBAND = DriveConstants.ANGLE_DEADBAND;
 
   private Supplier<Rotation2d> rotationSupplier =
       () -> {
@@ -170,8 +185,16 @@ public class Drive extends SubsystemBase {
         }
       };
 
-  public Command joystickDriveAtTarget(
-      Drive drive, DoubleSupplier xSupplier, DoubleSupplier ySupplier) {
+  public Command stayAtPoseCommand() {
+    return new InstantCommand(
+            () -> {
+              setPose = new Pose2d(getPose().getTranslation(), getHeadingToGoal());
+            })
+        .andThen(new PathfindToPoseCommand(this, () -> setPose, false));
+  }
+
+  public Command joystickDriveAtTarget(DoubleSupplier xSupplier, DoubleSupplier ySupplier) {
+    var drive = this;
 
     // Create PID controller
     ProfiledPIDController angleController = DriveConstants.ANGLE_CONTROLLER;
@@ -289,6 +312,41 @@ public class Drive extends SubsystemBase {
     return goalPoseManager.setPassingPoseIndexCommand(index);
   }
 
+  public Command reconfigureAutobuilder() {
+    return new InstantCommand(
+        () -> {
+          PPHolonomicDriveController pathplannerController =
+              new PPHolonomicDriveController(
+                  new PIDConstants(
+                      DriveConstants.TRANS_KP_SETTABLE.get(),
+                      DriveConstants.TRANS_KI_SETTABLE.get(),
+                      DriveConstants.TRANS_KD_SETTABLE.get()),
+                  new PIDConstants(
+                      DriveConstants.ANGLE_KP_SETTABLE.get(),
+                      DriveConstants.ANGLE_KI_SETTABLE.get(),
+                      DriveConstants.ANGLE_KD_SETTABLE.get()));
+
+          AutoBuilder.configure(
+              this::getPose,
+              this::setPose,
+              this::getChassisSpeeds,
+              this::runVelocity,
+              pathplannerController,
+              PP_CONFIG,
+              () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
+              this);
+          Pathfinding.setPathfinder(new LocalADStarAK());
+          PathPlannerLogging.setLogActivePathCallback(
+              (activePath) -> {
+                Logger.recordOutput("Odometry/Trajectory", activePath.toArray(new Pose2d[0]));
+              });
+          PathPlannerLogging.setLogTargetPoseCallback(
+              (targetPose) -> {
+                Logger.recordOutput("Odometry/TrajectorySetpoint", targetPose);
+              });
+        });
+  }
+
   /**
    * This is really ugly. I'm putting this in my own periodic so we can easily add this logic into
    * the cdoe when we change the drive code.
@@ -306,22 +364,30 @@ public class Drive extends SubsystemBase {
   }
 
   public Command removeRotationOverrideCommand() {
-    return new InstantCommand(() -> PPHolonomicDriveController.clearFeedbackOverrides());
+    return new InstantCommand(() -> clearRotationOverrides());
   }
 
   private void overrideRotationFeedback() {
+
+    Logger.recordOutput("Drive/OverridenRotation", true);
 
     PPHolonomicDriveController.overrideRotationFeedback(
         () ->
             // 100.0
             shooterRotationManager.getRotationFeedbackOverride());
   }
+
+  private void clearRotationOverrides() {
+    Logger.recordOutput("Drive/OverridenRotation", false);
+    PPHolonomicDriveController.clearFeedbackOverrides();
+  }
+
   // TunerConstants doesn't include these constants, so they are declared locally
 
   // PathPlanner config constants
-  private static final double ROBOT_MASS_KG = 74.088;
-  private static final double ROBOT_MOI = 6.883;
-  private static final double WHEEL_COF = 1.2;
+  private static final double ROBOT_MASS_KG = DriveConstants.ROBOT_WEIGHT;
+  private static final double ROBOT_MOI = DriveConstants.ROBOT_MOI;
+  private static final double WHEEL_COF = DriveConstants.WHEEL_COF;
   private static final RobotConfig PP_CONFIG =
       new RobotConfig(
           ROBOT_MASS_KG,
@@ -378,7 +444,10 @@ public class Drive extends SubsystemBase {
 
     PPHolonomicDriveController pathplannerController =
         new PPHolonomicDriveController(
-            new PIDConstants(5.0, 0.0, 0.0), new PIDConstants(7, 0.0, 0.0));
+            new PIDConstants(
+                DriveConstants.TRANS_KP, DriveConstants.TRANS_KI, DriveConstants.TRANS_KD),
+            new PIDConstants(
+                DriveConstants.ANGLE_KP, DriveConstants.ANGLE_KI, DriveConstants.ANGLE_KD));
     // Configure AutoBuilder for PathPlanner
     AutoBuilder.configure(
         this::getPose,
@@ -516,10 +585,14 @@ public class Drive extends SubsystemBase {
     Logger.recordOutput("SwerveStates/SetpointsOptimized", setpointStates);
   }
 
-  /** Runs the drive in a straight line with the specified drive output. */
+  /**
+   * Runs the drive in a straight line with the specified drive output. THIS HAS BEEN TEMPORARILY
+   * CHANGED TO ALLOW FOR STEER AND TURN CHARACTERIZATIONS
+   */
   public void runCharacterization(double output) {
     for (int i = 0; i < 4; i++) {
-      modules[i].runCharacterization(output);
+      // modules[i].runCharacterization(output);
+      modules[i].runAngularCharacterization(output);
     }
   }
 

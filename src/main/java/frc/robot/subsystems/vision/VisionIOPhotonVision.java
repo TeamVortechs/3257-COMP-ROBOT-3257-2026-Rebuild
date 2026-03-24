@@ -12,6 +12,7 @@ import static frc.robot.subsystems.vision.VisionConstants.*;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -80,7 +81,12 @@ public class VisionIOPhotonVision implements VisionIO {
                 totalTagDistance / result.targets.size(), // Average tag distance
                 PoseObservationType.PHOTONVISION)); // Observation type
 
-      } else if (!result.targets.isEmpty()) { // Single tag result
+      } else if (!result.targets.isEmpty()
+          // this kinda sucks that i have to do it in here for solely photonvision,
+          // but photonvision can't filter tags through the UI. i'm screening out
+          // all singleton tags on the TRENCHes because they tend to blow the robot up
+          && Arrays.binarySearch(bannedTags, result.targets.get(0).fiducialId)
+              < 0) { // Single tag result
         var target = result.targets.get(0);
 
         // Calculate robot pose

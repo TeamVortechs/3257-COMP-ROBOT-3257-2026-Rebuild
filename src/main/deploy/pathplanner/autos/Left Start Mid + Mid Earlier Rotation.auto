@@ -9,19 +9,13 @@
           "data": {
             "commands": [
               {
-                "type": "named",
-                "data": {
-                  "name": "shooterAutomatic"
-                }
-              },
-              {
                 "type": "sequential",
                 "data": {
                   "commands": [
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "Front Bottom Start, mid intake"
+                        "pathName": "Front Top Start, mid intake earlier rotation"
                       }
                     },
                     {
@@ -33,13 +27,19 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "Bottom score mid sweep"
+                        "pathName": "Top Shoot Mid again"
                       }
                     },
                     {
                       "type": "named",
                       "data": {
                         "name": "feedWhenValidAndStop"
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Top Shoot to ending position"
                       }
                     }
                   ]

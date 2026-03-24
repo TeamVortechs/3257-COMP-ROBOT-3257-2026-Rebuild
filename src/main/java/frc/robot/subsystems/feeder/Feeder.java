@@ -154,6 +154,24 @@ public class Feeder extends SubsystemBase {
         this);
   }
 
+  /**
+   * feeds when the drive, limelight, and shooter are ontarget. USED DURIGN AUTO SINCE THIS DOESN'T
+   * HAVE REQUIREMENTS
+   *
+   * @param percentage the percentage of battery to supply to the feeder
+   * @return the command
+   */
+  public Command feedWhenValidRunCommandAutoEvent(double percentage) {
+    return Commands.run(
+        () -> {
+          if (calculateValidityToFeed()) {
+            this.setPercentMotorOutput(percentage);
+          } else {
+            this.setPercentMotorOutput(0);
+          }
+        });
+  }
+
   /** can swap this for the other command in auto */
   public Command feedWhenShooterIsRevvedCommand(double percentage) {
     return Commands.run(

@@ -88,6 +88,17 @@ public class Module {
     io.setTurnPosition(Rotation2d.kZero);
   }
 
+  // public void runTurnMotorCharacterization(double output) {
+  //   io.setDriveOpenLoop(0.0);
+  //   io.setTurnOpenLoop(output);
+  // }
+
+  public void runAngularCharacterization(double output) {
+    io.setDriveOpenLoop(output);
+    io.setTurnPosition(
+        new Rotation2d(constants.LocationX, constants.LocationY).plus(Rotation2d.kCCW_Pi_2));
+  }
+
   /** Disables all outputs to motors. */
   public void stop() {
     io.setDriveOpenLoop(0.0);

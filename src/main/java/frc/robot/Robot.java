@@ -156,13 +156,13 @@ public class Robot extends LoggedRobot {
   @Override
   public void teleopPeriodic() {
 
-    // Logger.recordOutput(
-    //     "Distance/asdfadsf",
-    //     robotContainer
-    //         .getDrive()
-    //         .getPose()
-    //         .getTranslation()
-    //         .getDistance(DriveConstants.GOAL_POSE_RED.getTranslation()));
+    Logger.recordOutput(
+        "Distance/asdfadsf",
+        robotContainer
+            .getDrive()
+            .getPose()
+            .getTranslation()
+            .getDistance(DriveConstants.GOAL_POSE.get().getTranslation()));
   }
 
   /** This function is called once when test mode is enabled. */
@@ -178,7 +178,10 @@ public class Robot extends LoggedRobot {
 
   /** This function is called once when the robot is first started up. */
   @Override
-  public void simulationInit() {}
+  public void simulationInit() {
+    // not sure why this wasn't here earlier?
+    addSimObjects();
+  }
 
   /** This function is called periodically whilst in simulation. */
   @Override
