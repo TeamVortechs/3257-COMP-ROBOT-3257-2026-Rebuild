@@ -15,6 +15,7 @@ import static frc.robot.subsystems.vision.VisionConstants.robotToPhoton1;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.events.EventTrigger;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -47,11 +48,10 @@ import frc.robot.subsystems.climb.Climb;
 import frc.robot.subsystems.climb.ClimbIO;
 import frc.robot.subsystems.climb.ClimbSimulationIO;
 import frc.robot.subsystems.drive.Drive;
+import frc.robot.subsystems.drive.Drivetrain;
 import frc.robot.subsystems.drive.GyroIO;
-import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
-import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.feeder.Feeder;
 import frc.robot.subsystems.feeder.FeederIO;
 import frc.robot.subsystems.feeder.FeederSimulationIO;
@@ -82,6 +82,7 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 public class RobotContainer {
   // Subsystems
   private final Drive drive;
+  private final Drivetrain drivetrain;
 
   private final Intake intake;
 
@@ -125,11 +126,11 @@ public class RobotContainer {
         // a CANcoder
         drive =
             new Drive(
-                new GyroIOPigeon2(),
-                new ModuleIOTalonFX(TunerConstants.FrontLeft),
-                new ModuleIOTalonFX(TunerConstants.FrontRight),
-                new ModuleIOTalonFX(TunerConstants.BackLeft),
-                new ModuleIOTalonFX(TunerConstants.BackRight));
+                new GyroIO() {},
+                new ModuleIOSim(TunerConstants.FrontLeft),
+                new ModuleIOSim(TunerConstants.FrontRight),
+                new ModuleIOSim(TunerConstants.BackLeft),
+                new ModuleIOSim(TunerConstants.BackRight));
         // drive =
         //     new Drive(
         //         new GyroIO() {},
@@ -256,6 +257,14 @@ public class RobotContainer {
         break;
     }
 
+    drivetrain =
+        new Drivetrain(
+            TunerConstants.DrivetrainConstants,
+            TunerConstants.FrontLeft,
+            TunerConstants.FrontRight,
+            TunerConstants.BackLeft,
+            TunerConstants.BackRight);
+
     registerNamedCommandsAuto(); // register named commands for auto (pathplanner)
 
     // Set up auto routines
@@ -299,24 +308,21 @@ public class RobotContainer {
     belt.setDefaultCommand(belt.setPercentMotorOutputCommand(BeltConstants.DEFAULT_POWER));
 
     // Default command, normal field-relative drive
-    drive.setDefaultCommand(
-        DriveCommands.joystickDrive(
-            drive,
-            () -> -controller.getLeftY(),
-            () -> -controller.getLeftX(),
-            () -> -controller.getRightX() * 0.8));
+
+    drivetrain.setDefaultCommand(
+        drivetrain.joystickDrive(
+            () -> MathUtil.applyDeadband(-controller.getLeftY(), 0.1),
+            () -> MathUtil.applyDeadband(-controller.getLeftX(), 0.1),
+            () -> MathUtil.applyDeadband(-controller.getRightX(), 0.1)));
 
     // CONTROLLER:
 
     // Lock to 0° when A button is held
-    // controller
-    //     .rightStick()
-    //     .whileTrue(
-    //         DriveCommands.joystickDriveAtAngle(
-    //             drive,
-    //             () -> -controller.getLeftY(),
-    //             () -> -controller.getLeftX(),
-    //             () -> drive.getRotationOverBumper()));
+    controller
+        .rightStick()
+        .whileTrue(
+            drivetrain.joystickDriveAtTarget(
+                () -> -controller.getLeftY(), () -> -controller.getLeftX()));
 
     controller
         .rightStick()
