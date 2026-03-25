@@ -38,7 +38,6 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.FeederConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.ShooterConstants;
-import frc.robot.commands.DriveCommands;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.belt.Belt;
 import frc.robot.subsystems.belt.BeltIO;
@@ -47,11 +46,7 @@ import frc.robot.subsystems.belt.BeltTalonFXIO;
 import frc.robot.subsystems.climb.Climb;
 import frc.robot.subsystems.climb.ClimbIO;
 import frc.robot.subsystems.climb.ClimbSimulationIO;
-import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.Drivetrain;
-import frc.robot.subsystems.drive.GyroIO;
-import frc.robot.subsystems.drive.ModuleIO;
-import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.feeder.Feeder;
 import frc.robot.subsystems.feeder.FeederIO;
 import frc.robot.subsystems.feeder.FeederSimulationIO;
@@ -81,8 +76,7 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 @SuppressWarnings("unused")
 public class RobotContainer {
   // Subsystems
-  private final Drive drive;
-  private final Drivetrain drivetrain;
+  private final Drivetrain drive;
 
   private final Intake intake;
 
@@ -119,18 +113,20 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+
+    drive =
+    new Drivetrain(
+        TunerConstants.DrivetrainConstants,
+        TunerConstants.FrontLeft,
+        TunerConstants.FrontRight,
+        TunerConstants.BackLeft,
+        TunerConstants.BackRight);
+
     switch (Constants.CURR_MODE) {
       case REAL:
         // Real robot, instantiate hardware IO implementations
         // ModuleIOTalonFX is intended for modules with TalonFX drive, TalonFX turn, and
         // a CANcoder
-        drive =
-            new Drive(
-                new GyroIO() {},
-                new ModuleIOSim(TunerConstants.FrontLeft),
-                new ModuleIOSim(TunerConstants.FrontRight),
-                new ModuleIOSim(TunerConstants.BackLeft),
-                new ModuleIOSim(TunerConstants.BackRight));
         // drive =
         //     new Drive(
         //         new GyroIO() {},
@@ -154,8 +150,7 @@ public class RobotContainer {
         shooter =
             new Shooter(
                 new ShooterTalonFXIO(ShooterConstants.MOTOR_ID, ShooterConstants.FOLLOWER_MOTOR_ID),
-                () -> drive.getDistanceToGoal(),
-                () -> drive.isWithinShooterAutomaticChargingZone());
+                () -> drive.getDistanceToTarget());
         // shooter =
         //     new Shooter(
         //         new ShooterIO() {},
@@ -165,7 +160,7 @@ public class RobotContainer {
         feeder =
             new Feeder(
                 new FeederTalonFXIO(FeederConstants.MOTOR_ID),
-                () -> drive.isPointingToGoal(),
+                () -> drive.isOriented(),
                 () -> shooter.isOnTarget(),
                 () -> true);
         // feeder =
@@ -189,13 +184,6 @@ public class RobotContainer {
 
       case SIM:
         // Sim robot, instantiate physics sim IO implementations
-        drive =
-            new Drive(
-                new GyroIO() {},
-                new ModuleIOSim(TunerConstants.FrontLeft),
-                new ModuleIOSim(TunerConstants.FrontRight),
-                new ModuleIOSim(TunerConstants.BackLeft),
-                new ModuleIOSim(TunerConstants.BackRight));
 
         intake = new Intake(new IntakeSimulationIO());
 
@@ -204,13 +192,12 @@ public class RobotContainer {
         shooter =
             new Shooter(
                 new ShooterSimulationIO(),
-                () -> drive.getDistanceToTarget(),
-                () -> drive.isWithinShooterAutomaticChargingZone());
+                () -> drive.getDistanceToTarget());
 
         feeder =
             new Feeder(
                 new FeederSimulationIO(),
-                () -> drive.isPointingToGoal(),
+                () -> drive.isOriented(),
                 () -> shooter.isOnTarget(),
                 () -> true);
 
@@ -231,13 +218,6 @@ public class RobotContainer {
 
       default:
         // Replayed robot, disable IO implementations
-        drive =
-            new Drive(
-                new GyroIO() {},
-                new ModuleIO() {},
-                new ModuleIO() {},
-                new ModuleIO() {},
-                new ModuleIO() {});
 
         intake = new Intake(new IntakeIO() {});
 
@@ -248,8 +228,7 @@ public class RobotContainer {
         shooter =
             new Shooter(
                 new ShooterIO() {},
-                () -> drive.getDistanceToGoal(),
-                () -> drive.isWithinShooterAutomaticChargingZone());
+                () -> drive.getDistanceToTarget());
 
         climb = new Climb(new ClimbIO() {});
         vision = new Vision(drive::addVisionMeasurement, new VisionIO() {});
@@ -257,24 +236,16 @@ public class RobotContainer {
         break;
     }
 
-    drivetrain =
-        new Drivetrain(
-            TunerConstants.DrivetrainConstants,
-            TunerConstants.FrontLeft,
-            TunerConstants.FrontRight,
-            TunerConstants.BackLeft,
-            TunerConstants.BackRight);
-
     registerNamedCommandsAuto(); // register named commands for auto (pathplanner)
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
 
-    // Set up SysId routines
-    autoChooser.addOption(
-        "Drive Wheel Radius Characterization", DriveCommands.wheelRadiusCharacterization(drive));
-    autoChooser.addOption(
-        "Drive Simple FF Characterization", DriveCommands.feedforwardCharacterization(drive));
+    // // Set up SysId routines
+    // autoChooser.addOption(
+    //     "Drive Wheel Radius Characterization", DriveCommands.wheelRadiusCharacterization(drive));
+    // autoChooser.addOption(
+    //     "Drive Simple FF Characterization", DriveCommands.feedforwardCharacterization(drive));
     autoChooser.addOption(
         "Drive SysId (Quasistatic Forward)",
         drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
@@ -309,8 +280,8 @@ public class RobotContainer {
 
     // Default command, normal field-relative drive
 
-    drivetrain.setDefaultCommand(
-        drivetrain.joystickDrive(
+    drive.setDefaultCommand(
+        drive.joystickDrive(
             () -> MathUtil.applyDeadband(-controller.getLeftY(), 0.1),
             () -> MathUtil.applyDeadband(-controller.getLeftX(), 0.1),
             () -> MathUtil.applyDeadband(-controller.getRightX(), 0.1)));
@@ -321,20 +292,19 @@ public class RobotContainer {
     controller
         .rightStick()
         .whileTrue(
-            drivetrain.joystickDriveAtTarget(
+            drive.joystickDriveAtTarget(
                 () -> -controller.getLeftY(), () -> -controller.getLeftX()));
 
     controller
         .rightStick()
         .whileTrue(
-            DriveCommands.joystickDriveAtAngle(
-                drive,
+            drive.joystickDriveRotation(
                 () -> -controller.getLeftY(),
                 () -> -controller.getLeftX(),
                 () -> new Rotation2d(-controller.getLeftY(), -controller.getLeftX()).times(-1)));
 
     // Switch to X pattern when X button is pressed
-    controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
+    // controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
 
     // Reset gyro to 0° when B button is pressed
     controller
@@ -342,7 +312,7 @@ public class RobotContainer {
         .onTrue(
             Commands.runOnce(
                     () ->
-                        drive.setPose(
+                        drive.resetPose(
                             new Pose2d(drive.getPose().getTranslation(), Rotation2d.kZero)),
                     drive)
                 .ignoringDisable(true));
@@ -352,7 +322,6 @@ public class RobotContainer {
         .whileTrue(intake.setPositionCommand(IntakeConstants.INTAKE_HALFWAY_UP_POSITION));
 
     controller.povRight().whileTrue(intake.setPositionCommand(0));
-    controller.povLeft().whileTrue(drive.iteratePassingCommand(true));
 
     @SuppressWarnings("unused")
     Command aimTowardsTargetCommand =
@@ -384,8 +353,7 @@ public class RobotContainer {
     controller
         .y()
         .whileTrue(
-            DriveCommands.joystickDriveAtAngle(
-                    drive,
+            drive.joystickDriveRotation(
                     () -> -controller.getLeftY() * DriveConstants.K_JOYSTICK_WHEN_SHOOTING,
                     () -> -controller.getLeftX() * DriveConstants.K_JOYSTICK_WHEN_SHOOTING,
                     () ->
@@ -442,9 +410,8 @@ public class RobotContainer {
         .leftBumper()
         .onTrue(intake.setPositionCommand(IntakeConstants.INTAKE_HALFWAY_UP_POSITION));
 
-    controller.start().whileTrue(new InstantCommand(() -> drive.setPose(new Pose2d())));
+    controller.start().whileTrue(new InstantCommand(() -> drive.resetPose(new Pose2d())));
 
-    controller.x().whileTrue(drive.stayAtPoseCommand());
 
     // operator controller
 
@@ -592,7 +559,7 @@ public class RobotContainer {
     return shooter;
   }
 
-  public Drive getDrive() {
+  public Drivetrain getDrive() {
     return drive;
   }
 

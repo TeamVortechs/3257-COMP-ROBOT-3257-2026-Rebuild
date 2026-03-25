@@ -32,7 +32,6 @@ public class Shooter extends SubsystemBase {
   // TO DO: add values to table
   private final InterpolatingDoubleTreeMap distToSpeedTable;
 
-  private BooleanSupplier withinAutomaticChargingZone;
 
   private final Notifier logger;
 
@@ -45,8 +44,7 @@ public class Shooter extends SubsystemBase {
    */
   public Shooter(
       ShooterIO shooterIO,
-      DoubleSupplier distanceSupplierMeters,
-      BooleanSupplier withinAutomaticChargingZone) {
+      DoubleSupplier distanceSupplierMeters) {
     this.distanceSupplier = distanceSupplierMeters;
     this.shooterIO = shooterIO;
     this.inputs = new ShooterIOInputsAutoLogged();
@@ -77,8 +75,6 @@ public class Shooter extends SubsystemBase {
     this.speedToTableInit(3.11, 78);
 
     this.speedToTableInit(3.453, 84);
-
-    this.withinAutomaticChargingZone = withinAutomaticChargingZone;
 
     logger =
         new Notifier(
@@ -210,11 +206,7 @@ public class Shooter extends SubsystemBase {
             return;
           }
 
-          if (withinAutomaticChargingZone.getAsBoolean()) {
-            setAutomaticSpeed(automaticPercentage);
-          } else {
-            setManualSpeed(speedWhenNotInZone);
-          }
+          setManualSpeed(speedWhenNotInZone);
         },
         this);
   }

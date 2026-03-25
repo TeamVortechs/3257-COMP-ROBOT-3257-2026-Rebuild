@@ -205,57 +205,44 @@ public final class Constants {
     // this is optimal bc it's smoother going at an angle rather than straight in
     public static final double RED_SIDE_DEGREES = 135;
     public static final double BLUE_SIDE_DEGREES = 45;
+
+    //passing poses logic
+    public static final Pose2d PASSING_POSE_UP_BLUE = new Pose2d(2.5, 6, new Rotation2d());
+    public static final Pose2d PASSING_POSE_DOWN_BLUE = new Pose2d(2.5, 2, new Rotation2d());
+
+    public static final Pose2d PASSING_POSE_UP_RED = new Pose2d(14, 6, new Rotation2d());
+    public static final Pose2d PASSING_POSE_DOWN_RED = new Pose2d(14, 2, new Rotation2d());
+
+    public static final Supplier<Pose2d> PASSING_POSE_DOWN =
+    () -> {
+      if (DriverStation.getAlliance().isEmpty()) {
+        return new Pose2d();
+      }
+
+      if (DriverStation.getAlliance().get() == Alliance.Blue) {
+        return PASSING_POSE_DOWN_BLUE;
+      } else {
+        return PASSING_POSE_DOWN_RED;
+      }
+    };
+
+    public static final Supplier<Pose2d> PASSING_POSE_UP =
+    () -> {
+      if (DriverStation.getAlliance().isEmpty()) {
+        return new Pose2d();
+      }
+
+      if (DriverStation.getAlliance().get() == Alliance.Blue) {
+        return PASSING_POSE_UP_BLUE;
+      } else {
+        return PASSING_POSE_UP_RED;
+      }
+    };
+
+
     // find this
     public static final Pose2d GOAL_POSE_BLUE = new Pose2d(4.622, 4.03, new Rotation2d());
     public static final Pose2d GOAL_POSE_RED = new Pose2d(11.917, 4.030, new Rotation2d());
-
-    private static List<Pose2d> PASSING_GOALS_STORAGE = null;
-    private static List<String> PASSING_GOALS_NAME_STORAGE = null;
-
-    public static final List<String> PASSING_GOALS_NAMES() {
-
-      if (PASSING_GOALS_NAME_STORAGE == null) {
-        PASSING_GOALS_NAME_STORAGE = new ArrayList<>();
-        PASSING_GOALS_NAME_STORAGE.add("Back left");
-        PASSING_GOALS_NAME_STORAGE.add("Back right");
-      }
-
-      return PASSING_GOALS_NAME_STORAGE;
-    }
-
-    public static final int GET_PASSING_GOALS() {
-      GET_PASSING_GOAL(0);
-      return PASSING_GOALS_STORAGE.size();
-    }
-
-    public static final Pose2d GET_PASSING_GOAL(int index) {
-      Pose2d returnPose;
-
-      if (PASSING_GOALS_STORAGE == null) {
-        PASSING_GOALS_STORAGE = new ArrayList<>();
-        PASSING_GOALS_STORAGE.add(new Pose2d(3.6, 6.0, new Rotation2d()));
-        PASSING_GOALS_STORAGE.add(new Pose2d(3.6, 2.0, new Rotation2d()));
-      }
-
-      // if the alliance is verifiably red,
-      if (DriverStation.getAlliance() != null
-          && DriverStation.getAlliance().isPresent()
-          && DriverStation.getAlliance().get() == Alliance.Red) {
-
-        // get the opposite passing pose, then rotate the whole thing around 180 degrees
-        // this should mimic flipping it over an axis
-        returnPose =
-            PASSING_GOALS_STORAGE
-                // next index mod 2
-                // this wraps index = 1 + 1 back to index = 0
-                .get((index + 1) % 2)
-                .rotateAround(CENTER_POINT, Rotation2d.fromDegrees(180));
-      } else {
-        returnPose = PASSING_GOALS_STORAGE.get(index);
-      }
-
-      return returnPose;
-    }
 
     // this is ugly but all it does is return target pose based on the team
     public static final Supplier<Pose2d> GOAL_POSE =
