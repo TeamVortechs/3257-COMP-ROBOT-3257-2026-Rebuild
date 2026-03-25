@@ -18,7 +18,7 @@ public class VortechsUtil {
     return Math.abs(num1) < tolerance;
   }
 
-  public boolean isWithinXZone(double x, boolean wantsCenter, Pose2d pose) {
+  public static boolean isWithinXZone(double x, boolean wantsCenter, Pose2d pose) {
     double xPose = pose.getX();
 
     if (DriverStation.getAlliance().isEmpty()) {
@@ -40,7 +40,7 @@ public class VortechsUtil {
     }
   }
 
-  public boolean isWithinYZone(double y, boolean wantsCenter, Pose2d pose) {
+  public static boolean isWithinYZone(double y, boolean wantsCenter, Pose2d pose) {
     double yPose = pose.getY();
 
     if (DriverStation.getAlliance().isEmpty()) {
