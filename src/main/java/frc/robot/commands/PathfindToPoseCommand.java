@@ -11,8 +11,6 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.drive.Drivetrain;
-import frc.robot.subsystems.drive.Drivetrain;
-
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
@@ -121,7 +119,9 @@ public class PathfindToPoseCommand extends Command {
     drive.runVelocity(
         ChassisSpeeds.fromFieldRelativeSpeeds(
             fieldRelativeSpeeds,
-            isFlipped ? drive.getPose().getRotation().plus(new Rotation2d(Math.PI)) : drive.getPose().getRotation()));
+            isFlipped
+                ? drive.getPose().getRotation().plus(new Rotation2d(Math.PI))
+                : drive.getPose().getRotation()));
     // record outputs
     Logger.recordOutput("DriveToObject/xVelocity", xVelocity);
     Logger.recordOutput("DriveToObject/yVelocity", yVelocity);

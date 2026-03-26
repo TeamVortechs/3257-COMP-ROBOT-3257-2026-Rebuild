@@ -51,6 +51,7 @@ public class ShootOnMoveManager {
 
   /**
    * Command used for pathplanner rotation feedback override when shooting ont hei move
+   *
    * @return
    */
   public double getRotationFeedbackOverride() {
@@ -59,7 +60,6 @@ public class ShootOnMoveManager {
     double currentRadians = drive.getPose().getRotation().getRadians();
 
     double rotationSpeed = angle_controller.calculate(currentRadians, targetRadians);
-
 
     return rotationSpeed;
   }
@@ -82,7 +82,6 @@ public class ShootOnMoveManager {
   }
 
   /**
-   *
    * @param distance the distance in meters
    * @return the arm encoder value to aim towards
    */
@@ -103,7 +102,6 @@ public class ShootOnMoveManager {
     return onTarget;
   }
 
-
   public void setCalculateShootMove(boolean calculateShootOnMove) {
     this.calculateShootOnMove = calculateShootOnMove;
   }
@@ -115,7 +113,8 @@ public class ShootOnMoveManager {
     }
 
     ChassisSpeeds fieldSpeedsChassis =
-        ChassisSpeeds.fromRobotRelativeSpeeds(drive.getChassisSpeeds(), drive.getPose().getRotation());
+        ChassisSpeeds.fromRobotRelativeSpeeds(
+            drive.getChassisSpeeds(), drive.getPose().getRotation());
 
     Translation2d fieldSpeeds =
         new Translation2d(

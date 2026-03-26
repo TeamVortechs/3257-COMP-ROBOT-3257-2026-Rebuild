@@ -32,7 +32,6 @@ public class Shooter extends SubsystemBase {
   // TO DO: add values to table
   private final InterpolatingDoubleTreeMap distToSpeedTable;
 
-
   private final Notifier logger;
 
   // wether or not the shooter automatically charges to
@@ -42,9 +41,7 @@ public class Shooter extends SubsystemBase {
    * @param shooterIO the hardware interface
    * @param distanceSupplierMeters the distance supplier for when it goes automatic
    */
-  public Shooter(
-      ShooterIO shooterIO,
-      DoubleSupplier distanceSupplierMeters) {
+  public Shooter(ShooterIO shooterIO, DoubleSupplier distanceSupplierMeters) {
     this.distanceSupplier = distanceSupplierMeters;
     this.shooterIO = shooterIO;
     this.inputs = new ShooterIOInputsAutoLogged();

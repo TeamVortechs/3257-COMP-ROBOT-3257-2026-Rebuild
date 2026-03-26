@@ -7,6 +7,8 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Meter;
+import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.Seconds;
 
 import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
@@ -16,6 +18,9 @@ import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
+import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.ctre.phoenix6.swerve.SwerveRequest.FieldCentric;
+
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -26,12 +31,9 @@ import edu.wpi.first.units.measure.*;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.RobotBase;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.generated.TunerConstants;
+import frc.robot.subsystems.drive.Drivetrain;
 import frc.robot.util.SmartConstant;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Supplier;
 
 /**
@@ -128,29 +130,6 @@ public final class Constants {
     public static final double ANGLE_KD = 0.4;
     public static final double ANGLE_DEADBAND = 0.1;
 
-    public static final SmartConstant ANGLE_KP_SETTABLE =
-        new SmartConstant("DriveSettableConstantAngleKP", ANGLE_KP);
-    public static final SmartConstant ANGLE_KI_SETTABLE =
-        new SmartConstant("DriveSettableConstantAngleKI", ANGLE_KI);
-    public static final SmartConstant ANGLE_KD_SETTABLE =
-        new SmartConstant("DriveSettableConstantAngleKD", ANGLE_KD);
-
-    public static final SmartConstant TRANS_KP_SETTABLE =
-        new SmartConstant("DriveSettableConstantTransKP", TRANS_KP);
-    public static final SmartConstant TRANS_KI_SETTABLE =
-        new SmartConstant("DriveSettableConstantTransKI", TRANS_KI);
-    public static final SmartConstant TRANS_KD_SETTABLE =
-        new SmartConstant("DriveSettableConstantTransKD", TRANS_KD);
-
-    public static Command remakeAnglePIDController() {
-      return new InstantCommand(
-          () -> {
-            ANGLE_CONTROLLER.setP(ANGLE_KP_SETTABLE.get());
-            ANGLE_CONTROLLER.setI(ANGLE_KI_SETTABLE.get());
-            ANGLE_CONTROLLER.setD(ANGLE_KD_SETTABLE.get());
-          });
-    }
-
     public static final double ANGLE_MAX_ACCELERATION = 20.0;
     public static final double ANGLE_MAX_VELOCITY = 8.0;
 
@@ -158,10 +137,6 @@ public final class Constants {
 
     // this gets made with the other constants
     public static final ProfiledPIDController ANGLE_CONTROLLER;
-
-    // the time it takes between feeding and actual robot shoot. This is used to lead the robot
-    // pose. Should be about 0.08 - 0.18 s
-    public static final double KRELEASE_POSE_PREDICTION_SEC = 0; // to change .5
 
     public static final double K_JOYSTICK_WHEN_SHOOTING = 1;
     public static final double K_JOYSTICK_WHEN_PASSING = 1;
@@ -178,7 +153,7 @@ public final class Constants {
       double val = AIRTIME_MAP.get(distance);
 
       // realistic for a midpoint shot
-      return 0.9;
+      return val;
     }
 
     // tolerance for the shoot on move binary search. TS IS NOT HTE DRIVETRAIN MOVE TO ANGLE
@@ -200,13 +175,27 @@ public final class Constants {
 
     public static final Translation2d CENTER_POINT = new Translation2d(8.27, 4.115);
 
+  public static double MAX_LINEAR_SPEED_METERS_PER_SECOND = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
+  public static double MAX_ANGULAR_SPEED_RAD_PER_SEC() {
+    return  MAX_LINEAR_SPEED_METERS_PER_SECOND / DRIVE_BASE_RADIUS;
+  }
+
+
+
     // this is the rotation the drive will turn to when travelling over the bumpers, depending on
     // what side of the field(red or blue)
     // this is optimal bc it's smoother going at an angle rather than straight in
     public static final double RED_SIDE_DEGREES = 135;
     public static final double BLUE_SIDE_DEGREES = 45;
 
-    //passing poses logic
+    // control req stuff:
+    public static SwerveRequest.FieldCentric DRIVE_CONTROL_REQ = new FieldCentric().withDeadband(MAX_LINEAR_SPEED_METERS_PER_SECOND * 0.1).withRotationalDeadband(MAX_ANGULAR_SPEED_RAD_PER_SEC() * 0.1);
+
+
+    // POSE STUFF
+
+
+    // passing poses logic
     public static final Pose2d PASSING_POSE_UP_BLUE = new Pose2d(2.5, 6, new Rotation2d());
     public static final Pose2d PASSING_POSE_DOWN_BLUE = new Pose2d(2.5, 2, new Rotation2d());
 
@@ -214,31 +203,30 @@ public final class Constants {
     public static final Pose2d PASSING_POSE_DOWN_RED = new Pose2d(14, 2, new Rotation2d());
 
     public static final Supplier<Pose2d> PASSING_POSE_DOWN =
-    () -> {
-      if (DriverStation.getAlliance().isEmpty()) {
-        return new Pose2d();
-      }
+        () -> {
+          if (DriverStation.getAlliance().isEmpty()) {
+            return new Pose2d();
+          }
 
-      if (DriverStation.getAlliance().get() == Alliance.Blue) {
-        return PASSING_POSE_DOWN_BLUE;
-      } else {
-        return PASSING_POSE_DOWN_RED;
-      }
-    };
+          if (DriverStation.getAlliance().get() == Alliance.Blue) {
+            return PASSING_POSE_DOWN_BLUE;
+          } else {
+            return PASSING_POSE_DOWN_RED;
+          }
+        };
 
     public static final Supplier<Pose2d> PASSING_POSE_UP =
-    () -> {
-      if (DriverStation.getAlliance().isEmpty()) {
-        return new Pose2d();
-      }
+        () -> {
+          if (DriverStation.getAlliance().isEmpty()) {
+            return new Pose2d();
+          }
 
-      if (DriverStation.getAlliance().get() == Alliance.Blue) {
-        return PASSING_POSE_UP_BLUE;
-      } else {
-        return PASSING_POSE_UP_RED;
-      }
-    };
-
+          if (DriverStation.getAlliance().get() == Alliance.Blue) {
+            return PASSING_POSE_UP_BLUE;
+          } else {
+            return PASSING_POSE_UP_RED;
+          }
+        };
 
     // find this
     public static final Pose2d GOAL_POSE_BLUE = new Pose2d(4.622, 4.03, new Rotation2d());

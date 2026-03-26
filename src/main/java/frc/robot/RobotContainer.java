@@ -115,12 +115,12 @@ public class RobotContainer {
   public RobotContainer() {
 
     drive =
-    new Drivetrain(
-        TunerConstants.DrivetrainConstants,
-        TunerConstants.FrontLeft,
-        TunerConstants.FrontRight,
-        TunerConstants.BackLeft,
-        TunerConstants.BackRight);
+        new Drivetrain(
+            TunerConstants.DrivetrainConstants,
+            TunerConstants.FrontLeft,
+            TunerConstants.FrontRight,
+            TunerConstants.BackLeft,
+            TunerConstants.BackRight);
 
     switch (Constants.CURR_MODE) {
       case REAL:
@@ -189,10 +189,7 @@ public class RobotContainer {
 
         belt = new Belt(new BeltSimulationIO());
 
-        shooter =
-            new Shooter(
-                new ShooterSimulationIO(),
-                () -> drive.getDistanceToTarget());
+        shooter = new Shooter(new ShooterSimulationIO(), () -> drive.getDistanceToTarget());
 
         feeder =
             new Feeder(
@@ -225,10 +222,7 @@ public class RobotContainer {
 
         feeder = new Feeder(new FeederIO() {}, () -> false, () -> false, () -> false);
 
-        shooter =
-            new Shooter(
-                new ShooterIO() {},
-                () -> drive.getDistanceToTarget());
+        shooter = new Shooter(new ShooterIO() {}, () -> drive.getDistanceToTarget());
 
         climb = new Climb(new ClimbIO() {});
         vision = new Vision(drive::addVisionMeasurement, new VisionIO() {});
@@ -353,7 +347,8 @@ public class RobotContainer {
     controller
         .y()
         .whileTrue(
-            drive.joystickDriveRotation(
+            drive
+                .joystickDriveRotation(
                     () -> -controller.getLeftY() * DriveConstants.K_JOYSTICK_WHEN_SHOOTING,
                     () -> -controller.getLeftX() * DriveConstants.K_JOYSTICK_WHEN_SHOOTING,
                     () ->
@@ -411,7 +406,6 @@ public class RobotContainer {
         .onTrue(intake.setPositionCommand(IntakeConstants.INTAKE_HALFWAY_UP_POSITION));
 
     controller.start().whileTrue(new InstantCommand(() -> drive.resetPose(new Pose2d())));
-
 
     // operator controller
 

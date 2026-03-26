@@ -18,10 +18,8 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.generated.TunerConstants;
 import frc.robot.util.VortechsUtil;
-
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
-
 
 public class Drivetrain extends CommandSwerveDrivetrain {
 
@@ -36,7 +34,6 @@ public class Drivetrain extends CommandSwerveDrivetrain {
     super(swerveDrivetrainConstants, modules);
 
     shootOnMoveManager = new ShootOnMoveManager(rawTargetpose, this);
-
   }
 
   // drive commands
@@ -57,15 +54,15 @@ public class Drivetrain extends CommandSwerveDrivetrain {
       DoubleSupplier xSupplier, DoubleSupplier ySupplier, DoubleSupplier omegaSupplier) {
     return Commands.run(
         () -> {
-          double xSpeed = xSupplier.getAsDouble() * getMaxLinearSpeedMetersPerSec();
-          double ySpeed = ySupplier.getAsDouble() * getMaxLinearSpeedMetersPerSec();
+          double xSpeed = xSupplier.getAsDouble() * DriveConstants.MAX_LINEAR_SPEED_METERS_PER_SECOND;
+          double ySpeed = ySupplier.getAsDouble() * DriveConstants.MAX_LINEAR_SPEED_METERS_PER_SECOND;
 
           double omegaSpeed =
               Math.copySign(
                   omegaSupplier.getAsDouble() * omegaSupplier.getAsDouble(),
                   omegaSupplier.getAsDouble());
 
-          omegaSpeed *= getMaxAngularSpeedRadPerSec();
+          omegaSpeed *= DriveConstants.MAX_ANGULAR_SPEED_RAD_PER_SEC();
 
           this.setControl(
               m_FieldCentricReq
@@ -82,8 +79,8 @@ public class Drivetrain extends CommandSwerveDrivetrain {
         () -> {
           ProfiledPIDController angleController = DriveConstants.ANGLE_CONTROLLER;
 
-          double xSpeed = xSupplier.getAsDouble() * getMaxLinearSpeedMetersPerSec();
-          double ySpeed = ySupplier.getAsDouble() * getMaxLinearSpeedMetersPerSec();
+          double xSpeed = xSupplier.getAsDouble() * DriveConstants.MAX_LINEAR_SPEED_METERS_PER_SECOND;
+          double ySpeed = ySupplier.getAsDouble() * DriveConstants.MAX_LINEAR_SPEED_METERS_PER_SECOND;
 
           double omegaSpeed =
               angleController.calculate(
@@ -101,12 +98,19 @@ public class Drivetrain extends CommandSwerveDrivetrain {
 
   public Command joystickDriveAtTarget(DoubleSupplier xSupplier, DoubleSupplier ySupplier) {
 
-    //turn on shoot on move, makes sure it is to save on calculations
-    return new InstantCommand(() -> {shootOnMoveManager.setCalculateShootMove(true);})
-    .andThen(joystickDriveRotation(xSupplier, ySupplier, () -> shootOnMoveManager.getHeading()))
+    // turn on shoot on move, makes sure it is to save on calculations
+    return new InstantCommand(
+            () -> {
+              shootOnMoveManager.setCalculateShootMove(true);
+            })
+        .andThen(joystickDriveRotation(xSupplier, ySupplier, () -> shootOnMoveManager.getHeading()))
 
-    //turn off shoot on move calculations to save memory
-    .andThen(new InstantCommand(() -> {shootOnMoveManager.setCalculateShootMove(false);}));
+        // turn off shoot on move calculations to save memory
+        .andThen(
+            new InstantCommand(
+                () -> {
+                  shootOnMoveManager.setCalculateShootMove(false);
+                }));
   }
 
   public boolean isOriented() {
@@ -117,7 +121,7 @@ public class Drivetrain extends CommandSwerveDrivetrain {
     return shootOnMoveManager.getDistance();
   }
 
-  //pose related commands
+  // pose related commands
   public void resetPose(Pose2d pose) {
     this.getState().Pose = pose;
   }
@@ -130,7 +134,7 @@ public class Drivetrain extends CommandSwerveDrivetrain {
     return this.getStateCopy().Speeds;
   }
 
-  //autonomous commands
+  // autonomous commands
   public Command overrideRotationCommand() {
     return new InstantCommand();
   }
@@ -139,8 +143,7 @@ public class Drivetrain extends CommandSwerveDrivetrain {
     return new InstantCommand();
   }
 
-
-  //vision
+  // vision
 
   /** Adds a new timestamped vision measurement. */
   public void addVisionMeasurement(
@@ -150,33 +153,25 @@ public class Drivetrain extends CommandSwerveDrivetrain {
     this.addVisionMeasurement(visionRobotPoseMeters, timestampSeconds, visionMeasurementStdDevs);
   }
 
-  //pose shot stuff
+  // pose shot stuff
   /**
-   * The supplier for where the drivetrain is currrently aiming. Does not account for shooting on the move
+   * The supplier for where the drivetrain is currrently aiming. Does not account for shooting on
+   * the move
    */
-  public Supplier<Pose2d> rawTargetpose = () -> {
-    if(VortechsUtil.isWithinXZone(DriveConstants.X_POSE_TO_PASS, false, getPose())) {
-      //in this case ur shooting
-      return DriveConstants.GOAL_POSE.get();
-    }
+  public Supplier<Pose2d> rawTargetpose =
+      () -> {
+        if (VortechsUtil.isWithinXZone(DriveConstants.X_POSE_TO_PASS, false, getPose())) {
+          // in this case ur shooting
+          return DriveConstants.GOAL_POSE.get();
+        }
 
-    if(getPose().getY() < DriveConstants.CENTER_POINT.getY()) {
-      return DriveConstants.PASSING_POSE_DOWN.get();
-    }
+        if (getPose().getY() < DriveConstants.CENTER_POINT.getY()) {
+          return DriveConstants.PASSING_POSE_DOWN.get();
+        }
 
-    return DriveConstants.PASSING_POSE_UP.get();
-  };
+        return DriveConstants.PASSING_POSE_UP.get();
+      };
 
+  // helper methods
 
-  //helper methods
-
-  /** Returns the maximum linear speed in meters per sec. */
-  public double getMaxLinearSpeedMetersPerSec() {
-    return TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
-  }
-
-  /** Returns the maximum angular speed in radians per sec. */
-  public double getMaxAngularSpeedRadPerSec() {
-    return getMaxLinearSpeedMetersPerSec() / DriveConstants.DRIVE_BASE_RADIUS;
-  }
 }
