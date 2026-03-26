@@ -3,20 +3,24 @@ package frc.robot.subsystems.drive;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
-import edu.wpi.first.math.Matrix;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.pathfinding.Pathfinding;
+import com.pathplanner.lib.util.PathPlannerLogging;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.numbers.N1;
-import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.util.LocalADStarAK;
 import frc.robot.util.VortechsUtil;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
+import org.littletonrobotics.junction.Logger;
 
 public class Drivetrain extends CommandSwerveDrivetrain {
 
@@ -31,6 +35,25 @@ public class Drivetrain extends CommandSwerveDrivetrain {
     super(swerveDrivetrainConstants, modules);
 
     shootOnMoveManager = new ShootOnMoveManager(rawTargetpose, this);
+
+    AutoBuilder.configure(
+        this::getPose,
+        this::resetPose,
+        this::getChassisSpeeds,
+        this::runVelocity,
+        DriveConstants.PATHPLANNER_CONTROLLER,
+        DriveConstants.PP_CONFIG,
+        () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
+        this);
+    Pathfinding.setPathfinder(new LocalADStarAK());
+    PathPlannerLogging.setLogActivePathCallback(
+        (activePath) -> {
+          Logger.recordOutput("Odometry/Trajectory", activePath.toArray(new Pose2d[0]));
+        });
+    PathPlannerLogging.setLogTargetPoseCallback(
+        (targetPose) -> {
+          Logger.recordOutput("Odometry/TrajectorySetpoint", targetPose);
+        });
   }
 
   // drive commands
@@ -63,11 +86,15 @@ public class Drivetrain extends CommandSwerveDrivetrain {
 
           omegaSpeed *= DriveConstants.MAX_ANGULAR_SPEED_RAD_PER_SEC();
 
+          ChassisSpeeds filteredSpeeds =
+              DriveConstants.DRIVE_INPUT_FILTER.calculate(
+                  new ChassisSpeeds(xSpeed, ySpeed, omegaSpeed));
+
           this.setControl(
               m_FieldCentricReq
-                  .withVelocityX(xSpeed)
-                  .withVelocityY(ySpeed)
-                  .withRotationalRate(omegaSpeed));
+                  .withVelocityX(filteredSpeeds.vxMetersPerSecond)
+                  .withVelocityY(filteredSpeeds.vyMetersPerSecond)
+                  .withRotationalRate(filteredSpeeds.omegaRadiansPerSecond));
         },
         this);
   }
@@ -145,14 +172,6 @@ public class Drivetrain extends CommandSwerveDrivetrain {
   }
 
   // vision
-
-  /** Adds a new timestamped vision measurement. */
-  public void addVisionMeasurement(
-      Pose2d visionRobotPoseMeters,
-      double timestampSeconds,
-      Matrix<N3, N1> visionMeasurementStdDevs) {
-    this.addVisionMeasurement(visionRobotPoseMeters, timestampSeconds, visionMeasurementStdDevs);
-  }
 
   // pose shot stuff
   /**

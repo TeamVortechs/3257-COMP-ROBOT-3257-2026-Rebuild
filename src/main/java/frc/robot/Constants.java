@@ -20,17 +20,25 @@ import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.ctre.phoenix6.swerve.SwerveRequest.FieldCentric;
+import com.pathplanner.lib.config.ModuleConfig;
+import com.pathplanner.lib.config.PIDConstants;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
+import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.units.measure.*;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.RobotBase;
 import frc.robot.generated.TunerConstants;
+import frc.robot.subsystems.drive.filtering.DeadbandDriveInputFilter;
+import frc.robot.subsystems.drive.filtering.DriveInputFilter;
+import frc.robot.subsystems.drive.filtering.SlewDriveInputFilter;
 import frc.robot.util.SmartConstant;
 import java.util.function.Supplier;
 
@@ -140,6 +148,37 @@ public final class Constants {
     public static final double K_JOYSTICK_WHEN_PASSING = 1;
     public static final double K_JOYSTICK_ROTATION = 0.7;
     public static final double K_JOYSTICK_TRANSLATION = 1;
+
+    public static PPHolonomicDriveController PATHPLANNER_CONTROLLER =
+        new PPHolonomicDriveController(
+            new PIDConstants(
+                DriveConstants.TRANS_KP, DriveConstants.TRANS_KI, DriveConstants.TRANS_KD),
+            new PIDConstants(
+                DriveConstants.ANGLE_KP, DriveConstants.ANGLE_KI, DriveConstants.ANGLE_KD));
+
+    public static final RobotConfig PP_CONFIG =
+        new RobotConfig(
+            ROBOT_WEIGHT,
+            ROBOT_MOI,
+            new ModuleConfig(
+                TunerConstants.FrontLeft.WheelRadius,
+                TunerConstants.kSpeedAt12Volts.in(MetersPerSecond),
+                WHEEL_COF,
+                DCMotor.getKrakenX60Foc(1)
+                    .withReduction(TunerConstants.FrontLeft.DriveMotorGearRatio),
+                TunerConstants.FrontLeft.SlipCurrent,
+                1),
+            getModuleTranslations());
+
+    /** Returns an array of module translations. */
+    public static Translation2d[] getModuleTranslations() {
+      return new Translation2d[] {
+        new Translation2d(TunerConstants.FrontLeft.LocationX, TunerConstants.FrontLeft.LocationY),
+        new Translation2d(TunerConstants.FrontRight.LocationX, TunerConstants.FrontRight.LocationY),
+        new Translation2d(TunerConstants.BackLeft.LocationX, TunerConstants.BackLeft.LocationY),
+        new Translation2d(TunerConstants.BackRight.LocationX, TunerConstants.BackRight.LocationY)
+      };
+    }
 
     // y position that splits this in half
 
@@ -276,6 +315,11 @@ public final class Constants {
 
       characterizeAirtimeMap();
     }
+
+    public static final DriveInputFilter DRIVE_INPUT_FILTER =
+        new DeadbandDriveInputFilter(
+                0.1 * MAX_LINEAR_SPEED_METERS_PER_SECOND, MAX_ANGULAR_SPEED_RAD_PER_SEC())
+            .withNextFilter(new SlewDriveInputFilter(1, 1));
   }
 
   public class ShooterConstants {
