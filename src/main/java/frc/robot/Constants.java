@@ -20,11 +20,16 @@ import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.ctre.phoenix6.swerve.SwerveRequest.FieldCentric;
+import com.pathplanner.lib.config.ModuleConfig;
+import com.pathplanner.lib.config.PIDConstants;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
+import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.units.measure.*;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -275,6 +280,37 @@ public final class Constants {
       ANGLE_CONTROLLER.enableContinuousInput(-Math.PI, Math.PI);
 
       characterizeAirtimeMap();
+    }
+
+    public static PPHolonomicDriveController PATHPLANNER_CONTROLLER =
+        new PPHolonomicDriveController(
+            new PIDConstants(
+                DriveConstants.TRANS_KP, DriveConstants.TRANS_KI, DriveConstants.TRANS_KD),
+            new PIDConstants(
+                DriveConstants.ANGLE_KP, DriveConstants.ANGLE_KI, DriveConstants.ANGLE_KD));
+
+    public static final RobotConfig PP_CONFIG =
+        new RobotConfig(
+            ROBOT_WEIGHT,
+            ROBOT_MOI,
+            new ModuleConfig(
+                TunerConstants.FrontLeft.WheelRadius,
+                TunerConstants.kSpeedAt12Volts.in(MetersPerSecond),
+                WHEEL_COF,
+                DCMotor.getKrakenX60Foc(1)
+                    .withReduction(TunerConstants.FrontLeft.DriveMotorGearRatio),
+                TunerConstants.FrontLeft.SlipCurrent,
+                1),
+            getModuleTranslations());
+
+    /** Returns an array of module translations. */
+    public static Translation2d[] getModuleTranslations() {
+      return new Translation2d[] {
+        new Translation2d(TunerConstants.FrontLeft.LocationX, TunerConstants.FrontLeft.LocationY),
+        new Translation2d(TunerConstants.FrontRight.LocationX, TunerConstants.FrontRight.LocationY),
+        new Translation2d(TunerConstants.BackLeft.LocationX, TunerConstants.BackLeft.LocationY),
+        new Translation2d(TunerConstants.BackRight.LocationX, TunerConstants.BackRight.LocationY)
+      };
     }
   }
 

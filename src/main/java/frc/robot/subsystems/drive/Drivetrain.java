@@ -1,48 +1,67 @@
 package frc.robot.subsystems.drive;
 
-import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
-import com.ctre.phoenix6.swerve.SwerveModuleConstants;
-import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.Matrix;
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.util.VortechsUtil;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
-public class Drivetrain extends CommandSwerveDrivetrain {
+import org.littletonrobotics.junction.Logger;
 
-  private SwerveRequest.RobotCentric m_RobotCentricReq = new SwerveRequest.RobotCentric();
-  private SwerveRequest.FieldCentric m_FieldCentricReq = new SwerveRequest.FieldCentric();
+public class Drivetrain extends SubsystemBase {
+
+  private DrivetrainIO drivetrainIO;
 
   private ShootOnMoveManager shootOnMoveManager;
+  private DrivetrainIOInputsAutoLogged inputs = new DrivetrainIOInputsAutoLogged();
 
-  public Drivetrain(
-      SwerveDrivetrainConstants swerveDrivetrainConstants,
-      SwerveModuleConstants<?, ?, ?>... modules) {
-    super(swerveDrivetrainConstants, modules);
+  public Drivetrain(DrivetrainIO drivetrainIO) {
+
+    this.drivetrainIO = drivetrainIO;
 
     shootOnMoveManager = new ShootOnMoveManager(rawTargetpose, this);
+
+    AutoBuilder.configure(
+        this::getPose,
+        this::resetPose,
+        this::getChassisSpeeds,
+        this::runVelocity,
+        DriveConstants.PATHPLANNER_CONTROLLER,
+        DriveConstants.PP_CONFIG,
+        () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
+        this);
+  }
+
+
+  @Override
+  public void periodic() {
+    drivetrainIO.updateInputs(inputs);
+    Logger.processInputs("drivetrain", inputs);
+  }
+
+  public void runVelocity(ChassisSpeeds speeds) {
+    drivetrainIO.runRobotCentricVelocity(speeds);
   }
 
   // drive commands
-  public Command runVelocity(ChassisSpeeds speeds) {
+  public Command runVelocityCommand(ChassisSpeeds speeds) {
 
     return Commands.run(
         () -> {
-          this.setControl(
-              m_RobotCentricReq
-                  .withVelocityX(speeds.vxMetersPerSecond)
-                  .withVelocityY(speeds.vyMetersPerSecond)
-                  .withRotationalRate(speeds.omegaRadiansPerSecond));
+          drivetrainIO.runRobotCentricVelocity(speeds);
         },
         this);
   }
@@ -63,11 +82,7 @@ public class Drivetrain extends CommandSwerveDrivetrain {
 
           omegaSpeed *= DriveConstants.MAX_ANGULAR_SPEED_RAD_PER_SEC();
 
-          this.setControl(
-              m_FieldCentricReq
-                  .withVelocityX(xSpeed)
-                  .withVelocityY(ySpeed)
-                  .withRotationalRate(omegaSpeed));
+          drivetrainIO.runFieldCentricVelocity(new ChassisSpeeds(xSpeed, ySpeed, omegaSpeed));
         },
         this);
   }
@@ -76,23 +91,13 @@ public class Drivetrain extends CommandSwerveDrivetrain {
       DoubleSupplier xSupplier, DoubleSupplier ySupplier, Supplier<Rotation2d> rotationSupplier) {
     return Commands.run(
         () -> {
-          ProfiledPIDController angleController = DriveConstants.ANGLE_CONTROLLER;
-
           double xSpeed =
               xSupplier.getAsDouble() * DriveConstants.MAX_LINEAR_SPEED_METERS_PER_SECOND;
           double ySpeed =
               ySupplier.getAsDouble() * DriveConstants.MAX_LINEAR_SPEED_METERS_PER_SECOND;
 
-          double omegaSpeed =
-              angleController.calculate(
-                  getState().Pose.getRotation().getRadians(), rotationSupplier.get().getRadians());
-
-          this.setControl(
-              m_FieldCentricReq
-                  .withVelocityX(xSpeed)
-                  .withVelocityX(ySpeed)
-                  .withRotationalRate(omegaSpeed)
-                  .withDeadband(DriveConstants.ANGLE_DEADBAND));
+          drivetrainIO.runFieldCentricVelocityAtRotation(
+              new ChassisSpeeds(xSpeed, ySpeed, 0), rotationSupplier.get());
         },
         this);
   }
@@ -124,15 +129,15 @@ public class Drivetrain extends CommandSwerveDrivetrain {
 
   // pose related commands
   public void resetPose(Pose2d pose) {
-    this.getState().Pose = pose;
+    drivetrainIO.setPose(pose);
   }
 
   public Pose2d getPose() {
-    return this.getStateCopy().Pose;
+    return drivetrainIO.getPose();
   }
 
   public ChassisSpeeds getChassisSpeeds() {
-    return this.getStateCopy().Speeds;
+    return drivetrainIO.getChassisSpeeds();
   }
 
   // autonomous commands
@@ -151,7 +156,8 @@ public class Drivetrain extends CommandSwerveDrivetrain {
       Pose2d visionRobotPoseMeters,
       double timestampSeconds,
       Matrix<N3, N1> visionMeasurementStdDevs) {
-    this.addVisionMeasurement(visionRobotPoseMeters, timestampSeconds, visionMeasurementStdDevs);
+    drivetrainIO.addVisionMeasurement(
+        visionRobotPoseMeters, timestampSeconds, visionMeasurementStdDevs);
   }
 
   // pose shot stuff
@@ -172,6 +178,17 @@ public class Drivetrain extends CommandSwerveDrivetrain {
 
         return DriveConstants.PASSING_POSE_UP.get();
       };
+
+  public Command sysIdQuasistatic(Direction direction) {
+    // done with instant command for requirements
+    return new InstantCommand(() -> {}, this)
+        .andThen(drivetrainIO.sysIdQuasistaticCommand(direction));
+  }
+
+  public Command sysIdDynamic(Direction direction) {
+    // done with instant command for requirements
+    return new InstantCommand(() -> {}, this).andThen(drivetrainIO.sysIdDynamicCommand(direction));
+  }
 
   // helper methods
 

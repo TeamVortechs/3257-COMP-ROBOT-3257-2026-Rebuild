@@ -46,6 +46,9 @@ import frc.robot.subsystems.climb.Climb;
 import frc.robot.subsystems.climb.ClimbIO;
 import frc.robot.subsystems.climb.ClimbSimulationIO;
 import frc.robot.subsystems.drive.Drivetrain;
+import frc.robot.subsystems.drive.DrivetrainIO;
+import frc.robot.subsystems.drive.DrivetrainSimulationIO;
+import frc.robot.subsystems.drive.DrivetrainTalonFXIO;
 import frc.robot.subsystems.feeder.Feeder;
 import frc.robot.subsystems.feeder.FeederIO;
 import frc.robot.subsystems.feeder.FeederSimulationIO;
@@ -113,26 +116,21 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
 
-    drive =
-        new Drivetrain(
-            TunerConstants.DrivetrainConstants,
-            TunerConstants.FrontLeft,
-            TunerConstants.FrontRight,
-            TunerConstants.BackLeft,
-            TunerConstants.BackRight);
-
     switch (Constants.CURR_MODE) {
       case REAL:
         // Real robot, instantiate hardware IO implementations
         // ModuleIOTalonFX is intended for modules with TalonFX drive, TalonFX turn, and
         // a CANcoder
-        // drive =
-        //     new Drive(
-        //         new GyroIO() {},
-        //         new ModuleIO() {},
-        //         new ModuleIO() {},
-        //         new ModuleIO() {},
-        //         new ModuleIO() {});
+
+        drive =
+            new Drivetrain(
+                new DrivetrainTalonFXIO(
+                    TunerConstants.DrivetrainConstants,
+                    TunerConstants.FrontLeft,
+                    TunerConstants.FrontRight,
+                    TunerConstants.BackLeft,
+                    TunerConstants.BackRight));
+
         intake =
             new Intake(
                 new IntakeTalonFXCANCoderIO(
@@ -184,6 +182,15 @@ public class RobotContainer {
       case SIM:
         // Sim robot, instantiate physics sim IO implementations
 
+        drive =
+            new Drivetrain(
+                new DrivetrainSimulationIO(
+                    TunerConstants.DrivetrainConstants,
+                    TunerConstants.FrontLeft,
+                    TunerConstants.FrontRight,
+                    TunerConstants.BackLeft,
+                    TunerConstants.BackRight));
+
         intake = new Intake(new IntakeSimulationIO());
 
         belt = new Belt(new BeltSimulationIO());
@@ -213,6 +220,8 @@ public class RobotContainer {
         break;
 
       default:
+        drive = new Drivetrain(new DrivetrainIO() {});
+
         // Replayed robot, disable IO implementations
 
         intake = new Intake(new IntakeIO() {});
