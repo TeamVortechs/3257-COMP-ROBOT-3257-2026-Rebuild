@@ -74,6 +74,7 @@ public class ShootOnMoveManager {
     Translation2d delta =
         getEffectiveTarget().getTranslation().minus(drive.getPose().getTranslation());
 
+    // so that i don't have to deal with the x & y components of new Rotation2d == 0 error
     Rotation2d heading = new Rotation2d(delta.getX(), delta.getY());
 
     // Logger.recordOutput("ShooterRotationManager/TargetHeading", heading);

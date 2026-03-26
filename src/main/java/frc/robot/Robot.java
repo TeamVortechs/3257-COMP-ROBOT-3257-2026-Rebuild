@@ -8,6 +8,7 @@
 package frc.robot;
 
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
@@ -185,7 +186,11 @@ public class Robot extends LoggedRobot {
 
   /** This function is called periodically whilst in simulation. */
   @Override
-  public void simulationPeriodic() {}
+  public void simulationPeriodic() {
+    robotContainer
+        .getDrive()
+        .updateSimState(defaultPeriodSecs, RobotController.getBatteryVoltage());
+  }
 
   private void addSimObjects() {
     robotContainer = new RobotContainer();
