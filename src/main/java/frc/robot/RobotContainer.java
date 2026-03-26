@@ -15,7 +15,6 @@ import static frc.robot.subsystems.vision.VisionConstants.robotToPhoton1;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.events.EventTrigger;
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -276,9 +275,9 @@ public class RobotContainer {
 
     drive.setDefaultCommand(
         drive.joystickDrive(
-            () -> MathUtil.applyDeadband(-controller.getLeftY(), 0.1),
-            () -> MathUtil.applyDeadband(-controller.getLeftX(), 0.1),
-            () -> MathUtil.applyDeadband(-controller.getRightX(), 0.1)));
+            () -> -controller.getLeftY(),
+            () -> -controller.getLeftX(),
+            () -> -controller.getRightX()));
 
     // CONTROLLER:
 

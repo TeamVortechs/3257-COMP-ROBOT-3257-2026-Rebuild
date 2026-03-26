@@ -7,7 +7,6 @@
 
 package frc.robot;
 
-import static edu.wpi.first.units.Units.Meter;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.Seconds;
 
@@ -18,9 +17,9 @@ import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
+import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.ctre.phoenix6.swerve.SwerveRequest.FieldCentric;
-
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -32,7 +31,6 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.RobotBase;
 import frc.robot.generated.TunerConstants;
-import frc.robot.subsystems.drive.Drivetrain;
 import frc.robot.util.SmartConstant;
 import java.util.function.Supplier;
 
@@ -175,12 +173,12 @@ public final class Constants {
 
     public static final Translation2d CENTER_POINT = new Translation2d(8.27, 4.115);
 
-  public static double MAX_LINEAR_SPEED_METERS_PER_SECOND = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
-  public static double MAX_ANGULAR_SPEED_RAD_PER_SEC() {
-    return  MAX_LINEAR_SPEED_METERS_PER_SECOND / DRIVE_BASE_RADIUS;
-  }
+    public static double MAX_LINEAR_SPEED_METERS_PER_SECOND =
+        TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
 
-
+    public static double MAX_ANGULAR_SPEED_RAD_PER_SEC() {
+      return MAX_LINEAR_SPEED_METERS_PER_SECOND / DRIVE_BASE_RADIUS;
+    }
 
     // this is the rotation the drive will turn to when travelling over the bumpers, depending on
     // what side of the field(red or blue)
@@ -189,11 +187,13 @@ public final class Constants {
     public static final double BLUE_SIDE_DEGREES = 45;
 
     // control req stuff:
-    public static SwerveRequest.FieldCentric DRIVE_CONTROL_REQ = new FieldCentric().withDeadband(MAX_LINEAR_SPEED_METERS_PER_SECOND * 0.1).withRotationalDeadband(MAX_ANGULAR_SPEED_RAD_PER_SEC() * 0.1);
-
+    public static SwerveRequest.FieldCentric DRIVE_CONTROL_REQ =
+        new FieldCentric()
+            .withDeadband(MAX_LINEAR_SPEED_METERS_PER_SECOND * 0.1)
+            .withRotationalDeadband(MAX_ANGULAR_SPEED_RAD_PER_SEC() * 0.1)
+            .withDriveRequestType(DriveRequestType.Velocity);
 
     // POSE STUFF
-
 
     // passing poses logic
     public static final Pose2d PASSING_POSE_UP_BLUE = new Pose2d(2.5, 6, new Rotation2d());
