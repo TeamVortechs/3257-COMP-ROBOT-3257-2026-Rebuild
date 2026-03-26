@@ -318,7 +318,10 @@ public final class Constants {
 
     public static final DriveInputFilter DRIVE_INPUT_FILTER =
         new DeadbandDriveInputFilter(
-                0.1 * MAX_LINEAR_SPEED_METERS_PER_SECOND, MAX_ANGULAR_SPEED_RAD_PER_SEC())
+                0.1 * MAX_LINEAR_SPEED_METERS_PER_SECOND,
+                0.1 * MAX_ANGULAR_SPEED_RAD_PER_SEC(),
+                MAX_LINEAR_SPEED_METERS_PER_SECOND,
+                MAX_ANGULAR_SPEED_RAD_PER_SEC())
             .withNextFilter(new SlewDriveInputFilter(1, 1));
   }
 
