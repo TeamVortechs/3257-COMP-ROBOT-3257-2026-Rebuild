@@ -307,4 +307,18 @@ public class Intake extends SubsystemBase {
         new SysIdRoutine.Mechanism(
             (volts) -> intakeIO.setPositionVoltage(volts.in(Volts)), null, this));
   }
+
+  public boolean isJammed() {
+    // according to google, having a high current + low speed + voltage applied = JAM
+    boolean rollerJammed = Math.abs(inputs.rollerAmpsStator) > IntakeConstants.ROLLER_JAM_CURRENT_AMPS
+                        && Math.abs(inputs.rollerSpeed) < IntakeConstants.ROLLER_JAM_VELOCITY
+                        && Math.abs(inputs.rollerVolts) > 2.0;
+
+    // high current + far from target + voltage applied = JAM
+    boolean positionJammed = Math.abs(inputs.positionAmpsStator) > IntakeConstants.POSITION_JAM_CURRENT_AMPS
+                          && Math.abs(inputs.targetPosition - inputs.position) > IntakeConstants.POSITION_TOLERANCE
+                          && Math.abs(inputs.positionVolts) > 2.0;
+
+    return rollerJammed || positionJammed;
+  }
 }

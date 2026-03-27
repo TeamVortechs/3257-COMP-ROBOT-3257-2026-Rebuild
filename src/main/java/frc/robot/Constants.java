@@ -509,6 +509,14 @@ public final class Constants {
   }
 
   public class IntakeConstants {
+
+    // JAM VALUES: if we exceed all these values at the same time, we're prob in a jam
+
+    // these all depend on the motor. right now, these are just generic values, will update after research
+    public static final double ROLLER_JAM_CURRENT_AMPS = 40.0;
+    public static final double ROLLER_JAM_VELOCITY = 2.0; 
+    public static final double POSITION_JAM_CURRENT_AMPS = 35.0; 
+
     public static final double FREQUENCY_HZ = Constants.LOW_PRIORITY_FREQUENCY_HZ;
 
     public static final double TIME_TO_WAIT_BEFORE_RETRACT_ON_SHOOT = 1.5;
