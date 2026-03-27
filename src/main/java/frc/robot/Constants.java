@@ -304,6 +304,10 @@ public final class Constants {
   }
 
   public class ShooterConstants {
+
+    // Time before a phase to start shooting. Used in MatchTimeline
+    public static final double SHOOTING_BUFFER_TIME = 3.0;
+
     public static final double FREQUENCY_HZ = Constants.HIGH_PRIORITY_FREQUENCY_HZ;
 
     public static final double SIM_TOLERANCE = 0.5;

@@ -1,5 +1,6 @@
 package frc.robot.util;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
@@ -10,6 +11,9 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.Constants;
+import frc.robot.util.MatchTimeline.MatchChangeCallback;
+
 import java.util.Optional;
 import org.littletonrobotics.junction.Logger;
 
@@ -159,15 +163,54 @@ public class MatchTimeline {
     }
   }
 
+
+  /**
+   * With robot pose, determine distance from goal, and thus determine flight time of ball.
+   * Going to be used to score more points. This is a helper class so it's private
+   * 
+   * @return flight time in seconds
+   **/
+
+  private double getFlightTime() {
+    // dummy method, implement actual physics math later
+    return 0.0;
+  }
+
+  /**
+   * determine if robot can score based on current phase and position
+   * @return
+   */
   public boolean canScore() {
-    MatchPhase matchPhase = getCurrentPhase();
+    // new code, figures out if it can score based on 3 seconds + air time (shooting early to score on time)
+    MatchPhase current = getCurrentPhase();
+    double timeToNext = timeUntilNextPhase(); 
+    double flightTime = getFlightTime();
 
-    if (matchPhase.getScoreType() == ScoreType.ALL_SCORE) return true;
+    boolean isCurrentScorable = isPhaseScorable(current);
+    MatchPhase nextPhase = current.getNextPhase();
+    boolean isNextScorable = (nextPhase != null) && isPhaseScorable(nextPhase);
 
-    if (matchPhase.getScoreType() == ScoreType.WINNING_SCORE && hasWonAuto()) return true;
+    // if it's negative, we've "dipped" into the next phase
+    double arrivalTimeRelativeToPhaseEnd = timeToNext - flightTime;
 
-    if (matchPhase.getScoreType() == ScoreType.LOSING_SCORE && !hasWonAuto()) return true;
+    if (isCurrentScorable) {
+      // Must stop shooting if ball arrives AFTER the phase ends + 3s buffer
+      return arrivalTimeRelativeToPhaseEnd > -Constants.ShooterConstants.SHOOTING_BUFFER_TIME;
+    }
 
+    if (isNextScorable) {
+      // can start shooting early if ball arrives within the next phase
+      return arrivalTimeRelativeToPhaseEnd < 0;
+    }
+
+    return false;
+  }
+
+  private boolean isPhaseScorable(MatchPhase phase) {
+    // same as the old "canScore()" code
+    if (phase.getScoreType() == ScoreType.ALL_SCORE) return true;
+    if (phase.getScoreType() == ScoreType.WINNING_SCORE && hasWonAuto()) return true;
+    if (phase.getScoreType() == ScoreType.LOSING_SCORE && !hasWonAuto()) return true;
     return false;
   }
 
@@ -214,6 +257,7 @@ public class MatchTimeline {
     return 0;
   }
 
+  
   interface MatchChangeCallback {
     void run();
   }
