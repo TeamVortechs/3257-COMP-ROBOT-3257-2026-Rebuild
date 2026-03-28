@@ -1,6 +1,8 @@
 package frc.robot.subsystems.drive;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.pathfinding.Pathfinding;
+import com.pathplanner.lib.util.PathPlannerLogging;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -15,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.util.LocalADStarAK;
 import frc.robot.util.VortechsUtil;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
@@ -42,6 +45,15 @@ public class Drivetrain extends SubsystemBase {
         DriveConstants.PP_CONFIG,
         () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
         this);
+    Pathfinding.setPathfinder(new LocalADStarAK());
+    PathPlannerLogging.setLogActivePathCallback(
+        (activePath) -> {
+          Logger.recordOutput("Odometry/Trajectory", activePath.toArray(new Pose2d[0]));
+        });
+    PathPlannerLogging.setLogTargetPoseCallback(
+        (targetPose) -> {
+          Logger.recordOutput("Odometry/TrajectorySetpoint", targetPose);
+        });
   }
 
   @Override
@@ -80,7 +92,11 @@ public class Drivetrain extends SubsystemBase {
 
           omegaSpeed *= DriveConstants.MAX_ANGULAR_SPEED_RAD_PER_SEC();
 
-          drivetrainIO.runFieldCentricVelocity(new ChassisSpeeds(xSpeed, ySpeed, omegaSpeed));
+          ChassisSpeeds filteredSpeeds =
+              DriveConstants.DRIVE_INPUT_FILTER.calculate(
+                  new ChassisSpeeds(xSpeed, ySpeed, omegaSpeed));
+
+          drivetrainIO.runFieldCentricVelocity(filteredSpeeds);
         },
         this);
   }
