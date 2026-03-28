@@ -118,7 +118,7 @@ public class DrivetrainSimulationIO extends CommandSwerveDrivetrain implements D
   }
 
   public void setPose(Pose2d pose) {
-    getState().Pose = pose;
+    resetPose(pose);
   }
 
   public Pose2d getPose() {

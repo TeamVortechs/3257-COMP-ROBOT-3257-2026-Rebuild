@@ -93,7 +93,7 @@ public class DrivetrainTalonFXIO extends CommandSwerveDrivetrain implements Driv
   }
 
   public void setPose(Pose2d pose) {
-    getState().Pose = pose;
+    resetPose(pose);
   }
 
   public Pose2d getPose() {
