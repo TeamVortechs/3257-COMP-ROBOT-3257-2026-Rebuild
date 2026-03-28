@@ -5,14 +5,12 @@ import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.SignalLogger;
 import edu.wpi.first.wpilibj.Notifier;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.FeederConstants;
-import java.util.function.BooleanSupplier;
 import org.littletonrobotics.junction.Logger;
 
 public class Feeder extends SubsystemBase {
@@ -20,37 +18,20 @@ public class Feeder extends SubsystemBase {
   private FeederIO feederIO;
   private FeederIOInputsAutoLogged inputs;
 
-  private BooleanSupplier shooterOnVelocity;
-  private BooleanSupplier driveIsValid;
-
-  // I was advised not to add this by jason but john said we should. For now I'll add it so we don't
-  // have to add it later. We can just supply true in the constructor
-  private BooleanSupplier visionSeesTag;
-  private Timer debounceTimer;
-
   private final Notifier hardwareLogger;
-  private final Notifier validityLogger;
+
+  private final FeederValidityContainer feederValidityContainer;
 
   // here so we can log it
   // caching this value and calculating it in periodic so we can log it for the driver
   /**
    * @param feederIO the hardware interface
    */
-  public Feeder(
-      FeederIO feederIO,
-      BooleanSupplier driveIsValid,
-      BooleanSupplier shooterOnVelocity,
-      BooleanSupplier visionSeesTag) {
+  public Feeder(FeederIO feederIO, FeederValidityContainer validityContainer) {
     this.feederIO = feederIO;
     this.inputs = new FeederIOInputsAutoLogged();
 
-    this.driveIsValid = driveIsValid;
-    this.shooterOnVelocity = shooterOnVelocity;
-    this.visionSeesTag = visionSeesTag;
-
-    debounceTimer = new Timer();
-
-    debounceTimer.restart();
+    this.feederValidityContainer = validityContainer;
 
     hardwareLogger =
         new Notifier(
@@ -59,14 +40,7 @@ public class Feeder extends SubsystemBase {
               Logger.processInputs("feeder", inputs);
             });
 
-    validityLogger =
-        new Notifier(
-            () -> {
-              calculateValidityToFeed();
-            });
-
     hardwareLogger.startPeriodic(1 / FeederConstants.SUBSYSTEM_LOGGING_FREQUENCY_HERTZ);
-    validityLogger.startPeriodic(1 / FeederConstants.VALIDITY_LOGGING_FREQUENCY_HERTZ);
   }
 
   @Override
@@ -92,28 +66,15 @@ public class Feeder extends SubsystemBase {
     return feederIO.getTargetSpeed();
   }
 
+  public boolean isValidToFeed() {
+    return feederValidityContainer.isValid();
+  }
+
   /**
    * @return target speed
    */
 
   // HELPER METHODS
-  private boolean calculateValidityToFeed() {
-    // this stuff should wait on debounce, probably not shooter on speed though
-    if (!driveIsValid.getAsBoolean() || !visionSeesTag.getAsBoolean()) {
-      debounceTimer.restart();
-    }
-
-    // logging part:
-
-    boolean isValid =
-        debounceTimer.hasElapsed(FeederConstants.VALIDITY_DEBOUNCE_TIME_SEC)
-            && shooterOnVelocity.getAsBoolean();
-
-    Logger.recordOutput("Feeder/IsValidToFeed", isValid);
-    Logger.recordOutput("Feeder/DebounceTime", debounceTimer.get());
-
-    return isValid;
-  }
 
   // COMMANDS
   /**
@@ -145,7 +106,7 @@ public class Feeder extends SubsystemBase {
   public Command feedWhenValidRunCommand(double percentage) {
     return Commands.run(
         () -> {
-          if (calculateValidityToFeed()) {
+          if (isValidToFeed()) {
             this.setPercentMotorOutput(percentage);
           } else {
             this.setPercentMotorOutput(0);
@@ -164,7 +125,7 @@ public class Feeder extends SubsystemBase {
   public Command feedWhenValidRunCommandAutoEvent(double percentage) {
     return Commands.run(
         () -> {
-          if (calculateValidityToFeed()) {
+          if (isValidToFeed()) {
             this.setPercentMotorOutput(percentage);
           } else {
             this.setPercentMotorOutput(0);
@@ -176,7 +137,7 @@ public class Feeder extends SubsystemBase {
   public Command feedWhenShooterIsRevvedCommand(double percentage) {
     return Commands.run(
         () -> {
-          if (shooterOnVelocity.getAsBoolean()) {
+          if (feederValidityContainer.shooterIsRevved()) {
             this.setPercentMotorOutput(percentage);
           } else {
             this.setPercentMotorOutput(0);
