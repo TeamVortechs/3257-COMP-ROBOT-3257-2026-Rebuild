@@ -516,6 +516,8 @@ public final class Constants {
     public static final double ROLLER_JAM_CURRENT_AMPS = 40.0;
     public static final double ROLLER_JAM_VELOCITY = 2.0; 
     public static final double POSITION_JAM_CURRENT_AMPS = 35.0; 
+    // Minimum voltage applied on a motor for there to be considered a jam(unit: volts)
+    public static final double MIN_VOLTAGE_APPLIED = 2.0;
 
     public static final double FREQUENCY_HZ = Constants.LOW_PRIORITY_FREQUENCY_HZ;
 
@@ -573,7 +575,7 @@ public final class Constants {
     public static final double RAMP_RATE_VOLTS_ROLLER_SYSID = 0.25;
     public static final double DYNAMIC_STEP_VOLTS_ROLLER_SYSID = 1;
 
-    public static final double ROLLER_STALLED_VOLTS = 20.0;
+    // public static final double ROLLER_STALLED_VOLTS = 20.0;
     // lower cus this has hardstops
     public static final double RAMP_RATE_VOLTS_POSITION_SYSID = 0.1;
     public static final double DYNAMIC_STEP_VOLTS_POSITION_SYSID = 0.25;

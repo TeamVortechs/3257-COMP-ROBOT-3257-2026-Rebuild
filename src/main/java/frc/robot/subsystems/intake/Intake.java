@@ -54,9 +54,10 @@ public class Intake extends SubsystemBase {
     // check to see if the module is stalling; if so, then stop the motors and cancel the next
     // movement
 
-    if (checkIfStalled()) {
+    if (intakeIO.isPositionJammed()) {
       System.out.println("Intake HAS STALLED ");
-      intakeIO.stop();
+      
+      // intakeIO.stop();
       return;
     }
 
@@ -130,7 +131,7 @@ public class Intake extends SubsystemBase {
 
   // gets the roller speed
   public double getRollerSpeed() {
-    return intakeIO.getSpeed();
+    return intakeIO.getRollerSpeed();
   }
 
   public double getPosition() {
@@ -142,9 +143,9 @@ public class Intake extends SubsystemBase {
         < Constants.IntakeConstants.POSITION_TOLERANCE;
   }
 
-  public boolean checkIfStalled() {
-    return (intakeIO.getRollerMotorVoltage() > Constants.IntakeConstants.ROLLER_STALLED_VOLTS);
-  }
+  // public boolean checkIfStalled() {
+  //   return (intakeIO.getRollerMotorVoltage() > Constants.IntakeConstants.ROLLER_STALLED_VOLTS);
+  // }
   // commands
 
   // sets the manual override speed of this command. Uses a regular double
@@ -308,17 +309,23 @@ public class Intake extends SubsystemBase {
             (volts) -> intakeIO.setPositionVoltage(volts.in(Volts)), null, this));
   }
 
-  public boolean isJammed() {
-    // according to google, having a high current + low speed + voltage applied = JAM
-    boolean rollerJammed = Math.abs(inputs.rollerAmpsStator) > IntakeConstants.ROLLER_JAM_CURRENT_AMPS
-                        && Math.abs(inputs.rollerSpeed) < IntakeConstants.ROLLER_JAM_VELOCITY
-                        && Math.abs(inputs.rollerVolts) > 2.0;
+  // implemented jam detection in the IO, it's probably safe to delete the commented code
 
-    // high current + far from target + voltage applied = JAM
-    boolean positionJammed = Math.abs(inputs.positionAmpsStator) > IntakeConstants.POSITION_JAM_CURRENT_AMPS
-                          && Math.abs(inputs.targetPosition - inputs.position) > IntakeConstants.POSITION_TOLERANCE
-                          && Math.abs(inputs.positionVolts) > 2.0;
+  // public boolean isRollerJammed() {
+  //   // according to google, having a high current + low speed + voltage applied = JAM
+  //   boolean rollerJammed = Math.abs(inputs.rollerAmpsStator) > IntakeConstants.ROLLER_JAM_CURRENT_AMPS
+  //                       && Math.abs(inputs.rollerSpeed) < IntakeConstants.ROLLER_JAM_VELOCITY
+  //                       && Math.abs(inputs.rollerVolts) > 2.0;
 
-    return rollerJammed || positionJammed;
-  }
+  //   return rollerJammed;
+  // }
+
+  // public boolean isPositionJammed(){
+  //   // high current + far from target + voltage applied = JAM
+  //   boolean positionJammed = Math.abs(inputs.positionAmpsStator) > IntakeConstants.POSITION_JAM_CURRENT_AMPS
+  //                         && Math.abs(inputs.targetPosition - inputs.position) > IntakeConstants.POSITION_TOLERANCE
+  //                         && Math.abs(inputs.positionVolts) > 2.0;
+
+  //   return positionJammed;
+  // }
 }
