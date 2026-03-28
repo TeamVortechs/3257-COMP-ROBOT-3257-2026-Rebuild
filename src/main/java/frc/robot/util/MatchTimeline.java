@@ -10,16 +10,16 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.Constants;
+import frc.robot.Constants.MatchTimelineConstants;
 import java.util.Optional;
 import org.littletonrobotics.junction.Logger;
 
 public class MatchTimeline {
   private MatchPhase currentPhase = MatchPhase.NO_PHASE;
 
-  private Notifier notifer;
+  // private Notifier notifer;
   private Notifier logger;
-
-  private MatchChangeCallback matchChangeCallback;
 
   private Timer timer;
 
@@ -35,11 +35,11 @@ public class MatchTimeline {
   }
 
   {
-    notifer =
-        new Notifier(
-            () -> {
-              advancePhase();
-            });
+    // notifer =
+    //     new Notifier(
+    //         () -> {
+    //           advancePhase();
+    //         });
 
     logger =
         new Notifier(
@@ -49,9 +49,7 @@ public class MatchTimeline {
 
     Logger.recordOutput("MatchTimeline/currentPhase", MatchPhase.NO_PHASE.getDisplayName());
 
-    matchChangeCallback = () -> {};
-
-    logger.startPeriodic(1 / 4.0);
+    logger.startPeriodic(MatchTimelineConstants.TIMER_FREQUENCY);
 
     timer = new Timer();
   }
@@ -60,7 +58,6 @@ public class MatchTimeline {
     Logger.recordOutput("MatchTimeline/timeUntilNextPhase", timeUntilNextPhase());
     Logger.recordOutput("MatchTimeline/isWinningAuto", hasWonAuto());
     Logger.recordOutput("MatchTimeline/canScore", canScore());
-    Logger.recordOutput("MatchTimeline/NEWTIMER", timeUntilNextPhaseUPDATED());
     Logger.recordOutput("MatchTimeline/driverstationtimer", DriverStation.getMatchTime());
   }
 
@@ -86,19 +83,15 @@ public class MatchTimeline {
 
   private void advancePhase() {
     currentPhase = currentPhase.getNextPhase();
-    notifer.startSingle(currentPhase.getTime());
+    // notifer.startSingle(currentPhase.getTime());
     Logger.recordOutput("MatchTimeline/currentPhase", currentPhase.getDisplayName());
-    matchChangeCallback.run();
+    // matchChangeCallback.run();
     if (currentPhase == MatchPhase.ALMOST_SHIFT_2
         || currentPhase == MatchPhase.ALMOST_SHIFT_3
         || currentPhase == MatchPhase.ALMOST_SHIFT_4
         || currentPhase == MatchPhase.ALMOST_ENDGAME) {
       CommandScheduler.getInstance().schedule(vibrateControllerCommand());
     }
-  }
-
-  public void setMatchChangeCallBack(MatchChangeCallback matchChangeCallback) {
-    this.matchChangeCallback = matchChangeCallback;
   }
 
   public void setController(CommandXboxController controller) {
@@ -159,62 +152,73 @@ public class MatchTimeline {
     }
   }
 
+  /**
+   * With robot pose, determine distance from goal, and thus determine flight time of ball. Going to
+   * be used to score more points. This is a helper class so it's private
+   *
+   * @return flight time in seconds
+   */
+  private double getFlightTime() {
+    // dummy method, implement actual physics math later
+    return 0.0;
+  }
+
+  /**
+   * determine if robot can score based on current phase and position
+   *
+   * @return
+   */
   public boolean canScore() {
-    MatchPhase matchPhase = getCurrentPhase();
+    // new code, figures out if it can score based on 3 seconds + air time (shooting early to score
+    // on time)
+    MatchPhase current = getCurrentPhase();
+    double timeToNext = timeUntilNextPhase();
+    double flightTime = getFlightTime();
 
-    if (matchPhase.getScoreType() == ScoreType.ALL_SCORE) return true;
+    boolean isCurrentScorable = isPhaseScorable(current);
+    MatchPhase nextPhase = current.getNextPhase();
+    boolean isNextScorable = (nextPhase != null) && isPhaseScorable(nextPhase);
 
-    if (matchPhase.getScoreType() == ScoreType.WINNING_SCORE && hasWonAuto()) return true;
+    // if it's negative, we've "dipped" into the next phase
+    double arrivalTimeRelativeToPhaseEnd = timeToNext - flightTime;
 
-    if (matchPhase.getScoreType() == ScoreType.LOSING_SCORE && !hasWonAuto()) return true;
+    if (isCurrentScorable) {
+      // Must stop shooting if ball arrives AFTER the phase ends + 3s buffer
+      return arrivalTimeRelativeToPhaseEnd > -Constants.ShooterConstants.SHOOTING_BUFFER_TIME;
+    }
+
+    if (isNextScorable) {
+      // can start shooting early if ball arrives within the next phase
+      return arrivalTimeRelativeToPhaseEnd < 0;
+    }
 
     return false;
   }
 
-  double timeSinceStart2;
-  double matchTimes2[] = {20, 33, 58, 83, 108, 133, 163};
-
-  public double timeUntilNextPhase() {
-    timeSinceStart2 = getTimeSinceStart();
-    for (double i : matchTimes2) {
-      if (timeSinceStart2 > i) {
-        continue;
-      } else {
-        return Math.round(Math.abs(timeSinceStart2 - i));
-      }
-    }
-    return 0;
+  private boolean isPhaseScorable(MatchPhase phase) {
+    // same as the old "canScore()" code
+    if (phase.getScoreType() == ScoreType.ALL_SCORE) return true;
+    if (phase.getScoreType() == ScoreType.WINNING_SCORE && hasWonAuto()) return true;
+    if (phase.getScoreType() == ScoreType.LOSING_SCORE && !hasWonAuto()) return true;
+    return false;
   }
 
   double matchTimes[] = {20, 33, 58, 83, 108, 133, 163};
 
-  public double timeUntilNextPhaseUPDATED() {
-    double matchTime = DriverStation.getMatchTime();
-    double timeSinceStart = 0;
-
-    if (DriverStation.isAutonomous()) {
-      timeSinceStart = 20 - matchTime;
-    } else if (DriverStation.isTeleop()) {
-      timeSinceStart = 203 - matchTime;
-    } else {
-      return 0;
-    }
-
-    if (timeSinceStart < 0) {
-      timeSinceStart = 0;
-    }
+  public double timeUntilNextPhase() {
+    double timeSinceStart = getTimeSinceStart();
 
     for (double i : matchTimes) {
       if (timeSinceStart > i) {
         continue;
       } else {
-        return Math.round(Math.abs(i - timeSinceStart));
+        return Math.abs(timeSinceStart - i);
       }
     }
     return 0;
   }
 
-  interface MatchChangeCallback {
-    void run();
-  }
+  // interface MatchChangeCallback {
+  //   void run();
+  // }
 }

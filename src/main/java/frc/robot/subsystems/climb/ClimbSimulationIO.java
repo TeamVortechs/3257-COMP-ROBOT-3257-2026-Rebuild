@@ -20,7 +20,6 @@ public class ClimbSimulationIO implements ClimbIO {
   private double targetRightPos = 0;
 
   public ClimbSimulationIO() {
-    // left and right, just like the real thing
     this.leftMotorSim =
         new DCMotorSim(
             LinearSystemId.createDCMotorSystem(DCMotor.getKrakenX60(1), 0.001, 1),
