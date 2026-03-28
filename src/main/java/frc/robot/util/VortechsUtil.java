@@ -40,7 +40,7 @@ public class VortechsUtil {
     }
   }
 
-  public static boolean isWithinYZone(double y, boolean wantsCenter, Pose2d pose) {
+  public static boolean isWithinYZone(double y, boolean wantsLeft, Pose2d pose) {
     double yPose = pose.getY();
 
     if (DriverStation.getAlliance().isEmpty()) {
@@ -48,13 +48,13 @@ public class VortechsUtil {
     }
 
     if (DriverStation.getAlliance().get() == Alliance.Blue) {
-      if (!wantsCenter) {
+      if (!wantsLeft) {
         return yPose < y;
       } else {
         return yPose > y;
       }
     } else {
-      if (!wantsCenter) {
+      if (!wantsLeft) {
         return yPose > (2 * DriveConstants.CENTER_POINT.getY() - y);
       } else {
         return yPose < (2 * DriveConstants.CENTER_POINT.getY() - y);
