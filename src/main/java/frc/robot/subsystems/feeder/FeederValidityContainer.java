@@ -20,6 +20,12 @@ public class FeederValidityContainer {
   private boolean isValid = false;
 
   public FeederValidityContainer(BooleanSupplier driveIsValid, BooleanSupplier shooterOnVelocity) {
+
+    this.shooterOnVelocity = shooterOnVelocity;
+    this.driveIsValid = driveIsValid;
+
+    debounceTimer = new Timer();
+
     validityLogger =
         new Notifier(
             () -> {
@@ -41,8 +47,8 @@ public class FeederValidityContainer {
         debounceTimer.hasElapsed(FeederConstants.VALIDITY_DEBOUNCE_TIME_SEC)
             && shooterOnVelocity.getAsBoolean();
 
-    Logger.recordOutput("Feeder/IsValidToFeed", isValid);
-    Logger.recordOutput("Feeder/DebounceTime", debounceTimer.get());
+    Logger.recordOutput("FeederValidity/IsValidToFeed", isValid);
+    Logger.recordOutput("FeederValidity/DebounceTime", debounceTimer.get());
   }
 
   public boolean isValid() {

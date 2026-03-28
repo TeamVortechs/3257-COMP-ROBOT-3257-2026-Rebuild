@@ -19,12 +19,21 @@ import frc.robot.Constants.DriveConstants;
 
 public class DrivetrainSimulationIO extends CommandSwerveDrivetrain implements DrivetrainIO {
 
-  private SwerveRequest.RobotCentric m_RobotCentricReq = new SwerveRequest.RobotCentric();
-  private SwerveRequest.FieldCentric m_FieldCentricReq = new SwerveRequest.FieldCentric();
+  private SwerveRequest.RobotCentric m_RobotCentricReq =
+      new SwerveRequest.RobotCentric()
+          .withDeadband(0.1 * DriveConstants.MAX_LINEAR_SPEED_METERS_PER_SECOND)
+          .withRotationalDeadband(0.1 * DriveConstants.MAX_ANGULAR_SPEED_RAD_PER_SEC());
+
+  private SwerveRequest.FieldCentric m_FieldCentricReq =
+      new SwerveRequest.FieldCentric()
+          .withDeadband(0.1 * DriveConstants.MAX_LINEAR_SPEED_METERS_PER_SECOND)
+          .withRotationalDeadband(0.1 * DriveConstants.MAX_ANGULAR_SPEED_RAD_PER_SEC());
+
   private SwerveRequest.FieldCentricFacingAngle m_FieldCentricAngleReq =
       new SwerveRequest.FieldCentricFacingAngle()
-          .withHeadingPID(
-              DriveConstants.ANGLE_KP, DriveConstants.ANGLE_KI, DriveConstants.ANGLE_KD);
+          .withHeadingPID(10, DriveConstants.ANGLE_KI, DriveConstants.ANGLE_KD)
+          .withDeadband(0.1 * DriveConstants.MAX_LINEAR_SPEED_METERS_PER_SECOND)
+          .withRotationalDeadband(0.1 * DriveConstants.MAX_ANGULAR_SPEED_RAD_PER_SEC());
 
   BuiltInAccelerometer builtInAccelerometer = new BuiltInAccelerometer();
 
@@ -67,7 +76,7 @@ public class DrivetrainSimulationIO extends CommandSwerveDrivetrain implements D
               /* Use the measured time delta, get battery voltage from WPILib */
               updateSimState(deltaTime, RobotController.getBatteryVoltage());
             });
-    m_simNotifier.startPeriodic(0.00005);
+    m_simNotifier.startPeriodic(0.000005);
   }
 
   public void runRobotCentricVelocity(ChassisSpeeds chassisSpeeds) {
