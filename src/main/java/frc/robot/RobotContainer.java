@@ -25,7 +25,9 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
@@ -369,23 +371,59 @@ public class RobotContainer {
     controller
         .x()
         .whileTrue(
-            new PathfindToPoseCommand(
-                drive, () -> new Pose2d(1.201, 4.621, Rotation2d.fromDegrees(-8.853)), true));
+            new PathfindToPoseCommand(drive, DriveConstants.CLIMB_SHOOT_POSE_LEFT, true)
+                .andThen(
+                    Commands.parallel(
+                        drive.joystickDriveAtTarget(controller),
+                        feeder.feedWhenValidRunCommand(FeederConstants.FEED_POWER),
+                        belt.setPercentMotorOutputRunCommand(
+                            BeltConstants.FEED_POWER, () -> feeder.isValidToFeed()),
+                        intake.intakeRetractWhileShooting(() -> feeder.isValidToFeed()))));
     controller
         .b()
         .whileTrue(
-            new PathfindToPoseCommand(
-                drive, () -> new Pose2d(1.277, 2.889, Rotation2d.fromDegrees(19.124)), true));
+            new PathfindToPoseCommand(drive, DriveConstants.CLIMB_SHOOT_POSE_RIGHT, true)
+                .andThen(
+                    Commands.parallel(
+                        drive.joystickDriveAtTarget(controller),
+                        feeder.feedWhenValidRunCommand(FeederConstants.FEED_POWER),
+                        belt.setPercentMotorOutputRunCommand(
+                            BeltConstants.FEED_POWER, () -> feeder.isValidToFeed()),
+                        intake.intakeRetractWhileShooting(() -> feeder.isValidToFeed()))));
 
-    PathPlannerPath path = null;
+    PathPlannerPath leftSide = null;
 
     try {
-      path = PathPlannerPath.fromPathFile("Left Side Tele mid into score");
+      leftSide = PathPlannerPath.fromPathFile("Left Side Tele mid into score");
     } catch (Exception e) {
       System.out.println("paths didn't load in");
     }
 
-    controller.y().whileTrue(AutoBuilder.pathfindThenFollowPath(path, path.getGlobalConstraints()));
+    PathPlannerPath rightSide = null;
+
+    try {
+      rightSide = PathPlannerPath.fromPathFile("Right Side Tele mid into score");
+    } catch (Exception e) {
+      System.out.println("paths didn't load in");
+    }
+
+    controller
+        .y()
+        .whileTrue(
+            new ParallelCommandGroup(
+                new ConditionalCommand(
+                        AutoBuilder.pathfindThenFollowPath(
+                            rightSide, rightSide.getGlobalConstraints()),
+                        AutoBuilder.pathfindThenFollowPath(
+                            leftSide, leftSide.getGlobalConstraints()),
+                        () -> drive.isRightSideZone())
+                    .andThen(
+                        Commands.parallel(
+                            drive.joystickDriveAtTarget(controller),
+                            feeder.feedWhenValidRunCommand(FeederConstants.FEED_POWER),
+                            belt.setPercentMotorOutputRunCommand(1, () -> feeder.isValidToFeed()),
+                            intake.intakeRetractWhileShooting(() -> feeder.isValidToFeed()))),
+                shooter.setAutomaticCommandRun()));
 
     controller.povRight().whileTrue(feeder.setPercentMotorRunCommand(1));
 

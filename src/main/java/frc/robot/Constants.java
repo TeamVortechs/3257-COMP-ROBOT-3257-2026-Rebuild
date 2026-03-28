@@ -32,13 +32,12 @@ import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.units.measure.*;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.RobotBase;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drive.filtering.DeadbandDriveInputFilter;
 import frc.robot.subsystems.drive.filtering.DriveInputFilter;
 import frc.robot.util.SmartConstant;
+import frc.robot.util.VortechsUtil;
 import java.util.function.Supplier;
 
 /**
@@ -198,8 +197,15 @@ public final class Constants {
         new FieldCentric().withDriveRequestType(DriveRequestType.Velocity);
 
     // POSE STUFF
+    public static final Supplier<Pose2d> CLIMB_SHOOT_POSE_RIGHT =
+        VortechsUtil.AllianceBasedPose(
+            new Pose2d(1.277, 2.889, Rotation2d.fromDegrees(19.479)),
+            new Pose2d(15.242, 5.170, Rotation2d.fromDegrees(-161.34)));
+    public static final Supplier<Pose2d> CLIMB_SHOOT_POSE_LEFT =
+        VortechsUtil.AllianceBasedPose(
+            new Pose2d(1.201, 4.621, Rotation2d.fromDegrees(-9.11)),
+            new Pose2d(15.350, 3.459, Rotation2d.fromDegrees(170.567)));
 
-    // passing poses logic
     public static final Pose2d PASSING_POSE_UP_BLUE = new Pose2d(2.5, 6, new Rotation2d());
     public static final Pose2d PASSING_POSE_DOWN_BLUE = new Pose2d(2.5, 2, new Rotation2d());
 
@@ -207,48 +213,16 @@ public final class Constants {
     public static final Pose2d PASSING_POSE_DOWN_RED = new Pose2d(14, 2, new Rotation2d());
 
     public static final Supplier<Pose2d> PASSING_POSE_DOWN =
-        () -> {
-          if (DriverStation.getAlliance().isEmpty()) {
-            return new Pose2d();
-          }
-
-          if (DriverStation.getAlliance().get() == Alliance.Blue) {
-            return PASSING_POSE_DOWN_BLUE;
-          } else {
-            return PASSING_POSE_DOWN_RED;
-          }
-        };
-
+        VortechsUtil.AllianceBasedPose(PASSING_POSE_DOWN_BLUE, PASSING_POSE_DOWN_RED);
     public static final Supplier<Pose2d> PASSING_POSE_UP =
-        () -> {
-          if (DriverStation.getAlliance().isEmpty()) {
-            return new Pose2d();
-          }
-
-          if (DriverStation.getAlliance().get() == Alliance.Blue) {
-            return PASSING_POSE_UP_BLUE;
-          } else {
-            return PASSING_POSE_UP_RED;
-          }
-        };
+        VortechsUtil.AllianceBasedPose(PASSING_POSE_UP_BLUE, PASSING_POSE_UP_RED);
 
     // find this
     public static final Pose2d GOAL_POSE_BLUE = new Pose2d(4.622, 4.03, new Rotation2d());
     public static final Pose2d GOAL_POSE_RED = new Pose2d(11.917, 4.030, new Rotation2d());
 
-    // this is ugly but all it does is return target pose based on the team
     public static final Supplier<Pose2d> GOAL_POSE =
-        () -> {
-          if (DriverStation.getAlliance().isEmpty()) {
-            return new Pose2d();
-          }
-
-          if (DriverStation.getAlliance().get() == Alliance.Blue) {
-            return GOAL_POSE_BLUE;
-          } else {
-            return GOAL_POSE_RED;
-          }
-        };
+        VortechsUtil.AllianceBasedPose(GOAL_POSE_BLUE, GOAL_POSE_RED);
 
     // the zone where we choose to more agressively charge the shooter
     public static final double X_POSE_TO_CHARGE = 5.5;

@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 6.182716488730724,
-        "y": 5.43
+        "x": 6.03208778173191,
+        "y": 2.545
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.429572953736655,
-        "y": 5.3960379596678525
+        "x": 5.278944246737841,
+        "y": 2.5110379596678527
       },
       "isLocked": false,
       "linkedName": null
@@ -17,20 +17,20 @@
     {
       "anchor": {
         "x": 3.105587188612101,
-        "y": 5.43
+        "y": 2.545
       },
       "prevControl": {
         "x": 3.6090480235717317,
-        "y": 5.406797153024911
+        "y": 2.5217971530249113
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Top Shoot Speaker"
+      "linkedName": null
     }
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.96,
+      "waypointRelativePos": 1.0,
       "rotationDegrees": 180.0
     }
   ],
@@ -51,7 +51,7 @@
     },
     {
       "name": "intakeClearEvent",
-      "waypointRelativePos": 0.5222717149220479,
+      "waypointRelativePos": 0.55,
       "endWaypointRelativePos": null,
       "command": null
     }
@@ -66,7 +66,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -42.109324716917094
+    "rotation": 44.99723891197079
   },
   "reversed": false,
   "folder": "TeleopCommands",

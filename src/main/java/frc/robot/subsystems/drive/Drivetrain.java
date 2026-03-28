@@ -15,12 +15,14 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.util.LocalADStarAK;
 import frc.robot.util.VortechsUtil;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
+import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 public class Drivetrain extends SubsystemBase {
@@ -74,6 +76,15 @@ public class Drivetrain extends SubsystemBase {
           drivetrainIO.runRobotCentricVelocity(speeds);
         },
         this);
+  }
+
+  public Command joystickDrive(CommandXboxController controller) {
+    return joystickDrive(
+        () -> -controller.getLeftY(), () -> -controller.getLeftX(), () -> -controller.getRightX());
+  }
+
+  public Command joystickDriveAtTarget(CommandXboxController controller) {
+    return joystickDriveAtTarget(() -> -controller.getLeftY(), () -> -controller.getLeftX());
   }
 
   public Command joystickDrive(
@@ -172,6 +183,11 @@ public class Drivetrain extends SubsystemBase {
       Matrix<N3, N1> visionMeasurementStdDevs) {
     drivetrainIO.addVisionMeasurement(
         visionRobotPoseMeters, timestampSeconds, visionMeasurementStdDevs);
+  }
+
+  @AutoLogOutput
+  public boolean isRightSideZone() {
+    return VortechsUtil.isWithinYZone(4.05, false, getPose());
   }
 
   // pose shot stuff
