@@ -3,12 +3,10 @@
   "robotLength": 0.8763,
   "holonomicMode": true,
   "pathFolders": [
-    "Back Bottom",
     "Front Bottom",
     "Front Bottom Mid",
     "Front Top",
-    "TeleopCommands",
-    "Under trench autos"
+    "TeleopCommands"
   ],
   "autoFolders": [],
   "defaultMaxVel": 3.5,
