@@ -43,6 +43,7 @@ public class Intake extends SubsystemBase {
         new Notifier(
             () -> {
               intakeIO.updateInputs(inputs);
+              inputs.isOnTarget = isOnTarget();
               Logger.processInputs("intake", inputs);
             });
 
@@ -107,7 +108,6 @@ public class Intake extends SubsystemBase {
     intakeIO.stop();
   }
 
-  @AutoLogOutput
   public boolean isOnTarget() {
 
     double diff = Math.abs(intakeIO.getTargetPosition() - intakeIO.getPosition());
