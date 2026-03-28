@@ -457,64 +457,6 @@ public final class Constants {
     }
   }
 
-  // copied directly from BeltConstants
-  public class ClimbConstants {
-    public static final double FREQUENCY_HZ = Constants.VERY_LOW_PRIORITY_FREQUENCY_HZ;
-
-    // used in Belt.java
-    public static final double RAMP_RATE_VOLTS_SYSID = 0.1;
-    public static final double DYNAMIC_STEP_VOLTS_SYSID = 0.25;
-
-    public static final double CLIMB_UP_VOLTS = 0.1;
-    public static final double CLIMB_DOWN_VOLTS = -0.1;
-
-    public static final double MIN_POSITION_LEFT = 0;
-    public static final double MAX_POSITION_LEFT = 1;
-
-    public static final double MIN_POSITION_RIGHT = 0;
-    public static final double MAX_POSITION_RIGHT = 1;
-
-    // CHANGE !!
-    public static final double KS = 0.1;
-    public static final double KV = 0.12;
-    public static final double KP = 0.11;
-    public static final double KI = 0;
-    public static final double KD = 0;
-
-    public static final int servoChannel = 9;
-
-    public static final int SimulationID = 1;
-
-    public static final TalonFXConfiguration CONFIG;
-    public static final Slot0Configs SLOT0CONFIGS;
-
-    public static final int RIGHT_ID = 26;
-    public static final int LEFT_ID = 27;
-    public static final int SERVO_ID = 28;
-
-    static {
-      CONFIG = new TalonFXConfiguration();
-      CONFIG.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-      CONFIG.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-      CONFIG.CurrentLimits.SupplyCurrentLimit =
-          Constants.CurrentLimitConstants.SUPPLY_CURRENT_LIMIT_CLIMB;
-      CONFIG.CurrentLimits.StatorCurrentLimit =
-          Constants.CurrentLimitConstants.STATOR_CURRENT_LIMIT_CLIMB;
-      CONFIG.CurrentLimits.SupplyCurrentLimitEnable = true;
-      CONFIG.CurrentLimits.StatorCurrentLimitEnable = true;
-
-      SLOT0CONFIGS = new Slot0Configs();
-      SLOT0CONFIGS.kS = Constants.ClimbConstants.KS;
-      SLOT0CONFIGS.kV = Constants.ClimbConstants.KV;
-      SLOT0CONFIGS.kP = Constants.ClimbConstants.KP;
-      SLOT0CONFIGS.kI = Constants.ClimbConstants.KI;
-      SLOT0CONFIGS.kD = Constants.ClimbConstants.KD;
-    }
-
-    public static final double SERVO_OPEN = 0;
-    public static final double SERVO_CLOSED = 10; // in degrees TODO: change
-  }
-
   public class IntakeConstants {
     public static final double FREQUENCY_HZ = Constants.LOW_PRIORITY_FREQUENCY_HZ;
 

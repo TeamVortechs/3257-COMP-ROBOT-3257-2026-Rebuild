@@ -32,7 +32,6 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants.BeltConstants;
-import frc.robot.Constants.ClimbConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.FeederConstants;
 import frc.robot.Constants.IntakeConstants;
@@ -42,9 +41,6 @@ import frc.robot.subsystems.belt.Belt;
 import frc.robot.subsystems.belt.BeltIO;
 import frc.robot.subsystems.belt.BeltSimulationIO;
 import frc.robot.subsystems.belt.BeltTalonFXIO;
-import frc.robot.subsystems.climb.Climb;
-import frc.robot.subsystems.climb.ClimbIO;
-import frc.robot.subsystems.climb.ClimbSimulationIO;
 import frc.robot.subsystems.drive.Drivetrain;
 import frc.robot.subsystems.drive.DrivetrainIO;
 import frc.robot.subsystems.drive.DrivetrainSimulationIO;
@@ -88,8 +84,6 @@ public class RobotContainer {
   private final Feeder feeder;
 
   private final Shooter shooter;
-
-  private final Climb climb;
 
   private final Vision vision;
 
@@ -169,8 +163,6 @@ public class RobotContainer {
         belt = new Belt(new BeltTalonFXIO(BeltConstants.ID));
         // belt = new Belt(new BeltIO() {});
 
-        climb = new Climb(new ClimbIO() {});
-
         vision =
             new Vision(
                 drive::addVisionMeasurement,
@@ -201,8 +193,6 @@ public class RobotContainer {
                 new FeederSimulationIO(),
                 new FeederValidityContainer(() -> drive.isOriented(), () -> shooter.isOnTarget()));
 
-        climb = new Climb(new ClimbSimulationIO());
-
         // climb = new Climb(new ClimbSimulationIO());
         vision =
             new Vision(
@@ -230,7 +220,6 @@ public class RobotContainer {
 
         shooter = new Shooter(new ShooterIO() {}, () -> drive.getDistanceToTarget());
 
-        climb = new Climb(new ClimbIO() {});
         vision = new Vision(drive::addVisionMeasurement, new VisionIO() {});
 
         break;
@@ -275,7 +264,6 @@ public class RobotContainer {
     shooter.setDefaultCommand(shooter.setVoltageRunCommand(0));
     intake.setDefaultCommand(intake.setRollerVoltageCommand(0));
     feeder.setDefaultCommand(feeder.setPercentMotorRunCommand(0));
-    climb.setDefaultCommand(climb.setVoltageRun(0));
     belt.setDefaultCommand(belt.setPercentMotorOutputCommand(BeltConstants.DEFAULT_POWER));
 
     // Default command, normal field-relative drive
@@ -658,13 +646,6 @@ public class RobotContainer {
 
     NamedCommands.registerCommand("driveResetOverrides", drive.removeRotationOverrideCommand());
 
-    NamedCommands.registerCommand("climbUp", climb.setVoltageRun(ClimbConstants.CLIMB_UP_VOLTS));
-    NamedCommands.registerCommand("climbStop", climb.setVoltageInstant(0));
-    NamedCommands.registerCommand(
-        "climbDownWhenNeeded",
-        new WaitUntilCommand(() -> matchTimeline.getTimeSinceStart() > 18)
-            .andThen(climb.setVoltageRun(ClimbConstants.CLIMB_DOWN_VOLTS)));
-
     new EventTrigger("intakeStartEvent")
         .onTrue(
             new InstantCommand(
@@ -713,10 +694,6 @@ public class RobotContainer {
         .onTrue(
             new InstantCommand(() -> intake.setPosition(0))
                 .andThen(intake.setRollerVoltageCommand(IntakeConstants.ROLLER_GOING_UP_VOLTS)));
-
-    new EventTrigger("climbUpEvent")
-        .onTrue(new InstantCommand(() -> climb.setVoltage(ClimbConstants.CLIMB_UP_VOLTS)));
-    new EventTrigger("climbStopEvent").onTrue(new InstantCommand(() -> climb.setVoltage(0)));
 
     new EventTrigger("reverseFeederEvent")
         .onTrue(
