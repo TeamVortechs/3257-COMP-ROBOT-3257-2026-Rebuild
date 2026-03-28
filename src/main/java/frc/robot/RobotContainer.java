@@ -491,7 +491,11 @@ public class RobotContainer {
         .whileTrue(intake.setPositionCommand(IntakeConstants.INTAKE_HALFWAY_LOWER_POSITION));
 
     // sysid bindings:
-    configureSysIdBindings(sysID_controller, shooter.BuildSysIdRoutine());
+    // configureSysIdBindings(sysID_controller, shooter.BuildSysIdRoutine());
+    sysID_controller.a().whileTrue(drive.sysIdDynamic(Direction.kReverse));
+    sysID_controller.y().whileTrue(drive.sysIdDynamic(Direction.kForward));
+    sysID_controller.x().whileTrue(drive.sysIdQuasistatic(Direction.kForward));
+    sysID_controller.b().whileTrue(drive.sysIdQuasistatic(Direction.kReverse));
 
     // additional testing bindings
     testController.a().whileTrue(feeder.setPercentMotorRunCommand(FeederConstants.FEED_POWER));
