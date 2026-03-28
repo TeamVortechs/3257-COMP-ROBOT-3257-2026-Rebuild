@@ -153,11 +153,11 @@ public interface IntakeIO {
     return 0;
   }
 
-  public default boolean isRollerJammed(){
+  public default boolean isRollerJammed() {
     return false;
   }
 
-  public default boolean isPositionJammed(){
+  public default boolean isPositionJammed() {
     return false;
   }
 }

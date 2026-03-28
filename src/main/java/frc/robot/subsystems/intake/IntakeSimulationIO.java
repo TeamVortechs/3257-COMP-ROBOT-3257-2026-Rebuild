@@ -144,7 +144,7 @@ public class IntakeSimulationIO implements IntakeIO {
     return false;
   }
 
-  public boolean isPositionJammed(){
+  public boolean isPositionJammed() {
     return false;
   }
 }

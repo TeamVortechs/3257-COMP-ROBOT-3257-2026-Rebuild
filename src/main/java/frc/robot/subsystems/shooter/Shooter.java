@@ -116,6 +116,7 @@ public class Shooter extends SubsystemBase {
 
   /**
    * Sets voltage of the shooter, units: Volts(NOT PERCENT OUTPUT)
+   *
    * @param voltage
    */
   public void setVoltage(double voltage) {

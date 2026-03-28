@@ -287,18 +287,21 @@ public class IntakeTalonFXCANCoderIO implements IntakeIO {
 
   public boolean isRollerJammed() {
     // according to google, having a high current + low speed + voltage applied = JAM
-    boolean rollerJammed = Math.abs(getRollerCurrent()) > IntakeConstants.ROLLER_JAM_CURRENT_AMPS
-                        && Math.abs(getRollerSpeed()) < IntakeConstants.ROLLER_JAM_VELOCITY
-                        && Math.abs(getRollerMotorVoltage()) > IntakeConstants.MIN_VOLTAGE_APPLIED;
+    boolean rollerJammed =
+        Math.abs(getRollerCurrent()) > IntakeConstants.ROLLER_JAM_CURRENT_AMPS
+            && Math.abs(getRollerSpeed()) < IntakeConstants.ROLLER_JAM_VELOCITY
+            && Math.abs(getRollerMotorVoltage()) > IntakeConstants.MIN_VOLTAGE_APPLIED;
 
     return rollerJammed;
   }
 
-  public boolean isPositionJammed(){
+  public boolean isPositionJammed() {
     // high current + far from target + voltage applied = JAM
-    boolean positionJammed = Math.abs(positionStatorCurrent.getValueAsDouble()) > IntakeConstants.POSITION_JAM_CURRENT_AMPS
-                          && Math.abs(getTargetPosition() - getPosition()) > IntakeConstants.POSITION_TOLERANCE
-                          && Math.abs(positionMotorVoltage.getValueAsDouble()) > 2.0;
+    boolean positionJammed =
+        Math.abs(positionStatorCurrent.getValueAsDouble())
+                > IntakeConstants.POSITION_JAM_CURRENT_AMPS
+            && Math.abs(getTargetPosition() - getPosition()) > IntakeConstants.POSITION_TOLERANCE
+            && Math.abs(positionMotorVoltage.getValueAsDouble()) > 2.0;
 
     return positionJammed;
   }

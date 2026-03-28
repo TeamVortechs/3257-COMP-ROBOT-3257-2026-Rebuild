@@ -75,9 +75,10 @@ public class IntakeTalonFXOnlyRollerIO implements IntakeIO {
   }
 
   // getters for motors
-  public double getRollerMotorVoltage(){
+  public double getRollerMotorVoltage() {
     return rollerMotorVoltage.getValueAsDouble();
   }
+
   public double getRollerCurrent() {
     return rollerStatorCurrent.getValueAsDouble();
   }
@@ -146,14 +147,15 @@ public class IntakeTalonFXOnlyRollerIO implements IntakeIO {
 
   public boolean isRollerJammed() {
     // according to google, having a high current + low speed + voltage applied = JAM
-    boolean rollerJammed = Math.abs(getRollerCurrent()) > IntakeConstants.ROLLER_JAM_CURRENT_AMPS
-                        && Math.abs(getRollerSpeed()) < IntakeConstants.ROLLER_JAM_VELOCITY
-                        && Math.abs(getRollerMotorVoltage()) > IntakeConstants.MIN_VOLTAGE_APPLIED;
+    boolean rollerJammed =
+        Math.abs(getRollerCurrent()) > IntakeConstants.ROLLER_JAM_CURRENT_AMPS
+            && Math.abs(getRollerSpeed()) < IntakeConstants.ROLLER_JAM_VELOCITY
+            && Math.abs(getRollerMotorVoltage()) > IntakeConstants.MIN_VOLTAGE_APPLIED;
 
     return rollerJammed;
   }
 
-  public boolean isPositionJammed(){
+  public boolean isPositionJammed() {
     return false;
   }
 }

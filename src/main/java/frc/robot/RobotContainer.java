@@ -538,7 +538,6 @@ public class RobotContainer {
                                     intake.intakeRetractWhileShooting(
                                         () -> feeder.getTargetSpeed() > 0)))));
 
-
     // 2.645
 
     // TODO: see if this will require adding InterruptBehavior of canceling any other intake

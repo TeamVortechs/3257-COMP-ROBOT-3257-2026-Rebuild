@@ -512,10 +512,11 @@ public final class Constants {
 
     // JAM VALUES: if we exceed all these values at the same time, we're prob in a jam
 
-    // these all depend on the motor. right now, these are just generic values, will update after research
+    // these all depend on the motor. right now, these are just generic values, will update after
+    // research
     public static final double ROLLER_JAM_CURRENT_AMPS = 40.0;
-    public static final double ROLLER_JAM_VELOCITY = 2.0; 
-    public static final double POSITION_JAM_CURRENT_AMPS = 35.0; 
+    public static final double ROLLER_JAM_VELOCITY = 2.0;
+    public static final double POSITION_JAM_CURRENT_AMPS = 35.0;
     // Minimum voltage applied on a motor for there to be considered a jam(unit: volts)
     public static final double MIN_VOLTAGE_APPLIED = 2.0;
 
