@@ -1,9 +1,5 @@
 package frc.robot.util;
 
-import java.util.Optional;
-
-import org.littletonrobotics.junction.Logger;
-
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
@@ -15,15 +11,15 @@ import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants;
-import frc.robot.util.MatchTimeline.MatchChangeCallback;
+import frc.robot.Constants.MatchTimelineConstants;
+import java.util.Optional;
+import org.littletonrobotics.junction.Logger;
 
 public class MatchTimeline {
   private MatchPhase currentPhase = MatchPhase.NO_PHASE;
 
-  private Notifier notifer;
+  // private Notifier notifer;
   private Notifier logger;
-
-  private MatchChangeCallback matchChangeCallback;
 
   private Timer timer;
 
@@ -39,11 +35,11 @@ public class MatchTimeline {
   }
 
   {
-    notifer =
-        new Notifier(
-            () -> {
-              advancePhase();
-            });
+    // notifer =
+    //     new Notifier(
+    //         () -> {
+    //           advancePhase();
+    //         });
 
     logger =
         new Notifier(
@@ -53,9 +49,7 @@ public class MatchTimeline {
 
     Logger.recordOutput("MatchTimeline/currentPhase", MatchPhase.NO_PHASE.getDisplayName());
 
-    matchChangeCallback = () -> {};
-
-    logger.startPeriodic(1 / 4.0);
+    logger.startPeriodic(MatchTimelineConstants.TIMER_FREQUENCY);
 
     timer = new Timer();
   }
@@ -64,7 +58,6 @@ public class MatchTimeline {
     Logger.recordOutput("MatchTimeline/timeUntilNextPhase", timeUntilNextPhase());
     Logger.recordOutput("MatchTimeline/isWinningAuto", hasWonAuto());
     Logger.recordOutput("MatchTimeline/canScore", canScore());
-    Logger.recordOutput("MatchTimeline/NEWTIMER", timeUntilNextPhaseUPDATED());
     Logger.recordOutput("MatchTimeline/driverstationtimer", DriverStation.getMatchTime());
   }
 
@@ -90,19 +83,15 @@ public class MatchTimeline {
 
   private void advancePhase() {
     currentPhase = currentPhase.getNextPhase();
-    notifer.startSingle(currentPhase.getTime());
+    // notifer.startSingle(currentPhase.getTime());
     Logger.recordOutput("MatchTimeline/currentPhase", currentPhase.getDisplayName());
-    matchChangeCallback.run();
+    // matchChangeCallback.run();
     if (currentPhase == MatchPhase.ALMOST_SHIFT_2
         || currentPhase == MatchPhase.ALMOST_SHIFT_3
         || currentPhase == MatchPhase.ALMOST_SHIFT_4
         || currentPhase == MatchPhase.ALMOST_ENDGAME) {
       CommandScheduler.getInstance().schedule(vibrateControllerCommand());
     }
-  }
-
-  public void setMatchChangeCallBack(MatchChangeCallback matchChangeCallback) {
-    this.matchChangeCallback = matchChangeCallback;
   }
 
   public void setController(CommandXboxController controller) {
@@ -214,50 +203,22 @@ public class MatchTimeline {
     return false;
   }
 
-  double timeSinceStart2;
-  double matchTimes2[] = {20, 33, 58, 83, 108, 133, 163};
-
-  public double timeUntilNextPhase() {
-    timeSinceStart2 = getTimeSinceStart();
-    for (double i : matchTimes2) {
-      if (timeSinceStart2 > i) {
-        continue;
-      } else {
-        return Math.round(Math.abs(timeSinceStart2 - i));
-      }
-    }
-    return 0;
-  }
-
   double matchTimes[] = {20, 33, 58, 83, 108, 133, 163};
 
-  public double timeUntilNextPhaseUPDATED() {
-    double matchTime = DriverStation.getMatchTime();
-    double timeSinceStart = 0;
-
-    if (DriverStation.isAutonomous()) {
-      timeSinceStart = 20 - matchTime;
-    } else if (DriverStation.isTeleop()) {
-      timeSinceStart = 203 - matchTime;
-    } else {
-      return 0;
-    }
-
-    if (timeSinceStart < 0) {
-      timeSinceStart = 0;
-    }
+  public double timeUntilNextPhase() {
+    double timeSinceStart = getTimeSinceStart();
 
     for (double i : matchTimes) {
       if (timeSinceStart > i) {
         continue;
       } else {
-        return Math.round(Math.abs(i - timeSinceStart));
+        return Math.abs(timeSinceStart - i);
       }
     }
     return 0;
   }
 
-  interface MatchChangeCallback {
-    void run();
-  }
+  // interface MatchChangeCallback {
+  //   void run();
+  // }
 }

@@ -22,7 +22,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.units.measure.*;
+import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -630,5 +630,9 @@ public final class Constants {
           Constants.CurrentLimitConstants.STATOR_CURRENT_LIMIT_INTAKE_ROLLER;
       ROLLER_CONFIG.CurrentLimits.StatorCurrentLimitEnable = true;
     }
+  }
+
+  public class MatchTimelineConstants {
+    public static final double TIMER_FREQUENCY = 1 / 4.0; // Also used for periodic measurement
   }
 }
