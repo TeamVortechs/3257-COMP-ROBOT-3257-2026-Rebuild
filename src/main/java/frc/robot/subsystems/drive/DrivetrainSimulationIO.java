@@ -143,6 +143,6 @@ public class DrivetrainSimulationIO extends CommandSwerveDrivetrain implements D
       double timestampSeconds,
       Matrix<N3, N1> visionMeasurementStdDevs) {
 
-    // super.addVisionMeasurement(visionRobotPoseMeters, timestampSeconds, visionMeasurementStdDevs);
+    super.addVisionMeasurement(visionRobotPoseMeters, timestampSeconds, visionMeasurementStdDevs);
   }
 }
