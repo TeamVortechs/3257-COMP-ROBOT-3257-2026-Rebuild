@@ -4,7 +4,6 @@
   "holonomicMode": true,
   "pathFolders": [
     "Front Bottom",
-    "Front Bottom Mid",
     "Front Top",
     "TeleopCommands"
   ],
