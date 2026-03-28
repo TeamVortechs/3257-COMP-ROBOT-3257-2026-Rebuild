@@ -18,7 +18,6 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.util.VortechsUtil;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
-
 import org.littletonrobotics.junction.Logger;
 
 public class Drivetrain extends SubsystemBase {
@@ -44,7 +43,6 @@ public class Drivetrain extends SubsystemBase {
         () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
         this);
   }
-
 
   @Override
   public void periodic() {

@@ -80,5 +80,4 @@ public interface DrivetrainIO {
       Pose2d visionRobotPoseMeters,
       double timestampSeconds,
       Matrix<N3, N1> visionMeasurementStdDevs) {}
-
 }

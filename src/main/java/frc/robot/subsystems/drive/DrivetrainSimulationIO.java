@@ -31,13 +31,11 @@ public class DrivetrainSimulationIO extends CommandSwerveDrivetrain implements D
   private double m_lastSimTime = 0;
   private Notifier m_simNotifier;
 
-
   public DrivetrainSimulationIO(
       SwerveDrivetrainConstants swerveDrivetrainConstants,
       SwerveModuleConstants<?, ?, ?>... modules) {
     super(swerveDrivetrainConstants, modules);
   }
-
 
   public void updateInputs(DrivetrainIOInputsAutoLogged inputsAutoLogged) {
 
@@ -58,16 +56,18 @@ public class DrivetrainSimulationIO extends CommandSwerveDrivetrain implements D
   public void initialize() {
     m_lastSimTime = Utils.getCurrentTimeSeconds();
 
-   /* Run simulation at a faster rate so PID gains behave more reasonably */
-   this.m_simNotifier = new Notifier(() -> {
-      final double currentTime = Utils.getCurrentTimeSeconds();
-      double deltaTime = currentTime - m_lastSimTime;
-      m_lastSimTime = currentTime;
+    /* Run simulation at a faster rate so PID gains behave more reasonably */
+    this.m_simNotifier =
+        new Notifier(
+            () -> {
+              final double currentTime = Utils.getCurrentTimeSeconds();
+              double deltaTime = currentTime - m_lastSimTime;
+              m_lastSimTime = currentTime;
 
-      /* Use the measured time delta, get battery voltage from WPILib */
-      updateSimState(deltaTime, RobotController.getBatteryVoltage());
-   });
-   m_simNotifier.startPeriodic(0.00005);
+              /* Use the measured time delta, get battery voltage from WPILib */
+              updateSimState(deltaTime, RobotController.getBatteryVoltage());
+            });
+    m_simNotifier.startPeriodic(0.00005);
   }
 
   public void runRobotCentricVelocity(ChassisSpeeds chassisSpeeds) {
@@ -92,7 +92,8 @@ public class DrivetrainSimulationIO extends CommandSwerveDrivetrain implements D
     setControl(
         m_FieldCentricAngleReq
             .withVelocityX(chassisSpeeds.vxMetersPerSecond)
-            .withVelocityY(chassisSpeeds.vyMetersPerSecond).withTargetDirection(rotation2d));
+            .withVelocityY(chassisSpeeds.vyMetersPerSecond)
+            .withTargetDirection(rotation2d));
   }
 
   public ChassisSpeeds getChassisSpeeds() {
@@ -143,6 +144,7 @@ public class DrivetrainSimulationIO extends CommandSwerveDrivetrain implements D
       double timestampSeconds,
       Matrix<N3, N1> visionMeasurementStdDevs) {
 
-    // super.addVisionMeasurement(visionRobotPoseMeters, timestampSeconds, visionMeasurementStdDevs);
+    // super.addVisionMeasurement(visionRobotPoseMeters, timestampSeconds,
+    // visionMeasurementStdDevs);
   }
 }

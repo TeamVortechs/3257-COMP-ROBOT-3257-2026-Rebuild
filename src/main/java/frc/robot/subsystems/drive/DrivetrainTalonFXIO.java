@@ -16,12 +16,21 @@ import frc.robot.Constants.DriveConstants;
 
 public class DrivetrainTalonFXIO extends CommandSwerveDrivetrain implements DrivetrainIO {
 
-  private SwerveRequest.RobotCentric m_RobotCentricReq = new SwerveRequest.RobotCentric();
-  private SwerveRequest.FieldCentric m_FieldCentricReq = new SwerveRequest.FieldCentric();
+  private SwerveRequest.RobotCentric m_RobotCentricReq =
+      new SwerveRequest.RobotCentric()
+          .withDeadband(0.1 * DriveConstants.MAX_LINEAR_SPEED_METERS_PER_SECOND)
+          .withRotationalDeadband(0.1 * DriveConstants.MAX_ANGULAR_SPEED_RAD_PER_SEC());
+
+  private SwerveRequest.FieldCentric m_FieldCentricReq =
+      new SwerveRequest.FieldCentric()
+          .withDeadband(0.1 * DriveConstants.MAX_LINEAR_SPEED_METERS_PER_SECOND)
+          .withRotationalDeadband(0.1 * DriveConstants.MAX_ANGULAR_SPEED_RAD_PER_SEC());
+
   private SwerveRequest.FieldCentricFacingAngle m_FieldCentricAngleReq =
       new SwerveRequest.FieldCentricFacingAngle()
-          .withHeadingPID(
-              DriveConstants.ANGLE_KP, DriveConstants.ANGLE_KI, DriveConstants.ANGLE_KD);
+          .withHeadingPID(2, DriveConstants.ANGLE_KI, DriveConstants.ANGLE_KD)
+          .withDeadband(0.1 * DriveConstants.MAX_LINEAR_SPEED_METERS_PER_SECOND)
+          .withRotationalDeadband(0.1 * DriveConstants.MAX_ANGULAR_SPEED_RAD_PER_SEC());
 
   BuiltInAccelerometer builtInAccelerometer = new BuiltInAccelerometer();
 
@@ -67,7 +76,8 @@ public class DrivetrainTalonFXIO extends CommandSwerveDrivetrain implements Driv
     setControl(
         m_FieldCentricAngleReq
             .withVelocityX(chassisSpeeds.vxMetersPerSecond)
-            .withVelocityY(chassisSpeeds.vyMetersPerSecond).withTargetDirection(rotation2d));
+            .withVelocityY(chassisSpeeds.vyMetersPerSecond)
+            .withTargetDirection(rotation2d));
   }
 
   public ChassisSpeeds getChassisSpeeds() {
