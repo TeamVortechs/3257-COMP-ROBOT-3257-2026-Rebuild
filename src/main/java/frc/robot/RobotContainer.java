@@ -275,7 +275,9 @@ public class RobotContainer {
   private void configureButtonBindings() {
 
     // default commands
-    shooter.setDefaultCommand(shooter.setVoltageRunCommand(0));
+    // shooter.setDefaultCommand(shooter.setVoltageRunCommand(0));
+    shooter.setDefaultCommand(
+        shooter.shooterRevUpActiveDefaultCommand(() -> matchTimeline.canScore()));
     intake.setDefaultCommand(intake.setRollerVoltageCommand(0));
     feeder.setDefaultCommand(feeder.setPercentMotorRunCommand(0));
     climb.setDefaultCommand(climb.setVoltageRun(0));
@@ -350,7 +352,8 @@ public class RobotContainer {
                     belt.setPercentMotorOutputRunCommand(
                         BeltConstants.FEED_POWER, () -> feeder.getTargetSpeed() > 0),
                     feeder.feedWhenValidRunCommand(FeederConstants.FEED_POWER),
-                    intake.intakeRetractWhileShooting(() -> feeder.getTargetSpeed() > 0))
+                    intake.intakeRetractWhileShooting(() -> feeder.getTargetSpeed() > 0),
+                    shooter.resetTimeSinceLastShotCommand(matchTimeline.canScore()))
                 .withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
 
     controller

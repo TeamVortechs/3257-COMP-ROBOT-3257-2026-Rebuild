@@ -315,6 +315,7 @@ public final class Constants {
   }
 
   public class ShooterConstants {
+    public static final double CYCLE_TIME = 5.0;
 
     // Time before a phase to start shooting. Used in MatchTimeline
     public static final double SHOOTING_BUFFER_TIME = 3.0;
