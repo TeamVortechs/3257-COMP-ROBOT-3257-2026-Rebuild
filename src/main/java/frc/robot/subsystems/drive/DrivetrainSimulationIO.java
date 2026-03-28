@@ -76,7 +76,7 @@ public class DrivetrainSimulationIO extends CommandSwerveDrivetrain implements D
               /* Use the measured time delta, get battery voltage from WPILib */
               updateSimState(deltaTime, RobotController.getBatteryVoltage());
             });
-    m_simNotifier.startPeriodic(0.000005);
+    m_simNotifier.startPeriodic(0.004);
   }
 
   public void runRobotCentricVelocity(ChassisSpeeds chassisSpeeds) {

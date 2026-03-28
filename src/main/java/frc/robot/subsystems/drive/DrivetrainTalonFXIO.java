@@ -16,11 +16,9 @@ import frc.robot.Constants.DriveConstants;
 
 public class DrivetrainTalonFXIO extends CommandSwerveDrivetrain implements DrivetrainIO {
 
-  private SwerveRequest.RobotCentric m_RobotCentricReq =
-      new SwerveRequest.RobotCentric();
+  private SwerveRequest.RobotCentric m_RobotCentricReq = new SwerveRequest.RobotCentric();
 
-  private SwerveRequest.FieldCentric m_FieldCentricReq =
-      new SwerveRequest.FieldCentric();
+  private SwerveRequest.FieldCentric m_FieldCentricReq = new SwerveRequest.FieldCentric();
 
   private SwerveRequest.FieldCentricFacingAngle m_FieldCentricAngleReq =
       new SwerveRequest.FieldCentricFacingAngle()

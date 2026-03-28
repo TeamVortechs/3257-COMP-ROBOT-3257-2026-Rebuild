@@ -38,7 +38,6 @@ import edu.wpi.first.wpilibj.RobotBase;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drive.filtering.DeadbandDriveInputFilter;
 import frc.robot.subsystems.drive.filtering.DriveInputFilter;
-import frc.robot.subsystems.drive.filtering.SlewDriveInputFilter;
 import frc.robot.util.SmartConstant;
 import java.util.function.Supplier;
 
@@ -196,8 +195,7 @@ public final class Constants {
 
     // control req stuff:
     public static SwerveRequest.FieldCentric DRIVE_CONTROL_REQ =
-        new FieldCentric()
-            .withDriveRequestType(DriveRequestType.Velocity);
+        new FieldCentric().withDriveRequestType(DriveRequestType.Velocity);
 
     // POSE STUFF
 
@@ -316,11 +314,10 @@ public final class Constants {
 
     public static final DriveInputFilter DRIVE_INPUT_FILTER =
         new DeadbandDriveInputFilter(
-                0.1 * MAX_LINEAR_SPEED_METERS_PER_SECOND,
-                0.1 * MAX_ANGULAR_SPEED_RAD_PER_SEC(),
-                MAX_LINEAR_SPEED_METERS_PER_SECOND,
-                MAX_ANGULAR_SPEED_RAD_PER_SEC())
-            .withNextFilter(new SlewDriveInputFilter(1, 1));
+            0.1 * MAX_LINEAR_SPEED_METERS_PER_SECOND,
+            0.1 * MAX_ANGULAR_SPEED_RAD_PER_SEC(),
+            MAX_LINEAR_SPEED_METERS_PER_SECOND,
+            MAX_ANGULAR_SPEED_RAD_PER_SEC());
   }
 
   public class ShooterConstants {

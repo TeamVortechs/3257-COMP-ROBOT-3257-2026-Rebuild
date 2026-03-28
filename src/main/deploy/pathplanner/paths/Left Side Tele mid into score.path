@@ -1,0 +1,78 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 6.182716488730724,
+        "y": 5.43
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 5.429572953736655,
+        "y": 5.3960379596678525
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 3.14,
+        "y": 5.43
+      },
+      "prevControl": {
+        "x": 3.643460834959631,
+        "y": 5.406797153024911
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Top Shoot Speaker"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.9242290748898658,
+      "rotationDegrees": 180.0
+    }
+  ],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "intakeDownEvent",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": null,
+      "command": null
+    },
+    {
+      "name": "intakeStartEvent",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": null,
+      "command": null
+    },
+    {
+      "name": "intakeClearEvent",
+      "waypointRelativePos": 0.5222717149220479,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.5,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -41.48008994373767
+  },
+  "reversed": false,
+  "folder": "TeleopCommands",
+  "idealStartingState": {
+    "velocity": 1.0,
+    "rotation": 180.0
+  },
+  "useDefaultConstraints": true
+}

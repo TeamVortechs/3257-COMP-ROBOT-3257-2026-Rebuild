@@ -15,6 +15,7 @@ import static frc.robot.subsystems.vision.VisionConstants.robotToPhoton1;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.events.EventTrigger;
+import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -36,6 +37,7 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.FeederConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.ShooterConstants;
+import frc.robot.commands.PathfindToPoseCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.belt.Belt;
 import frc.robot.subsystems.belt.BeltIO;
@@ -365,10 +367,25 @@ public class RobotContainer {
                         BeltConstants.FEED_POWER, () -> feeder.getTargetSpeed() > 0)));
 
     controller
+        .x()
+        .whileTrue(
+            new PathfindToPoseCommand(
+                drive, () -> new Pose2d(1.201, 4.621, Rotation2d.fromDegrees(-8.853)), true));
+    controller
         .b()
         .whileTrue(
-            Commands.parallel(aimTowardsTargetCommand2, shooter.setAutomaticCommandRun())
-                .withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
+            new PathfindToPoseCommand(
+                drive, () -> new Pose2d(1.277, 2.889, Rotation2d.fromDegrees(19.124)), true));
+
+    PathPlannerPath path = null;
+
+    try {
+      path = PathPlannerPath.fromPathFile("Left Side Tele mid into score");
+    } catch (Exception e) {
+      System.out.println("paths didn't load in");
+    }
+
+    controller.y().whileTrue(AutoBuilder.pathfindThenFollowPath(path, path.getGlobalConstraints()));
 
     controller.povRight().whileTrue(feeder.setPercentMotorRunCommand(1));
 
