@@ -197,7 +197,6 @@ public final class Constants {
     // control req stuff:
     public static SwerveRequest.FieldCentric DRIVE_CONTROL_REQ =
         new FieldCentric()
-            .withDeadband(MAX_LINEAR_SPEED_METERS_PER_SECOND * 0.1)
             .withDriveRequestType(DriveRequestType.Velocity);
 
     // POSE STUFF
