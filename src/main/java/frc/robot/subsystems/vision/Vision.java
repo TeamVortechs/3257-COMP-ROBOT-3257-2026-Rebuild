@@ -9,6 +9,7 @@ package frc.robot.subsystems.vision;
 
 import static frc.robot.subsystems.vision.VisionConstants.*;
 
+import com.ctre.phoenix6.Utils;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -147,10 +148,15 @@ public class Vision extends SubsystemBase {
           angularStdDev *= cameraStdDevFactors[cameraIndex];
         }
 
+        // System.out.println("obs timestamp: " + observation.timestamp());
+        // System.out.println("fpga timestamp: " + Utils.getCurrentTimeSeconds());
+        //   System.out.println("obs to fpga timestamp: " +
+        // Utils.fpgaToCurrentTime(observation.timestamp()));
+
         // Send vision observation
         consumer.accept(
             observation.pose().toPose2d(),
-            observation.timestamp(),
+            Utils.fpgaToCurrentTime(observation.timestamp()),
             VecBuilder.fill(linearStdDev, linearStdDev, angularStdDev));
       }
 
