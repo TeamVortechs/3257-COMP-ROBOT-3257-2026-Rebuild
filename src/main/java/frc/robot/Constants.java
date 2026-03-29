@@ -46,6 +46,9 @@ import java.util.function.Supplier;
  * (log replay from a file).
  */
 public final class Constants {
+
+  public static final String MECHANISM_CANBUS = "Mech - Canivore";
+
   public static final Mode SIM_MODE = Mode.SIM;
   public static final Mode CURR_MODE = RobotBase.isReal() ? Mode.REAL : SIM_MODE;
 

@@ -27,7 +27,7 @@ public class BeltTalonFXIO implements BeltIO {
   private boolean isBraked = true;
 
   public BeltTalonFXIO(int canId) {
-    motor = new TalonFX(canId);
+    motor = new TalonFX(canId, Constants.MECHANISM_CANBUS);
 
     // Basic Configuration
     TalonFXConfiguration config = Constants.BeltConstants.CONFIG;
