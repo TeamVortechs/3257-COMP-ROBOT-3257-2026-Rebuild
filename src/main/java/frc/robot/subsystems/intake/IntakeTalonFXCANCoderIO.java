@@ -49,11 +49,12 @@ public class IntakeTalonFXCANCoderIO implements IntakeIO {
   private boolean isBrakedPosition = true;
   private double targetPosition = 0;
 
-  public IntakeTalonFXCANCoderIO(int canIdRoller, int canIDRoller2, int canIdPosition, int canIdCANCoder) {
+  public IntakeTalonFXCANCoderIO(
+      int canIdRoller, int canIDRoller2, int canIdPosition, int canIdCANCoder) {
     roller = new TalonFX(canIdRoller, Constants.MECHANISM_CANBUS);
     rollerFollower = new TalonFX(canIDRoller2, Constants.MECHANISM_CANBUS);
-    position = new TalonFX(canIdPosition,Constants.MECHANISM_CANBUS);
-    caNcoder = new CANcoder(canIdCANCoder,Constants.MECHANISM_CANBUS);
+    position = new TalonFX(canIdPosition, Constants.MECHANISM_CANBUS);
+    caNcoder = new CANcoder(canIdCANCoder, Constants.MECHANISM_CANBUS);
 
     mVoltageRequest = new MotionMagicVoltage(0);
     // mPositionVoltage = new PositionVoltage(0);
@@ -93,8 +94,6 @@ public class IntakeTalonFXCANCoderIO implements IntakeIO {
     rollerFollower.getConfigurator().apply(rollerConfig);
     rollerFollower.setControl(new Follower(roller.getDeviceID(), MotorAlignmentValue.Opposed));
 
-
-
     position.getConfigurator().apply(positionConfig);
     position.getConfigurator().apply(motionMagicConfigs);
     position.getConfigurator().apply(slot0Configs);
@@ -130,6 +129,9 @@ public class IntakeTalonFXCANCoderIO implements IntakeIO {
   }
 
   public void updateInputs(IntakeIOInputsAutoLogged inputsAutoLogged) {
+
+    BaseStatusSignal.refreshAll(rollerVelocity, rollerMotorVoltage, rollerStatorCurrent, rollerSupplyCurrent, rollerTemperatureCelsius, positionVelocity, positionMotorVoltage, positionStatorCurrent, positionSupplyCurrent, positionTemperatureCelsius);
+
     inputsAutoLogged.rollerAmpsStator = rollerStatorCurrent.getValueAsDouble();
     inputsAutoLogged.rollerAmpsSupply = rollerSupplyCurrent.getValueAsDouble();
     inputsAutoLogged.rollerVolts = rollerMotorVoltage.getValueAsDouble();

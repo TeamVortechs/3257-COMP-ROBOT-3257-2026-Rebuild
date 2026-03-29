@@ -10,6 +10,7 @@ package frc.robot;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.Seconds;
 
+import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -47,7 +48,7 @@ import java.util.function.Supplier;
  */
 public final class Constants {
 
-  public static final String MECHANISM_CANBUS = "Mech - Canivore";
+  public static final CANBus MECHANISM_CANBUS = new CANBus("Mech - Canivore");
 
   public static final Mode SIM_MODE = Mode.SIM;
   public static final Mode CURR_MODE = RobotBase.isReal() ? Mode.REAL : SIM_MODE;
@@ -310,7 +311,6 @@ public final class Constants {
     public static final int MOTOR_ID = 24;
     public static final int FOLLOWER_MOTOR_ID = 28;
     public static final int FOLLOWER_2_MOTOR_ID = 27;
-
 
     // this is higher rn cus it's in sim. We can model this as a linear function based on distance
     // if we're having trouble adjusting but right now I'm not cus it's a variable that mgiht not be

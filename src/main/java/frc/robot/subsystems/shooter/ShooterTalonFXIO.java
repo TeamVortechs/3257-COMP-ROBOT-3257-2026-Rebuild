@@ -84,7 +84,7 @@ public class ShooterTalonFXIO implements ShooterIO {
   @Override
   public void updateInputs(ShooterIOInputsAutoLogged inputs) {
     // Refresh signals from the hardware
-    BaseStatusSignal.refreshAll(velocity, motorVoltage, supplyCurrent);
+    BaseStatusSignal.refreshAll(velocity, motorVoltage, supplyCurrent, statorCurrent, temperatureCelsius);
 
     inputs.speed = velocity.getValueAsDouble(); // Returns Rotations per Second
     inputs.voltage = motorVoltage.getValueAsDouble();
