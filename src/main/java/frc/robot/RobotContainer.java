@@ -133,7 +133,7 @@ public class RobotContainer {
         intake =
             new Intake(
                 new IntakeTalonFXCANCoderIO(
-                    IntakeConstants.INTAKE_ROLLER_MOTOR_ID,
+                    IntakeConstants.INTAKE_ROLLER_MOTOR_ID, IntakeConstants.INTAKE_ROLLER_2_MOTOR_ID,
                     IntakeConstants.INTAKE_POSITION_MOTOR_ID,
                     IntakeConstants.INTAKE_CANCODER_ID));
         // intake = new Intake(new IntakeIO() {});
@@ -145,7 +145,7 @@ public class RobotContainer {
 
         shooter =
             new Shooter(
-                new ShooterTalonFXIO(ShooterConstants.MOTOR_ID, ShooterConstants.FOLLOWER_MOTOR_ID),
+                new ShooterTalonFXIO(ShooterConstants.MOTOR_ID, ShooterConstants.FOLLOWER_MOTOR_ID, ShooterConstants.FOLLOWER_2_MOTOR_ID),
                 () -> drive.getDistanceToTarget());
         // shooter =
         //     new Shooter(

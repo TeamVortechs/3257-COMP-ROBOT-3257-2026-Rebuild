@@ -309,6 +309,8 @@ public final class Constants {
 
     public static final int MOTOR_ID = 24;
     public static final int FOLLOWER_MOTOR_ID = 28;
+    public static final int FOLLOWER_2_MOTOR_ID = 27;
+
 
     // this is higher rn cus it's in sim. We can model this as a linear function based on distance
     // if we're having trouble adjusting but right now I'm not cus it's a variable that mgiht not be
@@ -506,6 +508,7 @@ public final class Constants {
     public static final TalonFXConfiguration POSITION_CONFIG;
 
     public static final int INTAKE_ROLLER_MOTOR_ID = 21;
+    public static final int INTAKE_ROLLER_2_MOTOR_ID = 26;
     public static final int INTAKE_POSITION_MOTOR_ID = 22;
     public static final int INTAKE_CANCODER_ID = 29;
 
