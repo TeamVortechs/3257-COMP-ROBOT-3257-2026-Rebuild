@@ -371,66 +371,41 @@ public class RobotContainer {
     controller
         .x()
         .whileTrue(
-            new PathfindToPoseCommand(drive, DriveConstants.CLIMB_SHOOT_POSE_LEFT, true)
-                .andThen(
-                    Commands.parallel(
-                        drive.joystickDriveAtTarget(controller),
-                        feeder.feedWhenValidRunCommand(FeederConstants.FEED_POWER),
-                        belt.setPercentMotorOutputRunCommand(
-                            BeltConstants.FEED_POWER, () -> feeder.isValidToFeed()),
-                        intake.intakeRetractWhileShooting(() -> feeder.isValidToFeed()))));
+            shootAfterPathingCommand(
+                new PathfindToPoseCommand(drive, DriveConstants.CLIMB_SHOOT_POSE_LEFT, true)));
+
     controller
         .b()
         .whileTrue(
-            new PathfindToPoseCommand(drive, DriveConstants.CLIMB_SHOOT_POSE_RIGHT, true)
-                .andThen(
-                    Commands.parallel(
-                        drive.joystickDriveAtTarget(controller),
-                        feeder.feedWhenValidRunCommand(FeederConstants.FEED_POWER),
-                        belt.setPercentMotorOutputRunCommand(
-                            BeltConstants.FEED_POWER, () -> feeder.isValidToFeed()),
-                        intake.intakeRetractWhileShooting(() -> feeder.isValidToFeed()))));
+            shootAfterPathingCommand(
+                new PathfindToPoseCommand(drive, DriveConstants.CLIMB_SHOOT_POSE_RIGHT, true)));
 
-    PathPlannerPath leftSide = null;
-
-    try {
-      leftSide = PathPlannerPath.fromPathFile("Left Side Tele mid into score");
-    } catch (Exception e) {
-      System.out.println("paths didn't load in");
-    }
-
-    PathPlannerPath rightSide = null;
-
-    try {
-      rightSide = PathPlannerPath.fromPathFile("Right Side Tele mid into score");
-    } catch (Exception e) {
-      System.out.println("paths didn't load in");
-    }
+    PathPlannerPath leftSideProtectedShoot = getPath("Left Side Tele mid into score");
+    PathPlannerPath rightSideProtectedShoot = getPath("Right Side Tele mid into score");
 
     controller
         .y()
         .whileTrue(
-            new ParallelCommandGroup(
+            shootAfterPathingCommand(
                 new ConditionalCommand(
-                        AutoBuilder.pathfindThenFollowPath(
-                            rightSide, rightSide.getGlobalConstraints()),
-                        AutoBuilder.pathfindThenFollowPath(
-                            leftSide, leftSide.getGlobalConstraints()),
-                        () -> drive.isRightSideZone())
-                    .andThen(
-                        Commands.parallel(
-                            drive.joystickDriveAtTarget(controller),
-                            feeder.feedWhenValidRunCommand(FeederConstants.FEED_POWER),
-                            belt.setPercentMotorOutputRunCommand(1, () -> feeder.isValidToFeed()),
-                            intake.intakeRetractWhileShooting(() -> feeder.isValidToFeed()))),
-                shooter.setAutomaticCommandRun()));
+                    AutoBuilder.pathfindThenFollowPath(
+                        rightSideProtectedShoot, rightSideProtectedShoot.getGlobalConstraints()),
+                    AutoBuilder.pathfindThenFollowPath(
+                        leftSideProtectedShoot, leftSideProtectedShoot.getGlobalConstraints()),
+                    () -> drive.isRightSideZone())));
 
-    controller.povRight().whileTrue(feeder.setPercentMotorRunCommand(1));
+    PathPlannerPath leftSideUnderClimb = getPath("Teleop Climber left to right");
+    PathPlannerPath rightSideUnderClimb = getPath("Teleop Climber right to left");
 
     controller
         .rightBumper()
-        .onTrue(shooter.setAutomaticallyChargeFully(() -> true))
-        .onFalse(shooter.setAutomaticallyChargeFully(() -> false));
+        .whileTrue(
+            new ConditionalCommand(
+                AutoBuilder.pathfindThenFollowPath(
+                    rightSideUnderClimb, rightSideUnderClimb.getGlobalConstraints()),
+                AutoBuilder.pathfindThenFollowPath(
+                    leftSideUnderClimb, leftSideUnderClimb.getGlobalConstraints()),
+                () -> drive.isRightSideZone()));
 
     // eject balls
     controller
@@ -756,6 +731,30 @@ public class RobotContainer {
                 () -> feeder.setPercentMotorOutput(FeederConstants.EJECT_POWER_AUTO)));
     new EventTrigger("stopFeederEvent")
         .onTrue(new InstantCommand(() -> feeder.setPercentMotorOutput(0)));
+  }
+
+  public Command shootAfterPathingCommand(Command pathingCommand) {
+    return new ParallelCommandGroup(
+        pathingCommand.andThen(
+            Commands.parallel(
+                drive.joystickDriveAtTarget(controller),
+                feeder.feedWhenValidRunCommand(FeederConstants.FEED_POWER),
+                belt.setPercentMotorOutputRunCommand(1, () -> feeder.isValidToFeed()),
+                intake.intakeRetractWhileShooting(() -> feeder.isValidToFeed()))),
+        shooter.setAutomaticCommandRun());
+  }
+
+  public PathPlannerPath getPath(String pathName) {
+    PathPlannerPath path = null;
+
+    try {
+      path = PathPlannerPath.fromPathFile(pathName);
+    } catch (Exception exception) {
+      System.out.println("unable to get path");
+      exception.printStackTrace();
+    }
+
+    return path;
   }
 
   // this shoudl be in a helper method or somewhere in robot container
