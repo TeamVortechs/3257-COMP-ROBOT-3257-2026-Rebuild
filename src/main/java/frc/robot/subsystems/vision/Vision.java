@@ -21,7 +21,6 @@ import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.vision.VisionIO.PoseObservationType;
 import java.util.LinkedList;
@@ -68,13 +67,17 @@ public class Vision extends SubsystemBase {
     return inputs[cameraIndex].latestTargetObservation.tx();
   }
 
-  public void setPDH(boolean enabled){
+  public void setPDH(boolean enabled) {
     powerModuleIO.setPDH(enabled);
   }
 
-  public Command setPDHCommand(boolean enabled){
-    return new InstantCommand(() -> {setPDH(enabled);});
+  public Command setPDHCommand(boolean enabled) {
+    return new InstantCommand(
+        () -> {
+          setPDH(enabled);
+        });
   }
+
   @Override
   public void periodic() {
 

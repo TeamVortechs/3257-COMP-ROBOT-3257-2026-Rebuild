@@ -12,9 +12,11 @@ public interface PowerModuleIO {
     public double current = 0;
     public double power = 0;
     public double energy = 0;
+
+    public boolean PDHEnabled = false;
   }
 
-  public default void setPDH(boolean enabled){}
+  public default void setPDH(boolean enabled) {}
 
   public default void updateInputs(PowerModuleIOInputsAutoLogged inputs) {}
 }

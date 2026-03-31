@@ -466,6 +466,7 @@ public class RobotContainer {
 
     operatorController.rightTrigger().whileTrue(shooter.setManualSpeedRunCommand(78));
 
+    operatorController.b().onTrue(vision.setPDHCommand(false)).onFalse(vision.setPDHCommand(true));
     // operatorController
     //     .b()
     //     .onTrue(
