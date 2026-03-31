@@ -202,7 +202,6 @@ public class Shooter extends SubsystemBase {
           }
 
           setVoltage(0);
-
         },
         this);
   }

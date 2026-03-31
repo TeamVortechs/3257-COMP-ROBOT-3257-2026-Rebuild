@@ -119,9 +119,6 @@ public final class Constants {
     public static final double SHOOTER_ROTATION_MANAGER_LOGGING_FREQUENCY =
         Constants.LOW_PRIORITY_FREQUENCY_HZ;
 
-    public static final double FREQUENCY_UPDATE_ACC =
-        20.00; // how many times per sec should we log accelerometer
-
     // pid constants
     public static final double TRANS_KP = 5;
     public static final double TRANS_KI = 0;
@@ -168,18 +165,10 @@ public final class Constants {
     // TOLERANCE
     public static final double SHOOT_ON_MOVE_TOLERANCE = 0.05;
 
-    // the maximum allowed difference allowed between acceleraomter and encoders before it is
-    // considered skid
-    public static final double SKID_THRESHOLD = 1000;
-
     // SHOOT ON MOVE CONSTATNS.
     // used for auto teargetting
 
-    // idrk what this does but we should never to use/change these
-    public static final double FF_START_DELAY = 2.0; // Secs
-    public static final double FF_RAMP_RATE = 0.1; // Volts/Sec
-    public static final double WHEEL_RADIUS_MAX_VELOCITY = 0.25; // Rad/Sec
-    public static final double WHEEL_RADIUS_RAMP_RATE = 0.05; // Rad/Sec^2
+
 
     public static final Translation2d CENTER_POINT = new Translation2d(8.27, 4.115);
 
@@ -189,12 +178,6 @@ public final class Constants {
     public static double MAX_ANGULAR_SPEED_RAD_PER_SEC() {
       return MAX_LINEAR_SPEED_METERS_PER_SECOND / DRIVE_BASE_RADIUS;
     }
-
-    // this is the rotation the drive will turn to when travelling over the bumpers, depending on
-    // what side of the field(red or blue)
-    // this is optimal bc it's smoother going at an angle rather than straight in
-    public static final double RED_SIDE_DEGREES = 135;
-    public static final double BLUE_SIDE_DEGREES = 45;
 
     // control req stuff:
     public static SwerveRequest.FieldCentric DRIVE_CONTROL_REQ =
@@ -317,10 +300,6 @@ public final class Constants {
     // necessary
 
     public static final double DEFAULT_SPEED = 0; // speed shooter run at default
-    // speed intake/shooter boosts to
-    public static final double INTAKE_SPEED = .5;
-
-    public static final double PERCENTAGE_OF_DISTANCE_WHEN_CHARGING = 0.6;
 
     public static final SmartConstant SHOOTER_TEST_SPEED =
         new SmartConstant("shooter test speed", 70);
@@ -378,11 +357,6 @@ public final class Constants {
 
     public static final double FEEDER_ID = 23;
 
-    // used in Shooter.java
-    public static final double RAMP_RATE_VOLTS_SYSID = 0.25;
-    public static final double DYNAMIC_STEP_VOLTS_SYSID = 1;
-    public static final double POSITION_TOLERANCE = 0.1;
-
     // not real
     public static final int MOTOR_ID = 23;
 
@@ -412,10 +386,6 @@ public final class Constants {
   public class BeltConstants {
 
     public static double FREQUENCY_HZ = Constants.LOW_PRIORITY_FREQUENCY_HZ;
-
-    // used in Belt.java
-    public static final double RAMP_RATE_VOLTS_SYSID = 0.25;
-    public static final double DYNAMIC_STEP_VOLTS_SYSID = 1;
 
     // not real
     public static final int ID = 25;

@@ -16,7 +16,6 @@ public class FeederSparkIO implements FeederIO {
     inputs.voltage = m_motor.getBusVoltage();
     inputs.speed = 0;
 
-
     inputs.targetSpeed = targetSpeed;
   }
 

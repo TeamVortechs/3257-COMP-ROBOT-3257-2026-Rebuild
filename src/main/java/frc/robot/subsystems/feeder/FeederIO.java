@@ -28,7 +28,6 @@ public interface FeederIO {
     return 0;
   }
 
-
   /**
    * sets the voltage of the motor
    *

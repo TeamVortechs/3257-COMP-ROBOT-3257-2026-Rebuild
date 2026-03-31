@@ -12,8 +12,6 @@ import static frc.robot.subsystems.vision.VisionConstants.photon1Name;
 import static frc.robot.subsystems.vision.VisionConstants.robotToPhoton0;
 import static frc.robot.subsystems.vision.VisionConstants.robotToPhoton1;
 
-import java.util.function.BooleanSupplier;
-
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.events.EventTrigger;
@@ -34,7 +32,6 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants.BeltConstants;
@@ -72,7 +69,6 @@ import frc.robot.subsystems.vision.VisionIOPhotonVision;
 import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
 import frc.robot.util.MatchTimeline;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
-import org.opencv.features2d.FlannBasedMatcher;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -305,7 +301,7 @@ public class RobotContainer {
 
     // Switch to X pattern when X button is pressed
     // controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
-    
+
     // Reset gyro to 0° when B button is pressed
     controller
         .start()

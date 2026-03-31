@@ -130,7 +130,17 @@ public class IntakeTalonFXCANCoderIO implements IntakeIO {
 
   public void updateInputs(IntakeIOInputsAutoLogged inputsAutoLogged) {
 
-    BaseStatusSignal.refreshAll(rollerVelocity, rollerMotorVoltage, rollerStatorCurrent, rollerSupplyCurrent, rollerTemperatureCelsius, positionVelocity, positionMotorVoltage, positionStatorCurrent, positionSupplyCurrent, positionTemperatureCelsius);
+    BaseStatusSignal.refreshAll(
+        rollerVelocity,
+        rollerMotorVoltage,
+        rollerStatorCurrent,
+        rollerSupplyCurrent,
+        rollerTemperatureCelsius,
+        positionVelocity,
+        positionMotorVoltage,
+        positionStatorCurrent,
+        positionSupplyCurrent,
+        positionTemperatureCelsius);
 
     inputsAutoLogged.rollerAmpsStator = rollerStatorCurrent.getValueAsDouble();
     inputsAutoLogged.rollerAmpsSupply = rollerSupplyCurrent.getValueAsDouble();

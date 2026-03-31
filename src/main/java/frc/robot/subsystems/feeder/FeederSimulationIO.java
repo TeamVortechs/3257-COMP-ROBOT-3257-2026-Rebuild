@@ -24,7 +24,6 @@ public class FeederSimulationIO implements FeederIO {
     inputs.voltage = rollerMotorsSim.getInputVoltage();
     inputs.speed = rollerMotorsSim.getAngularVelocityRPM();
 
-
     inputs.targetSpeed = targetSpeed;
 
     rollerMotorsSim.update(0.02);
@@ -53,7 +52,6 @@ public class FeederSimulationIO implements FeederIO {
   public double getSpeed() {
     return rollerMotorsSim.getAngularVelocityRPM();
   }
-
 
   @Override
   public double getTargetSpeed() {
