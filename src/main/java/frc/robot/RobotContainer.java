@@ -61,6 +61,9 @@ import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterIO;
 import frc.robot.subsystems.shooter.ShooterSimulationIO;
 import frc.robot.subsystems.shooter.ShooterTalonFXIO;
+import frc.robot.subsystems.vision.PowerModuleIO;
+import frc.robot.subsystems.vision.PowerModuleIORev;
+import frc.robot.subsystems.vision.PowerModuleIOSim;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionIO;
@@ -176,6 +179,7 @@ public class RobotContainer {
         vision =
             new Vision(
                 drive::addVisionMeasurement,
+                new PowerModuleIORev(),
                 new VisionIOPhotonVision(photon0Name, robotToPhoton0),
                 new VisionIOPhotonVision(photon1Name, robotToPhoton1));
         break;
@@ -211,6 +215,7 @@ public class RobotContainer {
         vision =
             new Vision(
                 drive::addVisionMeasurement,
+                new PowerModuleIOSim(),
                 new VisionIOPhotonVisionSim(
                     VisionConstants.photon0Name, VisionConstants.robotToPhoton0, drive::getPose),
                 new VisionIOPhotonVisionSim(
@@ -234,7 +239,7 @@ public class RobotContainer {
         shooter = new Shooter(new ShooterIO() {}, () -> drive.getDistanceToTarget());
 
         climb = new Climb(new ClimbIO() {});
-        vision = new Vision(drive::addVisionMeasurement, new VisionIO() {});
+        vision = new Vision(drive::addVisionMeasurement, new PowerModuleIO() {}, new VisionIO() {});
 
         break;
     }

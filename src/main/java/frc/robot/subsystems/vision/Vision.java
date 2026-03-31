@@ -19,6 +19,9 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.vision.VisionIO.PoseObservationType;
 import java.util.LinkedList;
@@ -31,9 +34,15 @@ public class Vision extends SubsystemBase {
   private final VisionIOInputsAutoLogged[] inputs;
   private final Alert[] disconnectedAlerts;
 
-  public Vision(VisionConsumer consumer, VisionIO... io) {
+  private final PowerModuleIO powerModuleIO;
+  private PowerModuleIOInputsAutoLogged powerModuleIOInputsAutoLogged;
+
+  public Vision(VisionConsumer consumer, PowerModuleIO powerModuleIO, VisionIO... io) {
     this.consumer = consumer;
     this.io = io;
+
+    this.powerModuleIO = powerModuleIO;
+    powerModuleIOInputsAutoLogged = new PowerModuleIOInputsAutoLogged();
 
     // Initialize inputs
     this.inputs = new VisionIOInputsAutoLogged[io.length];
@@ -59,8 +68,19 @@ public class Vision extends SubsystemBase {
     return inputs[cameraIndex].latestTargetObservation.tx();
   }
 
+  public void setPDH(boolean enabled){
+    powerModuleIO.setPDH(enabled);
+  }
+
+  public Command setPDHCommand(boolean enabled){
+    return new InstantCommand(() -> {setPDH(enabled);});
+  }
   @Override
   public void periodic() {
+
+    powerModuleIO.updateInputs(powerModuleIOInputsAutoLogged);
+    Logger.processInputs("Vision/PDH", powerModuleIOInputsAutoLogged);
+
     for (int i = 0; i < io.length; i++) {
       io[i].updateInputs(inputs[i]);
       Logger.processInputs("Vision/Camera" + Integer.toString(i), inputs[i]);
