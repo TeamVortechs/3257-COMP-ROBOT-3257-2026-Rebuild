@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants;
 import frc.robot.Constants.MatchTimelineConstants;
+
 import java.util.Optional;
 import org.littletonrobotics.junction.Logger;
 
@@ -30,16 +31,9 @@ public class MatchTimeline {
 
   public MatchTimeline(
       CommandXboxController commandXboxController, CommandXboxController secondController) {
+    System.out.println("CREATED MATCH TIMELINE");
     this.controller = commandXboxController;
     this.secondController = secondController;
-  }
-
-  {
-    // notifer =
-    //     new Notifier(
-    //         () -> {
-    //           advancePhase();
-    //         });
 
     logger =
         new Notifier(
@@ -49,12 +43,30 @@ public class MatchTimeline {
 
     Logger.recordOutput("MatchTimeline/currentPhase", MatchPhase.NO_PHASE.getDisplayName());
 
-    logger.startPeriodic(MatchTimelineConstants.TIMER_FREQUENCY);
-
     timer = new Timer();
   }
 
-  private void logOutputs() {
+  {
+    // notifer =
+    //     new Notifier(
+    //         () -> {
+    //           advancePhase();
+    //         });
+
+    // logger =
+    //     new Notifier(
+    //         () -> {
+    //           logOutputs();
+    //         });
+
+    // Logger.recordOutput("MatchTimeline/currentPhase", MatchPhase.NO_PHASE.getDisplayName());
+
+    // // logger.startPeriodic(MatchTimelineConstants.TIMER_FREQUENCY);
+
+    // timer = new Timer();
+  }
+
+  public void logOutputs() {
     Logger.recordOutput("MatchTimeline/timeUntilNextPhase", timeUntilNextPhase());
     Logger.recordOutput("MatchTimeline/isWinningAuto", hasWonAuto());
     Logger.recordOutput("MatchTimeline/canScore", canScore());
@@ -63,6 +75,8 @@ public class MatchTimeline {
 
   public void start() {
     currentPhase = MatchPhase.BEGINNING;
+    logger.startPeriodic(MatchTimelineConstants.TIMER_FREQUENCY);
+
     advancePhase();
 
     timer.restart();

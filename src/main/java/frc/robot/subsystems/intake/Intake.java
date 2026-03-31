@@ -36,6 +36,7 @@ public class Intake extends SubsystemBase {
    * @param homeSwitch Digital input limit switch for homing.
    */
   public Intake(IntakeIO intakeIO) {
+    System.out.println("CREATED INTAKE");
     this.intakeIO = intakeIO;
     this.inputs = new IntakeIOInputsAutoLogged();
 

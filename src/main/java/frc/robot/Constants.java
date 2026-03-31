@@ -644,6 +644,6 @@ public final class Constants {
   }
 
   public class MatchTimelineConstants {
-    public static final double TIMER_FREQUENCY = 1 / 4.0; // Also used for periodic measurement
+    public static final double TIMER_FREQUENCY = 1.0 / 4.0; // Also used for periodic measurement
   }
 }
