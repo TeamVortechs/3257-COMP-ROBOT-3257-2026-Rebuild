@@ -8,7 +8,6 @@ public class FeederSimulationIO implements FeederIO {
   // the motor that spins the things to shoot balls?
   private final DCMotorSim rollerMotorsSim;
   private double targetSpeed = 0;
-  private boolean isOnTarget = false;
 
   public FeederSimulationIO() {
     // now this motor exists in advantage kit?
@@ -25,10 +24,8 @@ public class FeederSimulationIO implements FeederIO {
     inputs.voltage = rollerMotorsSim.getInputVoltage();
     inputs.speed = rollerMotorsSim.getAngularVelocityRPM();
 
-    isOnTarget = isOnTargetSpeed();
 
     inputs.targetSpeed = targetSpeed;
-    inputs.isOnTargetSpeed = isOnTarget;
 
     rollerMotorsSim.update(0.02);
   }
@@ -57,11 +54,6 @@ public class FeederSimulationIO implements FeederIO {
     return rollerMotorsSim.getAngularVelocityRPM();
   }
 
-  // possibly completely unnecessary for feeder?
-  @Override
-  public boolean isOnTargetSpeed() {
-    return Math.abs(getSpeed() - targetSpeed) < .05;
-  }
 
   @Override
   public double getTargetSpeed() {

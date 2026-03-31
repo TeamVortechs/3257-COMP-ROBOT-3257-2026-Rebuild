@@ -73,8 +73,6 @@ public class FeederTalonFXIO implements FeederIO {
     inputs.statorCurrentAmps = statorCurrent.getValueAsDouble();
     inputs.targetSpeed = targetSpeed;
 
-    inputs.isOnTargetSpeed = isOnTargetSpeed();
-
     inputs.isBraked = isBraked;
 
     inputs.temperatureCelsius = temperatureCelsius.getValueAsDouble();
@@ -103,12 +101,6 @@ public class FeederTalonFXIO implements FeederIO {
   @Override
   public double getSpeed() {
     return velocity.getValueAsDouble();
-  }
-
-  @Override
-  public boolean isOnTargetSpeed() {
-    // return Math.abs(getSpeed() - targetSpeed) < Constants.FeederConstants.POSITION_TOLERANCE;
-    return true; // the above method does not work at all
   }
 
   @Override

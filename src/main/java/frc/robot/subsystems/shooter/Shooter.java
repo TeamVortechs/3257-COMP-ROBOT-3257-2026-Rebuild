@@ -190,8 +190,7 @@ public class Shooter extends SubsystemBase {
         this);
   }
 
-  public Command automaticallyChargeWhenNeededRunCommand(
-      double automaticPercentage, double speedWhenNotInZone) {
+  public Command defaultCommand() {
     return new RunCommand(
         () -> {
 
@@ -202,7 +201,8 @@ public class Shooter extends SubsystemBase {
             return;
           }
 
-          setManualSpeed(speedWhenNotInZone);
+          setVoltage(0);
+
         },
         this);
   }

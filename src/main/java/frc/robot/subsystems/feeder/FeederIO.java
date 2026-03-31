@@ -10,7 +10,6 @@ public interface FeederIO {
     double supplyCurrentAmps;
     double statorCurrentAmps;
     double voltage;
-    boolean isOnTargetSpeed;
     double temperatureCelsius;
 
     boolean isBraked = true;
@@ -29,12 +28,6 @@ public interface FeederIO {
     return 0;
   }
 
-  /**
-   * @return wether or not the speed and target speed are within tolerance
-   */
-  public default boolean isOnTargetSpeed() {
-    return false;
-  }
 
   /**
    * sets the voltage of the motor

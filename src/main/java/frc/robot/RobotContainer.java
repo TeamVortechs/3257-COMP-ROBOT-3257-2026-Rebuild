@@ -273,7 +273,7 @@ public class RobotContainer {
   private void configureButtonBindings() {
 
     // default commands
-    shooter.setDefaultCommand(shooter.setVoltageRunCommand(0));
+    shooter.setDefaultCommand(shooter.defaultCommand());
     intake.setDefaultCommand(intake.setRollerVoltageCommand(0));
     feeder.setDefaultCommand(feeder.setPercentMotorRunCommand(0));
     belt.setDefaultCommand(belt.setPercentMotorOutputCommand(BeltConstants.DEFAULT_POWER));
