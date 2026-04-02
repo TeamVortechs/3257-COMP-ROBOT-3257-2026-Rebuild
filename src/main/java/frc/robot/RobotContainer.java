@@ -388,9 +388,15 @@ public class RobotContainer {
                     new PathfindToPoseCommand(drive, DriveConstants.CLIMB_SHOOT_POSE_LEFT, true)),
                 () -> drive.isRightSideZone()));
 
-
-
-    controller.b().whileTrue(aimTowardsTargetCommand2);
+    controller
+        .b()
+        .whileTrue(
+            new ConditionalCommand(
+                shootAfterPathingCommand(
+                    new PathfindToPoseCommand(drive, DriveConstants.BUMPER_SHOOT_POSE_RIGHT, true)),
+                shootAfterPathingCommand(
+                    new PathfindToPoseCommand(drive, DriveConstants.BUMPER_SHOOT_POSE_LEFT, true)),
+                () -> drive.isRightSideZone()));
 
     // controller
     //     .b()

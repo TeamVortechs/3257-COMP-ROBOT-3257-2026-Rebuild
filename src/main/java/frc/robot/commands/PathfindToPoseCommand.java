@@ -34,13 +34,13 @@ public class PathfindToPoseCommand extends Command {
   // PIDController
   private final PIDController translationController =
       new PIDController(
-          Constants.DriveConstants.TRANS_KP,
+          10,
           Constants.DriveConstants.TRANS_KI,
           Constants.DriveConstants.TRANS_KD);
 
   private final PIDController thetaController =
       new PIDController(
-          Constants.DriveConstants.ANGLE_KP,
+          8,
           Constants.DriveConstants.ANGLE_KI,
           Constants.DriveConstants.ANGLE_KD);
 

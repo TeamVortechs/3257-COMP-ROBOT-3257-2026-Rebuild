@@ -181,6 +181,15 @@ public final class Constants {
     public static SwerveRequest.FieldCentric DRIVE_CONTROL_REQ =
         new FieldCentric().withDriveRequestType(DriveRequestType.Velocity);
 
+    public static final Supplier<Pose2d> BUMPER_SHOOT_POSE_LEFT =
+        VortechsUtil.AllianceBasedPose(
+            new Pose2d(3.536, 6.483, Rotation2d.fromDegrees(-66.648)),
+                        new Pose2d(13.004, 1.512, Rotation2d.fromDegrees(-114.615)));
+    public static final Supplier<Pose2d> BUMPER_SHOOT_POSE_RIGHT =
+        VortechsUtil.AllianceBasedPose(
+            new Pose2d(3.536, 1.566, Rotation2d.fromDegrees(66.648)),
+            new Pose2d(13.004, 6.504, Rotation2d.fromDegrees(-114.615)));
+
     // POSE STUFF
     public static final Supplier<Pose2d> CLIMB_SHOOT_POSE_RIGHT =
         VortechsUtil.AllianceBasedPose(
