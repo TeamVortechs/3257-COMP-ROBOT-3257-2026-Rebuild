@@ -133,14 +133,13 @@ public class MatchTimeline {
   public void updateAutoWinner() {
     String gameData = DriverStation.getGameSpecificMessage();
 
-    if (gameData == null || gameData.length() < 0 || gameData.length() == 0 || gameData.isEmpty()) {
+    if (gameData == null || gameData.length() <= 0 || gameData.isEmpty()) {
       return;
     }
 
     switch (gameData.charAt(0)) {
       case 'R':
         teamThatWonAuto = Optional.of(Alliance.Red);
-
         break;
 
       case 'B':
