@@ -390,7 +390,7 @@ public class RobotContainer {
 
 
 
-    controller.b().whileTrue(aimTowardsTargetCommand2)
+    controller.b().whileTrue(aimTowardsTargetCommand2);
 
     // controller
     //     .b()
