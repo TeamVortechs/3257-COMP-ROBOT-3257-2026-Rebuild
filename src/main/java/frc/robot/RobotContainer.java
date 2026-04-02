@@ -372,17 +372,31 @@ public class RobotContainer {
                     belt.setPercentMotorOutputRunCommand(
                         BeltConstants.FEED_POWER, () -> feeder.getTargetSpeed() > 0)));
 
+    // controller
+    //     .x()
+    //     .whileTrue(
+    //         shootAfterPathingCommand(
+    //             new PathfindToPoseCommand(drive, DriveConstants.CLIMB_SHOOT_POSE_LEFT, true)));
+
     controller
         .x()
         .whileTrue(
-            shootAfterPathingCommand(
-                new PathfindToPoseCommand(drive, DriveConstants.CLIMB_SHOOT_POSE_LEFT, true)));
+            new ConditionalCommand(
+                shootAfterPathingCommand(
+                    new PathfindToPoseCommand(drive, DriveConstants.CLIMB_SHOOT_POSE_RIGHT, true)),
+                shootAfterPathingCommand(
+                    new PathfindToPoseCommand(drive, DriveConstants.CLIMB_SHOOT_POSE_LEFT, true)),
+                () -> drive.isRightSideZone()));
 
-    controller
-        .b()
-        .whileTrue(
-            shootAfterPathingCommand(
-                new PathfindToPoseCommand(drive, DriveConstants.CLIMB_SHOOT_POSE_RIGHT, true)));
+
+
+    controller.b().whileTrue(aimTowardsTargetCommand2)
+
+    // controller
+    //     .b()
+    //     .whileTrue(
+    //         shootAfterPathingCommand(
+    //             new PathfindToPoseCommand(drive, DriveConstants.CLIMB_SHOOT_POSE_RIGHT, true)));
 
     PathPlannerPath leftSideProtectedShoot = getPath("Left Side Tele mid into score");
     PathPlannerPath rightSideProtectedShoot = getPath("Right Side Tele mid into score");

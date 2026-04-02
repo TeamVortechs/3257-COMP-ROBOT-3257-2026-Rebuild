@@ -168,8 +168,6 @@ public final class Constants {
     // SHOOT ON MOVE CONSTATNS.
     // used for auto teargetting
 
-
-
     public static final Translation2d CENTER_POINT = new Translation2d(8.27, 4.115);
 
     public static double MAX_LINEAR_SPEED_METERS_PER_SECOND =
