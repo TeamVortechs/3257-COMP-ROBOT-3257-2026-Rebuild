@@ -15,6 +15,7 @@ import static frc.robot.subsystems.vision.VisionConstants.robotToPhoton1;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.events.EventTrigger;
+import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -24,7 +25,9 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
@@ -32,19 +35,16 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants.BeltConstants;
-import frc.robot.Constants.ClimbConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.FeederConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.ShooterConstants;
+import frc.robot.commands.PathfindToPoseCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.belt.Belt;
 import frc.robot.subsystems.belt.BeltIO;
 import frc.robot.subsystems.belt.BeltSimulationIO;
 import frc.robot.subsystems.belt.BeltTalonFXIO;
-import frc.robot.subsystems.climb.Climb;
-import frc.robot.subsystems.climb.ClimbIO;
-import frc.robot.subsystems.climb.ClimbSimulationIO;
 import frc.robot.subsystems.drive.Drivetrain;
 import frc.robot.subsystems.drive.DrivetrainIO;
 import frc.robot.subsystems.drive.DrivetrainSimulationIO;
@@ -53,6 +53,7 @@ import frc.robot.subsystems.feeder.Feeder;
 import frc.robot.subsystems.feeder.FeederIO;
 import frc.robot.subsystems.feeder.FeederSimulationIO;
 import frc.robot.subsystems.feeder.FeederTalonFXIO;
+import frc.robot.subsystems.feeder.FeederValidityContainer;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeIO;
 import frc.robot.subsystems.intake.IntakeSimulationIO;
@@ -88,8 +89,6 @@ public class RobotContainer {
   private final Feeder feeder;
 
   private final Shooter shooter;
-
-  private final Climb climb;
 
   private final Vision vision;
 
@@ -136,6 +135,7 @@ public class RobotContainer {
             new Intake(
                 new IntakeTalonFXCANCoderIO(
                     IntakeConstants.INTAKE_ROLLER_MOTOR_ID,
+                    IntakeConstants.INTAKE_ROLLER_2_MOTOR_ID,
                     IntakeConstants.INTAKE_POSITION_MOTOR_ID,
                     IntakeConstants.INTAKE_CANCODER_ID));
         // intake = new Intake(new IntakeIO() {});
@@ -147,7 +147,10 @@ public class RobotContainer {
 
         shooter =
             new Shooter(
-                new ShooterTalonFXIO(ShooterConstants.MOTOR_ID, ShooterConstants.FOLLOWER_MOTOR_ID),
+                new ShooterTalonFXIO(
+                    ShooterConstants.MOTOR_ID,
+                    ShooterConstants.FOLLOWER_MOTOR_ID,
+                    ShooterConstants.FOLLOWER_2_MOTOR_ID),
                 () -> drive.getDistanceToTarget());
         // shooter =
         //     new Shooter(
@@ -158,9 +161,7 @@ public class RobotContainer {
         feeder =
             new Feeder(
                 new FeederTalonFXIO(FeederConstants.MOTOR_ID),
-                () -> drive.isOriented(),
-                () -> shooter.isOnTarget(),
-                () -> true);
+                new FeederValidityContainer(() -> drive.isOriented(), () -> shooter.isOnTarget()));
         // feeder =
         //     new Feeder(
         //         new FeederIO() {},
@@ -170,8 +171,6 @@ public class RobotContainer {
 
         belt = new Belt(new BeltTalonFXIO(BeltConstants.ID));
         // belt = new Belt(new BeltIO() {});
-
-        climb = new Climb(new ClimbIO() {});
 
         vision =
             new Vision(
@@ -201,11 +200,7 @@ public class RobotContainer {
         feeder =
             new Feeder(
                 new FeederSimulationIO(),
-                () -> drive.isOriented(),
-                () -> shooter.isOnTarget(),
-                () -> true);
-
-        climb = new Climb(new ClimbSimulationIO());
+                new FeederValidityContainer(() -> drive.isOriented(), () -> shooter.isOnTarget()));
 
         // climb = new Climb(new ClimbSimulationIO());
         vision =
@@ -229,11 +224,11 @@ public class RobotContainer {
 
         belt = new Belt(new BeltIO() {});
 
-        feeder = new Feeder(new FeederIO() {}, () -> false, () -> false, () -> false);
+        feeder =
+            new Feeder(new FeederIO() {}, new FeederValidityContainer(() -> false, () -> false));
 
         shooter = new Shooter(new ShooterIO() {}, () -> drive.getDistanceToTarget());
 
-        climb = new Climb(new ClimbIO() {});
         vision = new Vision(drive::addVisionMeasurement, new VisionIO() {});
 
         break;
@@ -275,10 +270,9 @@ public class RobotContainer {
   private void configureButtonBindings() {
 
     // default commands
-    shooter.setDefaultCommand(shooter.setVoltageRunCommand(0));
+    shooter.setDefaultCommand(shooter.defaultCommand());
     intake.setDefaultCommand(intake.setRollerVoltageCommand(0));
     feeder.setDefaultCommand(feeder.setPercentMotorRunCommand(0));
-    climb.setDefaultCommand(climb.setVoltageRun(0));
     belt.setDefaultCommand(belt.setPercentMotorOutputCommand(BeltConstants.DEFAULT_POWER));
 
     // Default command, normal field-relative drive
@@ -380,17 +374,43 @@ public class RobotContainer {
                         BeltConstants.FEED_POWER, () -> feeder.getTargetSpeed() > 0)));
 
     controller
+        .x()
+        .whileTrue(
+            shootAfterPathingCommand(
+                new PathfindToPoseCommand(drive, DriveConstants.CLIMB_SHOOT_POSE_LEFT, true)));
+
+    controller
         .b()
         .whileTrue(
-            Commands.parallel(aimTowardsTargetCommand2, shooter.setAutomaticCommandRun())
-                .withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
+            shootAfterPathingCommand(
+                new PathfindToPoseCommand(drive, DriveConstants.CLIMB_SHOOT_POSE_RIGHT, true)));
 
-    controller.povRight().whileTrue(feeder.setPercentMotorRunCommand(1));
+    PathPlannerPath leftSideProtectedShoot = getPath("Left Side Tele mid into score");
+    PathPlannerPath rightSideProtectedShoot = getPath("Right Side Tele mid into score");
+
+    controller
+        .y()
+        .whileTrue(
+            shootAfterPathingCommand(
+                new ConditionalCommand(
+                    AutoBuilder.pathfindThenFollowPath(
+                        rightSideProtectedShoot, rightSideProtectedShoot.getGlobalConstraints()),
+                    AutoBuilder.pathfindThenFollowPath(
+                        leftSideProtectedShoot, leftSideProtectedShoot.getGlobalConstraints()),
+                    () -> drive.isRightSideZone())));
+
+    PathPlannerPath leftSideUnderClimb = getPath("Teleop Climber left to right");
+    PathPlannerPath rightSideUnderClimb = getPath("Teleop Climber right to left");
 
     controller
         .rightBumper()
-        .onTrue(shooter.setAutomaticallyChargeFully(() -> true))
-        .onFalse(shooter.setAutomaticallyChargeFully(() -> false));
+        .whileTrue(
+            new ConditionalCommand(
+                AutoBuilder.pathfindThenFollowPath(
+                    rightSideUnderClimb, rightSideUnderClimb.getGlobalConstraints()),
+                AutoBuilder.pathfindThenFollowPath(
+                    leftSideUnderClimb, leftSideUnderClimb.getGlobalConstraints()),
+                () -> drive.isRightSideZone()));
 
     // eject balls
     controller
@@ -494,7 +514,11 @@ public class RobotContainer {
         .whileTrue(intake.setPositionCommand(IntakeConstants.INTAKE_HALFWAY_LOWER_POSITION));
 
     // sysid bindings:
-    configureSysIdBindings(sysID_controller, shooter.BuildSysIdRoutine());
+    // configureSysIdBindings(sysID_controller, shooter.BuildSysIdRoutine());
+    sysID_controller.a().whileTrue(drive.sysIdDynamic(Direction.kReverse));
+    sysID_controller.y().whileTrue(drive.sysIdDynamic(Direction.kForward));
+    sysID_controller.x().whileTrue(drive.sysIdQuasistatic(Direction.kForward));
+    sysID_controller.b().whileTrue(drive.sysIdQuasistatic(Direction.kReverse));
 
     // additional testing bindings
     testController.a().whileTrue(feeder.setPercentMotorRunCommand(FeederConstants.FEED_POWER));
@@ -657,13 +681,6 @@ public class RobotContainer {
 
     NamedCommands.registerCommand("driveResetOverrides", drive.removeRotationOverrideCommand());
 
-    NamedCommands.registerCommand("climbUp", climb.setVoltageRun(ClimbConstants.CLIMB_UP_VOLTS));
-    NamedCommands.registerCommand("climbStop", climb.setVoltageInstant(0));
-    NamedCommands.registerCommand(
-        "climbDownWhenNeeded",
-        new WaitUntilCommand(() -> matchTimeline.getTimeSinceStart() > 18)
-            .andThen(climb.setVoltageRun(ClimbConstants.CLIMB_DOWN_VOLTS)));
-
     new EventTrigger("intakeStartEvent")
         .onTrue(
             new InstantCommand(
@@ -713,16 +730,36 @@ public class RobotContainer {
             new InstantCommand(() -> intake.setPosition(0))
                 .andThen(intake.setRollerVoltageCommand(IntakeConstants.ROLLER_GOING_UP_VOLTS)));
 
-    new EventTrigger("climbUpEvent")
-        .onTrue(new InstantCommand(() -> climb.setVoltage(ClimbConstants.CLIMB_UP_VOLTS)));
-    new EventTrigger("climbStopEvent").onTrue(new InstantCommand(() -> climb.setVoltage(0)));
-
     new EventTrigger("reverseFeederEvent")
         .onTrue(
             new InstantCommand(
                 () -> feeder.setPercentMotorOutput(FeederConstants.EJECT_POWER_AUTO)));
     new EventTrigger("stopFeederEvent")
         .onTrue(new InstantCommand(() -> feeder.setPercentMotorOutput(0)));
+  }
+
+  public Command shootAfterPathingCommand(Command pathingCommand) {
+    return new ParallelCommandGroup(
+        pathingCommand.andThen(
+            Commands.parallel(
+                drive.joystickDriveAtTarget(controller),
+                feeder.feedWhenValidRunCommand(FeederConstants.FEED_POWER),
+                belt.setPercentMotorOutputRunCommand(1, () -> feeder.isValidToFeed()),
+                intake.intakeRetractWhileShooting(() -> feeder.isValidToFeed()))),
+        shooter.setAutomaticCommandRun());
+  }
+
+  public PathPlannerPath getPath(String pathName) {
+    PathPlannerPath path = null;
+
+    try {
+      path = PathPlannerPath.fromPathFile(pathName);
+    } catch (Exception exception) {
+      System.out.println("unable to get path");
+      exception.printStackTrace();
+    }
+
+    return path;
   }
 
   // this shoudl be in a helper method or somewhere in robot container

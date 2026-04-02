@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.1400860215053763,
-        "y": 5.429634408602151
+        "x": 3.105587188612101,
+        "y": 5.43
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.5195231500088537,
-        "y": 7.199203504400603
+        "x": 2.4850243171155784,
+        "y": 7.199569095798451
       },
       "isLocked": false,
       "linkedName": "Top Shoot Speaker"
@@ -24,7 +24,7 @@
         "y": 7.33077872780693
       },
       "nextControl": {
-        "x": 3.2862241877170626,
+        "x": 3.286224187717063,
         "y": 7.592827440639096
       },
       "isLocked": false,
@@ -66,10 +66,10 @@
     "rotation": 0.0
   },
   "reversed": false,
-  "folder": "Back Bottom",
+  "folder": "Front Top",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -41.48008994373767
+    "rotation": -42.109324716917094
   },
   "useDefaultConstraints": true
 }

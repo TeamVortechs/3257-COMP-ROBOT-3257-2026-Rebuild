@@ -1,6 +1,8 @@
 package frc.robot.subsystems.drive;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.pathfinding.Pathfinding;
+import com.pathplanner.lib.util.PathPlannerLogging;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -13,11 +15,14 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.util.LocalADStarAK;
 import frc.robot.util.VortechsUtil;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
+import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 public class Drivetrain extends SubsystemBase {
@@ -42,6 +47,15 @@ public class Drivetrain extends SubsystemBase {
         DriveConstants.PP_CONFIG,
         () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
         this);
+    Pathfinding.setPathfinder(new LocalADStarAK());
+    PathPlannerLogging.setLogActivePathCallback(
+        (activePath) -> {
+          Logger.recordOutput("Odometry/Trajectory", activePath.toArray(new Pose2d[0]));
+        });
+    PathPlannerLogging.setLogTargetPoseCallback(
+        (targetPose) -> {
+          Logger.recordOutput("Odometry/TrajectorySetpoint", targetPose);
+        });
   }
 
   @Override
@@ -64,6 +78,15 @@ public class Drivetrain extends SubsystemBase {
         this);
   }
 
+  public Command joystickDrive(CommandXboxController controller) {
+    return joystickDrive(
+        () -> -controller.getLeftY(), () -> -controller.getLeftX(), () -> -controller.getRightX());
+  }
+
+  public Command joystickDriveAtTarget(CommandXboxController controller) {
+    return joystickDriveAtTarget(() -> -controller.getLeftY(), () -> -controller.getLeftX());
+  }
+
   public Command joystickDrive(
       DoubleSupplier xSupplier, DoubleSupplier ySupplier, DoubleSupplier omegaSupplier) {
     return Commands.run(
@@ -80,7 +103,11 @@ public class Drivetrain extends SubsystemBase {
 
           omegaSpeed *= DriveConstants.MAX_ANGULAR_SPEED_RAD_PER_SEC();
 
-          drivetrainIO.runFieldCentricVelocity(new ChassisSpeeds(xSpeed, ySpeed, omegaSpeed));
+          ChassisSpeeds filteredSpeeds =
+              DriveConstants.DRIVE_INPUT_FILTER.calculate(
+                  new ChassisSpeeds(xSpeed, ySpeed, omegaSpeed));
+
+          drivetrainIO.runFieldCentricVelocity(filteredSpeeds);
         },
         this);
   }
@@ -156,6 +183,11 @@ public class Drivetrain extends SubsystemBase {
       Matrix<N3, N1> visionMeasurementStdDevs) {
     drivetrainIO.addVisionMeasurement(
         visionRobotPoseMeters, timestampSeconds, visionMeasurementStdDevs);
+  }
+
+  @AutoLogOutput
+  public boolean isRightSideZone() {
+    return VortechsUtil.isWithinYZone(4.05, false, getPose());
   }
 
   // pose shot stuff

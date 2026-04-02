@@ -21,6 +21,7 @@ import frc.robot.Constants.ShooterConstants;
 public class ShooterTalonFXIO implements ShooterIO {
   private final TalonFX mainMotor;
   private final TalonFX followerMotor;
+  private final TalonFX followerMotor2;
 
   // StatusSignals allow for high-frequency, synchronous data collection
   private final StatusSignal<AngularVelocity> velocity;
@@ -37,9 +38,10 @@ public class ShooterTalonFXIO implements ShooterIO {
 
   // private PIDController PIDController = new PIDController(0.9, 0, 0.1);
 
-  public ShooterTalonFXIO(int MainMotorCANID, int FollowerMotorCANID) {
-    mainMotor = new TalonFX(MainMotorCANID);
-    followerMotor = new TalonFX(FollowerMotorCANID);
+  public ShooterTalonFXIO(int MainMotorCANID, int FollowerMotorCANID, int followerMotor2CANID) {
+    mainMotor = new TalonFX(MainMotorCANID, Constants.MECHANISM_CANBUS);
+    followerMotor = new TalonFX(FollowerMotorCANID, Constants.MECHANISM_CANBUS);
+    followerMotor2 = new TalonFX(followerMotor2CANID, Constants.MECHANISM_CANBUS);
 
     // Basic Configuration
     TalonFXConfiguration config = Constants.ShooterConstants.CONFIG;
@@ -53,6 +55,11 @@ public class ShooterTalonFXIO implements ShooterIO {
     followerMotor.getConfigurator().apply(slot0Configs);
     followerMotor.getConfigurator().apply(ShooterConstants.CLOSE_LOOP_RAMP_CONFIG);
     followerMotor.setControl(new Follower(mainMotor.getDeviceID(), MotorAlignmentValue.Opposed));
+
+    followerMotor2.getConfigurator().apply(config);
+    followerMotor2.getConfigurator().apply(slot0Configs);
+    followerMotor2.getConfigurator().apply(ShooterConstants.CLOSE_LOOP_RAMP_CONFIG);
+    followerMotor2.setControl(new Follower(mainMotor.getDeviceID(), MotorAlignmentValue.Opposed));
 
     // Initialize signals for AdvantageKit
     velocity = mainMotor.getVelocity();
@@ -77,7 +84,8 @@ public class ShooterTalonFXIO implements ShooterIO {
   @Override
   public void updateInputs(ShooterIOInputsAutoLogged inputs) {
     // Refresh signals from the hardware
-    BaseStatusSignal.refreshAll(velocity, motorVoltage, supplyCurrent);
+    BaseStatusSignal.refreshAll(
+        velocity, motorVoltage, supplyCurrent, statorCurrent, temperatureCelsius);
 
     inputs.speed = velocity.getValueAsDouble(); // Returns Rotations per Second
     inputs.voltage = motorVoltage.getValueAsDouble();

@@ -69,7 +69,6 @@ public class Shooter extends SubsystemBase {
     this.speedToTableInit(2.162, 69);
     this.speedToTableInit(2.75, 74);
     this.speedToTableInit(3.11, 78);
-
     this.speedToTableInit(3.453, 84);
 
     logger =
@@ -195,8 +194,7 @@ public class Shooter extends SubsystemBase {
         this);
   }
 
-  public Command automaticallyChargeWhenNeededRunCommand(
-      double automaticPercentage, double speedWhenNotInZone) {
+  public Command defaultCommand() {
     return new RunCommand(
         () -> {
 
@@ -207,7 +205,7 @@ public class Shooter extends SubsystemBase {
             return;
           }
 
-          setManualSpeed(speedWhenNotInZone);
+          setVoltage(0);
         },
         this);
   }

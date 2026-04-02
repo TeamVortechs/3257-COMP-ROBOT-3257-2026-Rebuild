@@ -3,38 +3,55 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.5646713615023478,
-        "y": 4.035
+        "x": 6.182716488730724,
+        "y": 5.43
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.135506210304404,
-        "y": 3.85571794466408
+        "x": 5.429572953736655,
+        "y": 5.3960379596678525
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.9891314553990616,
-        "y": 4.045645539906103
+        "x": 3.105587188612101,
+        "y": 5.43
       },
       "prevControl": {
-        "x": 1.7454586689632554,
-        "y": 4.101534475757576
+        "x": 3.6090480235717317,
+        "y": 5.406797153024911
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Top Shoot Speaker"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.96,
+      "rotationDegrees": 180.0
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "",
+      "name": "intakeDownEvent",
       "waypointRelativePos": 0,
+      "endWaypointRelativePos": null,
+      "command": null
+    },
+    {
+      "name": "intakeStartEvent",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": null,
+      "command": null
+    },
+    {
+      "name": "intakeClearEvent",
+      "waypointRelativePos": 0.5222717149220479,
       "endWaypointRelativePos": null,
       "command": null
     }
@@ -49,13 +66,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -42.109324716917094
   },
   "reversed": false,
-  "folder": null,
+  "folder": "TeleopCommands",
   "idealStartingState": {
-    "velocity": 0,
-    "rotation": 179.67991517621834
+    "velocity": 3.0,
+    "rotation": 180.0
   },
   "useDefaultConstraints": true
 }

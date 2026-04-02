@@ -10,6 +10,7 @@ package frc.robot;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.Seconds;
 
+import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -36,7 +37,10 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.RobotBase;
 import frc.robot.generated.TunerConstants;
+import frc.robot.subsystems.drive.filtering.DeadbandDriveInputFilter;
+import frc.robot.subsystems.drive.filtering.DriveInputFilter;
 import frc.robot.util.SmartConstant;
+import frc.robot.util.VortechsUtil;
 import java.util.function.Supplier;
 
 /**
@@ -45,6 +49,9 @@ import java.util.function.Supplier;
  * (log replay from a file).
  */
 public final class Constants {
+
+  public static final CANBus MECHANISM_CANBUS = new CANBus("Mech - Canivore");
+
   public static final Mode SIM_MODE = Mode.SIM;
   public static final Mode CURR_MODE = RobotBase.isReal() ? Mode.REAL : SIM_MODE;
 
@@ -114,9 +121,6 @@ public final class Constants {
     public static final double SHOOTER_ROTATION_MANAGER_LOGGING_FREQUENCY =
         Constants.LOW_PRIORITY_FREQUENCY_HZ;
 
-    public static final double FREQUENCY_UPDATE_ACC =
-        20.00; // how many times per sec should we log accelerometer
-
     // pid constants
     public static final double TRANS_KP = 5;
     public static final double TRANS_KI = 0;
@@ -163,18 +167,10 @@ public final class Constants {
     // TOLERANCE
     public static final double SHOOT_ON_MOVE_TOLERANCE = 0.05;
 
-    // the maximum allowed difference allowed between acceleraomter and encoders before it is
-    // considered skid
-    public static final double SKID_THRESHOLD = 1000;
-
     // SHOOT ON MOVE CONSTATNS.
     // used for auto teargetting
 
-    // idrk what this does but we should never to use/change these
-    public static final double FF_START_DELAY = 2.0; // Secs
-    public static final double FF_RAMP_RATE = 0.1; // Volts/Sec
-    public static final double WHEEL_RADIUS_MAX_VELOCITY = 0.25; // Rad/Sec
-    public static final double WHEEL_RADIUS_RAMP_RATE = 0.05; // Rad/Sec^2
+
 
     public static final Translation2d CENTER_POINT = new Translation2d(8.27, 4.115);
 
@@ -185,22 +181,20 @@ public final class Constants {
       return MAX_LINEAR_SPEED_METERS_PER_SECOND / DRIVE_BASE_RADIUS;
     }
 
-    // this is the rotation the drive will turn to when travelling over the bumpers, depending on
-    // what side of the field(red or blue)
-    // this is optimal bc it's smoother going at an angle rather than straight in
-    public static final double RED_SIDE_DEGREES = 135;
-    public static final double BLUE_SIDE_DEGREES = 45;
-
     // control req stuff:
     public static SwerveRequest.FieldCentric DRIVE_CONTROL_REQ =
-        new FieldCentric()
-            .withDeadband(MAX_LINEAR_SPEED_METERS_PER_SECOND * 0.1)
-            .withRotationalDeadband(MAX_ANGULAR_SPEED_RAD_PER_SEC() * 0.1)
-            .withDriveRequestType(DriveRequestType.Velocity);
+        new FieldCentric().withDriveRequestType(DriveRequestType.Velocity);
 
     // POSE STUFF
+    public static final Supplier<Pose2d> CLIMB_SHOOT_POSE_RIGHT =
+        VortechsUtil.AllianceBasedPose(
+            new Pose2d(1.277, 2.889, Rotation2d.fromDegrees(19.479)),
+            new Pose2d(15.242, 5.170, Rotation2d.fromDegrees(-161.34)));
+    public static final Supplier<Pose2d> CLIMB_SHOOT_POSE_LEFT =
+        VortechsUtil.AllianceBasedPose(
+            new Pose2d(1.201, 4.621, Rotation2d.fromDegrees(-9.11)),
+            new Pose2d(15.350, 3.459, Rotation2d.fromDegrees(170.567)));
 
-    // passing poses logic
     public static final Pose2d PASSING_POSE_UP_BLUE = new Pose2d(2.5, 6, new Rotation2d());
     public static final Pose2d PASSING_POSE_DOWN_BLUE = new Pose2d(2.5, 2, new Rotation2d());
 
@@ -208,48 +202,16 @@ public final class Constants {
     public static final Pose2d PASSING_POSE_DOWN_RED = new Pose2d(14, 2, new Rotation2d());
 
     public static final Supplier<Pose2d> PASSING_POSE_DOWN =
-        () -> {
-          if (DriverStation.getAlliance().isEmpty()) {
-            return new Pose2d();
-          }
-
-          if (DriverStation.getAlliance().get() == Alliance.Blue) {
-            return PASSING_POSE_DOWN_BLUE;
-          } else {
-            return PASSING_POSE_DOWN_RED;
-          }
-        };
-
+        VortechsUtil.AllianceBasedPose(PASSING_POSE_DOWN_BLUE, PASSING_POSE_DOWN_RED);
     public static final Supplier<Pose2d> PASSING_POSE_UP =
-        () -> {
-          if (DriverStation.getAlliance().isEmpty()) {
-            return new Pose2d();
-          }
-
-          if (DriverStation.getAlliance().get() == Alliance.Blue) {
-            return PASSING_POSE_UP_BLUE;
-          } else {
-            return PASSING_POSE_UP_RED;
-          }
-        };
+        VortechsUtil.AllianceBasedPose(PASSING_POSE_UP_BLUE, PASSING_POSE_UP_RED);
 
     // find this
     public static final Pose2d GOAL_POSE_BLUE = new Pose2d(4.622, 4.03, new Rotation2d());
     public static final Pose2d GOAL_POSE_RED = new Pose2d(11.917, 4.030, new Rotation2d());
 
-    // this is ugly but all it does is return target pose based on the team
     public static final Supplier<Pose2d> GOAL_POSE =
-        () -> {
-          if (DriverStation.getAlliance().isEmpty()) {
-            return new Pose2d();
-          }
-
-          if (DriverStation.getAlliance().get() == Alliance.Blue) {
-            return GOAL_POSE_BLUE;
-          } else {
-            return GOAL_POSE_RED;
-          }
-        };
+        VortechsUtil.AllianceBasedPose(GOAL_POSE_BLUE, GOAL_POSE_RED);
 
     // the zone where we choose to more agressively charge the shooter
     public static final double X_POSE_TO_CHARGE = 5.5;
@@ -312,6 +274,13 @@ public final class Constants {
         new Translation2d(TunerConstants.BackRight.LocationX, TunerConstants.BackRight.LocationY)
       };
     }
+
+    public static final DriveInputFilter DRIVE_INPUT_FILTER =
+        new DeadbandDriveInputFilter(
+            0.1 * MAX_LINEAR_SPEED_METERS_PER_SECOND,
+            0.1 * MAX_ANGULAR_SPEED_RAD_PER_SEC(),
+            MAX_LINEAR_SPEED_METERS_PER_SECOND,
+            MAX_ANGULAR_SPEED_RAD_PER_SEC());
   }
 
   public class ShooterConstants {
@@ -330,16 +299,13 @@ public final class Constants {
 
     public static final int MOTOR_ID = 24;
     public static final int FOLLOWER_MOTOR_ID = 28;
+    public static final int FOLLOWER_2_MOTOR_ID = 27;
 
     // this is higher rn cus it's in sim. We can model this as a linear function based on distance
     // if we're having trouble adjusting but right now I'm not cus it's a variable that mgiht not be
     // necessary
 
     public static final double DEFAULT_SPEED = 0; // speed shooter run at default
-    // speed intake/shooter boosts to
-    public static final double INTAKE_SPEED = .5;
-
-    public static final double PERCENTAGE_OF_DISTANCE_WHEN_CHARGING = 0.6;
 
     public static final SmartConstant SHOOTER_TEST_SPEED =
         new SmartConstant("shooter test speed", 70);
@@ -397,11 +363,6 @@ public final class Constants {
 
     public static final double FEEDER_ID = 23;
 
-    // used in Shooter.java
-    public static final double RAMP_RATE_VOLTS_SYSID = 0.25;
-    public static final double DYNAMIC_STEP_VOLTS_SYSID = 1;
-    public static final double POSITION_TOLERANCE = 0.1;
-
     // not real
     public static final int MOTOR_ID = 23;
 
@@ -432,10 +393,6 @@ public final class Constants {
 
     public static double FREQUENCY_HZ = Constants.LOW_PRIORITY_FREQUENCY_HZ;
 
-    // used in Belt.java
-    public static final double RAMP_RATE_VOLTS_SYSID = 0.25;
-    public static final double DYNAMIC_STEP_VOLTS_SYSID = 1;
-
     // not real
     public static final int ID = 25;
 
@@ -459,64 +416,6 @@ public final class Constants {
       CONFIG.CurrentLimits.SupplyCurrentLimitEnable = true;
       CONFIG.CurrentLimits.StatorCurrentLimitEnable = true;
     }
-  }
-
-  // copied directly from BeltConstants
-  public class ClimbConstants {
-    public static final double FREQUENCY_HZ = Constants.VERY_LOW_PRIORITY_FREQUENCY_HZ;
-
-    // used in Belt.java
-    public static final double RAMP_RATE_VOLTS_SYSID = 0.1;
-    public static final double DYNAMIC_STEP_VOLTS_SYSID = 0.25;
-
-    public static final double CLIMB_UP_VOLTS = 0.1;
-    public static final double CLIMB_DOWN_VOLTS = -0.1;
-
-    public static final double MIN_POSITION_LEFT = 0;
-    public static final double MAX_POSITION_LEFT = 1;
-
-    public static final double MIN_POSITION_RIGHT = 0;
-    public static final double MAX_POSITION_RIGHT = 1;
-
-    // CHANGE !!
-    public static final double KS = 0.1;
-    public static final double KV = 0.12;
-    public static final double KP = 0.11;
-    public static final double KI = 0;
-    public static final double KD = 0;
-
-    public static final int servoChannel = 9;
-
-    public static final int SimulationID = 1;
-
-    public static final TalonFXConfiguration CONFIG;
-    public static final Slot0Configs SLOT0CONFIGS;
-
-    public static final int RIGHT_ID = 26;
-    public static final int LEFT_ID = 27;
-    public static final int SERVO_ID = 28;
-
-    static {
-      CONFIG = new TalonFXConfiguration();
-      CONFIG.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-      CONFIG.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-      CONFIG.CurrentLimits.SupplyCurrentLimit =
-          Constants.CurrentLimitConstants.SUPPLY_CURRENT_LIMIT_CLIMB;
-      CONFIG.CurrentLimits.StatorCurrentLimit =
-          Constants.CurrentLimitConstants.STATOR_CURRENT_LIMIT_CLIMB;
-      CONFIG.CurrentLimits.SupplyCurrentLimitEnable = true;
-      CONFIG.CurrentLimits.StatorCurrentLimitEnable = true;
-
-      SLOT0CONFIGS = new Slot0Configs();
-      SLOT0CONFIGS.kS = Constants.ClimbConstants.KS;
-      SLOT0CONFIGS.kV = Constants.ClimbConstants.KV;
-      SLOT0CONFIGS.kP = Constants.ClimbConstants.KP;
-      SLOT0CONFIGS.kI = Constants.ClimbConstants.KI;
-      SLOT0CONFIGS.kD = Constants.ClimbConstants.KD;
-    }
-
-    public static final double SERVO_OPEN = 0;
-    public static final double SERVO_CLOSED = 10; // in degrees TODO: change
   }
 
   public class IntakeConstants {
@@ -596,6 +495,7 @@ public final class Constants {
     public static final TalonFXConfiguration POSITION_CONFIG;
 
     public static final int INTAKE_ROLLER_MOTOR_ID = 21;
+    public static final int INTAKE_ROLLER_2_MOTOR_ID = 26;
     public static final int INTAKE_POSITION_MOTOR_ID = 22;
     public static final int INTAKE_CANCODER_ID = 29;
 

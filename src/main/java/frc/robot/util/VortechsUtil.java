@@ -4,6 +4,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.Constants.DriveConstants;
+import java.util.function.Supplier;
 
 public class VortechsUtil {
   public static double clamp(double num, double clampVal) {
@@ -40,7 +41,7 @@ public class VortechsUtil {
     }
   }
 
-  public static boolean isWithinYZone(double y, boolean wantsCenter, Pose2d pose) {
+  public static boolean isWithinYZone(double y, boolean wantsLeft, Pose2d pose) {
     double yPose = pose.getY();
 
     if (DriverStation.getAlliance().isEmpty()) {
@@ -48,17 +49,31 @@ public class VortechsUtil {
     }
 
     if (DriverStation.getAlliance().get() == Alliance.Blue) {
-      if (!wantsCenter) {
+      if (!wantsLeft) {
         return yPose < y;
       } else {
         return yPose > y;
       }
     } else {
-      if (!wantsCenter) {
+      if (!wantsLeft) {
         return yPose > (2 * DriveConstants.CENTER_POINT.getY() - y);
       } else {
         return yPose < (2 * DriveConstants.CENTER_POINT.getY() - y);
       }
     }
+  }
+
+  public static Supplier<Pose2d> AllianceBasedPose(Pose2d bluePose, Pose2d redPose) {
+    return () -> {
+      if (DriverStation.getAlliance() == null || DriverStation.getAlliance().isEmpty()) {
+        return bluePose;
+      }
+
+      if (DriverStation.getAlliance().get() == Alliance.Blue) {
+        return bluePose;
+      } else {
+        return redPose;
+      }
+    };
   }
 }

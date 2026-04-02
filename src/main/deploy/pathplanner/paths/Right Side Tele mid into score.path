@@ -3,38 +3,55 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.5629283268960672,
-        "y": 5.877502984550562
+        "x": 6.03208778173191,
+        "y": 2.545
       },
       "prevControl": null,
       "nextControl": {
-        "x": 0.8081668031668726,
-        "y": 5.92606315090503
+        "x": 5.278944246737841,
+        "y": 2.5110379596678527
       },
       "isLocked": false,
-      "linkedName": "balls intake end"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.858125741399763,
-        "y": 6.568790035587188
+        "x": 3.105587188612101,
+        "y": 2.545
       },
       "prevControl": {
-        "x": 2.6237750272970537,
-        "y": 6.481728317251572
+        "x": 3.6090480235717317,
+        "y": 2.5217971530249113
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Top Shoot Ramp"
+      "linkedName": null
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1.0,
+      "rotationDegrees": 180.0
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [
     {
       "name": "intakeDownEvent",
-      "waypointRelativePos": 0.05,
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": null,
+      "command": null
+    },
+    {
+      "name": "intakeStartEvent",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": null,
+      "command": null
+    },
+    {
+      "name": "intakeClearEvent",
+      "waypointRelativePos": 0.55,
       "endWaypointRelativePos": null,
       "command": null
     }
@@ -49,13 +66,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -55.80679915434133
+    "rotation": 44.99723891197079
   },
   "reversed": false,
-  "folder": "Front Top",
+  "folder": "TeleopCommands",
   "idealStartingState": {
-    "velocity": 0,
-    "rotation": -122.51244126161416
+    "velocity": 3.0,
+    "rotation": 180.0
   },
   "useDefaultConstraints": true
 }

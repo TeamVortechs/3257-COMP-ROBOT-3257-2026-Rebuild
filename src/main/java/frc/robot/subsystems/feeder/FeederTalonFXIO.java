@@ -31,7 +31,7 @@ public class FeederTalonFXIO implements FeederIO {
   private boolean isBraked = true;
 
   public FeederTalonFXIO(int canId) {
-    motor = new TalonFX(canId);
+    motor = new TalonFX(canId, Constants.MECHANISM_CANBUS);
     // mVelocityRequest = new VelocityVoltage(0).withSlot(0);
 
     // Basic Configuration
@@ -65,15 +65,14 @@ public class FeederTalonFXIO implements FeederIO {
   @Override
   public void updateInputs(FeederIOInputsAutoLogged inputs) {
     // Refresh signals from the hardware
-    BaseStatusSignal.refreshAll(velocity, motorVoltage, supplyCurrent);
+    BaseStatusSignal.refreshAll(
+        velocity, motorVoltage, supplyCurrent, statorCurrent, temperatureCelsius);
 
     inputs.speed = velocity.getValueAsDouble(); // Returns Rotations per Second
     inputs.voltage = motorVoltage.getValueAsDouble();
     inputs.supplyCurrentAmps = supplyCurrent.getValueAsDouble();
     inputs.statorCurrentAmps = statorCurrent.getValueAsDouble();
     inputs.targetSpeed = targetSpeed;
-
-    inputs.isOnTargetSpeed = isOnTargetSpeed();
 
     inputs.isBraked = isBraked;
 
@@ -103,12 +102,6 @@ public class FeederTalonFXIO implements FeederIO {
   @Override
   public double getSpeed() {
     return velocity.getValueAsDouble();
-  }
-
-  @Override
-  public boolean isOnTargetSpeed() {
-    // return Math.abs(getSpeed() - targetSpeed) < Constants.FeederConstants.POSITION_TOLERANCE;
-    return true; // the above method does not work at all
   }
 
   @Override

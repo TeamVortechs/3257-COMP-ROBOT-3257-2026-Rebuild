@@ -44,7 +44,9 @@ public class PathfindToPoseCommand extends Command {
           Constants.DriveConstants.ANGLE_KI,
           Constants.DriveConstants.ANGLE_KD);
 
-  private final double translationTolerance = Constants.DriveConstants.TRANS_TOLERANCE;
+  // private final double translationTolerance = Constants.DriveConstants.TRANS_TOLERANCE;
+  // private final double rotationTolerance = Constants.DriveConstants.ORIENTATION_TOLERANCE;
+  private final double translationTolerance = 0.1;
   private final double rotationTolerance = Constants.DriveConstants.ORIENTATION_TOLERANCE;
 
   private final boolean endOnTarget;

@@ -27,7 +27,7 @@ public class BeltTalonFXIO implements BeltIO {
   private boolean isBraked = true;
 
   public BeltTalonFXIO(int canId) {
-    motor = new TalonFX(canId);
+    motor = new TalonFX(canId, Constants.MECHANISM_CANBUS);
 
     // Basic Configuration
     TalonFXConfiguration config = Constants.BeltConstants.CONFIG;
@@ -56,7 +56,8 @@ public class BeltTalonFXIO implements BeltIO {
   @Override
   public void updateInputs(BeltIOInputsAutoLogged inputs) {
     // Refresh signals from the hardware
-    BaseStatusSignal.refreshAll(velocity, motorVoltage, supplyCurrent);
+    BaseStatusSignal.refreshAll(
+        velocity, motorVoltage, supplyCurrent, statorCurrent, temperatureCelsius);
 
     inputs.speed = velocity.getValueAsDouble(); // Returns Rotations per Second
     inputs.voltage = motorVoltage.getValueAsDouble();

@@ -7,7 +7,6 @@ import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 public class FeederSimulationIO implements FeederIO {
   private final DCMotorSim rollerMotorsSim;
   private double targetSpeed = 0;
-  private boolean isOnTarget = false;
 
   public FeederSimulationIO() {
     this.rollerMotorsSim =
@@ -23,10 +22,7 @@ public class FeederSimulationIO implements FeederIO {
     inputs.voltage = rollerMotorsSim.getInputVoltage();
     inputs.speed = rollerMotorsSim.getAngularVelocityRPM();
 
-    isOnTarget = isOnTargetSpeed();
-
     inputs.targetSpeed = targetSpeed;
-    inputs.isOnTargetSpeed = isOnTarget;
 
     rollerMotorsSim.update(0.02);
   }

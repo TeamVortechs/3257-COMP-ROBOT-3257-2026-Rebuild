@@ -231,10 +231,6 @@ public class Intake extends SubsystemBase {
     return Commands.startRun(() -> this.setPositionVoltage(volt), () -> {}, this);
   }
 
-  private Command setPositionVoltageRunCommandNoRequirement(double volt) {
-    return Commands.startRun(() -> this.setPositionVoltage(volt), () -> {});
-  }
-
   public Command intakeRetractWhileShooting(BooleanSupplier canStart) {
 
     return new WaitUntilCommand(() -> canStart.getAsBoolean())

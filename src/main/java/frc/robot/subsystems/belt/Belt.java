@@ -107,29 +107,4 @@ public class Belt extends SubsystemBase {
           this.setPercentMotorOutput(0);
         });
   }
-
-  // the constants here should probably be more and move but that's later when this is transferred
-  // to the right project
-  // add this to the robot class or this won't work: SignalLogger.setPath("/media/sda1/");
-  /**
-   * Gets the system identification routine for this specific subsystem
-   *
-   * @return the sysid routine
-   */
-  public SysIdRoutine BuildSysIdRoutine() {
-
-    SysIdRoutine m_SysIdRoutine =
-        new SysIdRoutine(
-            new SysIdRoutine.Config(
-                Volts.of(BeltConstants.RAMP_RATE_VOLTS_SYSID)
-                    .per(Seconds), // Ramp Rate in Volts / Seconds
-                Volts.of(BeltConstants.DYNAMIC_STEP_VOLTS_SYSID), // Dynamic Step Voltage
-                null, // Use default timeout (10 s)
-                (state) ->
-                    SignalLogger.writeString(
-                        "state", state.toString()) // Log state with Phoenix SignalLogger class
-                ),
-            new SysIdRoutine.Mechanism((volts) -> beltIO.setVoltage(volts.in(Volts)), null, this));
-    return m_SysIdRoutine;
-  }
 }

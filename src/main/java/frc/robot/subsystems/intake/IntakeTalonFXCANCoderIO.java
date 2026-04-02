@@ -5,11 +5,13 @@ import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
+import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
@@ -20,6 +22,8 @@ import frc.robot.Constants.IntakeConstants;
 
 public class IntakeTalonFXCANCoderIO implements IntakeIO {
   private final TalonFX roller;
+  private final TalonFX rollerFollower;
+
   private final TalonFX position;
   private final CANcoder caNcoder;
 
@@ -45,10 +49,12 @@ public class IntakeTalonFXCANCoderIO implements IntakeIO {
   private boolean isBrakedPosition = true;
   private double targetPosition = 0;
 
-  public IntakeTalonFXCANCoderIO(int canIdRoller, int canIdPosition, int canIdCANCoder) {
-    roller = new TalonFX(canIdRoller);
-    position = new TalonFX(canIdPosition);
-    caNcoder = new CANcoder(canIdCANCoder);
+  public IntakeTalonFXCANCoderIO(
+      int canIdRoller, int canIDRoller2, int canIdPosition, int canIdCANCoder) {
+    roller = new TalonFX(canIdRoller, Constants.MECHANISM_CANBUS);
+    rollerFollower = new TalonFX(canIDRoller2, Constants.MECHANISM_CANBUS);
+    position = new TalonFX(canIdPosition, Constants.MECHANISM_CANBUS);
+    caNcoder = new CANcoder(canIdCANCoder, Constants.MECHANISM_CANBUS);
 
     mVoltageRequest = new MotionMagicVoltage(0);
     // mPositionVoltage = new PositionVoltage(0);
@@ -85,9 +91,11 @@ public class IntakeTalonFXCANCoderIO implements IntakeIO {
     positionConfig.Voltage.PeakReverseVoltage = -IntakeConstants.CLAMP_MAX_VOLTS;
 
     roller.getConfigurator().apply(rollerConfig);
+    rollerFollower.getConfigurator().apply(rollerConfig);
+    rollerFollower.setControl(new Follower(roller.getDeviceID(), MotorAlignmentValue.Opposed));
+
     position.getConfigurator().apply(positionConfig);
     position.getConfigurator().apply(motionMagicConfigs);
-
     position.getConfigurator().apply(slot0Configs);
 
     // Initialize signals for AdvantageKit
@@ -121,6 +129,19 @@ public class IntakeTalonFXCANCoderIO implements IntakeIO {
   }
 
   public void updateInputs(IntakeIOInputsAutoLogged inputsAutoLogged) {
+
+    BaseStatusSignal.refreshAll(
+        rollerVelocity,
+        rollerMotorVoltage,
+        rollerStatorCurrent,
+        rollerSupplyCurrent,
+        rollerTemperatureCelsius,
+        positionVelocity,
+        positionMotorVoltage,
+        positionStatorCurrent,
+        positionSupplyCurrent,
+        positionTemperatureCelsius);
+
     inputsAutoLogged.rollerAmpsStator = rollerStatorCurrent.getValueAsDouble();
     inputsAutoLogged.rollerAmpsSupply = rollerSupplyCurrent.getValueAsDouble();
     inputsAutoLogged.rollerVolts = rollerMotorVoltage.getValueAsDouble();

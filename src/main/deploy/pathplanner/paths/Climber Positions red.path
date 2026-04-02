@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.5036773428232504,
-        "y": 4.051138790035587
+        "x": 15.241957295373668,
+        "y": 5.170094899169632
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.776784652832742,
-        "y": 4.071899216279459
+        "x": 16.241957295373677,
+        "y": 5.170094899169632
       },
       "isLocked": false,
-      "linkedName": "Middle Start"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.0331559139784954,
-        "y": 4.051138790035587
+        "x": 15.34954922894425,
+        "y": 3.45938315539739
       },
       "prevControl": {
-        "x": 2.92200660606467,
-        "y": 4.0275033787328285
+        "x": 14.34954922894425,
+        "y": 3.45938315539739
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Mid Shoot"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 170.56680629963932
   },
   "reversed": false,
-  "folder": "Mid",
+  "folder": "TeleopCommands",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -161.33992157138425
   },
   "useDefaultConstraints": true
 }

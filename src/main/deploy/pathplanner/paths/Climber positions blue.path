@@ -3,37 +3,32 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.504282325029656,
-        "y": 0.4683274021352315
+        "x": 1.201209964412812,
+        "y": 4.621376037959667
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.254673895555288,
-        "y": 0.48231425079171614
+        "x": 2.2012099644128105,
+        "y": 4.621376037959667
       },
       "isLocked": false,
-      "linkedName": "Bottom Start"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 0.4621506024096387,
-        "y": 0.915138554216868
+        "x": 1.277,
+        "y": 2.889
       },
       "prevControl": {
-        "x": 2.5532109758835206,
-        "y": 0.890474765680741
+        "x": 0.2769999999999999,
+        "y": 2.889
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Human player Intake Stationary"
+      "linkedName": null
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 0.4,
-      "rotationDegrees": 90.0
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
@@ -47,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -90.0
+    "rotation": 19.479
   },
   "reversed": false,
-  "folder": "Front Bottom",
+  "folder": "TeleopCommands",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 90.0
+    "rotation": -9.111357044783986
   },
   "useDefaultConstraints": true
 }
