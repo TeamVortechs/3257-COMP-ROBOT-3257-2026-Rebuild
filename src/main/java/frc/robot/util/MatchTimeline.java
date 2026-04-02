@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants;
 import frc.robot.Constants.MatchTimelineConstants;
-
 import java.util.Optional;
 import org.littletonrobotics.junction.Logger;
 
@@ -31,7 +30,6 @@ public class MatchTimeline {
 
   public MatchTimeline(
       CommandXboxController commandXboxController, CommandXboxController secondController) {
-    System.out.println("CREATED MATCH TIMELINE");
     this.controller = commandXboxController;
     this.secondController = secondController;
 
@@ -46,31 +44,12 @@ public class MatchTimeline {
     timer = new Timer();
   }
 
-  {
-    // notifer =
-    //     new Notifier(
-    //         () -> {
-    //           advancePhase();
-    //         });
-
-    // logger =
-    //     new Notifier(
-    //         () -> {
-    //           logOutputs();
-    //         });
-
-    // Logger.recordOutput("MatchTimeline/currentPhase", MatchPhase.NO_PHASE.getDisplayName());
-
-    // // logger.startPeriodic(MatchTimelineConstants.TIMER_FREQUENCY);
-
-    // timer = new Timer();
-  }
-
   public void logOutputs() {
     Logger.recordOutput("MatchTimeline/timeUntilNextPhase", timeUntilNextPhase());
-    Logger.recordOutput("MatchTimeline/isWinningAuto", hasWonAuto());
     Logger.recordOutput("MatchTimeline/canScore", canScore());
-    Logger.recordOutput("MatchTimeline/driverstationtimer", DriverStation.getMatchTime());
+    Logger.recordOutput("MatchTimeline/currentPhase", advancePhase());
+    Logger.recordOutput("MatchTimeline/isWinningAuto", hasWonAuto());
+    // Logger.recordOutput("MatchTimeline/teamThatWonAuto", );
   }
 
   public void start() {
@@ -95,17 +74,27 @@ public class MatchTimeline {
         .withDeadline(new WaitCommand(1));
   }
 
-  private void advancePhase() {
-    currentPhase = currentPhase.getNextPhase();
-    // notifer.startSingle(currentPhase.getTime());
-    Logger.recordOutput("MatchTimeline/currentPhase", currentPhase.getDisplayName());
-    // matchChangeCallback.run();
-    if (currentPhase == MatchPhase.ALMOST_SHIFT_2
-        || currentPhase == MatchPhase.ALMOST_SHIFT_3
-        || currentPhase == MatchPhase.ALMOST_SHIFT_4
-        || currentPhase == MatchPhase.ALMOST_ENDGAME) {
-      CommandScheduler.getInstance().schedule(vibrateControllerCommand());
+  // used to ensure controller is only vibrated once per transition
+  private boolean alreadyVibrated = false;
+
+  public String advancePhase() {
+    double timeSinceStart = getTimeSinceStart();
+    MatchPhase currPhase = MatchPhase.BEGINNING;
+    double timeWindow = 0;
+    while (timeWindow < timeSinceStart) {
+      currPhase = currPhase.getNextPhase();
+      timeWindow += currPhase.getTime();
     }
+
+    currentPhase = currPhase;
+    if (currentPhase.getVibration() && !alreadyVibrated) {
+      CommandScheduler.getInstance().schedule(vibrateControllerCommand());
+      alreadyVibrated = true;
+    } else if (!currentPhase.getVibration()) {
+      alreadyVibrated = false;
+    }
+
+    return currPhase.getDisplayName();
   }
 
   public void setController(CommandXboxController controller) {
@@ -126,28 +115,25 @@ public class MatchTimeline {
    * @return
    */
   public boolean hasWonAuto() {
+    if (teamThatWonAuto.isEmpty()) {
+      updateAutoWinner();
+    }
+
+    if (DriverStation.getAlliance() == null || DriverStation.getAlliance().isEmpty()) {
+      return false;
+    }
+
+    if (teamThatWonAuto.isPresent()) {
+      return teamThatWonAuto.get() == DriverStation.getAlliance().get();
+    }
 
     return false;
-
-    // if (teamThatWonAuto.isEmpty()) {
-    //   updateAutoWinner();
-    // }
-
-    // if (DriverStation.getAlliance() == null || DriverStation.getAlliance().isEmpty()) {
-    //   return false;
-    // }
-
-    // if (teamThatWonAuto.isPresent()) {
-    //   return teamThatWonAuto.get() == DriverStation.getAlliance().get();
-    // }
-
-    // return false;
   }
 
   public void updateAutoWinner() {
     String gameData = DriverStation.getGameSpecificMessage();
 
-    if (gameData == null || gameData.length() < 0) {
+    if (gameData == null || gameData.length() < 0 || gameData.length() == 0 || gameData.isEmpty()) {
       return;
     }
 
@@ -231,8 +217,4 @@ public class MatchTimeline {
     }
     return 0;
   }
-
-  // interface MatchChangeCallback {
-  //   void run();
-  // }
 }

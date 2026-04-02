@@ -11,19 +11,20 @@ public enum MatchPhase {
   TRANSITION_TO_TRANSITION(ScoreType.ALL_SCORE, "Disabled", 3),
   TRANSITION(ScoreType.ALL_SCORE, "Transition", 10),
   SHIFT_1(ScoreType.LOSING_SCORE, "Shift 1", 18),
-  ALMOST_SHIFT_2(ScoreType.LOSING_SCORE, "Transition to Shift 2", 7),
+  ALMOST_SHIFT_2(ScoreType.LOSING_SCORE, "Transition to Shift 2", 7, true),
   SHIFT_2(ScoreType.WINNING_SCORE, "Shift 2", 18),
-  ALMOST_SHIFT_3(ScoreType.WINNING_SCORE, "Transition to Shift 3", 7),
+  ALMOST_SHIFT_3(ScoreType.WINNING_SCORE, "Transition to Shift 3", 7, true),
   SHIFT_3(ScoreType.LOSING_SCORE, "Shift 3", 18),
-  ALMOST_SHIFT_4(ScoreType.WINNING_SCORE, "Transition to Shift 4", 7),
+  ALMOST_SHIFT_4(ScoreType.WINNING_SCORE, "Transition to Shift 4", 7, true),
   SHIFT_4(ScoreType.WINNING_SCORE, "Shift 4", 18),
-  ALMOST_ENDGAME(ScoreType.WINNING_SCORE, "Transition Endgame", 7),
+  ALMOST_ENDGAME(ScoreType.WINNING_SCORE, "Transition Endgame", 7, true),
   END_GAME(ScoreType.ALL_SCORE, "End Game", 30),
   NO_PHASE(ScoreType.ALL_SCORE, "No Phase", 36000000);
 
   private ScoreType scoringType;
   private String displayName;
   private double time;
+  private boolean vibrateController;
 
   private static TreeMap<MatchPhase, MatchPhase> NEXT_PHASES;
 
@@ -54,6 +55,15 @@ public enum MatchPhase {
     this.scoringType = scoringType;
     this.displayName = displayName;
     this.time = time;
+    this.vibrateController = false;
+  }
+
+  private MatchPhase(
+      ScoreType scoringType, String displayName, double time, boolean vibrateController) {
+    this.scoringType = scoringType;
+    this.displayName = displayName;
+    this.time = time;
+    this.vibrateController = vibrateController;
   }
 
   public MatchPhase getNextPhase() {
@@ -70,5 +80,9 @@ public enum MatchPhase {
 
   public double getTime() {
     return time;
+  }
+
+  public boolean getVibration() {
+    return vibrateController;
   }
 }
