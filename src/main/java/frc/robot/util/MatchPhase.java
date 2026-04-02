@@ -15,7 +15,7 @@ public enum MatchPhase {
   SHIFT_2(ScoreType.WINNING_SCORE, "Shift 2", 18),
   ALMOST_SHIFT_3(ScoreType.WINNING_SCORE, "Transition to Shift 3", 7, true),
   SHIFT_3(ScoreType.LOSING_SCORE, "Shift 3", 18),
-  ALMOST_SHIFT_4(ScoreType.WINNING_SCORE, "Transition to Shift 4", 7, true),
+  ALMOST_SHIFT_4(ScoreType.LOSING_SCORE, "Transition to Shift 4", 7, true),
   SHIFT_4(ScoreType.WINNING_SCORE, "Shift 4", 18),
   ALMOST_ENDGAME(ScoreType.WINNING_SCORE, "Transition Endgame", 7, true),
   END_GAME(ScoreType.ALL_SCORE, "End Game", 30),
@@ -27,6 +27,7 @@ public enum MatchPhase {
   private boolean vibrateController;
 
   private static TreeMap<MatchPhase, MatchPhase> NEXT_PHASES;
+  private static TreeMap<MatchPhase, MatchPhase> PREV_PHASES;
 
   static {
     NEXT_PHASES = new TreeMap<>();
@@ -49,6 +50,27 @@ public enum MatchPhase {
 
     NEXT_PHASES.put(END_GAME, NO_PHASE);
     NEXT_PHASES.put(NO_PHASE, NO_PHASE);
+
+    PREV_PHASES = new TreeMap<>();
+    PREV_PHASES.put(BEGINNING, NO_PHASE);
+    PREV_PHASES.put(AUTO, BEGINNING);
+    PREV_PHASES.put(TRANSITION_TO_TRANSITION, AUTO);
+    PREV_PHASES.put(TRANSITION, TRANSITION_TO_TRANSITION);
+    PREV_PHASES.put(SHIFT_1, TRANSITION);
+    PREV_PHASES.put(ALMOST_SHIFT_2, SHIFT_1);
+    PREV_PHASES.put(SHIFT_2, ALMOST_SHIFT_2);
+
+    PREV_PHASES.put(ALMOST_SHIFT_3, SHIFT_2);
+    PREV_PHASES.put(SHIFT_3, ALMOST_SHIFT_3);
+
+    PREV_PHASES.put(ALMOST_SHIFT_4, SHIFT_3);
+    PREV_PHASES.put(SHIFT_4, ALMOST_SHIFT_4);
+
+    PREV_PHASES.put(ALMOST_ENDGAME, SHIFT_4);
+
+    PREV_PHASES.put(END_GAME, ALMOST_ENDGAME);
+
+    PREV_PHASES.put(NO_PHASE, END_GAME);
   }
 
   private MatchPhase(ScoreType scoringType, String displayName, double time) {
@@ -68,6 +90,10 @@ public enum MatchPhase {
 
   public MatchPhase getNextPhase() {
     return NEXT_PHASES.get(this);
+  }
+
+  public MatchPhase getPrevPhase() {
+    return PREV_PHASES.get(this);
   }
 
   public ScoreType getScoreType() {

@@ -47,7 +47,7 @@ public class MatchTimeline {
   public void logOutputs() {
     Logger.recordOutput("MatchTimeline/timeUntilNextPhase", timeUntilNextPhase());
     Logger.recordOutput("MatchTimeline/canScore", canScore());
-    Logger.recordOutput("MatchTimeline/currentPhase", advancePhase());
+    Logger.recordOutput("MatchTimeline/currentPhase", currentPhase.getDisplayName());
     Logger.recordOutput("MatchTimeline/isWinningAuto", hasWonAuto());
     // Logger.recordOutput("MatchTimeline/teamThatWonAuto", );
   }
@@ -77,7 +77,7 @@ public class MatchTimeline {
   // used to ensure controller is only vibrated once per transition
   private boolean alreadyVibrated = false;
 
-  public String advancePhase() {
+  public void advancePhase() {
     double timeSinceStart = getTimeSinceStart();
     MatchPhase currPhase = MatchPhase.BEGINNING;
     double timeWindow = 0;
@@ -86,6 +86,7 @@ public class MatchTimeline {
       timeWindow += currPhase.getTime();
     }
 
+    // crucial step: set the global "currentPhase" to local "currPhase"
     currentPhase = currPhase;
     if (currentPhase.getVibration() && !alreadyVibrated) {
       CommandScheduler.getInstance().schedule(vibrateControllerCommand());
@@ -93,8 +94,6 @@ public class MatchTimeline {
     } else if (!currentPhase.getVibration()) {
       alreadyVibrated = false;
     }
-
-    return currPhase.getDisplayName();
   }
 
   public void setController(CommandXboxController controller) {
@@ -159,7 +158,7 @@ public class MatchTimeline {
    */
   private double getFlightTime() {
     // dummy method, implement actual physics math later
-    return 0.0;
+    return 3.0;
   }
 
   /**
@@ -168,27 +167,31 @@ public class MatchTimeline {
    * @return
    */
   public boolean canScore() {
-    // new code, figures out if it can score based on 3 seconds + air time (shooting early to score
-    // on time)
     MatchPhase current = getCurrentPhase();
     double timeToNext = timeUntilNextPhase();
     double flightTime = getFlightTime();
-
-    boolean isCurrentScorable = isPhaseScorable(current);
-    MatchPhase nextPhase = current.getNextPhase();
-    boolean isNextScorable = (nextPhase != null) && isPhaseScorable(nextPhase);
-
-    // if it's negative, we've "dipped" into the next phase
     double arrivalTimeRelativeToPhaseEnd = timeToNext - flightTime;
 
-    if (isCurrentScorable) {
-      // Must stop shooting if ball arrives AFTER the phase ends + 3s buffer
+    // 1. Currently in a scorable phase
+    if (isPhaseScorable(current)) {
+      // Must land before the phase ends + 3s buffer
       return arrivalTimeRelativeToPhaseEnd > -Constants.ShooterConstants.SHOOTING_BUFFER_TIME;
     }
 
-    if (isNextScorable) {
-      // can start shooting early if ball arrives within the next phase
+    // 2. Entering a scorable phase next
+    MatchPhase nextPhase = current.getNextPhase();
+    if (nextPhase != null && isPhaseScorable(nextPhase)) {
+      // Can start shooting early if ball lands after the next phase begins
       return arrivalTimeRelativeToPhaseEnd < 0;
+    }
+
+    // 3. Just left a scorable phase
+    MatchPhase prevPhase = current.getPrevPhase();
+    if (prevPhase != null && isPhaseScorable(prevPhase)) {
+      // Can still shoot if the ball lands before the 3s grace period expires
+      double timeSpentInCurrentPhase = Constants.MatchTimelineConstants.SHIFT_LENGTH - timeToNext;
+      return (timeSpentInCurrentPhase + flightTime)
+          < Constants.ShooterConstants.SHOOTING_BUFFER_TIME;
     }
 
     return false;
@@ -206,7 +209,11 @@ public class MatchTimeline {
 
   public double timeUntilNextPhase() {
     double timeSinceStart = getTimeSinceStart();
-
+    // I need to run "advancePhase" every tick, so it was originally run by Logger
+    // But, this would cause it desync with "timeUntilNextPhase", which would make "canScore()"
+    // return the wrong value for .25 secs
+    // So, if I run "advancePhase" here, it runs every tick AND it's in sync!
+    advancePhase();
     for (double i : matchTimes) {
       if (timeSinceStart > i) {
         continue;

@@ -10,7 +10,9 @@ public class FeederValidityContainer {
 
   private BooleanSupplier shooterOnVelocity;
   private BooleanSupplier driveIsValid;
-
+  private BooleanSupplier canScoreMatchTimeline;
+  private BooleanSupplier manualOverride;
+  private BooleanSupplier isInScoringZone;
   // I was advised not to add this by jason but john said we should. For now I'll add it so we don't
   // have to add it later. We can just supply true in the constructor
   private Timer debounceTimer;
@@ -19,11 +21,18 @@ public class FeederValidityContainer {
 
   private boolean isValid = false;
 
-  public FeederValidityContainer(BooleanSupplier driveIsValid, BooleanSupplier shooterOnVelocity) {
+  public FeederValidityContainer(
+      BooleanSupplier driveIsValid,
+      BooleanSupplier shooterOnVelocity,
+      BooleanSupplier canScoreMatchTimeline,
+      BooleanSupplier manualOverride,
+      BooleanSupplier isInScoringZone) {
 
     this.shooterOnVelocity = shooterOnVelocity;
     this.driveIsValid = driveIsValid;
-
+    this.canScoreMatchTimeline = canScoreMatchTimeline;
+    this.manualOverride = manualOverride;
+    this.isInScoringZone = isInScoringZone;
     debounceTimer = new Timer();
 
     validityLogger =
@@ -45,7 +54,10 @@ public class FeederValidityContainer {
 
     isValid =
         debounceTimer.hasElapsed(FeederConstants.VALIDITY_DEBOUNCE_TIME_SEC)
-            && shooterOnVelocity.getAsBoolean();
+            && shooterOnVelocity.getAsBoolean()
+            && (canScoreMatchTimeline.getAsBoolean()
+                || manualOverride.getAsBoolean()
+                || !isInScoringZone.getAsBoolean());
 
     Logger.recordOutput("FeederValidity/IsValidToFeed", isValid);
     Logger.recordOutput("FeederValidity/DebounceTime", debounceTimer.get());
@@ -53,7 +65,6 @@ public class FeederValidityContainer {
 
   public boolean isValid() {
     calculateValidityToFeed();
-    ;
     return isValid;
   }
 

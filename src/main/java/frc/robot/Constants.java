@@ -33,8 +33,6 @@ import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.units.measure.Time;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.RobotBase;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drive.filtering.DeadbandDriveInputFilter;
@@ -169,8 +167,6 @@ public final class Constants {
 
     // SHOOT ON MOVE CONSTATNS.
     // used for auto teargetting
-
-
 
     public static final Translation2d CENTER_POINT = new Translation2d(8.27, 4.115);
 
@@ -545,5 +541,6 @@ public final class Constants {
 
   public class MatchTimelineConstants {
     public static final double TIMER_FREQUENCY = 1.0 / 4.0; // Also used for periodic measurement
+    public static final double SHIFT_LENGTH = 25.0; // Length of each shift
   }
 }
