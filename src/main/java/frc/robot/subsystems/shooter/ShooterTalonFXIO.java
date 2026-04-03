@@ -54,12 +54,12 @@ public class ShooterTalonFXIO implements ShooterIO {
     followerMotor.getConfigurator().apply(config);
     followerMotor.getConfigurator().apply(slot0Configs);
     followerMotor.getConfigurator().apply(ShooterConstants.CLOSE_LOOP_RAMP_CONFIG);
-    followerMotor.setControl(new Follower(mainMotor.getDeviceID(), MotorAlignmentValue.Opposed));
+    followerMotor.setControl(new Follower(mainMotor.getDeviceID(), MotorAlignmentValue.Aligned));
 
     followerMotor2.getConfigurator().apply(config);
     followerMotor2.getConfigurator().apply(slot0Configs);
     followerMotor2.getConfigurator().apply(ShooterConstants.CLOSE_LOOP_RAMP_CONFIG);
-    followerMotor2.setControl(new Follower(mainMotor.getDeviceID(), MotorAlignmentValue.Opposed));
+    followerMotor2.setControl(new Follower(mainMotor.getDeviceID(), MotorAlignmentValue.Aligned));
 
     // Initialize signals for AdvantageKit
     velocity = mainMotor.getVelocity();

@@ -33,16 +33,10 @@ public class PathfindToPoseCommand extends Command {
 
   // PIDController
   private final PIDController translationController =
-      new PIDController(
-          10,
-          Constants.DriveConstants.TRANS_KI,
-          Constants.DriveConstants.TRANS_KD);
+      new PIDController(10, Constants.DriveConstants.TRANS_KI, Constants.DriveConstants.TRANS_KD);
 
   private final PIDController thetaController =
-      new PIDController(
-          8,
-          Constants.DriveConstants.ANGLE_KI,
-          Constants.DriveConstants.ANGLE_KD);
+      new PIDController(8, Constants.DriveConstants.ANGLE_KI, Constants.DriveConstants.ANGLE_KD);
 
   // private final double translationTolerance = Constants.DriveConstants.TRANS_TOLERANCE;
   // private final double rotationTolerance = Constants.DriveConstants.ORIENTATION_TOLERANCE;
