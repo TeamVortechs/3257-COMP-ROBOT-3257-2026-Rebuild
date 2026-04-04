@@ -61,14 +61,17 @@ import frc.robot.subsystems.intake.IntakeSimulationIO;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterIO;
 import frc.robot.subsystems.shooter.ShooterSimulationIO;
+import frc.robot.subsystems.vision.PowerModuleIO;
+import frc.robot.subsystems.vision.PowerModuleIORev;
+import frc.robot.subsystems.vision.PowerModuleIOSim;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOPhotonVision;
 import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
 import frc.robot.util.MatchTimeline;
-import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import frc.robot.util.VortechsController;
+import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -161,7 +164,7 @@ public class RobotContainer {
                     () -> shooter.isOnTarget(),
                     () -> matchTimeline.canScore(),
                     operatorController.leftTrigger(),
-                    () -> drive.isInScoringZone()));        // feeder =
+                    () -> drive.isInScoringZone())); // feeder =
         //     new Feeder(
         //         new FeederIO() {},
         //         () -> drive.isPointingToGoal(),
@@ -174,6 +177,7 @@ public class RobotContainer {
         vision =
             new Vision(
                 drive::addVisionMeasurement,
+                new PowerModuleIORev(),
                 new VisionIOPhotonVision(photon0Name, robotToPhoton0),
                 new VisionIOPhotonVision(photon1Name, robotToPhoton1));
         break;
@@ -209,6 +213,7 @@ public class RobotContainer {
         vision =
             new Vision(
                 drive::addVisionMeasurement,
+                new PowerModuleIOSim(),
                 new VisionIOPhotonVisionSim(
                     VisionConstants.photon0Name, VisionConstants.robotToPhoton0, drive::getPose),
                 new VisionIOPhotonVisionSim(
@@ -233,10 +238,9 @@ public class RobotContainer {
                 new FeederValidityContainer(
                     () -> false, () -> false, () -> false, () -> false, () -> false));
 
-
         shooter = new Shooter(new ShooterIO() {}, () -> drive.getDistanceToTarget());
 
-        vision = new Vision(drive::addVisionMeasurement, new VisionIO() {});
+        vision = new Vision(drive::addVisionMeasurement, new PowerModuleIO() {}, new VisionIO() {});
 
         break;
     }
@@ -504,6 +508,8 @@ public class RobotContainer {
         .onFalse(new InstantCommand(() -> intake.setPositionVoltage(0)));
 
     operatorController.rightTrigger().whileTrue(shooter.setManualSpeedRunCommand(78));
+
+    operatorController.b().onTrue(vision.setPDHCommand(false)).onFalse(vision.setPDHCommand(true));
 
     // operatorController
     //     .b()
