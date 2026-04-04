@@ -68,6 +68,7 @@ import frc.robot.subsystems.vision.VisionIOPhotonVision;
 import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
 import frc.robot.util.MatchTimeline;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
+import frc.robot.util.VortechsController;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -95,16 +96,16 @@ public class RobotContainer {
   // Controller
 
   @SuppressWarnings("unused")
-  private final CommandXboxController controller = new CommandXboxController(0);
+  private final VortechsController controller = new VortechsController(0);
 
   @SuppressWarnings("unused")
-  private final CommandXboxController operatorController = new CommandXboxController(1);
+  private final VortechsController operatorController = new VortechsController(1);
 
   @SuppressWarnings("unused")
-  private final CommandXboxController testController = new CommandXboxController(2);
+  private final VortechsController testController = new VortechsController(2);
 
   @SuppressWarnings("unused")
-  private final CommandXboxController sysID_controller = new CommandXboxController(3);
+  private final VortechsController sysID_controller = new VortechsController(3);
 
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
@@ -155,8 +156,12 @@ public class RobotContainer {
         feeder =
             new Feeder(
                 new FeederTalonFXIO(FeederConstants.MOTOR_ID),
-                new FeederValidityContainer(() -> drive.isOriented(), () -> shooter.isOnTarget()));
-        // feeder =
+                new FeederValidityContainer(
+                    () -> drive.isOriented(),
+                    () -> shooter.isOnTarget(),
+                    () -> matchTimeline.canScore(),
+                    operatorController.leftTrigger(),
+                    () -> drive.isInScoringZone()));        // feeder =
         //     new Feeder(
         //         new FeederIO() {},
         //         () -> drive.isPointingToGoal(),
@@ -194,8 +199,12 @@ public class RobotContainer {
         feeder =
             new Feeder(
                 new FeederSimulationIO(),
-                new FeederValidityContainer(() -> drive.isOriented(), () -> shooter.isOnTarget()));
-
+                new FeederValidityContainer(
+                    () -> drive.isOriented(),
+                    () -> shooter.isOnTarget(),
+                    () -> matchTimeline.canScore(),
+                    operatorController.leftTrigger(),
+                    () -> drive.isInScoringZone()));
         // climb = new Climb(new ClimbSimulationIO());
         vision =
             new Vision(
@@ -219,7 +228,11 @@ public class RobotContainer {
         belt = new Belt(new BeltIO() {});
 
         feeder =
-            new Feeder(new FeederIO() {}, new FeederValidityContainer(() -> false, () -> false));
+            new Feeder(
+                new FeederIO() {},
+                new FeederValidityContainer(
+                    () -> false, () -> false, () -> false, () -> false, () -> false));
+
 
         shooter = new Shooter(new ShooterIO() {}, () -> drive.getDistanceToTarget());
 
