@@ -320,12 +320,12 @@ public final class Constants {
     // the time that the feeder waits before shooting once it is valis
 
     // CHANGE !
-    public static final double KS = 0.1021;
-    public static final double KV = 0.12071;
-    public static final double KP = 0.5; // 10991
+    public static final double KS = 0;
+    public static final double KV = 0.12052;
+    public static final double KP = 0.5; // 11339
     public static final double KI = 0.0;
     public static final double KD = 0.0;
-    public static final double KA = 0.016241;
+    public static final double KA = 0.026169;
 
     public static final TalonFXConfiguration CONFIG;
     public static final Slot0Configs SLOT0CONFIGS;
@@ -373,7 +373,7 @@ public final class Constants {
     // not real
     public static final int MOTOR_ID = 23;
 
-    public static final double FEED_POWER = 1;
+    public static final double FEED_POWER = 0.7;
     public static final double EJECT_POWER_AUTO = -1;
 
     public static final Slot0Configs SLOT0CONFIGS;
@@ -403,7 +403,7 @@ public final class Constants {
     // not real
     public static final int ID = 25;
 
-    public static final double FEED_POWER = 0.8;
+    public static final double FEED_POWER = 1;
     public static final double INTAKE_POWER = 0;
     public static final double DEFAULT_POWER = 0;
     public static final double EJECT_POWER = -1;
@@ -454,15 +454,15 @@ public final class Constants {
     public static final double MIN_POSITION = -10000; // o.373535
     public static final double MAX_POSITION = 1000; // can also do 0.36
 
-    public static final double INTAKE_DOWN_POSITION = 1.711;
-    public static final double INTAKE_HALFWAY_UP_POSITION = 1.47; // 0.6
+    public static final double INTAKE_DOWN_POSITION = 0.711;
+    public static final double INTAKE_HALFWAY_UP_POSITION = 0.47; // 0.6
 
     // used in robot container for the oscilation operator  commands
-    public static final double DEEP_INTAKE_UP_POSITION = 1.4;
-    public static final double INTAKE_HALFWAY_LOWER_POSITION = 1.5;
+    public static final double DEEP_INTAKE_UP_POSITION = 0.4;
+    public static final double INTAKE_HALFWAY_LOWER_POSITION = 0.5;
 
-    public static final double INTAKE_CLEAR_POSITION = 1.75;
-    public static final double INTAKE_UP_POSITION = 1.35; // 0.156
+    public static final double INTAKE_CLEAR_POSITION = 0.75;
+    public static final double INTAKE_UP_POSITION = 0.35; // 0.156
 
     public static final double CLAMP_MAX_VOLTS = 3;
     public static final double POSITION_THRESHOLD_STOP = 0.2;
@@ -471,18 +471,18 @@ public final class Constants {
     public static final double KS = 0;
     public static final double KV = 0.2;
     public static final double KA = 0;
-    public static final double KP = 20;
+    public static final double KP = 100;
     public static final double KI = 0;
     public static final double KD = 0;
     public static final double KG = 0.5;
 
     public static final double ROLLER_GOING_DOWN_VOLTS = -12;
     public static final double ROLLER_GOING_UP_VOLTS = 4.5;
-    public static final double INTAKE_VOLTS = 12;
+    public static final double INTAKE_VOLTS = 10;
     public static final double EJECT_VOLTS = -8;
 
-    public static final double MOTION_MAGIC_CRUISE_VELOCITY = 10;
-    public static final double MOTION_MAGIC_ACCELERATION = 5;
+    public static final double MOTION_MAGIC_CRUISE_VELOCITY = 40;
+    public static final double MOTION_MAGIC_ACCELERATION = 30;
     public static final double MOTION_MAGIC_JERK = 100000000.0;
     // for slowing down the intake when attempting to close while firing
     public static final Time WAIT_TIME_TO_PULL_INTAKE = Seconds.of(2);

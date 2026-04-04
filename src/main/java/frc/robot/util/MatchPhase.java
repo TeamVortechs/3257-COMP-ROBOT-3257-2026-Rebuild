@@ -108,7 +108,7 @@ public enum MatchPhase {
     return time;
   }
 
-  public boolean getVibration() {
+  public boolean shouldVibrate() {
     return vibrateController;
   }
 }

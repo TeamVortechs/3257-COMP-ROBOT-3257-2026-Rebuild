@@ -88,10 +88,10 @@ public class MatchTimeline {
 
     // crucial step: set the global "currentPhase" to local "currPhase"
     currentPhase = currPhase;
-    if (currentPhase.getVibration() && !alreadyVibrated) {
+    if (currentPhase.shouldVibrate() && !alreadyVibrated) {
       CommandScheduler.getInstance().schedule(vibrateControllerCommand());
       alreadyVibrated = true;
-    } else if (!currentPhase.getVibration()) {
+    } else if (!currentPhase.shouldVibrate()) {
       alreadyVibrated = false;
     }
   }
