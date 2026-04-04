@@ -356,6 +356,8 @@ public final class Constants {
 
   // copied directly from ShooterConstants
   public class FeederConstants {
+    public static final double RAMP_RATE_VOLTS_SYSID = 2;
+    public static final double DYNAMIC_STEP_VOLTS_SYSID = 8;
 
     public static final double VALIDITY_LOGGING_FREQUENCY_HERTZ = LOW_PRIORITY_FREQUENCY_HZ;
     public static final double SUBSYSTEM_LOGGING_FREQUENCY_HERTZ = MEDIUM_PRIORITY_FREQUENCY_HZ;

@@ -169,9 +169,9 @@ public class Feeder extends SubsystemBase {
     SysIdRoutine m_SysIdRoutine =
         new SysIdRoutine(
             new SysIdRoutine.Config(
-                Volts.of(ShooterConstants.RAMP_RATE_VOLTS_SYSID)
+                Volts.of(FeederConstants.RAMP_RATE_VOLTS_SYSID)
                     .per(Seconds), // Ramp Rate in Volts / Seconds
-                Volts.of(ShooterConstants.DYNAMIC_STEP_VOLTS_SYSID), // Dynamic Step Voltage
+                Volts.of(FeederConstants.DYNAMIC_STEP_VOLTS_SYSID), // Dynamic Step Voltage
                 null, // Use default timeout (10 s)
                 (state) ->
                     SignalLogger.writeString(
