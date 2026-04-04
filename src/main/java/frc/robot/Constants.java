@@ -561,5 +561,7 @@ public final class Constants {
   public class MatchTimelineConstants {
     public static final double TIMER_FREQUENCY = 1.0 / 4.0; // Also used for periodic measurement
     public static final double SHIFT_LENGTH = 25.0; // Length of each shift
+    public static final double MIN_FLIGHT_LENGTH = 0.0;
+    public static final double MAX_FLIGHT_LENGTH = 3.0;
   }
 }
