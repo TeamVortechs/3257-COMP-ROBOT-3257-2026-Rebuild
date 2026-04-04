@@ -509,6 +509,8 @@ public class RobotContainer {
 
     operatorController.rightTrigger().whileTrue(shooter.setManualSpeedRunCommand(78));
 
+    operatorController.rightBumper().onTrue(matchTimeline.toggleDSTimeCommand());
+
     operatorController.b().onTrue(vision.setPDHCommand(false)).onFalse(vision.setPDHCommand(true));
 
     // operatorController
