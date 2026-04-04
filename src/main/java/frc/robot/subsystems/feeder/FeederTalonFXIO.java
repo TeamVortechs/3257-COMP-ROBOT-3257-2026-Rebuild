@@ -92,6 +92,7 @@ public class FeederTalonFXIO implements FeederIO {
     // motor.setControl(new DutyCycleOut(speed));
   }
 
+  @Override
   public void setSpeed(double speed) {
     targetSpeed = speed;
     // motor.set(speed);
@@ -123,7 +124,7 @@ public class FeederTalonFXIO implements FeederIO {
   public boolean isOnTargetSpeed() {
     return Math.abs(this.getSpeed() - targetSpeed) < Constants.ShooterConstants.TOLERANCE;
   }
-  
+
   @Override
   public void setBraked(boolean braked) {
     isBraked = braked;

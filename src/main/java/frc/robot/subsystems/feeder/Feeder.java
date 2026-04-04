@@ -59,6 +59,13 @@ public class Feeder extends SubsystemBase {
   }
 
   /**
+   * Sets feeder speed
+   * @param speed Speed in RPS
+   */
+  public void setSpeed(double speed){
+    feederIO.setSpeed(speed);
+  }
+  /**
    * @return speed in Rotations per second
    */
   public double getSpeed() {
