@@ -40,6 +40,7 @@ import frc.robot.Constants.FeederConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.commands.PathfindToPoseCommand;
+import frc.robot.commands.communication.TellCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.belt.Belt;
 import frc.robot.subsystems.belt.BeltIO;
@@ -61,7 +62,6 @@ import frc.robot.subsystems.intake.IntakeTalonFXCANCoderIO;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterIO;
 import frc.robot.subsystems.shooter.ShooterSimulationIO;
-import frc.robot.subsystems.shooter.ShooterTalonFXIO;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionIO;
@@ -130,32 +130,28 @@ public class RobotContainer {
                     TunerConstants.BackLeft,
                     TunerConstants.BackRight));
 
-        intake =
-            new Intake(
-                new IntakeTalonFXCANCoderIO(
-                    IntakeConstants.INTAKE_ROLLER_MOTOR_ID,
-                    IntakeConstants.INTAKE_ROLLER_2_MOTOR_ID,
-                    IntakeConstants.INTAKE_POSITION_MOTOR_ID,
-                    IntakeConstants.INTAKE_CANCODER_ID));
-        // intake = new Intake(new IntakeIO() {});
+        // intake =
+        //     new Intake(
+        //         new IntakeTalonFXCANCoderIO(
+        //             IntakeConstants.INTAKE_ROLLER_MOTOR_ID,
+        //             IntakeConstants.INTAKE_ROLLER_2_MOTOR_ID,
+        //             IntakeConstants.INTAKE_POSITION_MOTOR_ID,
+        //             IntakeConstants.INTAKE_CANCODER_ID));
+            intake = new Intake(new IntakeIO() {});
         // intake =
         //     new Intake(
         //         new IntakeTalonFXOnlyRollerIO(
         //             IntakeConstants.INTAKE_ROLLER_MOTOR_ID,
         //             IntakeConstants.INTAKE_POSITION_MOTOR_ID));
 
-        shooter =
-            new Shooter(
-                new ShooterTalonFXIO(
-                    ShooterConstants.MOTOR_ID,
-                    ShooterConstants.FOLLOWER_MOTOR_ID,
-                    ShooterConstants.FOLLOWER_2_MOTOR_ID),
-                () -> drive.getDistanceToTarget());
         // shooter =
         //     new Shooter(
-        //         new ShooterIO() {},
-        //         () -> drive.getDistanceToGoal(),
-        //         () -> drive.isWithinShooterAutomaticChargingZone());
+        //         new ShooterTalonFXIO(
+        //             ShooterConstants.MOTOR_ID,
+        //             ShooterConstants.FOLLOWER_MOTOR_ID,
+        //             ShooterConstants.FOLLOWER_2_MOTOR_ID),
+        //         () -> drive.getDistanceToTarget());
+        shooter = new Shooter(new ShooterIO() {}, () -> drive.getDistanceToTarget());
 
         feeder =
             new Feeder(
@@ -362,12 +358,9 @@ public class RobotContainer {
                         .setManualSpeedCommand(83)
                         .alongWith(
                             new WaitUntilCommand(() -> shooter.isOnTarget())
+                                .andThen(new TellCommand("running feeder"))
                                 .andThen(
-                                    feeder
-                                        .setPercentMotorRunCommand(FeederConstants.FEED_POWER)
-                                        .alongWith(
-                                            intake.intakeRetractWhileShooting(
-                                                () -> feeder.getTargetSpeed() > 0)))))
+                                    feeder.setPercentMotorRunCommand(FeederConstants.FEED_POWER))))
                 .alongWith(
                     belt.setPercentMotorOutputRunCommand(
                         BeltConstants.FEED_POWER, () -> feeder.getTargetSpeed() > 0)));
@@ -407,16 +400,16 @@ public class RobotContainer {
     PathPlannerPath leftSideProtectedShoot = getPath("Left Side Tele mid into score");
     PathPlannerPath rightSideProtectedShoot = getPath("Right Side Tele mid into score");
 
-    controller
-        .y()
-        .whileTrue(
-            shootAfterPathingCommand(
-                new ConditionalCommand(
-                    AutoBuilder.pathfindThenFollowPath(
-                        rightSideProtectedShoot, rightSideProtectedShoot.getGlobalConstraints()),
-                    AutoBuilder.pathfindThenFollowPath(
-                        leftSideProtectedShoot, leftSideProtectedShoot.getGlobalConstraints()),
-                    () -> drive.isRightSideZone())));
+    // controller
+    //     .y()
+    //     .whileTrue(
+    //         shootAfterPathingCommand(
+    //             new ConditionalCommand(
+    //                 AutoBuilder.pathfindThenFollowPath(
+    //                     rightSideProtectedShoot, rightSideProtectedShoot.getGlobalConstraints()),
+    //                 AutoBuilder.pathfindThenFollowPath(
+    //                     leftSideProtectedShoot, leftSideProtectedShoot.getGlobalConstraints()),
+    //                 () -> drive.isRightSideZone())));
 
     PathPlannerPath leftSideUnderClimb = getPath("Teleop Climber left to right");
     PathPlannerPath rightSideUnderClimb = getPath("Teleop Climber right to left");

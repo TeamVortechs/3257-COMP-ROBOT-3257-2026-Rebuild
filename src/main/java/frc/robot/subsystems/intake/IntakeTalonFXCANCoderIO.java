@@ -2,6 +2,7 @@ package frc.robot.subsystems.intake;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -65,6 +66,9 @@ public class IntakeTalonFXCANCoderIO implements IntakeIO {
     TalonFXConfiguration rollerConfig = Constants.IntakeConstants.ROLLER_CONFIG;
     TalonFXConfiguration positionConfig = Constants.IntakeConstants.POSITION_CONFIG;
     Slot0Configs slot0Configs = Constants.IntakeConstants.SLOT0CONFIGS;
+    CANcoderConfiguration caNcoderConfiguration = Constants.IntakeConstants.CANCODER_CONFIG;
+
+    caNcoder.getConfigurator().apply(caNcoderConfiguration);
 
     var motionMagicConfigs = rollerConfig.MotionMagic;
     motionMagicConfigs.MotionMagicCruiseVelocity =
