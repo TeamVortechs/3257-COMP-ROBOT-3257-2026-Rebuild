@@ -58,7 +58,7 @@ public class IntakeSimulationIO implements IntakeIO {
   // getters for motors
 
   // gets the height of the arm in meters
-  public double getCurrent() {
+  public double getRollerCurrent() {
     return 0;
   }
 
@@ -132,11 +132,19 @@ public class IntakeSimulationIO implements IntakeIO {
     return false;
   }
 
-  public double getSpeed() {
+  public double getRollerSpeed() {
     return rollerMotorsSim.getAngularVelocityRadPerSec();
   }
 
   public boolean checkIfStalled() {
+    return false;
+  }
+
+  public boolean isRollerJammed() {
+    return false;
+  }
+
+  public boolean isPositionJammed() {
     return false;
   }
 }

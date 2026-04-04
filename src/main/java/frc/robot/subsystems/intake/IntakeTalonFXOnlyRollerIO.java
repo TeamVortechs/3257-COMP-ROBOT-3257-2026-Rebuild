@@ -12,6 +12,7 @@ import edu.wpi.first.units.measure.Temperature;
 import edu.wpi.first.units.measure.Voltage;
 import frc.robot.Constants;
 // CHANGE PID VALUES !!!!
+import frc.robot.Constants.IntakeConstants;
 
 // only uses the roller motor for the prototype robot without positon motor. This is not meant to be
 // used on the final
@@ -74,8 +75,11 @@ public class IntakeTalonFXOnlyRollerIO implements IntakeIO {
   }
 
   // getters for motors
+  public double getRollerMotorVoltage() {
+    return rollerMotorVoltage.getValueAsDouble();
+  }
 
-  public double getCurrent() {
+  public double getRollerCurrent() {
     return rollerStatorCurrent.getValueAsDouble();
   }
 
@@ -132,12 +136,26 @@ public class IntakeTalonFXOnlyRollerIO implements IntakeIO {
     return true;
   }
 
-  public double getSpeed() {
+  public double getRollerSpeed() {
     return roller.getVelocity().getValueAsDouble();
   }
 
-  public boolean checkIfStalled() {
-    return (roller.getMotorVoltage().getValueAsDouble()
-        > Constants.IntakeConstants.ROLLER_STALLED_VOLTS);
+  // public boolean checkIfStalled() {
+  //   return (roller.getMotorVoltage().getValueAsDouble()
+  //       > Constants.IntakeConstants.ROLLER_STALLED_VOLTS);
+  // }
+
+  public boolean isRollerJammed() {
+    // according to google, having a high current + low speed + voltage applied = JAM
+    boolean rollerJammed =
+        Math.abs(getRollerCurrent()) > IntakeConstants.ROLLER_JAM_CURRENT_AMPS
+            && Math.abs(getRollerSpeed()) < IntakeConstants.ROLLER_JAM_VELOCITY
+            && Math.abs(getRollerMotorVoltage()) > IntakeConstants.MIN_VOLTAGE_APPLIED;
+
+    return rollerJammed;
+  }
+
+  public boolean isPositionJammed() {
+    return false;
   }
 }

@@ -57,7 +57,7 @@ public interface IntakeIO {
    *
    * @return gets stator current going in the motor in amps
    */
-  public default double getCurrent() {
+  public default double getRollerCurrent() {
     return 0;
   }
 
@@ -140,7 +140,7 @@ public interface IntakeIO {
   /**
    * @return returns velocity of roller in rpm
    */
-  public default double getSpeed() {
+  public default double getRollerSpeed() {
     return 0;
   }
 
@@ -151,5 +151,13 @@ public interface IntakeIO {
    */
   public default double getRollerMotorVoltage() {
     return 0;
+  }
+
+  public default boolean isRollerJammed() {
+    return false;
+  }
+
+  public default boolean isPositionJammed() {
+    return false;
   }
 }
