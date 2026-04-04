@@ -381,6 +381,20 @@ public final class Constants {
 
       CONFIG.MotorOutput.NeutralMode = NeutralModeValue.Brake;
       CONFIG.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+
+      // Dummy values, need to be tuned
+      SLOT0CONFIGS.kP = 0.5; 
+      SLOT0CONFIGS.kI = 0.0;
+      SLOT0CONFIGS.kD = 0.0;
+      SLOT0CONFIGS.kV = 0.12;
+
+      // Also dummy values
+      CONFIG.MotionMagic.MotionMagicCruiseVelocity = 80; // Rotations per second
+      CONFIG.MotionMagic.MotionMagicAcceleration = 160;
+      CONFIG.MotionMagic.MotionMagicJerk = 1600; 
+
+      CONFIG.Slot0 = SLOT0CONFIGS;
+
       CONFIG.CurrentLimits.SupplyCurrentLimit =
           Constants.CurrentLimitConstants.SUPPLY_CURRENT_LIMIT_FEEDER;
       CONFIG.CurrentLimits.SupplyCurrentLimitEnable = true;
@@ -388,6 +402,8 @@ public final class Constants {
           Constants.CurrentLimitConstants.STATOR_CURRENT_LIMIT_FEEDER;
       CONFIG.CurrentLimits.StatorCurrentLimitEnable = true;
     }
+
+
   }
 
   // copied off feeder constants
