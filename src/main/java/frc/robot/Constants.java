@@ -11,12 +11,14 @@ import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.Seconds;
 
 import com.ctre.phoenix6.CANBus;
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
@@ -334,7 +336,7 @@ public final class Constants {
       SLOT0CONFIGS = new Slot0Configs();
       CLOSE_LOOP_RAMP_CONFIG = new ClosedLoopRampsConfigs();
       CONFIG.MotorOutput.NeutralMode = NeutralModeValue.Coast;
-      CONFIG.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+      CONFIG.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
       CONFIG.CurrentLimits.SupplyCurrentLimit =
           Constants.CurrentLimitConstants.SUPPLY_CURRENT_LIMIT_SHOOTER;
       CONFIG.CurrentLimits.SupplyCurrentLimitEnable = true;
@@ -452,13 +454,15 @@ public final class Constants {
     public static final double MIN_POSITION = -10000; // o.373535
     public static final double MAX_POSITION = 1000; // can also do 0.36
 
-    public static final double INTAKE_DOWN_POSITION = 0.878;
-    public static final double INTAKE_HALFWAY_UP_POSITION = 0.380; // 0.6
-    public static final double DEEP_INTAKE_UP_POSITION = 0.2;
-    public static final double INTAKE_HALFWAY_LOWER_POSITION = 0.5;
-    public static final double INTAKE_CLEAR_POSITION = 0.75;
-    public static final double INTAKE_UP_POSITION = 0.156; // 0.156
-    // .-0.062
+    public static final double INTAKE_DOWN_POSITION = 1.711;
+    public static final double INTAKE_HALFWAY_UP_POSITION = 1.47; // 0.6
+
+    // used in robot container for the oscilation operator  commands
+    public static final double DEEP_INTAKE_UP_POSITION = 1.4;
+    public static final double INTAKE_HALFWAY_LOWER_POSITION = 1.5;
+
+    public static final double INTAKE_CLEAR_POSITION = 1.75;
+    public static final double INTAKE_UP_POSITION = 1.35; // 0.156
 
     public static final double CLAMP_MAX_VOLTS = 3;
     public static final double POSITION_THRESHOLD_STOP = 0.2;
@@ -498,6 +502,7 @@ public final class Constants {
     public static final TalonFXConfiguration ROLLER_CONFIG;
     public static final Slot0Configs SLOT0CONFIGS;
     public static final TalonFXConfiguration POSITION_CONFIG;
+    public static final CANcoderConfiguration CANCODER_CONFIG;
 
     public static final int INTAKE_ROLLER_MOTOR_ID = 21;
     public static final int INTAKE_ROLLER_2_MOTOR_ID = 26;
@@ -534,6 +539,11 @@ public final class Constants {
       POSITION_CONFIG.MotionMagic.MotionMagicCruiseVelocity = MOTION_MAGIC_CRUISE_VELOCITY;
       POSITION_CONFIG.MotionMagic.MotionMagicAcceleration = MOTION_MAGIC_ACCELERATION;
       POSITION_CONFIG.MotionMagic.MotionMagicJerk = MOTION_MAGIC_JERK;
+
+      CANCODER_CONFIG = new CANcoderConfiguration();
+      CANCODER_CONFIG.MagnetSensor.MagnetOffset = 0.7;
+      CANCODER_CONFIG.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 1;
+      CANCODER_CONFIG.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
 
       // CTRE constants for the rollers
       ROLLER_CONFIG = new TalonFXConfiguration();

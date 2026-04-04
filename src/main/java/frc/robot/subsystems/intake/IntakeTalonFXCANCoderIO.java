@@ -90,6 +90,8 @@ public class IntakeTalonFXCANCoderIO implements IntakeIO {
     positionConfig.Voltage.PeakForwardVoltage = IntakeConstants.CLAMP_MAX_VOLTS;
     positionConfig.Voltage.PeakReverseVoltage = -IntakeConstants.CLAMP_MAX_VOLTS;
 
+    caNcoder.getConfigurator().apply(IntakeConstants.CANCODER_CONFIG);
+
     roller.getConfigurator().apply(rollerConfig);
     rollerFollower.getConfigurator().apply(rollerConfig);
     rollerFollower.setControl(new Follower(roller.getDeviceID(), MotorAlignmentValue.Opposed));
