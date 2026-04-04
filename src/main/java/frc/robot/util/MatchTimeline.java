@@ -106,10 +106,10 @@ public class MatchTimeline {
 
     // crucial step: set the global "currentPhase" to local "currPhase"
     currentPhase = currPhase;
-    if (currentPhase.getVibration() && !alreadyVibrated) {
+    if (currentPhase.shouldVibrate() && !alreadyVibrated) {
       CommandScheduler.getInstance().schedule(vibrateControllerCommand());
       alreadyVibrated = true;
-    } else if (!currentPhase.getVibration()) {
+    } else if (!currentPhase.shouldVibrate()) {
       alreadyVibrated = false;
     }
   }
@@ -204,6 +204,19 @@ public class MatchTimeline {
   /**
    * Determine if robot can score based on current phase. Considers flight time, sensor time, and
    * tolerance.
+   * With robot pose, determine distance from goal, and thus determine flight time of ball. Going to
+   * be used to score more points. This is a helper class so it's private
+   *
+   * @return flight time in seconds
+   */
+  private double getFlightTime() {
+    // dummy method, implement actual physics math later
+    return 3.0;
+  }
+
+  /**
+   * Determine if robot can score based on current phase. Considers flight time, sensor time, and
+   * tolerance.
    *
    * @return
    */
@@ -224,6 +237,8 @@ public class MatchTimeline {
     if (isPhaseScorable(current)) {
       // Pessimistic: assume max flight, max sensor time, plus tolerance to ensure it lands before
       // phase + buffer ends
+      // Pessimistic: assume max flight, max sensor time, plus tolerance to ensure it lands before
+      // phase + buffer ends
       double maxTotalTime = MatchTimelineConstants.MAX_FLIGHT_LENGTH + sensorTime + tolerance;
       double arrivalTimeRelativeToPhaseEnd = timeToNext - maxTotalTime;
       return arrivalTimeRelativeToPhaseEnd > -MatchTimelineConstants.SHOOTING_BUFFER_TIME;
@@ -231,6 +246,8 @@ public class MatchTimeline {
 
     // 2. Entering a scorable phase next
     if (nextPhase != null && isPhaseScorable(nextPhase)) {
+      // Pessimistic: assume min flight, min sensor time, minus tolerance to ensure it doesn't land
+      // before the phase begins
       // Pessimistic: assume min flight, min sensor time, minus tolerance to ensure it doesn't land
       // before the phase begins
       double minTotalTime = MatchTimelineConstants.MIN_FLIGHT_LENGTH + sensorTime - tolerance;
@@ -241,6 +258,8 @@ public class MatchTimeline {
     // 3. Just left a scorable phase
     MatchPhase prevPhase = current.getPrevPhase();
     if (prevPhase != null && isPhaseScorable(prevPhase)) {
+      // Pessimistic: assume max flight, max sensor time, plus tolerance to ensure it lands before
+      // the grace period expires
       // Pessimistic: assume max flight, max sensor time, plus tolerance to ensure it lands before
       // the grace period expires
       double maxTotalTime = MatchTimelineConstants.MAX_FLIGHT_LENGTH + sensorTime + tolerance;

@@ -42,8 +42,8 @@ public class Intake extends SubsystemBase {
     logger =
         new Notifier(
             () -> {
-              intakeIO.updateInputs(inputs);
-              Logger.processInputs("intake", inputs);
+              //                     intakeIO.updateInputs(inputs);
+              // Logger.processInputs("intake", inputs);
             });
 
     logger.startPeriodic(1 / IntakeConstants.FREQUENCY_HZ);
@@ -53,6 +53,9 @@ public class Intake extends SubsystemBase {
   public void periodic() {
     // check to see if the module is stalling; if so, then stop the motors and cancel the next
     // movement
+
+    intakeIO.updateInputs(inputs);
+    Logger.processInputs("intake", inputs);
 
     if (intakeIO.isPositionJammed()) {
       System.out.println("Intake HAS STALLED ");
@@ -236,8 +239,7 @@ public class Intake extends SubsystemBase {
     return new WaitUntilCommand(() -> canStart.getAsBoolean())
         .andThen(
             setPositionWithVelocityCommandConsistentEnd(
-                    IntakeConstants.INTAKE_HALFWAY_LOWER_POSITION,
-                    IntakeConstants.MOTION_MAGIC_SLOWED_VELOCITY)
+                    IntakeConstants.INTAKE_HALFWAY_LOWER_POSITION, 0.5)
                 .andThen(
                     setPositionWithVelocityCommandConsistentEnd(
                         IntakeConstants.INTAKE_DOWN_POSITION,
@@ -245,7 +247,7 @@ public class Intake extends SubsystemBase {
                 .andThen(
                     setPositionWithVelocityCommandConsistentEnd(
                         IntakeConstants.INTAKE_HALFWAY_UP_POSITION,
-                        IntakeConstants.MOTION_MAGIC_SLOWED_VELOCITY_SECOND_TIME))
+                        IntakeConstants.MOTION_MAGIC_CRUISE_VELOCITY))
                 .alongWith(Commands.startRun(() -> setRollersVoltage(3), () -> {})))
         .finallyDo(() -> setPosition(getPosition())); // I don't like this magic number. I am
     // displeased.

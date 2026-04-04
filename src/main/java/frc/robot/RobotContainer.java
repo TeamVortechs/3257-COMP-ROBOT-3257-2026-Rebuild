@@ -40,7 +40,6 @@ import frc.robot.Constants.FeederConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.commands.PathfindToPoseCommand;
-import frc.robot.commands.communication.TellCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.belt.Belt;
 import frc.robot.subsystems.belt.BeltIO;
@@ -58,9 +57,11 @@ import frc.robot.subsystems.feeder.FeederValidityContainer;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeIO;
 import frc.robot.subsystems.intake.IntakeSimulationIO;
+import frc.robot.subsystems.intake.IntakeTalonFXCANCoderIO;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterIO;
 import frc.robot.subsystems.shooter.ShooterSimulationIO;
+import frc.robot.subsystems.shooter.ShooterTalonFXIO;
 import frc.robot.subsystems.vision.PowerModuleIO;
 import frc.robot.subsystems.vision.PowerModuleIORev;
 import frc.robot.subsystems.vision.PowerModuleIOSim;
@@ -133,28 +134,28 @@ public class RobotContainer {
                     TunerConstants.BackLeft,
                     TunerConstants.BackRight));
 
-        // intake =
-        //     new Intake(
-        //         new IntakeTalonFXCANCoderIO(
-        //             IntakeConstants.INTAKE_ROLLER_MOTOR_ID,
-        //             IntakeConstants.INTAKE_ROLLER_2_MOTOR_ID,
-        //             IntakeConstants.INTAKE_POSITION_MOTOR_ID,
-        //             IntakeConstants.INTAKE_CANCODER_ID));
-        intake = new Intake(new IntakeIO() {});
+        intake =
+            new Intake(
+                new IntakeTalonFXCANCoderIO(
+                    IntakeConstants.INTAKE_ROLLER_MOTOR_ID,
+                    IntakeConstants.INTAKE_ROLLER_2_MOTOR_ID,
+                    IntakeConstants.INTAKE_POSITION_MOTOR_ID,
+                    IntakeConstants.INTAKE_CANCODER_ID));
+        // intake = new Intake(new IntakeIO() {});
         // intake =
         //     new Intake(
         //         new IntakeTalonFXOnlyRollerIO(
         //             IntakeConstants.INTAKE_ROLLER_MOTOR_ID,
         //             IntakeConstants.INTAKE_POSITION_MOTOR_ID));
 
-        // shooter =
-        //     new Shooter(
-        //         new ShooterTalonFXIO(
-        //             ShooterConstants.MOTOR_ID,
-        //             ShooterConstants.FOLLOWER_MOTOR_ID,
-        //             ShooterConstants.FOLLOWER_2_MOTOR_ID),
-        //         () -> drive.getDistanceToTarget());
-        shooter = new Shooter(new ShooterIO() {}, () -> drive.getDistanceToTarget());
+        shooter =
+            new Shooter(
+                new ShooterTalonFXIO(
+                    ShooterConstants.MOTOR_ID,
+                    ShooterConstants.FOLLOWER_MOTOR_ID,
+                    ShooterConstants.FOLLOWER_2_MOTOR_ID),
+                () -> drive.getDistanceToTarget());
+        // shooter = new Shooter(new ShooterIO() {}, () -> drive.getDistanceToTarget());
 
         feeder =
             new Feeder(
@@ -374,9 +375,12 @@ public class RobotContainer {
                         .setManualSpeedCommand(83)
                         .alongWith(
                             new WaitUntilCommand(() -> shooter.isOnTarget())
-                                .andThen(new TellCommand("running feeder"))
                                 .andThen(
-                                    feeder.setPercentMotorRunCommand(FeederConstants.FEED_POWER))))
+                                    feeder
+                                        .setPercentMotorRunCommand(FeederConstants.FEED_POWER)
+                                        .alongWith(
+                                            intake.intakeRetractWhileShooting(
+                                                () -> shooter.isOnTarget())))))
                 .alongWith(
                     belt.setPercentMotorOutputRunCommand(
                         BeltConstants.FEED_POWER, () -> feeder.getTargetSpeed() > 0)));
@@ -547,28 +551,41 @@ public class RobotContainer {
 
     // sysid bindings:
     // configureSysIdBindings(sysID_controller, shooter.BuildSysIdRoutine());
-    sysID_controller.a().whileTrue(drive.sysIdDynamic(Direction.kReverse));
-    sysID_controller.y().whileTrue(drive.sysIdDynamic(Direction.kForward));
-    sysID_controller.x().whileTrue(drive.sysIdQuasistatic(Direction.kForward));
-    sysID_controller.b().whileTrue(drive.sysIdQuasistatic(Direction.kReverse));
+
+    sysID_controller
+        .y()
+        .whileTrue(
+            Commands.parallel(
+                    shooter.setManualSpeedRunCommand(
+                        () -> ShooterConstants.SHOOTER_TEST_SPEED.get()),
+                    belt.setPercentMotorOutputRunCommand(
+                        BeltConstants.FEED_POWER, () -> feeder.getTargetSpeed() > 0),
+                    feeder.feedWhenShooterIsRevvedCommand(FeederConstants.FEED_POWER),
+                    intake.intakeRetractWhileShooting(() -> feeder.getTargetSpeed() > 0))
+                .withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
+
+    // sysID_controller.a().whileTrue(drive.sysIdDynamic(Direction.kReverse));
+    // sysID_controller.y().whileTrue(drive.sysIdDynamic(Direction.kForward));
+    // sysID_controller.x().whileTrue(drive.sysIdQuasistatic(Direction.kForward));
+    // sysID_controller.b().whileTrue(drive.sysIdQuasistatic(Direction.kReverse));
 
     // additional testing bindings
     testController.a().whileTrue(feeder.setPercentMotorRunCommand(FeederConstants.FEED_POWER));
     testController.b().whileTrue(belt.setPercentMotorOutputRunCommand(BeltConstants.FEED_POWER));
 
-    testController
-        .y()
-        .whileTrue(
-            shooter
-                .setManualSpeedRunCommand(() -> ShooterConstants.SHOOTER_TEST_SPEED.get())
-                .alongWith(
-                    new WaitUntilCommand(() -> shooter.isOnTarget())
-                        .andThen(
-                            feeder
-                                .setPercentMotorRunCommand(FeederConstants.FEED_POWER)
-                                .alongWith(
-                                    intake.intakeRetractWhileShooting(
-                                        () -> feeder.getTargetSpeed() > 0)))));
+    // testController
+    //     .y()
+    //     .whileTrue(
+    //         shooter
+    //             .setManualSpeedRunCommand(() -> ShooterConstants.SHOOTER_TEST_SPEED.get())
+    //             .alongWith(
+    //                 new WaitUntilCommand(() -> shooter.isOnTarget())
+    //                     .andThen(
+    //                         feeder
+    //                             .setPercentMotorRunCommand(FeederConstants.FEED_POWER)
+    //                             .alongWith(
+    //                                 intake.intakeRetractWhileShooting(
+    //                                     () -> feeder.getTargetSpeed() > 0)))));
 
     // 2.645
 

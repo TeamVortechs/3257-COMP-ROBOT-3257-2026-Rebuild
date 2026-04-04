@@ -161,6 +161,8 @@ public class IntakeTalonFXCANCoderIO implements IntakeIO {
 
     inputsAutoLogged.isBrakedRoller = isBrakedRoller;
     inputsAutoLogged.isBrakedPosition = isBrakedPosition;
+
+    inputsAutoLogged.motor2Volts = rollerFollower.getMotorVoltage().getValueAsDouble();
   }
 
   // getters for motors

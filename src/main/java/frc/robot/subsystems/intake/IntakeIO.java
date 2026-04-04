@@ -40,6 +40,9 @@ public interface IntakeIO {
     boolean isBrakedPosition = true;
 
     boolean isOnTarget = true;
+
+    double motor2Volts = 0;
+    double motor2Speed = 0;
   }
 
   // updates the given inputs with new values(advantage kit stuff)
