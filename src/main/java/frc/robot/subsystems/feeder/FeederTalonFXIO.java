@@ -87,8 +87,8 @@ public class FeederTalonFXIO implements FeederIO {
     targetSpeed = voltage;
 
     // motor.set(speed);
-    // motor.set(speed);
-    motor.setControl(new VoltageOut(voltage));
+    motor.set(voltage);
+    // motor.setControl(new VoltageOut(voltage));
     // motor.setControl(new DutyCycleOut(speed));
   }
 
