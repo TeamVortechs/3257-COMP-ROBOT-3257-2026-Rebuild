@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.MatchTimelineConstants;
-import frc.robot.Constants.ShooterConstants;
 import java.util.Optional;
 import org.littletonrobotics.junction.Logger;
 
@@ -162,7 +161,8 @@ public class MatchTimeline {
   }
 
   /**
-   * Determine if robot can score based on current phase. Considers flight time, sensor time, and tolerance.
+   * Determine if robot can score based on current phase. Considers flight time, sensor time, and
+   * tolerance.
    *
    * @return
    */
@@ -174,7 +174,8 @@ public class MatchTimeline {
 
     // 1. Currently in a scorable phase
     if (isPhaseScorable(current)) {
-      // Pessimistic: assume max flight, max sensor time, plus tolerance to ensure it lands before phase + buffer ends
+      // Pessimistic: assume max flight, max sensor time, plus tolerance to ensure it lands before
+      // phase + buffer ends
       double maxTotalTime = MatchTimelineConstants.MAX_FLIGHT_LENGTH + sensorTime + tolerance;
       double arrivalTimeRelativeToPhaseEnd = timeToNext - maxTotalTime;
       return arrivalTimeRelativeToPhaseEnd > -MatchTimelineConstants.SHOOTING_BUFFER_TIME;
@@ -183,7 +184,8 @@ public class MatchTimeline {
     // 2. Entering a scorable phase next
     MatchPhase nextPhase = current.getNextPhase();
     if (nextPhase != null && isPhaseScorable(nextPhase)) {
-      // Pessimistic: assume min flight, min sensor time, minus tolerance to ensure it doesn't land before the phase begins
+      // Pessimistic: assume min flight, min sensor time, minus tolerance to ensure it doesn't land
+      // before the phase begins
       double minTotalTime = MatchTimelineConstants.MIN_FLIGHT_LENGTH + sensorTime - tolerance;
       double arrivalTimeRelativeToPhaseEnd = timeToNext - minTotalTime;
       return arrivalTimeRelativeToPhaseEnd < 0;
@@ -192,7 +194,8 @@ public class MatchTimeline {
     // 3. Just left a scorable phase
     MatchPhase prevPhase = current.getPrevPhase();
     if (prevPhase != null && isPhaseScorable(prevPhase)) {
-      // Pessimistic: assume max flight, max sensor time, plus tolerance to ensure it lands before the grace period expires
+      // Pessimistic: assume max flight, max sensor time, plus tolerance to ensure it lands before
+      // the grace period expires
       double maxTotalTime = MatchTimelineConstants.MAX_FLIGHT_LENGTH + sensorTime + tolerance;
       double timeSpentInCurrentPhase = MatchTimelineConstants.SHIFT_LENGTH - timeToNext;
       return (timeSpentInCurrentPhase + maxTotalTime) < MatchTimelineConstants.SHOOTING_BUFFER_TIME;

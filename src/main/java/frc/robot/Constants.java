@@ -560,7 +560,8 @@ public final class Constants {
     public static final double SHOOTING_BUFFER_TIME = 3.0;
 
     // DUMMY VALUES, update when there's time at a practice field to more realistic numbers
-    public static final double SENSOR_TIME = .5; // Time it takes for ball to go from entering hub to roll past hub
+    public static final double SENSOR_TIME =
+        .5; // Time it takes for ball to go from entering hub to roll past hub
     public static final double SHOOTING_TOLERANCE = .25;
     public static final double MIN_FLIGHT_LENGTH = 0.0;
     public static final double MAX_FLIGHT_LENGTH = 3.0;
