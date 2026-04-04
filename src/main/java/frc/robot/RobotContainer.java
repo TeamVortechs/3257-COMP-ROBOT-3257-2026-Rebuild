@@ -58,7 +58,6 @@ import frc.robot.subsystems.feeder.FeederValidityContainer;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeIO;
 import frc.robot.subsystems.intake.IntakeSimulationIO;
-import frc.robot.subsystems.intake.IntakeTalonFXCANCoderIO;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterIO;
 import frc.robot.subsystems.shooter.ShooterSimulationIO;
@@ -137,7 +136,7 @@ public class RobotContainer {
         //             IntakeConstants.INTAKE_ROLLER_2_MOTOR_ID,
         //             IntakeConstants.INTAKE_POSITION_MOTOR_ID,
         //             IntakeConstants.INTAKE_CANCODER_ID));
-            intake = new Intake(new IntakeIO() {});
+        intake = new Intake(new IntakeIO() {});
         // intake =
         //     new Intake(
         //         new IntakeTalonFXOnlyRollerIO(

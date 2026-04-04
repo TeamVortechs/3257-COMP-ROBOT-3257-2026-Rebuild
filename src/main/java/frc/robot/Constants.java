@@ -11,14 +11,12 @@ import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.Seconds;
 
 import com.ctre.phoenix6.CANBus;
-import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
@@ -34,7 +32,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.units.measure.*;
+import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.RobotBase;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drive.filtering.DeadbandDriveInputFilter;
@@ -291,6 +289,10 @@ public final class Constants {
   }
 
   public class ShooterConstants {
+
+    // Time before a phase to start shooting. Used in MatchTimeline
+    public static final double SHOOTING_BUFFER_TIME = 3.0;
+
     public static final double FREQUENCY_HZ = Constants.HIGH_PRIORITY_FREQUENCY_HZ;
 
     public static final double SIM_TOLERANCE = 0.5;
@@ -332,7 +334,7 @@ public final class Constants {
       SLOT0CONFIGS = new Slot0Configs();
       CLOSE_LOOP_RAMP_CONFIG = new ClosedLoopRampsConfigs();
       CONFIG.MotorOutput.NeutralMode = NeutralModeValue.Coast;
-      CONFIG.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+      CONFIG.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
       CONFIG.CurrentLimits.SupplyCurrentLimit =
           Constants.CurrentLimitConstants.SUPPLY_CURRENT_LIMIT_SHOOTER;
       CONFIG.CurrentLimits.SupplyCurrentLimitEnable = true;
@@ -422,6 +424,17 @@ public final class Constants {
   }
 
   public class IntakeConstants {
+
+    // JAM VALUES: if we exceed all these values at the same time, we're prob in a jam
+
+    // these all depend on the motor. right now, these are just generic values, will update after
+    // research
+    public static final double ROLLER_JAM_CURRENT_AMPS = 40.0;
+    public static final double ROLLER_JAM_VELOCITY = 2.0;
+    public static final double POSITION_JAM_CURRENT_AMPS = 35.0;
+    // Minimum voltage applied on a motor for there to be considered a jam(unit: volts)
+    public static final double MIN_VOLTAGE_APPLIED = 2.0;
+
     public static final double FREQUENCY_HZ = Constants.LOW_PRIORITY_FREQUENCY_HZ;
 
     public static final double TIME_TO_WAIT_BEFORE_RETRACT_ON_SHOOT = 1.5;
@@ -439,15 +452,12 @@ public final class Constants {
     public static final double MIN_POSITION = -10000; // o.373535
     public static final double MAX_POSITION = 1000; // can also do 0.36
 
-    public static final double INTAKE_DOWN_POSITION = 1.711;
-    public static final double INTAKE_HALFWAY_UP_POSITION = 1.47; // 0.6
-
-    // used in robot container for the oscilation operator  commands
-    public static final double DEEP_INTAKE_UP_POSITION = 1.4;
-    public static final double INTAKE_HALFWAY_LOWER_POSITION = 1.5;
-
-    public static final double INTAKE_CLEAR_POSITION = 1.75;
-    public static final double INTAKE_UP_POSITION = 1.35; // 0.156
+    public static final double INTAKE_DOWN_POSITION = 0.878;
+    public static final double INTAKE_HALFWAY_UP_POSITION = 0.380; // 0.6
+    public static final double DEEP_INTAKE_UP_POSITION = 0.2;
+    public static final double INTAKE_HALFWAY_LOWER_POSITION = 0.5;
+    public static final double INTAKE_CLEAR_POSITION = 0.75;
+    public static final double INTAKE_UP_POSITION = 0.156; // 0.156
     // .-0.062
 
     public static final double CLAMP_MAX_VOLTS = 3;
@@ -464,7 +474,7 @@ public final class Constants {
 
     public static final double ROLLER_GOING_DOWN_VOLTS = -12;
     public static final double ROLLER_GOING_UP_VOLTS = 4.5;
-    public static final double INTAKE_VOLTS = 1;
+    public static final double INTAKE_VOLTS = 12;
     public static final double EJECT_VOLTS = -8;
 
     public static final double MOTION_MAGIC_CRUISE_VELOCITY = 10;
@@ -488,7 +498,6 @@ public final class Constants {
     public static final TalonFXConfiguration ROLLER_CONFIG;
     public static final Slot0Configs SLOT0CONFIGS;
     public static final TalonFXConfiguration POSITION_CONFIG;
-    public static final CANcoderConfiguration CANCODER_CONFIG;
 
     public static final int INTAKE_ROLLER_MOTOR_ID = 21;
     public static final int INTAKE_ROLLER_2_MOTOR_ID = 26;
@@ -509,11 +518,6 @@ public final class Constants {
       SLOT0CONFIGS.kG = IntakeConstants.KG;
       SLOT0CONFIGS.GravityType = GravityTypeValue.Arm_Cosine;
       SLOT0CONFIGS.withStaticFeedforwardSign(StaticFeedforwardSignValue.UseVelocitySign);
-
-      CANCODER_CONFIG = new CANcoderConfiguration();
-      CANCODER_CONFIG.MagnetSensor.MagnetOffset = 0.7;
-      CANCODER_CONFIG.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 1;
-      CANCODER_CONFIG.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
 
       // CTRE constants: brake, invert, current limits
       POSITION_CONFIG = new TalonFXConfiguration();
@@ -542,5 +546,10 @@ public final class Constants {
           Constants.CurrentLimitConstants.STATOR_CURRENT_LIMIT_INTAKE_ROLLER;
       ROLLER_CONFIG.CurrentLimits.StatorCurrentLimitEnable = true;
     }
+  }
+
+  public class MatchTimelineConstants {
+    public static final double TIMER_FREQUENCY = 1.0 / 4.0; // Also used for periodic measurement
+    public static final double SHIFT_LENGTH = 25.0; // Length of each shift
   }
 }
