@@ -291,10 +291,6 @@ public final class Constants {
   }
 
   public class ShooterConstants {
-
-    // Time before a phase to start shooting. Used in MatchTimeline
-    public static final double SHOOTING_BUFFER_TIME = 3.0;
-
     public static final double FREQUENCY_HZ = Constants.HIGH_PRIORITY_FREQUENCY_HZ;
 
     public static final double SIM_TOLERANCE = 0.5;
@@ -561,6 +557,11 @@ public final class Constants {
   public class MatchTimelineConstants {
     public static final double TIMER_FREQUENCY = 1.0 / 4.0; // Also used for periodic measurement
     public static final double SHIFT_LENGTH = 25.0; // Length of each shift
+    public static final double SHOOTING_BUFFER_TIME = 3.0;
+
+    // DUMMY VALUES, update when there's time at a practice field to more realistic numbers
+    public static final double SENSOR_TIME = .5; // Time it takes for ball to go from entering hub to roll past hub
+    public static final double SHOOTING_TOLERANCE = .25;
     public static final double MIN_FLIGHT_LENGTH = 0.0;
     public static final double MAX_FLIGHT_LENGTH = 3.0;
   }
