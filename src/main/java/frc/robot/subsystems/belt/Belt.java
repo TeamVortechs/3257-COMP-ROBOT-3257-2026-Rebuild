@@ -57,7 +57,8 @@ public class Belt extends SubsystemBase {
 
   // COMMANDS
   /**
-   * sets the manual speed of the flywheel then ends immediately
+   * Sets the manual speed of the flywheel then ends immediately. Voltage percent value goes here
+   * between -1.0 and 1.0
    *
    * @param speed the speed of the flywheel
    * @return the finished command
@@ -67,7 +68,8 @@ public class Belt extends SubsystemBase {
   }
 
   /**
-   * sets the manual speed of the flywheel, runs multiple times
+   * Sets the manual speed of the flywheel, runs multiple times. Voltage percent value goes here
+   * between -1.0 and 1.0
    *
    * @param speed the speed of the flywheel
    * @return the finished command

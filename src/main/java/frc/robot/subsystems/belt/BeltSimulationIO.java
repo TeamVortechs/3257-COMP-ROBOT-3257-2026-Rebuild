@@ -31,9 +31,6 @@ public class BeltSimulationIO implements BeltIO {
 
   @Override
   public void setPercentMotorOutput(double speed) {
-    // no clue if this works... but it's in last years arm code, so i used the set voltage
-
-    // rollerMotorsSim.setInputVoltage(speed * 12); // lol i hope that works
     setVoltage(speed / 502.747);
     targetSpeed = speed;
   }
@@ -43,7 +40,6 @@ public class BeltSimulationIO implements BeltIO {
     rollerMotorsSim.setInputVoltage(voltage);
   }
 
-  // might as well include ts W tech
   public void stop() {
     targetSpeed = 0;
     setVoltage(0);

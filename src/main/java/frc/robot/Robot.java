@@ -110,6 +110,8 @@ public class Robot extends LoggedRobot {
     // Threads.setCurrentThreadPriority(false, 10);
 
     field2d.setRobotPose(robotContainer.getDrive().getPose());
+
+    // robotContainer.getMatchTimeline().logOutputs();
   }
 
   @Override

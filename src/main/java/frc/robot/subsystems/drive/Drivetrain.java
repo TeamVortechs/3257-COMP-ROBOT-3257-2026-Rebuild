@@ -197,7 +197,7 @@ public class Drivetrain extends SubsystemBase {
    */
   public Supplier<Pose2d> rawTargetpose =
       () -> {
-        if (VortechsUtil.isWithinXZone(DriveConstants.X_POSE_TO_PASS, false, getPose())) {
+        if (isInScoringZone()) {
           // in this case ur shooting
           return DriveConstants.GOAL_POSE.get();
         }
@@ -208,6 +208,10 @@ public class Drivetrain extends SubsystemBase {
 
         return DriveConstants.PASSING_POSE_UP.get();
       };
+
+  public boolean isInScoringZone() {
+    return (VortechsUtil.isWithinXZone(DriveConstants.X_POSE_TO_PASS, false, getPose()));
+  }
 
   public Command sysIdQuasistatic(Direction direction) {
     // done with instant command for requirements

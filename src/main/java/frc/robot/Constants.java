@@ -32,7 +32,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.units.measure.*;
+import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.RobotBase;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drive.filtering.DeadbandDriveInputFilter;
@@ -289,6 +289,10 @@ public final class Constants {
   }
 
   public class ShooterConstants {
+
+    // Time before a phase to start shooting. Used in MatchTimeline
+    public static final double SHOOTING_BUFFER_TIME = 3.0;
+
     public static final double FREQUENCY_HZ = Constants.HIGH_PRIORITY_FREQUENCY_HZ;
 
     public static final double SIM_TOLERANCE = 0.5;
@@ -420,6 +424,17 @@ public final class Constants {
   }
 
   public class IntakeConstants {
+
+    // JAM VALUES: if we exceed all these values at the same time, we're prob in a jam
+
+    // these all depend on the motor. right now, these are just generic values, will update after
+    // research
+    public static final double ROLLER_JAM_CURRENT_AMPS = 40.0;
+    public static final double ROLLER_JAM_VELOCITY = 2.0;
+    public static final double POSITION_JAM_CURRENT_AMPS = 35.0;
+    // Minimum voltage applied on a motor for there to be considered a jam(unit: volts)
+    public static final double MIN_VOLTAGE_APPLIED = 2.0;
+
     public static final double FREQUENCY_HZ = Constants.LOW_PRIORITY_FREQUENCY_HZ;
 
     public static final double TIME_TO_WAIT_BEFORE_RETRACT_ON_SHOOT = 1.5;
@@ -476,7 +491,7 @@ public final class Constants {
     public static final double RAMP_RATE_VOLTS_ROLLER_SYSID = 0.25;
     public static final double DYNAMIC_STEP_VOLTS_ROLLER_SYSID = 1;
 
-    public static final double ROLLER_STALLED_VOLTS = 20.0;
+    // public static final double ROLLER_STALLED_VOLTS = 20.0;
     // lower cus this has hardstops
     public static final double RAMP_RATE_VOLTS_POSITION_SYSID = 0.1;
     public static final double DYNAMIC_STEP_VOLTS_POSITION_SYSID = 0.25;
@@ -531,5 +546,10 @@ public final class Constants {
           Constants.CurrentLimitConstants.STATOR_CURRENT_LIMIT_INTAKE_ROLLER;
       ROLLER_CONFIG.CurrentLimits.StatorCurrentLimitEnable = true;
     }
+  }
+
+  public class MatchTimelineConstants {
+    public static final double TIMER_FREQUENCY = 1.0 / 4.0; // Also used for periodic measurement
+    public static final double SHIFT_LENGTH = 25.0; // Length of each shift
   }
 }
