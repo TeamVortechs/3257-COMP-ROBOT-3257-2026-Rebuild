@@ -1,9 +1,14 @@
 package frc.robot.util;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
+import frc.robot.subsystems.drive.Drivetrain;
+
 import java.util.function.Supplier;
 
 public class VortechsUtil {
@@ -75,5 +80,14 @@ public class VortechsUtil {
         return redPose;
       }
     };
+  }
+
+  public static Rotation2d getHeadingToTarget(Pose2d curPose, Pose2d targetPose) {
+      Translation2d delta =
+        targetPose.getTranslation().minus(curPose.getTranslation());
+
+    Rotation2d heading = new Rotation2d(delta.getX(), delta.getY());
+
+    return heading;
   }
 }

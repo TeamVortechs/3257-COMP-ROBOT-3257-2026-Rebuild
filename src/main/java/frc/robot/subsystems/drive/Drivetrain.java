@@ -29,14 +29,12 @@ public class Drivetrain extends SubsystemBase {
 
   private DrivetrainIO drivetrainIO;
 
-  private ShootOnMoveManager shootOnMoveManager;
   private DrivetrainIOInputsAutoLogged inputs = new DrivetrainIOInputsAutoLogged();
 
   public Drivetrain(DrivetrainIO drivetrainIO) {
 
     this.drivetrainIO = drivetrainIO;
 
-    shootOnMoveManager = new ShootOnMoveManager(rawTargetpose, this);
 
     AutoBuilder.configure(
         this::getPose,
@@ -129,27 +127,15 @@ public class Drivetrain extends SubsystemBase {
 
   public Command joystickDriveAtTarget(DoubleSupplier xSupplier, DoubleSupplier ySupplier) {
 
-    // turn on shoot on move, makes sure it is to save on calculations
-    return new InstantCommand(
-            () -> {
-              shootOnMoveManager.setCalculateShootMove(true);
-            })
-        .andThen(joystickDriveRotation(xSupplier, ySupplier, () -> shootOnMoveManager.getHeading()))
-
-        // turn off shoot on move calculations to save memory
-        .andThen(
-            new InstantCommand(
-                () -> {
-                  shootOnMoveManager.setCalculateShootMove(false);
-                }));
+    return joystickDriveRotation(xSupplier, ySupplier, () -> VortechsUtil.getHeadingToTarget(getPose(), rawTargetpose.get()));
   }
 
   public boolean isOriented() {
-    return shootOnMoveManager.isOriented();
+    return getPose().getRotation().minus(VortechsUtil.getHeadingToTarget(getPose(), rawTargetpose.get())).getRadians() < DriveConstants.ORIENTATION_TOLERANCE;
   }
 
   public double getDistanceToTarget() {
-    return shootOnMoveManager.getDistance();
+    return getPose().getTranslation().getDistance(rawTargetpose.get().getTranslation());
   }
 
   // pose related commands
