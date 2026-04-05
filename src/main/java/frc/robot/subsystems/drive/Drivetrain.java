@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.util.LocalADStarAK;
 import frc.robot.util.VortechsUtil;
@@ -34,7 +35,6 @@ public class Drivetrain extends SubsystemBase {
   public Drivetrain(DrivetrainIO drivetrainIO) {
 
     this.drivetrainIO = drivetrainIO;
-
 
     AutoBuilder.configure(
         this::getPose,
@@ -94,6 +94,11 @@ public class Drivetrain extends SubsystemBase {
           double ySpeed =
               ySupplier.getAsDouble() * DriveConstants.MAX_LINEAR_SPEED_METERS_PER_SECOND;
 
+          if (Constants.ALLIANCE.get() == Alliance.Red) {
+            xSpeed *= -1;
+            ySpeed *= -1;
+          }
+
           double omegaSpeed =
               Math.copySign(
                   omegaSupplier.getAsDouble() * omegaSupplier.getAsDouble(),
@@ -119,6 +124,11 @@ public class Drivetrain extends SubsystemBase {
           double ySpeed =
               ySupplier.getAsDouble() * DriveConstants.MAX_LINEAR_SPEED_METERS_PER_SECOND;
 
+          if (Constants.ALLIANCE.get() == Alliance.Red) {
+            xSpeed *= -1;
+            ySpeed *= -1;
+          }
+
           drivetrainIO.runFieldCentricVelocityAtRotation(
               new ChassisSpeeds(xSpeed, ySpeed, 0), rotationSupplier.get());
         },
@@ -127,11 +137,22 @@ public class Drivetrain extends SubsystemBase {
 
   public Command joystickDriveAtTarget(DoubleSupplier xSupplier, DoubleSupplier ySupplier) {
 
-    return joystickDriveRotation(xSupplier, ySupplier, () -> VortechsUtil.getHeadingToTarget(getPose(), rawTargetpose.get()));
+    return joystickDriveRotation(
+        xSupplier,
+        ySupplier,
+        () -> VortechsUtil.getHeadingToTarget(getPose(), rawTargetpose.get()));
+  }
+
+  public Command applyBrakeRequest() {
+    return Commands.startRun(() -> drivetrainIO.runSwerveDriveBrake(), () -> {}, this);
   }
 
   public boolean isOriented() {
-    return getPose().getRotation().minus(VortechsUtil.getHeadingToTarget(getPose(), rawTargetpose.get())).getRadians() < DriveConstants.ORIENTATION_TOLERANCE;
+    return getPose()
+            .getRotation()
+            .minus(VortechsUtil.getHeadingToTarget(getPose(), rawTargetpose.get()))
+            .getRadians()
+        < DriveConstants.ORIENTATION_TOLERANCE;
   }
 
   public double getDistanceToTarget() {
@@ -149,15 +170,6 @@ public class Drivetrain extends SubsystemBase {
 
   public ChassisSpeeds getChassisSpeeds() {
     return drivetrainIO.getChassisSpeeds();
-  }
-
-  // autonomous commands
-  public Command overrideRotationCommand() {
-    return new InstantCommand();
-  }
-
-  public Command removeRotationOverrideCommand() {
-    return new InstantCommand();
   }
 
   // vision

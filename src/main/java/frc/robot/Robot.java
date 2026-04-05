@@ -7,6 +7,8 @@
 
 package frc.robot;
 
+import com.ctre.phoenix6.SignalLogger;
+import com.ctre.phoenix6.StatusCode;
 import com.pathplanner.lib.commands.FollowPathCommand;
 import com.pathplanner.lib.commands.PathfindingCommand;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -22,6 +24,7 @@ import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.util.simulation.SimulationManager;
 import frc.robot.util.simulation.VisualSimulator;
+import java.io.File;
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
@@ -118,6 +121,39 @@ public class Robot extends LoggedRobot {
 
     CommandScheduler.getInstance().schedule(FollowPathCommand.warmupCommand());
     CommandScheduler.getInstance().schedule(PathfindingCommand.warmupCommand());
+
+    String[] paths = {"/media/sda1/ctre-logs/", "/media/sdb1/ctre-logs/"};
+
+    for (int i = 0; i < 5; i++) {
+      System.out.println("Signal logger try no." + (i + 1));
+
+      for (String path : paths) {
+        new File(path).mkdirs();
+
+        StatusCode statusCode = SignalLogger.setPath(path);
+
+        if (statusCode.isOK()) {
+          System.out.println(
+              "SUCCESS: "
+                  + path
+                  + " -> "
+                  + statusCode.getName()
+                  + ", "
+                  + statusCode.getDescription());
+          return; // or break outer
+        } else {
+          System.out.println(
+              "FAIL: " + path + " -> " + statusCode.getName() + ", " + statusCode.getDescription());
+        }
+      }
+
+      System.out.println("Signal Logger Try FAILED. Sleeping thread for 500 ms then trying again");
+      try {
+        Thread.sleep(500);
+      } catch (Exception e) {
+        System.out.println("THREAD SLEEP FAILED: " + e.getMessage());
+      }
+    }
   }
 
   /** This function is called once when the robot is disabled. */

@@ -20,6 +20,8 @@ public class DrivetrainTalonFXIO extends CommandSwerveDrivetrain implements Driv
 
   private SwerveRequest.FieldCentric m_FieldCentricReq = new SwerveRequest.FieldCentric();
 
+  private SwerveRequest.SwerveDriveBrake m_SwerveDriveBrake = new SwerveRequest.SwerveDriveBrake();
+
   private SwerveRequest.FieldCentricFacingAngle m_FieldCentricAngleReq =
       new SwerveRequest.FieldCentricFacingAngle()
           .withHeadingPID(2, DriveConstants.ANGLE_KI, DriveConstants.ANGLE_KD);
@@ -70,6 +72,10 @@ public class DrivetrainTalonFXIO extends CommandSwerveDrivetrain implements Driv
             .withVelocityX(chassisSpeeds.vxMetersPerSecond)
             .withVelocityY(chassisSpeeds.vyMetersPerSecond)
             .withTargetDirection(rotation2d));
+  }
+
+  public void runSwerveDriveBrake() {
+    setControl(m_SwerveDriveBrake);
   }
 
   public ChassisSpeeds getChassisSpeeds() {
