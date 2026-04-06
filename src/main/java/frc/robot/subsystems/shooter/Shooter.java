@@ -66,11 +66,21 @@ public class Shooter extends SubsystemBase {
     // this.speedToTableInit(3.4, 77);
     // this.speedToTableInit(4, 82);
 
-    this.speedToTableInit(1.842, 67);
-    this.speedToTableInit(2.162, 69);
-    this.speedToTableInit(2.75, 74);
-    this.speedToTableInit(3.11, 78);
-    this.speedToTableInit(3.453, 84);
+    /*
+         2.155 56
+    2.573 60
+    3.168 65.75[]\
+
+    3.481 67.25
+
+    4.13 71
+
+         */
+
+    this.speedToTableInit(2.155, 56);
+    this.speedToTableInit(2.573, 60);
+    this.speedToTableInit(3.168, 65.75);
+    this.speedToTableInit(4.13, 71);
 
     logger =
         new Notifier(

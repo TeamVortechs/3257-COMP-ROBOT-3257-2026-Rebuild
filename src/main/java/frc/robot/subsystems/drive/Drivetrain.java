@@ -62,6 +62,8 @@ public class Drivetrain extends SubsystemBase {
   public void periodic() {
     drivetrainIO.updateInputs(inputs);
     Logger.processInputs("drivetrain", inputs);
+
+    Logger.recordOutput("drivetrain/targetPose", rawTargetpose.get());
   }
 
   public void runVelocity(ChassisSpeeds speeds) {
@@ -121,8 +123,10 @@ public class Drivetrain extends SubsystemBase {
           double ySpeed =
               ySupplier.getAsDouble() * DriveConstants.MAX_LINEAR_SPEED_METERS_PER_SECOND;
 
-          drivetrainIO.runFieldCentricVelocityAtRotation(
-              new ChassisSpeeds(xSpeed, ySpeed, 0), rotationSupplier.get());
+          ChassisSpeeds filteredSpeeds =
+              DriveConstants.DRIVE_INPUT_FILTER.calculate(new ChassisSpeeds(xSpeed, ySpeed, 0));
+
+          drivetrainIO.runFieldCentricVelocityAtRotation(filteredSpeeds, rotationSupplier.get());
         },
         this);
   }
@@ -132,7 +136,7 @@ public class Drivetrain extends SubsystemBase {
     // turn on shoot on move, makes sure it is to save on calculations
     return new InstantCommand(
             () -> {
-              shootOnMoveManager.setCalculateShootMove(true);
+              shootOnMoveManager.setCalculateShootMove(false);
             })
         .andThen(joystickDriveRotation(xSupplier, ySupplier, () -> shootOnMoveManager.getHeading()))
 

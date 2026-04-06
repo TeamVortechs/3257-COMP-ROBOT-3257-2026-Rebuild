@@ -70,7 +70,6 @@ import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOPhotonVision;
 import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
-import frc.robot.util.MatchTimeline;
 import frc.robot.util.VortechsController;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
@@ -113,8 +112,6 @@ public class RobotContainer {
 
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
-
-  private final MatchTimeline matchTimeline = new MatchTimeline(operatorController, controller);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -163,7 +160,7 @@ public class RobotContainer {
                 new FeederValidityContainer(
                     () -> drive.isOriented(),
                     () -> shooter.isOnTarget(),
-                    () -> matchTimeline.canScore(),
+                    () -> true,
                     operatorController.leftTrigger(),
                     () -> drive.isInScoringZone())); // feeder =
         //     new Feeder(
@@ -207,7 +204,7 @@ public class RobotContainer {
                 new FeederValidityContainer(
                     () -> drive.isOriented(),
                     () -> shooter.isOnTarget(),
-                    () -> matchTimeline.canScore(),
+                    () -> true,
                     operatorController.leftTrigger(),
                     () -> drive.isInScoringZone()));
         // climb = new Climb(new ClimbSimulationIO());
@@ -251,7 +248,7 @@ public class RobotContainer {
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
 
-    // // Set up SysId routines
+    // // Set up routines
     // autoChooser.addOption(
     //     "Drive Wheel Radius Characterization", DriveCommands.wheelRadiusCharacterization(drive));
     // autoChooser.addOption(
@@ -551,7 +548,7 @@ public class RobotContainer {
     // configureSysIdBindings(sysID_controller, shooter.BuildSysIdRoutine());
 
     sysID_controller
-        .y()
+        .povUp()
         .whileTrue(
             Commands.parallel(
                     shooter.setManualSpeedRunCommand(
@@ -562,10 +559,10 @@ public class RobotContainer {
                     intake.intakeRetractWhileShooting(() -> feeder.getTargetSpeed() > 0))
                 .withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
 
-    // sysID_controller.a().whileTrue(drive.sysIdDynamic(Direction.kReverse));
-    // sysID_controller.y().whileTrue(drive.sysIdDynamic(Direction.kForward));
-    // sysID_controller.x().whileTrue(drive.sysIdQuasistatic(Direction.kForward));
-    // sysID_controller.b().whileTrue(drive.sysIdQuasistatic(Direction.kReverse));
+    sysID_controller.a().whileTrue(drive.sysIdDynamic(Direction.kReverse));
+    sysID_controller.y().whileTrue(drive.sysIdDynamic(Direction.kForward));
+    sysID_controller.x().whileTrue(drive.sysIdQuasistatic(Direction.kForward));
+    sysID_controller.b().whileTrue(drive.sysIdQuasistatic(Direction.kReverse));
 
     // additional testing bindings
     testController.a().whileTrue(feeder.setPercentMotorRunCommand(FeederConstants.FEED_POWER));
@@ -635,10 +632,6 @@ public class RobotContainer {
 
   public Drivetrain getDrive() {
     return drive;
-  }
-
-  public MatchTimeline getMatchTimeline() {
-    return matchTimeline;
   }
 
   private void registerNamedCommandsAuto() {

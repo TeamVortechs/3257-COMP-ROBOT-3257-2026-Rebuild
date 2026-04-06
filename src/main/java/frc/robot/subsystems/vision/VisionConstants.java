@@ -30,9 +30,9 @@ public class VisionConstants {
   // !!!! TODO: GET NEW TRANSFORMS FOR NEW ROBOT !!!!
   public static Transform3d robotToPhoton0 =
       new Transform3d(
-          -0.3277108, // 12.902 in (CAD)
-          -0.2169922, // 11.043 - 2.5 in (CAD)
-          0.52705, // 20 3/4 in
+          -0.2921, // 12.902 in (CAD)
+          0.2921, // 11.043 - 2.5 in (CAD)
+          0.5334, // 0.52705 // 20 3/4 in
           new Rotation3d(
               0.0,
               -Units.degreesToRadians(25.258),
@@ -41,9 +41,9 @@ public class VisionConstants {
       robotToPhoton1 = // !! WARNING !! rough estimates. i punched this in at 9:10 PM; recheck
           // better
           new Transform3d(
-              -0.3277108,
-              -0.2169922,
-              0.52705,
+              -0.2921, // 0.3277108
+              -0.2921, // 0.2169922
+              0.5334,
               new Rotation3d(0.0, -Units.degreesToRadians(25.258), Units.degreesToRadians(35)));
 
   // Basic filtering thresholds

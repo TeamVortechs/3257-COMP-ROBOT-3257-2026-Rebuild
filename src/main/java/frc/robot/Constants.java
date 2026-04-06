@@ -132,9 +132,9 @@ public final class Constants {
     public static final double TRANS_TOLERANCE = 0.01;
 
     // rot const, used for moving to setpoint/auto targetting
-    public static final double ANGLE_KP = 2;
+    public static final double ANGLE_KP = 6.3373;
     public static final double ANGLE_KI = 0;
-    public static final double ANGLE_KD = 0.4;
+    public static final double ANGLE_KD = 0.17737;
     public static final double ANGLE_DEADBAND = 0.1;
 
     public static final double ANGLE_MAX_ACCELERATION = 20.0;
@@ -450,7 +450,7 @@ public final class Constants {
     public static final double MIN_POSITION = -10000; // o.373535
     public static final double MAX_POSITION = 1000; // can also do 0.36
 
-    public static final double INTAKE_DOWN_POSITION = 0.711;
+    public static final double INTAKE_DOWN_POSITION = 0.7;
     public static final double INTAKE_HALFWAY_UP_POSITION = 0.47; // 0.6
 
     // used in robot container for the oscilation operator  commands
@@ -467,7 +467,7 @@ public final class Constants {
     public static final double KS = 0;
     public static final double KV = 0.2;
     public static final double KA = 0;
-    public static final double KP = 100;
+    public static final double KP = 80;
     public static final double KI = 0;
     public static final double KD = 0;
     public static final double KG = 0.5;
