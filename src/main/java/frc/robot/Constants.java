@@ -31,10 +31,11 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.units.measure.Time;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.RobotBase;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drive.filtering.DeadbandDriveInputFilter;
@@ -61,6 +62,19 @@ public final class Constants {
   public static final double MEDIUM_PRIORITY_FREQUENCY_HZ = 25;
   public static final double LOW_PRIORITY_FREQUENCY_HZ = 10;
   public static final double VERY_LOW_PRIORITY_FREQUENCY_HZ = 4;
+
+  public static final Supplier<Alliance> ALLIANCE =
+      () -> {
+        if (DriverStation.getAlliance() == null || DriverStation.getAlliance().isEmpty()) {
+          return Alliance.Blue;
+        }
+
+        if (DriverStation.getAlliance().get() == Alliance.Blue) {
+          return Alliance.Blue;
+        } else {
+          return Alliance.Red;
+        }
+      };
 
   public static enum Mode {
     /** Running on a real robot. */
@@ -108,19 +122,6 @@ public final class Constants {
     public static final double ROBOT_MOI = 7.218;
     public static final double WHEEL_COF = 1.2;
 
-    private static final InterpolatingDoubleTreeMap AIRTIME_MAP = new InterpolatingDoubleTreeMap();
-
-    private static void characterizeAirtimeMap() {
-      // bad balue
-      AIRTIME_MAP.put(1.63, 0.86375);
-      AIRTIME_MAP.put(2.252, 0.951);
-      AIRTIME_MAP.put(2.89, 1.049);
-      AIRTIME_MAP.put(3.5, 1.098);
-    }
-
-    public static final double SHOOTER_ROTATION_MANAGER_LOGGING_FREQUENCY =
-        Constants.LOW_PRIORITY_FREQUENCY_HZ;
-
     // pid constants
     public static final double TRANS_KP = 5;
     public static final double TRANS_KI = 0;
@@ -149,23 +150,6 @@ public final class Constants {
     public static final double K_JOYSTICK_WHEN_PASSING = 1;
     public static final double K_JOYSTICK_ROTATION = 0.7;
     public static final double K_JOYSTICK_TRANSLATION = 1;
-
-    // y position that splits this in half
-
-    // we should test by looking at values. this can also be a distance lookup table. This corrects
-    // for robot speed by changing the target location. This constant is supposed ot emmulate fligth
-    // time
-    public static final double getTimeInAir(double distance) {
-
-      double val = AIRTIME_MAP.get(distance);
-
-      // realistic for a midpoint shot
-      return val;
-    }
-
-    // tolerance for the shoot on move binary search. TS IS NOT HTE DRIVETRAIN MOVE TO ANGLE
-    // TOLERANCE
-    public static final double SHOOT_ON_MOVE_TOLERANCE = 0.05;
 
     // SHOOT ON MOVE CONSTATNS.
     // used for auto teargetting
@@ -247,8 +231,6 @@ public final class Constants {
               ANGLE_KD,
               new TrapezoidProfile.Constraints(ANGLE_MAX_VELOCITY, ANGLE_MAX_ACCELERATION));
       ANGLE_CONTROLLER.enableContinuousInput(-Math.PI, Math.PI);
-
-      characterizeAirtimeMap();
     }
 
     public static PPHolonomicDriveController PATHPLANNER_CONTROLLER =

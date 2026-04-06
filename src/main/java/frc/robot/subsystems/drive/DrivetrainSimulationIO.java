@@ -35,6 +35,8 @@ public class DrivetrainSimulationIO extends CommandSwerveDrivetrain implements D
           .withDeadband(0.1 * DriveConstants.MAX_LINEAR_SPEED_METERS_PER_SECOND)
           .withRotationalDeadband(0.1 * DriveConstants.MAX_ANGULAR_SPEED_RAD_PER_SEC());
 
+  private SwerveRequest.SwerveDriveBrake m_SwerveDriveBrake = new SwerveRequest.SwerveDriveBrake();
+
   BuiltInAccelerometer builtInAccelerometer = new BuiltInAccelerometer();
 
   private double m_lastSimTime = 0;
@@ -103,6 +105,10 @@ public class DrivetrainSimulationIO extends CommandSwerveDrivetrain implements D
             .withVelocityX(chassisSpeeds.vxMetersPerSecond)
             .withVelocityY(chassisSpeeds.vyMetersPerSecond)
             .withTargetDirection(rotation2d));
+  }
+
+  public void runSwerveDriveBrake() {
+    setControl(m_SwerveDriveBrake);
   }
 
   public ChassisSpeeds getChassisSpeeds() {

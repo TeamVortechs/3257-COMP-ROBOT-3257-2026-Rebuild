@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.util.LocalADStarAK;
 import frc.robot.util.VortechsUtil;
@@ -29,14 +30,11 @@ public class Drivetrain extends SubsystemBase {
 
   private DrivetrainIO drivetrainIO;
 
-  private ShootOnMoveManager shootOnMoveManager;
   private DrivetrainIOInputsAutoLogged inputs = new DrivetrainIOInputsAutoLogged();
 
   public Drivetrain(DrivetrainIO drivetrainIO) {
 
     this.drivetrainIO = drivetrainIO;
-
-    shootOnMoveManager = new ShootOnMoveManager(rawTargetpose, this);
 
     AutoBuilder.configure(
         this::getPose,
@@ -98,6 +96,11 @@ public class Drivetrain extends SubsystemBase {
           double ySpeed =
               ySupplier.getAsDouble() * DriveConstants.MAX_LINEAR_SPEED_METERS_PER_SECOND;
 
+          if (Constants.ALLIANCE.get() == Alliance.Red) {
+            xSpeed *= -1;
+            ySpeed *= -1;
+          }
+
           double omegaSpeed =
               Math.copySign(
                   omegaSupplier.getAsDouble() * omegaSupplier.getAsDouble(),
@@ -123,6 +126,11 @@ public class Drivetrain extends SubsystemBase {
           double ySpeed =
               ySupplier.getAsDouble() * DriveConstants.MAX_LINEAR_SPEED_METERS_PER_SECOND;
 
+          if (Constants.ALLIANCE.get() == Alliance.Red) {
+            xSpeed *= -1;
+            ySpeed *= -1;
+          }
+
           ChassisSpeeds filteredSpeeds =
               DriveConstants.DRIVE_INPUT_FILTER.calculate(new ChassisSpeeds(xSpeed, ySpeed, 0));
 
@@ -133,27 +141,26 @@ public class Drivetrain extends SubsystemBase {
 
   public Command joystickDriveAtTarget(DoubleSupplier xSupplier, DoubleSupplier ySupplier) {
 
-    // turn on shoot on move, makes sure it is to save on calculations
-    return new InstantCommand(
-            () -> {
-              shootOnMoveManager.setCalculateShootMove(false);
-            })
-        .andThen(joystickDriveRotation(xSupplier, ySupplier, () -> shootOnMoveManager.getHeading()))
+    return joystickDriveRotation(
+        xSupplier,
+        ySupplier,
+        () -> VortechsUtil.getHeadingToTarget(getPose(), rawTargetpose.get()));
+  }
 
-        // turn off shoot on move calculations to save memory
-        .andThen(
-            new InstantCommand(
-                () -> {
-                  shootOnMoveManager.setCalculateShootMove(false);
-                }));
+  public Command applyBrakeRequest() {
+    return Commands.startRun(() -> drivetrainIO.runSwerveDriveBrake(), () -> {}, this);
   }
 
   public boolean isOriented() {
-    return shootOnMoveManager.isOriented();
+    return getPose()
+            .getRotation()
+            .minus(VortechsUtil.getHeadingToTarget(getPose(), rawTargetpose.get()))
+            .getRadians()
+        < DriveConstants.ORIENTATION_TOLERANCE;
   }
 
   public double getDistanceToTarget() {
-    return shootOnMoveManager.getDistance();
+    return getPose().getTranslation().getDistance(rawTargetpose.get().getTranslation());
   }
 
   // pose related commands
@@ -167,15 +174,6 @@ public class Drivetrain extends SubsystemBase {
 
   public ChassisSpeeds getChassisSpeeds() {
     return drivetrainIO.getChassisSpeeds();
-  }
-
-  // autonomous commands
-  public Command overrideRotationCommand() {
-    return new InstantCommand();
-  }
-
-  public Command removeRotationOverrideCommand() {
-    return new InstantCommand();
   }
 
   // vision
