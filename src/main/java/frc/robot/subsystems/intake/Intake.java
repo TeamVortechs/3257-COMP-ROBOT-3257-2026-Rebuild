@@ -4,7 +4,6 @@ import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.SignalLogger;
 import edu.wpi.first.units.Units;
-import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -28,7 +27,7 @@ public class Intake extends SubsystemBase {
   // useful for a flexible hardware interface and for advantage kit logging
   private final IntakeIO intakeIO;
 
-  private final Notifier logger;
+  // private final Notifier logger;
   /**
    * Constructor for the Intake subsystem.
    *
@@ -39,18 +38,20 @@ public class Intake extends SubsystemBase {
     this.intakeIO = intakeIO;
     this.inputs = new IntakeIOInputsAutoLogged();
 
-    logger =
-        new Notifier(
-            () -> {
-              intakeIO.updateInputs(inputs);
-              Logger.processInputs("intake", inputs);
-            });
+    // logger =
+    //     new Notifier(
+    //         () -> {
+    //           intakeIO.updateInputs(inputs);
+    //           Logger.processInputs("intake", inputs);
+    //         });
 
-    logger.startPeriodic(1 / IntakeConstants.FREQUENCY_HZ);
+    // logger.startPeriodic(1 / IntakeConstants.FREQUENCY_HZ);
   }
 
   @Override
   public void periodic() {
+    intakeIO.updateInputs(inputs);
+    Logger.processInputs("intake", inputs);
     // check to see if the module is stalling; if so, then stop the motors and cancel the next
     // movement
 

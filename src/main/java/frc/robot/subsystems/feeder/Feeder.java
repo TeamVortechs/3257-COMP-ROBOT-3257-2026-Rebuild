@@ -1,11 +1,9 @@
 package frc.robot.subsystems.feeder;
 
-import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.FeederConstants;
 import org.littletonrobotics.junction.Logger;
 
 public class Feeder extends SubsystemBase {
@@ -13,7 +11,7 @@ public class Feeder extends SubsystemBase {
   private FeederIO feederIO;
   private FeederIOInputsAutoLogged inputs;
 
-  private final Notifier hardwareLogger;
+  // private final Notifier hardwareLogger;
 
   private final FeederValidityContainer feederValidityContainer;
 
@@ -28,18 +26,21 @@ public class Feeder extends SubsystemBase {
 
     this.feederValidityContainer = validityContainer;
 
-    hardwareLogger =
-        new Notifier(
-            () -> {
-              feederIO.updateInputs(inputs);
-              Logger.processInputs("feeder", inputs);
-            });
+    // hardwareLogger =
+    //     new Notifier(
+    //         () -> {
+    //           feederIO.updateInputs(inputs);
+    //           Logger.processInputs("feeder", inputs);
+    //         });
 
-    hardwareLogger.startPeriodic(1 / FeederConstants.SUBSYSTEM_LOGGING_FREQUENCY_HERTZ);
+    // hardwareLogger.startPeriodic(1 / FeederConstants.SUBSYSTEM_LOGGING_FREQUENCY_HERTZ);
   }
 
   @Override
-  public void periodic() {}
+  public void periodic() {
+    feederIO.updateInputs(inputs);
+    Logger.processInputs("feeder", inputs);
+  }
 
   // SUBSYSTEM METHODS
 

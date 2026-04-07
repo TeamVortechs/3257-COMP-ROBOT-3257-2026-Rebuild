@@ -54,10 +54,10 @@ public class FeederValidityContainer {
 
     isValid =
         debounceTimer.hasElapsed(FeederConstants.VALIDITY_DEBOUNCE_TIME_SEC)
-            && shooterOnVelocity.getAsBoolean()
-            && (canScoreMatchTimeline.getAsBoolean()
-                || manualOverride.getAsBoolean()
-                || !isInScoringZone.getAsBoolean());
+            && shooterOnVelocity.getAsBoolean();
+    // && (canScoreMatchTimeline.getAsBoolean()
+    //     || manualOverride.getAsBoolean()
+    //     || !isInScoringZone.getAsBoolean());
 
     Logger.recordOutput("FeederValidity/IsValidToFeed", isValid);
     Logger.recordOutput("FeederValidity/DebounceTime", debounceTimer.get());

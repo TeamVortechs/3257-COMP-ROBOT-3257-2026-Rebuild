@@ -323,7 +323,7 @@ public class RobotContainer {
                     shooter.setAutomaticCommandRun(),
                     belt.setPercentMotorOutputRunCommand(
                         BeltConstants.FEED_POWER, () -> feeder.getTargetSpeed() > 0),
-                    feeder.feedWhenValidRunCommand(FeederConstants.FEED_POWER),
+                    feeder.feedWhenShooterIsRevvedCommand(FeederConstants.FEED_POWER),
                     intake.intakeRetractWhileShooting(() -> feeder.getTargetSpeed() > 0))
                 .withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
 

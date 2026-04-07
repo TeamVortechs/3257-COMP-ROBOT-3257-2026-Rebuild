@@ -64,19 +64,19 @@ public class FeederTalonFXIO implements FeederIO {
 
   @Override
   public void updateInputs(FeederIOInputsAutoLogged inputs) {
-    // Refresh signals from the hardware
-    BaseStatusSignal.refreshAll(
-        velocity, motorVoltage, supplyCurrent, statorCurrent, temperatureCelsius);
+    // // Refresh signals from the hardware
+    // BaseStatusSignal.refreshAll(
+    //     velocity, motorVoltage, supplyCurrent, statorCurrent, temperatureCelsius);
 
-    inputs.speed = velocity.getValueAsDouble(); // Returns Rotations per Second
-    inputs.voltage = motorVoltage.getValueAsDouble();
-    inputs.supplyCurrentAmps = supplyCurrent.getValueAsDouble();
-    inputs.statorCurrentAmps = statorCurrent.getValueAsDouble();
-    inputs.targetSpeed = targetSpeed;
+    // inputs.speed = velocity.getValueAsDouble(); // Returns Rotations per Second
+    // inputs.voltage = motorVoltage.getValueAsDouble();
+    // inputs.supplyCurrentAmps = supplyCurrent.getValueAsDouble();
+    // inputs.statorCurrentAmps = statorCurrent.getValueAsDouble();
+    // inputs.targetSpeed = targetSpeed;
 
-    inputs.isBraked = isBraked;
+    // inputs.isBraked = isBraked;
 
-    inputs.temperatureCelsius = temperatureCelsius.getValueAsDouble();
+    // inputs.temperatureCelsius = temperatureCelsius.getValueAsDouble();
   }
 
   @Override

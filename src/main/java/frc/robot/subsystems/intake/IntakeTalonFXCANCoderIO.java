@@ -132,37 +132,37 @@ public class IntakeTalonFXCANCoderIO implements IntakeIO {
 
   public void updateInputs(IntakeIOInputsAutoLogged inputsAutoLogged) {
 
-    BaseStatusSignal.refreshAll(
-        rollerVelocity,
-        rollerMotorVoltage,
-        rollerStatorCurrent,
-        rollerSupplyCurrent,
-        rollerTemperatureCelsius,
-        positionVelocity,
-        positionMotorVoltage,
-        positionStatorCurrent,
-        positionSupplyCurrent,
-        positionTemperatureCelsius);
+    // BaseStatusSignal.refreshAll(
+    //     rollerVelocity,
+    //     rollerMotorVoltage,
+    //     rollerStatorCurrent,
+    //     rollerSupplyCurrent,
+    //     rollerTemperatureCelsius,
+    //     positionVelocity,
+    //     positionMotorVoltage,
+    //     positionStatorCurrent,
+    //     positionSupplyCurrent,
+    //     positionTemperatureCelsius);
 
-    inputsAutoLogged.rollerAmpsStator = rollerStatorCurrent.getValueAsDouble();
-    inputsAutoLogged.rollerAmpsSupply = rollerSupplyCurrent.getValueAsDouble();
-    inputsAutoLogged.rollerVolts = rollerMotorVoltage.getValueAsDouble();
-    inputsAutoLogged.rollerSpeed = rollerVelocity.getValueAsDouble();
-    inputsAutoLogged.rollerTemperatureCelsius = rollerTemperatureCelsius.getValueAsDouble();
+    // inputsAutoLogged.rollerAmpsStator = rollerStatorCurrent.getValueAsDouble();
+    // inputsAutoLogged.rollerAmpsSupply = rollerSupplyCurrent.getValueAsDouble();
+    // inputsAutoLogged.rollerVolts = rollerMotorVoltage.getValueAsDouble();
+    // inputsAutoLogged.rollerSpeed = rollerVelocity.getValueAsDouble();
+    // inputsAutoLogged.rollerTemperatureCelsius = rollerTemperatureCelsius.getValueAsDouble();
 
-    inputsAutoLogged.positionAmpsStator = positionStatorCurrent.getValueAsDouble();
-    inputsAutoLogged.positionAmpsSupply = positionSupplyCurrent.getValueAsDouble();
-    inputsAutoLogged.positionVolts = positionMotorVoltage.getValueAsDouble();
-    inputsAutoLogged.positionSpeed = positionVelocity.getValueAsDouble();
-    inputsAutoLogged.positionTemperatureCelsius = positionTemperatureCelsius.getValueAsDouble();
+    // inputsAutoLogged.positionAmpsStator = positionStatorCurrent.getValueAsDouble();
+    // inputsAutoLogged.positionAmpsSupply = positionSupplyCurrent.getValueAsDouble();
+    // inputsAutoLogged.positionVolts = positionMotorVoltage.getValueAsDouble();
+    // inputsAutoLogged.positionSpeed = positionVelocity.getValueAsDouble();
+    // inputsAutoLogged.positionTemperatureCelsius = positionTemperatureCelsius.getValueAsDouble();
 
-    inputsAutoLogged.position = position.getPosition().getValueAsDouble();
-    inputsAutoLogged.targetPosition = targetPosition;
+    // inputsAutoLogged.position = position.getPosition().getValueAsDouble();
+    // inputsAutoLogged.targetPosition = targetPosition;
 
-    inputsAutoLogged.isBrakedRoller = isBrakedRoller;
-    inputsAutoLogged.isBrakedPosition = isBrakedPosition;
+    // inputsAutoLogged.isBrakedRoller = isBrakedRoller;
+    // inputsAutoLogged.isBrakedPosition = isBrakedPosition;
 
-    inputsAutoLogged.motor2Volts = rollerFollower.getMotorVoltage().getValueAsDouble();
+    // inputsAutoLogged.motor2Volts = rollerFollower.getMotorVoltage().getValueAsDouble();
   }
 
   // getters for motors

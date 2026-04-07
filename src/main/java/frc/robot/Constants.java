@@ -97,7 +97,7 @@ public final class Constants {
     // more info
 
     public static final double SUPPLY_CURRENT_LIMIT_SHOOTER = 500;
-    public static final double STATOR_CURRENT_LIMIT_SHOOTER = 100000;
+    public static final double STATOR_CURRENT_LIMIT_SHOOTER = 150;
 
     public static final double SUPPLY_CURRENT_LIMIT_FEEDER = 40.0;
     public static final double STATOR_CURRENT_LIMIT_FEEDER = 120;
