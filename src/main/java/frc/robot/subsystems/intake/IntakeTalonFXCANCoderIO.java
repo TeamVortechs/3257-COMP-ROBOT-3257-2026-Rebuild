@@ -210,9 +210,7 @@ public class IntakeTalonFXCANCoderIO implements IntakeIO {
     motionMagicConfigs.MotionMagicCruiseVelocity = IntakeConstants.MOTION_MAGIC_CRUISE_VELOCITY;
     position.getConfigurator().apply(motionMagicConfigs);
 
-    // System.out.println("Input volt: "+inputVoltage+" Target Angle: "+targetAngle);
     position.setControl(mVoltageRequest.withPosition(position1));
-    // System.out.println("Voltage being sent in PID Voltage");
   }
 
   public void setPositionControlWithVelocity(
@@ -224,17 +222,12 @@ public class IntakeTalonFXCANCoderIO implements IntakeIO {
     motionMagicConfigs.MotionMagicCruiseVelocity = velocity;
     position.getConfigurator().apply(motionMagicConfigs);
 
-    // PLEASE I BEG OF YOU comment this out when we're done with it
-    // System.out.println("VERY SLOWLY setting position in FXIO to " + position1);
-    // System.out.println("Input volt: "+inputVoltage+" Target Angle: "+targetAngle);
     position.setControl(mVoltageRequest.withPosition(position1));
-    // System.out.println("Voltage being sent in PID Voltage");
   }
 
   public void resetEncoder(double positionVal) {
     // position.setPosition(positionVal);
     caNcoder.setPosition(positionVal);
-    System.out.println("resetting encoder to " + positionVal);
   }
 
   public void resetEncoders() {
@@ -300,11 +293,6 @@ public class IntakeTalonFXCANCoderIO implements IntakeIO {
   public double getRollerSpeed() {
     return roller.getVelocity().getValueAsDouble();
   }
-
-  // public boolean checkIfStalled() {
-  //   return (roller.getMotorVoltage().getValueAsDouble()
-  //       > Constants.IntakeConstants.ROLLER_STALLED_VOLTS);
-  // }
 
   public double getRollerMotorVoltage() {
     return roller.getMotorVoltage().getValueAsDouble();

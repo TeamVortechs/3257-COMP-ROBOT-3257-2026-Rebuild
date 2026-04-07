@@ -192,7 +192,6 @@ public class IntakeTalonFXIO implements IntakeIO {
 
   public void resetEncoder(double positionVal) {
     position.setPosition(positionVal);
-    System.out.println("resetting encoder to " + positionVal);
   }
 
   public void resetEncoders() {
