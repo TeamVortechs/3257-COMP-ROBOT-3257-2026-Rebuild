@@ -452,6 +452,10 @@ public class RobotContainer {
 
   }
 
+  public void configureSysIdBindings() {
+    // configureSysIdBindings(controller, null);
+  }
+
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
@@ -516,18 +520,6 @@ public class RobotContainer {
             .andThen(shooter.setManualSpeedCommand(0))
             .andThen(feeder.setPercentMotorCommand(0))
             .andThen(belt.setPercentMotorOutputCommand(0)));
-
-    /*
-    version with moving intake:
-         NamedCommands.registerCommand(
-        "feedWhenValidAndStop",
-        new WaitUntilCommand(() -> shooter.isOnTarget())
-            .andThen(
-                feeder
-                    .feedWhenValidRunCommand(FeederConstants.FEED_POWER)
-                    .withDeadline(intake.intakeRetractWhileShooting(new InstantCommand(), 4)))
-            .andThen(feeder.setPercentMotorCommand(0)));
-     */
 
     NamedCommands.registerCommand("feedStop", feeder.setPercentMotorCommand(0));
 
