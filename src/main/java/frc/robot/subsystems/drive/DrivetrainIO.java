@@ -18,12 +18,9 @@ public interface DrivetrainIO {
     double xSpeed;
     double ySpeed;
     double rotSpeed;
-
     Pose2d pose;
-
     double xAcceleration;
     double yAcceleration;
-
     Rotation2d heading;
   }
 

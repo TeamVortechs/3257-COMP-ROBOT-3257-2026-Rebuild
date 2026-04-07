@@ -60,7 +60,6 @@ public class Drivetrain extends SubsystemBase {
   public void periodic() {
     drivetrainIO.updateInputs(inputs);
     Logger.processInputs("drivetrain", inputs);
-
     Logger.recordOutput("drivetrain/targetPose", rawTargetpose.get());
   }
 
@@ -96,7 +95,7 @@ public class Drivetrain extends SubsystemBase {
           double ySpeed =
               ySupplier.getAsDouble() * DriveConstants.MAX_LINEAR_SPEED_METERS_PER_SECOND;
 
-          if (Constants.ALLIANCE.get() == Alliance.Red) {
+          if (Constants.ALLIANCE.get() == Alliance.Red) { // this is a really expensive call to make, could be big source of lag
             xSpeed *= -1;
             ySpeed *= -1;
           }
@@ -173,7 +172,7 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public ChassisSpeeds getChassisSpeeds() {
-    return drivetrainIO.getChassisSpeeds();
+    return this.drivetrainIO.getChassisSpeeds();
   }
 
   // vision
@@ -225,7 +224,4 @@ public class Drivetrain extends SubsystemBase {
     // done with instant command for requirements
     return new InstantCommand(() -> {}, this).andThen(drivetrainIO.sysIdDynamicCommand(direction));
   }
-
-  // helper methods
-
 }

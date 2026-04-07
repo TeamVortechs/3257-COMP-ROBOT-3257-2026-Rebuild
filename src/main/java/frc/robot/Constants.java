@@ -34,8 +34,6 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.units.measure.Time;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.RobotBase;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drive.filtering.DeadbandDriveInputFilter;
@@ -63,18 +61,18 @@ public final class Constants {
   public static final double LOW_PRIORITY_FREQUENCY_HZ = 10;
   public static final double VERY_LOW_PRIORITY_FREQUENCY_HZ = 4;
 
-  public static final Supplier<Alliance> ALLIANCE =
-      () -> {
-        if (DriverStation.getAlliance() == null || DriverStation.getAlliance().isEmpty()) {
-          return Alliance.Blue;
-        }
+  // public static final Supplier<Alliance> ALLIANCE =
+  //     () -> {
+  //       if (DriverStation.getAlliance() == null || DriverStation.getAlliance().isEmpty()) {
+  //         return Alliance.Blue;
+  //       }
 
-        if (DriverStation.getAlliance().get() == Alliance.Blue) {
-          return Alliance.Blue;
-        } else {
-          return Alliance.Red;
-        }
-      };
+  //       if (DriverStation.getAlliance().get() == Alliance.Blue) {
+  //         return Alliance.Blue;
+  //       } else {
+  //         return Alliance.Red;
+  //       }
+  //     };
 
   public static enum Mode {
     /** Running on a real robot. */
