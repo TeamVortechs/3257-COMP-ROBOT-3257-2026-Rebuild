@@ -15,6 +15,10 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.DriveConstants;
 
 public class DrivetrainTalonFXIO extends CommandSwerveDrivetrain implements DrivetrainIO {
+  private SwerveRequest.ApplyFieldSpeeds m_ApplyFieldSpeeds = new SwerveRequest.ApplyFieldSpeeds();
+  private SwerveRequest.ApplyRobotSpeeds m_ApplyRobotSpeeds = new SwerveReques
+
+
 
   private SwerveRequest.SwerveDriveBrake m_SwerveDriveBrake = new SwerveRequest.SwerveDriveBrake();
 

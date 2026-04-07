@@ -15,25 +15,29 @@ public interface DrivetrainIO {
 
   @AutoLog
   public static class DrivetrainIOInputs {
-    double xSpeed;
-    double ySpeed;
-    double rotSpeed;
+    ChassisSpeeds chassisSpeeds;
     Pose2d pose;
     double xAcceleration;
     double yAcceleration;
-    Rotation2d heading;
   }
 
   public default void updateInputs(DrivetrainIOInputsAutoLogged inputsAutoLogged) {}
+
+  public default void applyFieldSpeeds(ChassisSpeeds speeds) {}
+
+  public default void applyRobotSpeeds(ChassisSpeeds speeds) {}
+
+  public default void applyfieldCentricTeleop(double velocityX, double velocityY) {}
+
+  public default void applyfieldCentric
 
   public default void runRobotCentricVelocity(ChassisSpeeds chassisSpeeds) {}
 
   public default void runFieldCentricVelocity(ChassisSpeeds chassisSpeeds) {}
 
-  public default void runFieldCentricVelocityAtRotation(
-      ChassisSpeeds chassisSpeeds, Rotation2d rotation2d) {}
+  public default void runFieldCentricVelocityAtRotation(ChassisSpeeds chassisSpeeds, Rotation2d rotation2d) {}
 
-  public default void runSwerveDriveBrake() {}
+  public default void setSwerveBrake() {}
 
   public default ChassisSpeeds getChassisSpeeds() {
     return new ChassisSpeeds();

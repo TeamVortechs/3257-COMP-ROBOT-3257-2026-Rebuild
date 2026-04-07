@@ -104,13 +104,8 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-
     switch (Constants.CURR_MODE) {
       case REAL:
-        // Real robot, instantiate hardware IO implementations
-        // ModuleIOTalonFX is intended for modules with TalonFX drive, TalonFX turn, and
-        // a CANcoder
-
         drive =
             new Drivetrain(
                 new DrivetrainTalonFXIO(
@@ -119,7 +114,6 @@ public class RobotContainer {
                     TunerConstants.FrontRight,
                     TunerConstants.BackLeft,
                     TunerConstants.BackRight));
-
         intake =
             new Intake(
                 new IntakeTalonFXCANCoderIO(
@@ -127,13 +121,6 @@ public class RobotContainer {
                     IntakeConstants.INTAKE_ROLLER_2_MOTOR_ID,
                     IntakeConstants.INTAKE_POSITION_MOTOR_ID,
                     IntakeConstants.INTAKE_CANCODER_ID));
-        // intake = new Intake(new IntakeIO() {});
-        // intake =
-        //     new Intake(
-        //         new IntakeTalonFXOnlyRollerIO(
-        //             IntakeConstants.INTAKE_ROLLER_MOTOR_ID,
-        //             IntakeConstants.INTAKE_POSITION_MOTOR_ID));
-
         shooter =
             new Shooter(
                 new ShooterTalonFXIO(
@@ -141,8 +128,6 @@ public class RobotContainer {
                     ShooterConstants.FOLLOWER_MOTOR_ID,
                     ShooterConstants.FOLLOWER_2_MOTOR_ID),
                 () -> drive.getDistanceToTarget());
-        // shooter = new Shooter(new ShooterIO() {}, () -> drive.getDistanceToTarget());
-
         feeder =
             new Feeder(
                 new FeederTalonFXIO(FeederConstants.MOTOR_ID),
@@ -151,16 +136,8 @@ public class RobotContainer {
                     () -> shooter.isOnTarget(),
                     () -> true,
                     operatorController.leftTrigger(),
-                    () -> drive.isInScoringZone())); // feeder =
-        //     new Feeder(
-        //         new FeederIO() {},
-        //         () -> drive.isPointingToGoal(),
-        //         () -> shooter.isOnTarget(),
-        //         () -> true);
-
+                    () -> drive.isInScoringZone())); 
         belt = new Belt(new BeltTalonFXIO(BeltConstants.ID));
-        // belt = new Belt(new BeltIO() {});
-
         vision =
             new Vision(
                 drive::addVisionMeasurement,
@@ -170,8 +147,6 @@ public class RobotContainer {
         break;
 
       case SIM:
-        // Sim robot, instantiate physics sim IO implementations
-
         drive =
             new Drivetrain(
                 new DrivetrainSimulationIO(
@@ -180,13 +155,9 @@ public class RobotContainer {
                     TunerConstants.FrontRight,
                     TunerConstants.BackLeft,
                     TunerConstants.BackRight));
-
         intake = new Intake(new IntakeSimulationIO());
-
         belt = new Belt(new BeltSimulationIO());
-
         shooter = new Shooter(new ShooterSimulationIO(), () -> drive.getDistanceToTarget());
-
         feeder =
             new Feeder(
                 new FeederSimulationIO(),
@@ -204,39 +175,40 @@ public class RobotContainer {
                     VisionConstants.photon0Name, VisionConstants.robotToPhoton0, drive::getPose),
                 new VisionIOPhotonVisionSim(
                     VisionConstants.photon1Name, VisionConstants.robotToPhoton1, drive::getPose));
-
         break;
 
       default:
         drive = new Drivetrain(new DrivetrainIO() {});
-
-        // Replayed robot, disable IO implementations
-
         intake = new Intake(new IntakeIO() {});
-
         belt = new Belt(new BeltIO() {});
-
         feeder =
             new Feeder(
                 new FeederIO() {},
                 new FeederValidityContainer(
                     () -> false, () -> false, () -> false, () -> false, () -> false));
-
         shooter = new Shooter(new ShooterIO() {}, () -> drive.getDistanceToTarget());
-
         vision = new Vision(drive::addVisionMeasurement, new PowerModuleIO() {}, new VisionIO() {});
-
         break;
     }
 
     registerNamedCommandsAuto(); // register named commands for auto (pathplanner)
-
-    // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
 
-    // Configure the button bindings
+    this.configureDefaultCommands();
     configureButtonBindings();
+  }
 
+  // default commands should not be in "configureButtonBindings" because it is not a binding to a button
+  private void configureDefaultCommands() {
+    shooter.setDefaultCommand(shooter.setVoltageRunCommand(0));
+    intake.setDefaultCommand(intake.setRollerVoltageCommand(0));
+    feeder.setDefaultCommand(feeder.setPercentMotorRunCommand(0));
+    belt.setDefaultCommand(belt.setPercentMotorOutputCommand(BeltConstants.DEFAULT_POWER));
+    drive.setDefaultCommand(
+        drive.joystickDrive(
+            () -> -controller.getLeftY(),
+            () -> -controller.getLeftX(),
+            () -> -controller.getRightX()));  
   }
 
   /**
@@ -246,39 +218,10 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+    // Reset Gyro
+    controller.start().onTrue(Commands.runOnce(() -> drive.resetPose(new Pose2d(drive.getPose().getTranslation(), Rotation2d.kZero)),drive)
+                      .ignoringDisable(true));
 
-    // default commands
-    shooter.setDefaultCommand(shooter.setVoltageRunCommand(0));
-    intake.setDefaultCommand(intake.setRollerVoltageCommand(0));
-    feeder.setDefaultCommand(feeder.setPercentMotorRunCommand(0));
-    belt.setDefaultCommand(belt.setPercentMotorOutputCommand(BeltConstants.DEFAULT_POWER));
-
-    // Default command, normal field-relative drive
-
-    drive.setDefaultCommand(
-        drive.joystickDrive(
-            () -> -controller.getLeftY(),
-            () -> -controller.getLeftX(),
-            () -> -controller.getRightX()));
-
-    // CONTROLLER:
-
-    // Switch to X pattern when X button is pressed
-    // controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
-
-    // CONTROLLER COMMANDS
-    // Reset gyro to 0° when B button is pressed
-    controller
-        .start()
-        .onTrue(
-            Commands.runOnce(
-                    () ->
-                        drive.resetPose(
-                            new Pose2d(drive.getPose().getTranslation(), Rotation2d.kZero)),
-                    drive)
-                .ignoringDisable(true));
-
-    @SuppressWarnings("unused")
     Command aimTowardsTargetCommand =
         drive.joystickDriveAtTarget(
             // drive,
