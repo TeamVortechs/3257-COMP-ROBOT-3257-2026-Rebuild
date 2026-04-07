@@ -116,7 +116,7 @@ public class MatchTimeline {
 
   public void setController(CommandXboxController controller) {
     this.controller = controller;
-  }
+  } // make this add controller
 
   public MatchPhase getCurrentPhase() {
     return currentPhase;
@@ -148,23 +148,27 @@ public class MatchTimeline {
     }
 
     if (DriverStation.isAutonomous() || DriverStation.isAutonomousEnabled()) {
-      // Auto counts down 15 -> 0. Elapsed: 0 to 15s.
-      return 20.0 - matchTime;
-    } else if (DriverStation.isTeleop() || DriverStation.isTeleopEnabled()) {
-      // Teleop counts down 135 -> 0. Map to your 163s timeline.
-      // Starts at 28s (163 - 135) and ends at 163s.
-      return 163.5 - matchTime;
+      return MatchTimelineConstants.AUTO_LENGTH - matchTime;
+    } 
+    else if (DriverStation.isTeleop() || DriverStation.isTeleopEnabled()) {
+      // Important!! I couldn't figure out exact value for the "Delay" between auton and teleop
+      // My code assumes it's 3. Add/subtract the offset if it's different
+      return MatchTimelineConstants.TELEOP_LENGTH - matchTime;
     }
 
     // Disabled or other state
     return 0.0;
   }
   /**
-   * returns wether or not your team won auto
+   * Returns whether or not your team won auto
    *
    * @return
    */
   public boolean hasWonAuto() {
+    if (DriverStation.isAutonomous() || DriverStation.isAutonomousEnabled()) {
+      return false;
+    }    
+    
     if (teamThatWonAuto.isEmpty()) {
       updateAutoWinner();
     }
@@ -201,18 +205,6 @@ public class MatchTimeline {
     }
   }
 
-  /**
-   * Determine if robot can score based on current phase. Considers flight time, sensor time, and
-   * tolerance.
-   * With robot pose, determine distance from goal, and thus determine flight time of ball. Going to
-   * be used to score more points. This is a helper class so it's private
-   *
-   * @return flight time in seconds
-   */
-  private double getFlightTime() {
-    // dummy method, implement actual physics math later
-    return 3.0;
-  }
 
   /**
    * Determine if robot can score based on current phase. Considers flight time, sensor time, and

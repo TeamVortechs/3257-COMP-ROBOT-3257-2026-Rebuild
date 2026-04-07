@@ -559,6 +559,11 @@ public final class Constants {
     public static final double SHIFT_LENGTH = 25.0; // Length of each shift
     public static final double SHOOTING_BUFFER_TIME = 3.0;
 
+    public static final double AUTO_LENGTH = 20.0;
+    // Important!! I couldn't figure out exact value for the "Delay" between auton and teleop
+    // My code assumes it's 3. Add/subtract the offset if it's different
+    public static final double TELEOP_LENGTH = 163.5;
+
     // DUMMY VALUES, update when there's time at a practice field to more realistic numbers
     public static final double SENSOR_TIME =
         0.0; // Time it takes for ball to go from entering hub to roll past hub
