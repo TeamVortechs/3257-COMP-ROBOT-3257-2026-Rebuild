@@ -37,15 +37,6 @@ public class Intake extends SubsystemBase {
   public Intake(IntakeIO intakeIO) {
     this.intakeIO = intakeIO;
     this.inputs = new IntakeIOInputsAutoLogged();
-
-    // logger =
-    //     new Notifier(
-    //         () -> {
-    //           intakeIO.updateInputs(inputs);
-    //           Logger.processInputs("intake", inputs);
-    //         });
-
-    // logger.startPeriodic(1 / IntakeConstants.FREQUENCY_HZ);
   }
 
   @Override
