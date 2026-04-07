@@ -463,16 +463,16 @@ public class RobotContainer {
         .povDown()
         .whileTrue(intake.setPositionCommand(IntakeConstants.INTAKE_HALFWAY_LOWER_POSITION));
 
-    operatorController
-        .rightBumper()
-        .whileTrue(
-            Commands.parallel(
-                    shooter.setManualSpeedRunCommand(69),
-                    belt.setPercentMotorOutputRunCommand(
-                        BeltConstants.FEED_POWER, () -> feeder.getTargetSpeed() > 0),
-                    feeder.feedWhenShooterIsRevvedCommand(FeederConstants.FEED_POWER),
-                    intake.intakeRetractWhileShooting(() -> feeder.getTargetSpeed() > 0))
-                .withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
+    // operatorController
+    //     .rightBumper()
+    //     .whileTrue(
+    //         Commands.parallel(
+    //                 shooter.setManualSpeedRunCommand(69),
+    //                 belt.setPercenxtMotorOutputRunCommand(
+    //                     BeltConstants.FEED_POWER, () -> feeder.getTargetSpeed() > 0),
+    //                 feeder.feedWhenShooterIsRevvedCommand(FeederConstants.FEED_POWER),
+    //                 intake.intakeRetractWhileShooting(() -> feeder.getTargetSpeed() > 0))
+    //             .withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
 
     operatorController
         .rightBumper()

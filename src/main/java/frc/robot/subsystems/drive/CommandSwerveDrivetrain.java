@@ -80,9 +80,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
       new SysIdRoutine(
           new SysIdRoutine.Config(
               /* This is in radians per second², but SysId only supports "volts per second" */
-              Volts.of(Math.PI / 6).per(Second),
+              Volts.of(Math.PI / 3).per(Second),
               /* This is in radians per second, but SysId only supports "volts" */
-              Volts.of(Math.PI),
+              Volts.of(Math.PI * 2),
               null, // Use default timeout (10 s)
               // Log state with SignalLogger class
               state -> SignalLogger.writeString("SysIdRotation_State", state.toString())),

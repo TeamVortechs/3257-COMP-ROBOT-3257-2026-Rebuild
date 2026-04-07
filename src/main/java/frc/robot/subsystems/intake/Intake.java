@@ -42,8 +42,8 @@ public class Intake extends SubsystemBase {
     logger =
         new Notifier(
             () -> {
-              //                     intakeIO.updateInputs(inputs);
-              // Logger.processInputs("intake", inputs);
+              intakeIO.updateInputs(inputs);
+              Logger.processInputs("intake", inputs);
             });
 
     logger.startPeriodic(1 / IntakeConstants.FREQUENCY_HZ);
@@ -53,16 +53,6 @@ public class Intake extends SubsystemBase {
   public void periodic() {
     // check to see if the module is stalling; if so, then stop the motors and cancel the next
     // movement
-
-    intakeIO.updateInputs(inputs);
-    Logger.processInputs("intake", inputs);
-
-    if (intakeIO.isPositionJammed()) {
-      System.out.println("Intake HAS STALLED ");
-
-      // intakeIO.stop();
-      return;
-    }
 
     // Clamp target speed to prevent exceeding limits
 
@@ -83,7 +73,6 @@ public class Intake extends SubsystemBase {
   }
 
   public void setPositionWithVelocity(double targetPosition, double velocity) {
-    System.out.println("VERY SLOWLY setting position to " + targetPosition);
 
     // if (targetPosition > IntakeConstants.MAX_POSITION) {
     //   targetPosition = IntakeConstants.MAX_POSITION;

@@ -16,16 +16,17 @@ import frc.robot.Constants.DriveConstants;
 
 public class DrivetrainTalonFXIO extends CommandSwerveDrivetrain implements DrivetrainIO {
 
+  private SwerveRequest.SwerveDriveBrake m_SwerveDriveBrake = new SwerveRequest.SwerveDriveBrake();
+
   private SwerveRequest.RobotCentric m_RobotCentricReq = new SwerveRequest.RobotCentric();
 
   private SwerveRequest.FieldCentric m_FieldCentricReq = new SwerveRequest.FieldCentric();
-
-  private SwerveRequest.SwerveDriveBrake m_SwerveDriveBrake = new SwerveRequest.SwerveDriveBrake();
 
   private SwerveRequest.FieldCentricFacingAngle m_FieldCentricAngleReq =
       new SwerveRequest.FieldCentricFacingAngle()
           .withHeadingPID(
               DriveConstants.ANGLE_KP, DriveConstants.ANGLE_KI, DriveConstants.ANGLE_KD);
+  ;
 
   BuiltInAccelerometer builtInAccelerometer = new BuiltInAccelerometer();
 
@@ -43,8 +44,8 @@ public class DrivetrainTalonFXIO extends CommandSwerveDrivetrain implements Driv
 
     inputsAutoLogged.pose = getPose();
 
-    inputsAutoLogged.xAcceleration = getXAcceleration();
-    inputsAutoLogged.yAcceleration = getYAcceleration();
+    // inputsAutoLogged.xAcceleration = getXAcceleration();
+    // inputsAutoLogged.yAcceleration = getYAcceleration();
 
     inputsAutoLogged.heading = getHeading();
   }

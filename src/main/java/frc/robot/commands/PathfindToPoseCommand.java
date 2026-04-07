@@ -119,13 +119,13 @@ public class PathfindToPoseCommand extends Command {
                 ? drive.getPose().getRotation().plus(new Rotation2d(Math.PI))
                 : drive.getPose().getRotation()));
     // record outputs
-    Logger.recordOutput("DriveToObject/xVelocity", xVelocity);
-    Logger.recordOutput("DriveToObject/yVelocity", yVelocity);
-    Logger.recordOutput("DriveToObject/thetaVelocity", thetaVelocity);
-    Logger.recordOutput("DriveToObject/PathfindtranslationDistanceX", translationDistanceX);
-    Logger.recordOutput("DriveToObject/PathfindtranslationDistanceY", translationDistanceY);
-    Logger.recordOutput("DriveToObject/thetaDistanceRad", thetaDistance);
-    Logger.recordOutput("DriveToObject/totalDist", totalDist);
+    // Logger.recordOutput("DriveToObject/xVelocity", xVelocity);
+    // Logger.recordOutput("DriveToObject/yVelocity", yVelocity);
+    // Logger.recordOutput("DriveToObject/thetaVelocity", thetaVelocity);
+    // Logger.recordOutput("DriveToObject/PathfindtranslationDistanceX", translationDistanceX);
+    // Logger.recordOutput("DriveToObject/PathfindtranslationDistanceY", translationDistanceY);
+    // Logger.recordOutput("DriveToObject/thetaDistanceRad", thetaDistance);
+    // Logger.recordOutput("DriveToObject/totalDist", totalDist);
   }
 
   // Called once the command ends or is interrupted.

@@ -11,6 +11,7 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -31,6 +32,8 @@ public class Drivetrain extends SubsystemBase {
   private DrivetrainIO drivetrainIO;
 
   private DrivetrainIOInputsAutoLogged inputs = new DrivetrainIOInputsAutoLogged();
+
+  private Notifier notifier;
 
   public Drivetrain(DrivetrainIO drivetrainIO) {
 
@@ -54,15 +57,21 @@ public class Drivetrain extends SubsystemBase {
         (targetPose) -> {
           Logger.recordOutput("Odometry/TrajectorySetpoint", targetPose);
         });
+
+    notifier =
+        new Notifier(
+            () -> {
+              drivetrainIO.updateInputs(inputs);
+              Logger.processInputs("drivetrain", inputs);
+
+              Logger.recordOutput("drivetrain/targetPose", rawTargetpose.get());
+            });
+
+    notifier.startPeriodic(1.0 / 5.0);
   }
 
   @Override
-  public void periodic() {
-    drivetrainIO.updateInputs(inputs);
-    Logger.processInputs("drivetrain", inputs);
-
-    Logger.recordOutput("drivetrain/targetPose", rawTargetpose.get());
-  }
+  public void periodic() {}
 
   public void runVelocity(ChassisSpeeds speeds) {
     drivetrainIO.runRobotCentricVelocity(speeds);

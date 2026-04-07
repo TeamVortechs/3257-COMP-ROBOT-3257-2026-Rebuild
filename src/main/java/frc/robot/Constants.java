@@ -123,9 +123,9 @@ public final class Constants {
     public static final double WHEEL_COF = 1.2;
 
     // pid constants
-    public static final double TRANS_KP = 5;
+    public static final double TRANS_KP = 12.872;
     public static final double TRANS_KI = 0;
-    public static final double TRANS_KD = 0;
+    public static final double TRANS_KD = 0.043469;
 
     public static final double TRANS_TOP_SPEED = 1.5;
     public static final double TRANS_ACC_MAX = 2;
@@ -133,9 +133,9 @@ public final class Constants {
     public static final double TRANS_TOLERANCE = 0.01;
 
     // rot const, used for moving to setpoint/auto targetting
-    public static final double ANGLE_KP = 6.3373;
+    public static final double ANGLE_KP = 23.722;
     public static final double ANGLE_KI = 0;
-    public static final double ANGLE_KD = 0.17737;
+    public static final double ANGLE_KD = 3.4536;
     public static final double ANGLE_DEADBAND = 0.1;
 
     public static final double ANGLE_MAX_ACCELERATION = 20.0;
@@ -273,7 +273,7 @@ public final class Constants {
   }
 
   public class ShooterConstants {
-    public static final double FREQUENCY_HZ = Constants.HIGH_PRIORITY_FREQUENCY_HZ;
+    public static final double FREQUENCY_HZ = Constants.LOW_PRIORITY_FREQUENCY_HZ;
 
     public static final double SIM_TOLERANCE = 0.5;
 
