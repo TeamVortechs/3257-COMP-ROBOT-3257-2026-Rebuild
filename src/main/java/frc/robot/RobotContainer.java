@@ -68,7 +68,6 @@ import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOPhotonVision;
 import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
-import frc.robot.util.VortechsController;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -95,16 +94,10 @@ public class RobotContainer {
   // Controller
 
   @SuppressWarnings("unused")
-  private final VortechsController controller = new VortechsController(0);
+  private final CommandXboxController controller = new CommandXboxController(0);
 
   @SuppressWarnings("unused")
-  private final VortechsController operatorController = new VortechsController(1);
-
-  @SuppressWarnings("unused")
-  private final VortechsController testController = new VortechsController(2);
-
-  @SuppressWarnings("unused")
-  private final VortechsController sysID_controller = new VortechsController(3);
+  private final CommandXboxController operatorController = new CommandXboxController(1);
 
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
@@ -255,7 +248,7 @@ public class RobotContainer {
   private void configureButtonBindings() {
 
     // default commands
-    shooter.setDefaultCommand(shooter.defaultCommand());
+    shooter.setDefaultCommand(shooter.setVoltageRunCommand(0));
     intake.setDefaultCommand(intake.setRollerVoltageCommand(0));
     feeder.setDefaultCommand(feeder.setPercentMotorRunCommand(0));
     belt.setDefaultCommand(belt.setPercentMotorOutputCommand(BeltConstants.DEFAULT_POWER));
@@ -457,29 +450,6 @@ public class RobotContainer {
         .onTrue(new InstantCommand(() -> shooter.setAutomaticallyChargeFully(true)))
         .onFalse(new InstantCommand(() -> shooter.setAutomaticallyChargeFully(false)));
 
-    // sysid bindings:
-    // configureSysIdBindings(sysID_controller, shooter.BuildSysIdRoutine());
-
-    sysID_controller.a().whileTrue(drive.sysIdDynamic(Direction.kReverse));
-    sysID_controller.y().whileTrue(drive.sysIdDynamic(Direction.kForward));
-    sysID_controller.x().whileTrue(drive.sysIdQuasistatic(Direction.kForward));
-    sysID_controller.b().whileTrue(drive.sysIdQuasistatic(Direction.kReverse));
-
-    // additional testing bindings
-
-    // testController
-    //     .y()
-    //     .whileTrue(
-    //         shooter
-    //             .setManualSpeedRunCommand(() -> ShooterConstants.SHOOTER_TEST_SPEED.get())
-    //             .alongWith(
-    //                 new WaitUntilCommand(() -> shooter.isOnTarget())
-    //                     .andThen(
-    //                         feeder
-    //                             .setPercentMotorRunCommand(FeederConstants.FEED_POWER)
-    //                             .alongWith(
-    //                                 intake.intakeRetractWhileShooting(
-    //                                     () -> feeder.getTargetSpeed() > 0)))));
   }
 
   /**
