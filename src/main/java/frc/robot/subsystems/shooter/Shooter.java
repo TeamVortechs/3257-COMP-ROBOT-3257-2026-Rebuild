@@ -45,10 +45,15 @@ public class Shooter extends SubsystemBase {
 
     this.distToSpeedTable = new InterpolatingDoubleTreeMap();
 
-    this.speedToTableInit(2.155, 56);
-    this.speedToTableInit(2.573, 60);
-    this.speedToTableInit(3.168, 65.75);
-    this.speedToTableInit(4.13, 71);
+    // this.speedToTableInit(2.155, 56);
+    // this.speedToTableInit(2.573, 60);
+    // this.speedToTableInit(3.168, 65.75);
+    // this.speedToTableInit(4.13, 71);
+
+    this.speedToTableInit(2.155, 63.85964912);
+    this.speedToTableInit(2.573, 68.42105263);
+    this.speedToTableInit(3.168,74.97807018);
+    this.speedToTableInit(4.13, 80.96491228);
   }
 
   @Override
