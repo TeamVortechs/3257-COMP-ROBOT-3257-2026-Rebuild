@@ -13,9 +13,9 @@ public interface FeederIO {
   /** updates the inputs for advantage kit logging purposes */
   public default void updateInputs(FeederIOInputsAutoLogged inputs) {}
   /**
-   * @param speed sets speed in RPM
+   * @param percentage sets speed in volt percent
    */
-  public default void setPercentMotorOutput(double speed) {}
+  public default void setPercentMotorOutput(double percentage) {}
   /**
    * @return returns speed in RPM
    */
@@ -23,6 +23,10 @@ public interface FeederIO {
     return 0;
   }
 
+  /**
+   * @param speed Sets speed in RPS
+   */
+  public default void setSpeed(double speed){}
   /**
    * sets the voltage of the motor
    *

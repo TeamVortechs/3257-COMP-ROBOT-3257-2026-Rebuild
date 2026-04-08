@@ -3,6 +3,7 @@ package frc.robot.subsystems.feeder;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -16,6 +17,10 @@ public class FeederTalonFXIO implements FeederIO {
 
   // StatusSignals allow for high-frequency, synchronous data collection
   private final StatusSignal<AngularVelocity> velocity;
+
+  private final MotionMagicVelocityVoltage mVelocityRequest;
+
+  private double targetSpeed = 0;
 
   private boolean isBraked = true;
 
@@ -35,6 +40,7 @@ public class FeederTalonFXIO implements FeederIO {
     // Initialize signals for AdvantageKit
     velocity = motor.getVelocity();
 
+    mVelocityRequest = new MotionMagicVelocityVoltage(0).withSlot(0);
     isBraked = true;
   }
 
@@ -54,6 +60,12 @@ public class FeederTalonFXIO implements FeederIO {
     motor.set(speed);
   }
 
+  @Override
+  public void setSpeed(double speed) {
+    motor.setControl(mVelocityRequest.withVelocity(speed));
+    targetSpeed = speed;
+  }
+  
   public void stop() {
     motor.set(0);
   }
@@ -66,6 +78,15 @@ public class FeederTalonFXIO implements FeederIO {
   @Override
   public double getSpeed() {
     return velocity.getValueAsDouble();
+  }
+
+  @Override
+  public double getTargetSpeed() {
+    return targetSpeed;
+  }
+
+  public boolean isOnTargetSpeed() {
+    return Math.abs(this.getSpeed() - targetSpeed) < Constants.ShooterConstants.TOLERANCE;
   }
 
   @Override

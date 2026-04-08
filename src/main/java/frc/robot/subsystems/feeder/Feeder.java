@@ -1,11 +1,23 @@
 package frc.robot.subsystems.feeder;
 
+import static edu.wpi.first.units.Units.Volts;
+import static edu.wpi.first.units.Units.Seconds;
+
+import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import java.util.function.BooleanSupplier;
+
+import frc.robot.Constants.FeederConstants;
+import frc.robot.Constants.ShooterConstants;
+
 import org.littletonrobotics.junction.Logger;
+
+import com.ctre.phoenix6.SignalLogger;
 
 public class Feeder extends SubsystemBase {
 
@@ -54,6 +66,13 @@ public class Feeder extends SubsystemBase {
   }
 
   /**
+   * Sets feeder speed
+   * @param speed Speed in RPS
+   */
+  public void setSpeed(double speed){
+    feederIO.setSpeed(speed);
+  }
+  /**
    * @return speed in Rotations per second
    */
   public double getSpeed() {
@@ -75,6 +94,11 @@ public class Feeder extends SubsystemBase {
   // HELPER METHODS
 
   // COMMANDS
+
+  public Command setSpeedCommand(double speed) {
+    return Commands.startRun(() -> {feederIO.setSpeed(speed);}, () -> {}, this);
+  }
+
   /**
    * sets the manual speed of the flywheel then ends immediately
    *
@@ -142,5 +166,31 @@ public class Feeder extends SubsystemBase {
           }
         },
         this);
+  }
+
+  // the constants here should probably be more and move but that's later when this is transferred
+  // to the right project
+  // add this to the robot class or this won't work: SignalLogger.setPath("/media/sda1/");
+  /**
+   * Gets the system identification routine for this specific subsystem
+   *
+   * @return the sysid routine
+   */
+  public SysIdRoutine BuildSysIdRoutine() {
+
+    SysIdRoutine m_SysIdRoutine =
+        new SysIdRoutine(
+            new SysIdRoutine.Config(
+                Volts.of(FeederConstants.RAMP_RATE_VOLTS_SYSID)
+                    .per(Seconds), // Ramp Rate in Volts / Seconds
+                Volts.of(FeederConstants.DYNAMIC_STEP_VOLTS_SYSID), // Dynamic Step Voltage
+                null, // Use default timeout (10 s)
+                (state) ->
+                    SignalLogger.writeString(
+                        "state", state.toString()) // Log state with Phoenix SignalLogger class
+                ),
+            new SysIdRoutine.Mechanism(
+                (volts) -> feederIO.setVoltage(volts.in(Volts)), null, this));
+    return m_SysIdRoutine;
   }
 }
