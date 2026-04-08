@@ -86,11 +86,11 @@ public class VisionLogless extends SubsystemBase {
             && result.getBestTarget().poseAmbiguity < maxAmbiguity // and low ambiguity
             && Math.abs(poseEst.get().estimatedPose.getZ())
                 < maxZError // and it has a realistic Z coordinate
-            && poseEst.get().estimatedPose.getX() < 0.0 // and it's within the field boundaries
-            && poseEst.get().estimatedPose.getX() > aprilTagLayout.getFieldLength()
-            && poseEst.get().estimatedPose.getY() < 0.0
+            && poseEst.get().estimatedPose.getX() > 0.0 // and it's within the field boundaries
+            && poseEst.get().estimatedPose.getX() < aprilTagLayout.getFieldLength()
+            && poseEst.get().estimatedPose.getY() > 0.0
             && poseEst.get().estimatedPose.getY()
-                > aprilTagLayout.getFieldWidth()) { // then accept the pose
+                < aprilTagLayout.getFieldWidth()) { // then accept the pose
           consumer.accept(poseEst.get().estimatedPose.toPose2d(), Utils.getCurrentTimeSeconds());
         }
       }
@@ -111,11 +111,11 @@ public class VisionLogless extends SubsystemBase {
             && result.getBestTarget().poseAmbiguity < maxAmbiguity // and low ambiguity
             && Math.abs(poseEst.get().estimatedPose.getZ())
                 < maxZError // and it has a realistic Z coordinate
-            && poseEst.get().estimatedPose.getX() < 0.0 // and it's within the field boundaries
-            && poseEst.get().estimatedPose.getX() > aprilTagLayout.getFieldLength()
-            && poseEst.get().estimatedPose.getY() < 0.0
+            && poseEst.get().estimatedPose.getX() > 0.0 // and it's within the field boundaries
+            && poseEst.get().estimatedPose.getX() < aprilTagLayout.getFieldLength()
+            && poseEst.get().estimatedPose.getY() > 0.0
             && poseEst.get().estimatedPose.getY()
-                > aprilTagLayout.getFieldWidth()) { // then accept the pose
+                < aprilTagLayout.getFieldWidth()) { // then accept the pose
           consumer.accept(poseEst.get().estimatedPose.toPose2d(), Utils.getCurrentTimeSeconds());
         }
       }
