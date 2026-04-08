@@ -30,8 +30,6 @@ public class VisionLogless extends SubsystemBase {
 
   private final boolean visionLoggingEnabled = true;
 
-  private final boolean visionLoggingEnabled = true;
-
   public VisionLogless(VisionConsumer consumer, PowerModuleIO powerModuleIO) {
     this.consumer = consumer;
     this.powerModuleIO = powerModuleIO;
