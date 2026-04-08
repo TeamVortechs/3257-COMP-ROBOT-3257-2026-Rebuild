@@ -28,6 +28,8 @@ public class VisionLogless extends SubsystemBase {
   private final PhotonPoseEstimator leftEstimator;
   private final PhotonPoseEstimator rightEstimator;
 
+  private final boolean visionLoggingEnabled = true;
+
   public VisionLogless(VisionConsumer consumer, PowerModuleIO powerModuleIO) {
     this.consumer = consumer;
     this.powerModuleIO = powerModuleIO;
@@ -43,34 +45,10 @@ public class VisionLogless extends SubsystemBase {
   public void periodic() {
     updateLeftCam();
     updateRightCam();
-    // powerModuleIO.updateInputs(powerModuleIOInputsAutoLogged);
+    if (visionLoggingEnabled) {
+      powerModuleIO.updateInputs(powerModuleIOInputsAutoLogged);
+    }
   }
-
-  //   boolean rejectPose =
-  //     observation.tagCount() == 0 // Must have at least one tag
-  //         || (observation.tagCount() == 1
-  //             && observation.ambiguity() > maxAmbiguity) // Cannot be high ambiguity
-  //         || Math.abs(observation.pose().getZ())
-  //             > maxZError // Must have realistic Z coordinate
-
-  //         // Must be within the field boundaries
-  //         || observation.pose().getX() < 0.0
-  //         || observation.pose().getX() > aprilTagLayout.getFieldLength()
-  //         || observation.pose().getY() < 0.0
-  //         || observation.pose().getY() > aprilTagLayout.getFieldWidth();
-
-  // // if we're in testing mode, accept poses that extend out of the field boundaries but still
-  // // use the basic filtering
-  // // use "RobotPosesAccepted or RobotPosesRejected" in AdvantageScope to see which ones are
-  // // good in normal operation
-  // if (DriverStation.isTest()) {
-  //   rejectPose =
-  //       observation.tagCount() == 0 // Must have at least one tag
-  //           || (observation.tagCount() == 1
-  //               && observation.ambiguity() > maxAmbiguity) // Cannot be high ambiguity
-  //           || Math.abs(observation.pose().getZ())
-  //               > maxZError; // Must have realistic Z coordinate
-  // }
 
   private void updateLeftCam() {
     if (photonCameraLeft.isConnected()) {
