@@ -9,16 +9,8 @@ package frc.robot;
 
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.StatusCode;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.util.Color;
-import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.subsystems.feeder.Feeder;
-import frc.robot.subsystems.intake.Intake;
-import frc.robot.subsystems.shooter.Shooter;
-import frc.robot.util.simulation.SimulationManager;
-import frc.robot.util.simulation.VisualSimulator;
 import java.io.File;
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
@@ -108,12 +100,47 @@ public class Robot extends LoggedRobot {
   @Override
   public void robotInit() {
 
+    String[] paths = {"u/logs", "/media/sda1/ctre-logs/", "/media/sdb1/ctre-logs/"};
+
+    for (int i = 0; i < 5; i++) {
+      System.out.println("Signal logger try no." + (i + 1));
+
+      for (String path : paths) {
+        new File(path).mkdirs();
+
+        StatusCode statusCode = SignalLogger.setPath(path);
+
+        if (statusCode.isOK()) {
+          System.out.println(
+              "SUCCESS: "
+                  + path
+                  + " -> "
+                  + statusCode.getName()
+                  + ", "
+                  + statusCode.getDescription());
+          return; // or break outer
+        } else {
+          System.out.println(
+              "FAIL: " + path + " -> " + statusCode.getName() + ", " + statusCode.getDescription());
+        }
+      }
+
+      System.out.println("Signal Logger Try FAILED. Sleeping thread for 500 ms then trying again");
+      try {
+        Thread.sleep(500);
+      } catch (Exception e) {
+        System.out.println("THREAD SLEEP FAILED: " + e.getMessage());
+      }
+    }
+
     String path = "U/logs";
 
     new File(path).mkdirs();
     StatusCode statusCode = SignalLogger.setPath(path);
     System.out.println(
         "status code for logging: " + statusCode.getName() + ", " + statusCode.getDescription());
+
+    SignalLogger.start();
   }
 
   /** This function is called once when the robot is disabled. */
@@ -172,86 +199,9 @@ public class Robot extends LoggedRobot {
 
   /** This function is called once when the robot is first started up. */
   @Override
-  public void simulationInit() {
-    // not sure why this wasn't here earlier?
-    addSimObjects();
-  }
+  public void simulationInit() {}
 
   /** This function is called periodically whilst in simulation. */
   @Override
   public void simulationPeriodic() {}
-
-  private void addSimObjects() {
-    robotContainer = new RobotContainer();
-
-    Intake intake = robotContainer.getIntake();
-
-    VisualSimulator intakeSim =
-        new VisualSimulator(
-            new Translation2d(1, 0.25),
-            () -> -intake.getPosition() * 40,
-            () -> 0.25,
-            1,
-            new Color8Bit(Color.kAqua),
-            "intake");
-
-    intakeSim.setColorSupplier(
-        () -> {
-          if (intake.getRollerSpeed() > 1) {
-            return new Color8Bit(Color.kRed);
-          }
-          return new Color8Bit(Color.kWhite);
-        });
-
-    Feeder feeder = robotContainer.getFeeder();
-
-    VisualSimulator feederSim =
-        new VisualSimulator(
-            new Translation2d(-0.1, 0.5),
-            () -> -90,
-            () -> 0.25,
-            0.5,
-            new Color8Bit(Color.kAqua),
-            "feeder");
-
-    feederSim.setColorSupplier(
-        () -> {
-          if (feeder.getSpeed() > 0.05) {
-            return new Color8Bit(Color.kRed);
-          }
-          return new Color8Bit(Color.kWhite);
-        });
-
-    Shooter shooter = robotContainer.getShooter();
-
-    VisualSimulator shooterSim =
-        new VisualSimulator(
-            new Translation2d(-0.1, 0.8),
-            () -> -90,
-            () -> 0.25,
-            0.5,
-            new Color8Bit(Color.kAqua),
-            "shooter");
-
-    shooterSim.setColorSupplier(
-        () -> {
-          if (shooter.getSpeed() > 0.5) {
-            return new Color8Bit(Color.kRed);
-          }
-          return new Color8Bit(Color.kWhite);
-        });
-
-    intakeSim.setColorSupplier(
-        () -> {
-          if (intake.getRollerSpeed() > 1) {
-            return new Color8Bit(Color.kRed);
-          }
-          return new Color8Bit(Color.kWhite);
-        });
-
-    SimulationManager.addSimulationMechanism(intakeSim);
-    SimulationManager.addSimulationMechanism(shooterSim);
-    SimulationManager.addSimulationMechanism(feederSim);
-    SimulationManager.addSimulationMechanism(intakeSim);
-  }
 }

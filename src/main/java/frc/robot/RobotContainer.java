@@ -23,7 +23,6 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -37,7 +36,6 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.FeederConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.ShooterConstants;
-import frc.robot.commands.PathfindToPoseCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.belt.Belt;
 import frc.robot.subsystems.belt.BeltIO;
@@ -318,25 +316,29 @@ public class RobotContainer {
     //                 belt.setPercentMotorOutputRunCommand(
     //                     BeltConstants.FEED_POWER, () -> feeder.getTargetSpeed() > 0)));
 
-    controller
-        .x()
-        .whileTrue(
-            new ConditionalCommand(
-                shootAfterPathingCommand(
-                    new PathfindToPoseCommand(drive, DriveConstants.CLIMB_SHOOT_POSE_RIGHT, true)),
-                shootAfterPathingCommand(
-                    new PathfindToPoseCommand(drive, DriveConstants.CLIMB_SHOOT_POSE_LEFT, true)),
-                () -> drive.isRightSideZone()));
+    // controller
+    //     .x()
+    //     .whileTrue(
+    //         new ConditionalCommand(
+    //             shootAfterPathingCommand(
+    //                 new PathfindToPoseCommand(drive, DriveConstants.CLIMB_SHOOT_POSE_RIGHT,
+    // true)),
+    //             shootAfterPathingCommand(
+    //                 new PathfindToPoseCommand(drive, DriveConstants.CLIMB_SHOOT_POSE_LEFT,
+    // true)),
+    //             () -> drive.isRightSideZone()));
 
-    controller
-        .b()
-        .whileTrue(
-            new ConditionalCommand(
-                shootAfterPathingCommand(
-                    new PathfindToPoseCommand(drive, DriveConstants.BUMPER_SHOOT_POSE_RIGHT, true)),
-                shootAfterPathingCommand(
-                    new PathfindToPoseCommand(drive, DriveConstants.BUMPER_SHOOT_POSE_LEFT, true)),
-                () -> drive.isRightSideZone()));
+    // controller
+    //     .b()
+    //     .whileTrue(
+    //         new ConditionalCommand(
+    //             shootAfterPathingCommand(
+    //                 new PathfindToPoseCommand(drive, DriveConstants.BUMPER_SHOOT_POSE_RIGHT,
+    // true)),
+    //             shootAfterPathingCommand(
+    //                 new PathfindToPoseCommand(drive, DriveConstants.BUMPER_SHOOT_POSE_LEFT,
+    // true)),
+    //             () -> drive.isRightSideZone()));
 
     // eject balls
     controller

@@ -34,13 +34,10 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.units.measure.Time;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.RobotBase;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drive.filtering.DeadbandDriveInputFilter;
 import frc.robot.subsystems.drive.filtering.DriveInputFilter;
-import frc.robot.util.SmartConstant;
 import frc.robot.util.VortechsUtil;
 import java.util.function.Supplier;
 
@@ -62,19 +59,6 @@ public final class Constants {
   public static final double MEDIUM_PRIORITY_FREQUENCY_HZ = 25;
   public static final double LOW_PRIORITY_FREQUENCY_HZ = 10;
   public static final double VERY_LOW_PRIORITY_FREQUENCY_HZ = 4;
-
-  public static final Supplier<Alliance> ALLIANCE =
-      () -> {
-        if (DriverStation.getAlliance() == null || DriverStation.getAlliance().isEmpty()) {
-          return Alliance.Blue;
-        }
-
-        if (DriverStation.getAlliance().get() == Alliance.Blue) {
-          return Alliance.Blue;
-        } else {
-          return Alliance.Red;
-        }
-      };
 
   public static enum Mode {
     /** Running on a real robot. */
@@ -166,25 +150,6 @@ public final class Constants {
     // control req stuff:
     public static SwerveRequest.FieldCentric DRIVE_CONTROL_REQ =
         new FieldCentric().withDriveRequestType(DriveRequestType.Velocity);
-
-    public static final Supplier<Pose2d> BUMPER_SHOOT_POSE_LEFT =
-        VortechsUtil.AllianceBasedPose(
-            new Pose2d(3.536, 6.483, Rotation2d.fromDegrees(-66.648)),
-            new Pose2d(13.004, 1.512, Rotation2d.fromDegrees(-114.615)));
-    public static final Supplier<Pose2d> BUMPER_SHOOT_POSE_RIGHT =
-        VortechsUtil.AllianceBasedPose(
-            new Pose2d(3.536, 1.566, Rotation2d.fromDegrees(66.648)),
-            new Pose2d(13.004, 6.504, Rotation2d.fromDegrees(-114.615)));
-
-    // POSE STUFF
-    public static final Supplier<Pose2d> CLIMB_SHOOT_POSE_RIGHT =
-        VortechsUtil.AllianceBasedPose(
-            new Pose2d(1.277, 2.889, Rotation2d.fromDegrees(19.479)),
-            new Pose2d(15.242, 5.170, Rotation2d.fromDegrees(-161.34)));
-    public static final Supplier<Pose2d> CLIMB_SHOOT_POSE_LEFT =
-        VortechsUtil.AllianceBasedPose(
-            new Pose2d(1.201, 4.621, Rotation2d.fromDegrees(-9.11)),
-            new Pose2d(15.350, 3.459, Rotation2d.fromDegrees(170.567)));
 
     public static final Pose2d PASSING_POSE_UP_BLUE = new Pose2d(2.5, 6, new Rotation2d());
     public static final Pose2d PASSING_POSE_DOWN_BLUE = new Pose2d(2.5, 2, new Rotation2d());
@@ -292,8 +257,8 @@ public final class Constants {
 
     public static final double DEFAULT_SPEED = 0; // speed shooter run at default
 
-    public static final SmartConstant SHOOTER_TEST_SPEED =
-        new SmartConstant("shooter test speed", 70);
+    // public static final SmartConstant SHOOTER_TEST_SPEED =
+    //     new SmartConstant("shooter test speed", 70);
 
     // the time that the feeder waits before shooting once it is valis
 

@@ -17,7 +17,6 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
-import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.util.LocalADStarAK;
 import frc.robot.util.VortechsUtil;
@@ -69,7 +68,8 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public void updateAllianceMultiplier() {
-    if (Constants.ALLIANCE.get() == Alliance.Blue) {
+    if (DriverStation.getAlliance().isEmpty()
+        || DriverStation.getAlliance().get() == Alliance.Blue) {
       allianceMultipler = 1;
     } else {
       allianceMultipler = -1;

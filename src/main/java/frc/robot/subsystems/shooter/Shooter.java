@@ -44,50 +44,11 @@ public class Shooter extends SubsystemBase {
     this.inputs = new ShooterIOInputsAutoLogged();
 
     this.distToSpeedTable = new InterpolatingDoubleTreeMap();
-    // TO DO: populate distToSpeedTable with real valeus
-
-    // comp ones
-    // this.speedToTableInit(3.065, 67);
-    // this.speedToTableInit(2.60, 60);
-    // this.speedToTableInit(3.38, 71);
-    // this.speedToTableInit(2.039, 58);
-
-    // this.speedToTableInit(1.63, 57.5);
-    // this.speedToTableInit(2.252, 59.5);
-    // this.speedToTableInit(2.89, 64.5);
-    // this.speedToTableInit(3.5, 68.5);
-
-    // this.speedToTableInit(1.97, 65);
-    // this.speedToTableInit(2.61, 71);
-    // this.speedToTableInit(3.2, 75);
-    // this.speedToTableInit(3.4, 77);
-    // this.speedToTableInit(4, 82);
-
-    /*
-         2.155 56
-    2.573 60
-    3.168 65.75[]\
-
-    3.481 67.25
-
-    4.13 71
-
-         */
 
     this.speedToTableInit(2.155, 56);
     this.speedToTableInit(2.573, 60);
     this.speedToTableInit(3.168, 65.75);
     this.speedToTableInit(4.13, 71);
-
-    // logger =
-    //     new Notifier(
-    //         () -> {
-    //           shooterIO.updateInputs(inputs);
-    //           Logger.processInputs("shooter", inputs);
-    //         });
-
-    // logger.startPeriodic(1 / ShooterConstants.FREQUENCY_HZ);
-
   }
 
   @Override
