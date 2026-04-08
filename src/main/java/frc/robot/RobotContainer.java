@@ -236,7 +236,6 @@ public class RobotContainer {
 
     // Configure the button bindings
     configureButtonBindings();
-
   }
 
   /**
@@ -354,33 +353,6 @@ public class RobotContainer {
                     new PathfindToPoseCommand(drive, DriveConstants.BUMPER_SHOOT_POSE_LEFT, true)),
                 () -> drive.isRightSideZone()));
 
-    PathPlannerPath leftSideProtectedShoot = getPath("Left Side Tele mid into score");
-    PathPlannerPath rightSideProtectedShoot = getPath("Right Side Tele mid into score");
-
-    controller
-        .y()
-        .whileTrue(
-            shootAfterPathingCommand(
-                new ConditionalCommand(
-                    AutoBuilder.pathfindThenFollowPath(
-                        rightSideProtectedShoot, rightSideProtectedShoot.getGlobalConstraints()),
-                    AutoBuilder.pathfindThenFollowPath(
-                        leftSideProtectedShoot, leftSideProtectedShoot.getGlobalConstraints()),
-                    () -> drive.isRightSideZone())));
-
-    PathPlannerPath leftSideUnderClimb = getPath("Teleop Climber left to right");
-    PathPlannerPath rightSideUnderClimb = getPath("Teleop Climber right to left");
-
-    controller
-        .rightBumper()
-        .whileTrue(
-            new ConditionalCommand(
-                AutoBuilder.pathfindThenFollowPath(
-                    rightSideUnderClimb, rightSideUnderClimb.getGlobalConstraints()),
-                AutoBuilder.pathfindThenFollowPath(
-                    leftSideUnderClimb, leftSideUnderClimb.getGlobalConstraints()),
-                () -> drive.isRightSideZone()));
-
     // eject balls
     controller
         .a()
@@ -449,7 +421,6 @@ public class RobotContainer {
         .rightBumper()
         .onTrue(new InstantCommand(() -> shooter.setAutomaticallyChargeFully(true)))
         .onFalse(new InstantCommand(() -> shooter.setAutomaticallyChargeFully(false)));
-
   }
 
   public void configureSysIdBindings() {
@@ -464,6 +435,8 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     return autoChooser.get();
   }
+
+  public void updateAllianceConstants() {}
 
   public Intake getIntake() {
     return intake;

@@ -28,6 +28,8 @@ import org.littletonrobotics.junction.Logger;
 
 public class Drivetrain extends SubsystemBase {
 
+  private double allianceMultipler = 1;
+
   private DrivetrainIO drivetrainIO;
 
   private DrivetrainIOInputsAutoLogged inputs = new DrivetrainIOInputsAutoLogged();
@@ -68,6 +70,14 @@ public class Drivetrain extends SubsystemBase {
     drivetrainIO.runRobotCentricVelocity(speeds);
   }
 
+  public void updateAllianceMultiplier() {
+    if (Constants.ALLIANCE.get() == Alliance.Blue) {
+      allianceMultipler = 1;
+    } else {
+      allianceMultipler = -1;
+    }
+  }
+
   // drive commands
   public Command runVelocityCommand(ChassisSpeeds speeds) {
 
@@ -96,10 +106,8 @@ public class Drivetrain extends SubsystemBase {
           double ySpeed =
               ySupplier.getAsDouble() * DriveConstants.MAX_LINEAR_SPEED_METERS_PER_SECOND;
 
-          if (Constants.ALLIANCE.get() == Alliance.Red) {
-            xSpeed *= -1;
-            ySpeed *= -1;
-          }
+          xSpeed *= allianceMultipler;
+          ySpeed *= allianceMultipler;
 
           double omegaSpeed =
               Math.copySign(
@@ -126,10 +134,8 @@ public class Drivetrain extends SubsystemBase {
           double ySpeed =
               ySupplier.getAsDouble() * DriveConstants.MAX_LINEAR_SPEED_METERS_PER_SECOND;
 
-          if (Constants.ALLIANCE.get() == Alliance.Red) {
-            xSpeed *= -1;
-            ySpeed *= -1;
-          }
+          xSpeed *= allianceMultipler;
+          ySpeed *= allianceMultipler;
 
           ChassisSpeeds filteredSpeeds =
               DriveConstants.DRIVE_INPUT_FILTER.calculate(new ChassisSpeeds(xSpeed, ySpeed, 0));

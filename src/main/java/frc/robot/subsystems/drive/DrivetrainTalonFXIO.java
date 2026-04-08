@@ -28,7 +28,9 @@ public class DrivetrainTalonFXIO extends CommandSwerveDrivetrain implements Driv
               DriveConstants.ANGLE_KP, DriveConstants.ANGLE_KI, DriveConstants.ANGLE_KD);
   ;
 
-  BuiltInAccelerometer builtInAccelerometer = new BuiltInAccelerometer();
+  private BuiltInAccelerometer builtInAccelerometer = new BuiltInAccelerometer();
+
+  private SwerveDriveState lastState = new SwerveDriveState();
 
   public DrivetrainTalonFXIO(
       SwerveDrivetrainConstants swerveDrivetrainConstants,
@@ -38,16 +40,17 @@ public class DrivetrainTalonFXIO extends CommandSwerveDrivetrain implements Driv
 
   public void updateInputs(DrivetrainIOInputsAutoLogged inputsAutoLogged) {
 
-    inputsAutoLogged.xSpeed = getChassisSpeeds().vxMetersPerSecond;
-    inputsAutoLogged.ySpeed = getChassisSpeeds().vyMetersPerSecond;
-    inputsAutoLogged.rotSpeed = getChassisSpeeds().omegaRadiansPerSecond;
+    lastState = getStateCopy();
+    inputsAutoLogged.xSpeed = lastState.Speeds.vxMetersPerSecond;
+    inputsAutoLogged.ySpeed = lastState.Speeds.vyMetersPerSecond;
+    inputsAutoLogged.rotSpeed = lastState.Speeds.omegaRadiansPerSecond;
 
-    inputsAutoLogged.pose = getPose();
+    inputsAutoLogged.pose = lastState.Pose;
 
     // inputsAutoLogged.xAcceleration = getXAcceleration();
     // inputsAutoLogged.yAcceleration = getYAcceleration();
 
-    inputsAutoLogged.heading = getHeading();
+    inputsAutoLogged.heading = lastState.RawHeading;
   }
 
   public void runRobotCentricVelocity(ChassisSpeeds chassisSpeeds) {
@@ -81,7 +84,7 @@ public class DrivetrainTalonFXIO extends CommandSwerveDrivetrain implements Driv
   }
 
   public ChassisSpeeds getChassisSpeeds() {
-    return getStateCopy().Speeds;
+    return lastState.Speeds;
   }
 
   /**
@@ -107,12 +110,12 @@ public class DrivetrainTalonFXIO extends CommandSwerveDrivetrain implements Driv
   }
 
   public Pose2d getPose() {
-    return getStateCopy().Pose;
+    return lastState.Pose;
   }
 
   public Rotation2d getHeading() {
 
-    return getStateCopy().RawHeading;
+    return lastState.RawHeading;
   }
 
   public Command sysIdQuasistaticCommand(SysIdRoutine.Direction direction) {

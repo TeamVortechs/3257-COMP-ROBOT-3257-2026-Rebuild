@@ -9,16 +9,11 @@ package frc.robot;
 
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.StatusCode;
-import com.pathplanner.lib.commands.FollowPathCommand;
-import com.pathplanner.lib.commands.PathfindingCommand;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.feeder.Feeder;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.shooter.Shooter;
@@ -41,8 +36,6 @@ import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 public class Robot extends LoggedRobot {
   private Command autonomousCommand;
   private RobotContainer robotContainer;
-
-  private Field2d field2d;
 
   public Robot() {
     // Record metadata
@@ -90,7 +83,6 @@ public class Robot extends LoggedRobot {
     robotContainer = new RobotContainer();
 
     // addSimObjects();
-    field2d = new Field2d();
   }
 
   /** This function is called periodically during all modes. */
@@ -111,16 +103,10 @@ public class Robot extends LoggedRobot {
     ;
     // Return to non-RT thread priority (do not modify the first argument)
     // Threads.setCurrentThreadPriority(false, 10);
-
-    field2d.setRobotPose(robotContainer.getDrive().getPose());
   }
 
   @Override
   public void robotInit() {
-    SmartDashboard.putData(field2d);
-
-    CommandScheduler.getInstance().schedule(FollowPathCommand.warmupCommand());
-    CommandScheduler.getInstance().schedule(PathfindingCommand.warmupCommand());
 
     String[] paths = {"/media/sda1/ctre-logs/", "/media/sdb1/ctre-logs/"};
 
@@ -173,6 +159,8 @@ public class Robot extends LoggedRobot {
     if (autonomousCommand != null) {
       CommandScheduler.getInstance().schedule(autonomousCommand);
     }
+
+    robotContainer.updateAllianceConstants();
   }
 
   /** This function is called periodically during autonomous. */
@@ -189,12 +177,13 @@ public class Robot extends LoggedRobot {
     if (autonomousCommand != null) {
       autonomousCommand.cancel();
     }
+
+    robotContainer.updateAllianceConstants();
   }
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {
-  }
+  public void teleopPeriodic() {}
 
   /** This function is called once when test mode is enabled. */
   @Override
