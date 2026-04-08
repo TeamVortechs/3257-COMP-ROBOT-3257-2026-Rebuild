@@ -7,11 +7,6 @@
 
 package frc.robot;
 
-import static frc.robot.subsystems.vision.VisionConstants.photon0Name;
-import static frc.robot.subsystems.vision.VisionConstants.photon1Name;
-import static frc.robot.subsystems.vision.VisionConstants.robotToPhoton0;
-import static frc.robot.subsystems.vision.VisionConstants.robotToPhoton1;
-
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.events.EventTrigger;
@@ -63,11 +58,8 @@ import frc.robot.subsystems.shooter.ShooterTalonFXIO;
 import frc.robot.subsystems.vision.PowerModuleIO;
 import frc.robot.subsystems.vision.PowerModuleIORev;
 import frc.robot.subsystems.vision.PowerModuleIOSim;
-import frc.robot.subsystems.vision.Vision;
-import frc.robot.subsystems.vision.VisionConstants;
-import frc.robot.subsystems.vision.VisionIO;
-import frc.robot.subsystems.vision.VisionIOPhotonVision;
-import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
+import frc.robot.subsystems.vision.VisionLogless;
+import frc.robot.subsystems.vision.VisionLoglessSim;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -89,7 +81,9 @@ public class RobotContainer {
 
   private final Shooter shooter;
 
-  private final Vision vision;
+  //   private final Vision vision;
+
+  private VisionLogless visionLogless;
 
   // Controller
 
@@ -161,12 +155,16 @@ public class RobotContainer {
         belt = new Belt(new BeltTalonFXIO(BeltConstants.ID));
         // belt = new Belt(new BeltIO() {});
 
-        vision =
-            new Vision(
-                drive::addVisionMeasurement,
-                new PowerModuleIORev(),
-                new VisionIOPhotonVision(photon0Name, robotToPhoton0),
-                new VisionIOPhotonVision(photon1Name, robotToPhoton1));
+        // vision =
+        //     new Vision(
+        //         drive::addVisionMeasurement,
+        //         new PowerModuleIORev(),
+        //         new VisionIOPhotonVision(
+        //             VisionConstants.photon0Name, VisionConstants.robotToPhoton0),
+        //         new VisionIOPhotonVision(
+        //             VisionConstants.photon1Name, VisionConstants.robotToPhoton1));
+        visionLogless = new VisionLogless(drive::addVisionMeasurement, new PowerModuleIORev());
+
         break;
 
       case SIM:
@@ -196,14 +194,18 @@ public class RobotContainer {
                     () -> true,
                     operatorController.leftTrigger(),
                     () -> drive.isInScoringZone()));
-        vision =
-            new Vision(
-                drive::addVisionMeasurement,
-                new PowerModuleIOSim(),
-                new VisionIOPhotonVisionSim(
-                    VisionConstants.photon0Name, VisionConstants.robotToPhoton0, drive::getPose),
-                new VisionIOPhotonVisionSim(
-                    VisionConstants.photon1Name, VisionConstants.robotToPhoton1, drive::getPose));
+        // vision =
+        //     new Vision(
+        //         drive::addVisionMeasurement,
+        //         new PowerModuleIOSim(),
+        //         new VisionIOPhotonVisionSim(
+        //             VisionConstants.photon0Name, VisionConstants.robotToPhoton0, drive::getPose),
+        //         new VisionIOPhotonVisionSim(
+        //             VisionConstants.photon1Name, VisionConstants.robotToPhoton1,
+        // drive::getPose));
+        visionLogless =
+            new VisionLoglessSim(
+                drive::addVisionMeasurement, new PowerModuleIOSim(), drive::getPose);
 
         break;
 
@@ -224,7 +226,8 @@ public class RobotContainer {
 
         shooter = new Shooter(new ShooterIO() {}, () -> drive.getDistanceToTarget());
 
-        vision = new Vision(drive::addVisionMeasurement, new PowerModuleIO() {}, new VisionIO() {});
+        // vision = new Vision(drive::addVisionMeasurement, new PowerModuleIO() {});
+        visionLogless = new VisionLogless(drive::addVisionMeasurement, new PowerModuleIO() {});
 
         break;
     }
@@ -236,7 +239,6 @@ public class RobotContainer {
 
     // Configure the button bindings
     configureButtonBindings();
-
   }
 
   /**
@@ -425,7 +427,12 @@ public class RobotContainer {
                 intake))
         .onFalse(new InstantCommand(() -> intake.setPositionVoltage(0)));
 
-    operatorController.b().onTrue(vision.setPDHCommand(false)).onFalse(vision.setPDHCommand(true));
+    // operatorController.b().onTrue(vision.setPDHCommand(false)).onFalse(vision.setPDHCommand(true));
+
+    operatorController
+        .b()
+        .onTrue(visionLogless.setPDHCommand(false))
+        .onFalse(visionLogless.setPDHCommand(true));
 
     operatorController
         .povUp()
@@ -449,7 +456,6 @@ public class RobotContainer {
         .rightBumper()
         .onTrue(new InstantCommand(() -> shooter.setAutomaticallyChargeFully(true)))
         .onFalse(new InstantCommand(() -> shooter.setAutomaticallyChargeFully(false)));
-
   }
 
   public void configureSysIdBindings() {

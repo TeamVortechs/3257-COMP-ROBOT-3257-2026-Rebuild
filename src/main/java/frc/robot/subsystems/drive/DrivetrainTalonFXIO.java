@@ -130,4 +130,9 @@ public class DrivetrainTalonFXIO extends CommandSwerveDrivetrain implements Driv
 
     super.addVisionMeasurement(visionRobotPoseMeters, timestampSeconds, visionMeasurementStdDevs);
   }
+
+  public void addVisionMeasurement(Pose2d visionRobotPoseMeters, double timestampSeconds) {
+
+    super.addVisionMeasurement(visionRobotPoseMeters, timestampSeconds);
+  }
 }

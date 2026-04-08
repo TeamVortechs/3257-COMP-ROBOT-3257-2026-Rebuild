@@ -186,6 +186,10 @@ public class Drivetrain extends SubsystemBase {
     drivetrainIO.addVisionMeasurement(
         visionRobotPoseMeters, timestampSeconds, visionMeasurementStdDevs);
   }
+  /** Adds a new timestamped vision measurement with no given standard deviations. */
+  public void addVisionMeasurement(Pose2d visionRobotPoseMeters, double timestampSeconds) {
+    drivetrainIO.addVisionMeasurement(visionRobotPoseMeters, timestampSeconds);
+  }
 
   @AutoLogOutput
   public boolean isRightSideZone() {
