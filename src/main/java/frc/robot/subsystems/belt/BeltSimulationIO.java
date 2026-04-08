@@ -20,12 +20,7 @@ public class BeltSimulationIO implements BeltIO {
   // update inputs on roller motors
   @Override
   public void updateInputs(BeltIOInputsAutoLogged inputs) {
-    inputs.supplyCurrentAmps = rollerMotorsSim.getCurrentDrawAmps();
-    inputs.voltage = rollerMotorsSim.getInputVoltage();
     inputs.speed = rollerMotorsSim.getAngularVelocityRPM();
-
-    inputs.targetOutput = targetSpeed;
-
     rollerMotorsSim.update(0.02);
   }
 
@@ -47,9 +42,5 @@ public class BeltSimulationIO implements BeltIO {
   public void stop() {
     targetSpeed = 0;
     setVoltage(0);
-  }
-
-  public double getSpeed() {
-    return rollerMotorsSim.getAngularVelocityRPM();
   }
 }

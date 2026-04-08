@@ -7,11 +7,7 @@ public interface ShooterIO {
   public static class ShooterIOInputs {
     double speed;
     double targetSpeed;
-    double supplyCurrentAmps;
-    double statorCurrentAmps;
-    double voltage;
     boolean isOnTarget;
-    double temperatureCelsius;
     boolean isBraked = true;
   }
 

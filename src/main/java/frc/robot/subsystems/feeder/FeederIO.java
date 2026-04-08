@@ -6,11 +6,6 @@ public interface FeederIO {
   @AutoLog
   public static class FeederIOInputs {
     double speed;
-    double targetSpeed;
-    double supplyCurrentAmps;
-    double statorCurrentAmps;
-    double voltage;
-    double temperatureCelsius;
 
     boolean isBraked = true;
   }

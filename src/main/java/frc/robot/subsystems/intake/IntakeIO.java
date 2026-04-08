@@ -18,31 +18,14 @@ amperes
 public interface IntakeIO {
   @AutoLog
   public static class IntakeIOInputs {
-    double rollerAmpsStator = 0;
-    double rollerAmpsSupply = 0;
-    double rollerVolts = 0;
     double rollerSpeed = 0;
-
-    double positionAmpsStator = 0;
-    double positionAmpsSupply = 0;
-    double positionVolts = 0;
-    double positionSpeed = 0;
 
     double position = 0;
     double targetPosition = 0;
 
     boolean isBraked = true;
 
-    double positionTemperatureCelsius = 0;
-    double rollerTemperatureCelsius = 0;
-
-    boolean isBrakedRoller = true;
-    boolean isBrakedPosition = true;
-
     boolean isOnTarget = true;
-
-    double motor2Volts = 0;
-    double motor2Speed = 0;
   }
 
   // updates the given inputs with new values(advantage kit stuff)
@@ -145,22 +128,5 @@ public interface IntakeIO {
    */
   public default double getRollerSpeed() {
     return 0;
-  }
-
-  /**
-   * get the voltage of the roller motor, unit Volts, range -40 to 40
-   *
-   * @return
-   */
-  public default double getRollerMotorVoltage() {
-    return 0;
-  }
-
-  public default boolean isRollerJammed() {
-    return false;
-  }
-
-  public default boolean isPositionJammed() {
-    return false;
   }
 }

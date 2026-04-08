@@ -18,11 +18,7 @@ public class FeederSimulationIO implements FeederIO {
   // update inputs on roller motors
   @Override
   public void updateInputs(FeederIOInputsAutoLogged inputs) {
-    inputs.supplyCurrentAmps = rollerMotorsSim.getCurrentDrawAmps();
-    inputs.voltage = rollerMotorsSim.getInputVoltage();
     inputs.speed = rollerMotorsSim.getAngularVelocityRPM();
-
-    inputs.targetSpeed = targetSpeed;
 
     rollerMotorsSim.update(0.02);
   }

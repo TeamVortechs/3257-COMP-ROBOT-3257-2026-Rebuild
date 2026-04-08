@@ -31,15 +31,7 @@ public class IntakeSimulationIO implements IntakeIO {
 
   // updates the given inputs with new values(advantage kit stuff)
   public void updateInputs(IntakeIOInputsAutoLogged inputsAutoLogged) {
-    inputsAutoLogged.rollerAmpsStator = rollerMotorsSim.getCurrentDrawAmps();
-    inputsAutoLogged.rollerVolts = rollerMotorsSim.getInputVoltage();
     inputsAutoLogged.rollerSpeed = rollerMotorsSim.getAngularVelocityRadPerSec();
-    inputsAutoLogged.rollerAmpsSupply = 0; // lowk doesn't matter
-
-    inputsAutoLogged.positionAmpsStator = positionMotorsSim.getCurrentDrawAmps();
-    inputsAutoLogged.positionVolts = positionMotorsSim.getInputVoltage();
-    inputsAutoLogged.positionSpeed = positionMotorsSim.getAngularVelocityRadPerSec();
-    inputsAutoLogged.positionAmpsSupply = 0; // lowk doesn't matter
 
     inputsAutoLogged.position = positionMotorsSim.getAngularPositionRotations();
     inputsAutoLogged.targetPosition = targetPosition;

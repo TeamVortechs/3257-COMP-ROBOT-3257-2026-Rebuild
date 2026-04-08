@@ -22,16 +22,6 @@ public class Belt extends SubsystemBase {
   public Belt(BeltIO beltIO) {
     this.beltIO = beltIO;
     this.inputs = new BeltIOInputsAutoLogged();
-
-    // // set up logging
-    // logger =
-    //     new Notifier(
-    //         () -> {
-    //           beltIO.updateInputs(inputs);
-    //           Logger.processInputs("belt", inputs);
-    //         });
-
-    // logger.startPeriodic(1 / BeltConstants.FREQUENCY_HZ);
   }
 
   @Override
@@ -47,13 +37,6 @@ public class Belt extends SubsystemBase {
    */
   public void setPercentMotorOutput(double speed) {
     beltIO.setPercentMotorOutput(speed);
-  }
-
-  /**
-   * @return speed in rotations per second
-   */
-  public double getSpeed() {
-    return beltIO.getSpeed();
   }
 
   // COMMANDS

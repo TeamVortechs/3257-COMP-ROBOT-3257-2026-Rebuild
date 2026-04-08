@@ -6,11 +6,6 @@ public interface BeltIO {
   @AutoLog
   public static class BeltIOInputs {
     double speed;
-    double targetOutput;
-    double supplyCurrentAmps;
-    double statorCurrentAmps;
-    double voltage;
-    double temperatureCelsius;
     boolean isBraked = true;
   }
 
@@ -23,13 +18,6 @@ public interface BeltIO {
    * @param speed
    */
   public default void setPercentMotorOutput(double speed) {}
-
-  /**
-   * @return the speed in rotations per second of the motor
-   */
-  public default double getSpeed() {
-    return 0;
-  }
 
   /**
    * sets the voltage of the motor

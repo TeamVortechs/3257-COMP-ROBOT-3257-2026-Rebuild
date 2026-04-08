@@ -28,8 +28,6 @@ public class ShooterSimulationIO implements ShooterIO {
   // update inputs on roller motors
   @Override
   public void updateInputs(ShooterIOInputsAutoLogged inputs) {
-    inputs.supplyCurrentAmps = rollerMotorsSim.getCurrentDrawAmps();
-    inputs.voltage = rollerMotorsSim.getInputVoltage();
     inputs.speed = rollerMotorsSim.getAngularVelocityRPM();
 
     isOnTarget = isOnTargetSpeed();
