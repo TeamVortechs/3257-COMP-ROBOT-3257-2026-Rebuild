@@ -54,9 +54,7 @@ import frc.robot.subsystems.shooter.ShooterSimulationIO;
 import frc.robot.subsystems.shooter.ShooterTalonFXIO;
 import frc.robot.subsystems.vision.PowerModuleIO;
 import frc.robot.subsystems.vision.PowerModuleIORev;
-import frc.robot.subsystems.vision.PowerModuleIOSim;
 import frc.robot.subsystems.vision.VisionLogless;
-import frc.robot.subsystems.vision.VisionLoglessSim;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -80,7 +78,7 @@ public class RobotContainer {
 
   //   private final Vision vision;
 
-  private VisionLogless visionLogless;
+  private final VisionLogless visionLogless;
 
   // Controller
 
@@ -181,14 +179,17 @@ public class RobotContainer {
         feeder =
             new Feeder(
                 new FeederSimulationIO(), () -> drive.isOriented(), () -> shooter.isOnTarget());
-        vision =
-            new Vision(
-                drive::addVisionMeasurement,
-                new PowerModuleIOSim(),
-                new VisionIOPhotonVisionSim(
-                    VisionConstants.photon0Name, VisionConstants.robotToPhoton0, drive::getPose),
-                new VisionIOPhotonVisionSim(
-                    VisionConstants.photon1Name, VisionConstants.robotToPhoton1, drive::getPose));
+        // vision =
+        //     new Vision(
+        //         drive::addVisionMeasurement,
+        //         new PowerModuleIOSim(),
+        //         new VisionIOPhotonVisionSim(
+        //             VisionConstants.photon0Name, VisionConstants.robotToPhoton0, drive::getPose),
+        //         new VisionIOPhotonVisionSim(
+        //             VisionConstants.photon1Name, VisionConstants.robotToPhoton1,
+        // drive::getPose));
+
+        visionLogless = new VisionLogless(drive::addVisionMeasurement, new PowerModuleIO() {});
 
         break;
 
