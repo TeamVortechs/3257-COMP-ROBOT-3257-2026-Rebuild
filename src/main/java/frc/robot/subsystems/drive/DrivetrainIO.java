@@ -29,13 +29,12 @@ public interface DrivetrainIO {
 
   public default void applyfieldCentricTeleop(double velocityX, double velocityY) {}
 
-  public default void applyfieldCentric
-
   public default void runRobotCentricVelocity(ChassisSpeeds chassisSpeeds) {}
 
   public default void runFieldCentricVelocity(ChassisSpeeds chassisSpeeds) {}
 
-  public default void runFieldCentricVelocityAtRotation(ChassisSpeeds chassisSpeeds, Rotation2d rotation2d) {}
+  public default void runFieldCentricVelocityAtRotation(
+      ChassisSpeeds chassisSpeeds, Rotation2d rotation2d) {}
 
   public default void setSwerveBrake() {}
 

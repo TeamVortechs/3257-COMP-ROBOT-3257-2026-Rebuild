@@ -136,7 +136,7 @@ public class RobotContainer {
                     () -> shooter.isOnTarget(),
                     () -> true,
                     operatorController.leftTrigger(),
-                    () -> drive.isInScoringZone())); 
+                    () -> drive.isInScoringZone()));
         belt = new Belt(new BeltTalonFXIO(BeltConstants.ID));
         vision =
             new Vision(
@@ -198,7 +198,8 @@ public class RobotContainer {
     configureButtonBindings();
   }
 
-  // default commands should not be in "configureButtonBindings" because it is not a binding to a button
+  // default commands should not be in "configureButtonBindings" because it is not a binding to a
+  // button
   private void configureDefaultCommands() {
     shooter.setDefaultCommand(shooter.setVoltageRunCommand(0));
     intake.setDefaultCommand(intake.setRollerVoltageCommand(0));
@@ -208,7 +209,7 @@ public class RobotContainer {
         drive.joystickDrive(
             () -> -controller.getLeftY(),
             () -> -controller.getLeftX(),
-            () -> -controller.getRightX()));  
+            () -> -controller.getRightX()));
   }
 
   /**
@@ -219,8 +220,15 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     // Reset Gyro
-    controller.start().onTrue(Commands.runOnce(() -> drive.resetPose(new Pose2d(drive.getPose().getTranslation(), Rotation2d.kZero)),drive)
-                      .ignoringDisable(true));
+    controller
+        .start()
+        .onTrue(
+            Commands.runOnce(
+                    () ->
+                        drive.resetPose(
+                            new Pose2d(drive.getPose().getTranslation(), Rotation2d.kZero)),
+                    drive)
+                .ignoringDisable(true));
 
     Command aimTowardsTargetCommand =
         drive.joystickDriveAtTarget(
@@ -392,7 +400,6 @@ public class RobotContainer {
         .rightBumper()
         .onTrue(new InstantCommand(() -> shooter.setAutomaticallyChargeFully(true)))
         .onFalse(new InstantCommand(() -> shooter.setAutomaticallyChargeFully(false)));
-
   }
 
   public void configureSysIdBindings() {

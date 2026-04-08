@@ -17,7 +17,6 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
-import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.util.LocalADStarAK;
 import frc.robot.util.VortechsUtil;
@@ -95,10 +94,12 @@ public class Drivetrain extends SubsystemBase {
           double ySpeed =
               ySupplier.getAsDouble() * DriveConstants.MAX_LINEAR_SPEED_METERS_PER_SECOND;
 
-          if (Constants.ALLIANCE.get() == Alliance.Red) { // this is a really expensive call to make, could be big source of lag
-            xSpeed *= -1;
-            ySpeed *= -1;
-          }
+          // if (Constants.ALLIANCE.get()
+          //     == Alliance
+          //         .Red) { // this is a really expensive call to make, could be big source of lag
+          //   xSpeed *= -1;
+          //   ySpeed *= -1;
+          // }
 
           double omegaSpeed =
               Math.copySign(
@@ -125,10 +126,10 @@ public class Drivetrain extends SubsystemBase {
           double ySpeed =
               ySupplier.getAsDouble() * DriveConstants.MAX_LINEAR_SPEED_METERS_PER_SECOND;
 
-          if (Constants.ALLIANCE.get() == Alliance.Red) {
-            xSpeed *= -1;
-            ySpeed *= -1;
-          }
+          // if (Constants.ALLIANCE.get() == Alliance.Red) {
+          //   xSpeed *= -1;
+          //   ySpeed *= -1;
+          // }
 
           ChassisSpeeds filteredSpeeds =
               DriveConstants.DRIVE_INPUT_FILTER.calculate(new ChassisSpeeds(xSpeed, ySpeed, 0));
@@ -146,9 +147,9 @@ public class Drivetrain extends SubsystemBase {
         () -> VortechsUtil.getHeadingToTarget(getPose(), rawTargetpose.get()));
   }
 
-  public Command applyBrakeRequest() {
-    return Commands.startRun(() -> drivetrainIO.runSwerveDriveBrake(), () -> {}, this);
-  }
+  // public Command applyBrakeRequest() {
+  //   return Commands.startRun(() -> drivetrainIO.runSwerveDriveBrake(), () -> {}, this);
+  // }
 
   public boolean isOriented() {
     return getPose()
