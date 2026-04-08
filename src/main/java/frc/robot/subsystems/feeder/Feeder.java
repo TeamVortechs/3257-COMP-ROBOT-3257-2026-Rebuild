@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import java.util.function.BooleanSupplier;
 import org.littletonrobotics.junction.Logger;
 
 public class Feeder extends SubsystemBase {
@@ -13,19 +14,20 @@ public class Feeder extends SubsystemBase {
 
   // private final Notifier hardwareLogger;
 
-  private final FeederValidityContainer feederValidityContainer;
+  private BooleanSupplier shooterOnTarget;
+  private BooleanSupplier isOriented;
 
   // here so we can log it
   // caching this value and calculating it in periodic so we can log it for the driver
   /**
    * @param feederIO the hardware interface
    */
-  public Feeder(FeederIO feederIO, FeederValidityContainer validityContainer) {
+  public Feeder(FeederIO feederIO, BooleanSupplier shooterOnTarget, BooleanSupplier isOriented) {
     this.feederIO = feederIO;
     this.inputs = new FeederIOInputsAutoLogged();
 
-    this.feederValidityContainer = validityContainer;
-
+    this.shooterOnTarget = shooterOnTarget;
+    this.isOriented = isOriented;
     // hardwareLogger =
     //     new Notifier(
     //         () -> {
@@ -63,7 +65,7 @@ public class Feeder extends SubsystemBase {
   }
 
   public boolean isValidToFeed() {
-    return feederValidityContainer.isValid();
+    return isOriented.getAsBoolean() && shooterOnTarget.getAsBoolean();
   }
 
   /**
@@ -133,7 +135,7 @@ public class Feeder extends SubsystemBase {
   public Command feedWhenShooterIsRevvedCommand(double percentage) {
     return Commands.run(
         () -> {
-          if (feederValidityContainer.shooterIsRevved()) {
+          if (shooterOnTarget.getAsBoolean()) {
             this.setPercentMotorOutput(percentage);
           } else {
             this.setPercentMotorOutput(0);

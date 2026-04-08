@@ -108,38 +108,12 @@ public class Robot extends LoggedRobot {
   @Override
   public void robotInit() {
 
-    String[] paths = {"/media/sda1/ctre-logs/", "/media/sdb1/ctre-logs/"};
+    String path = "U/logs";
 
-    for (int i = 0; i < 5; i++) {
-      System.out.println("Signal logger try no." + (i + 1));
-
-      for (String path : paths) {
-        new File(path).mkdirs();
-
-        StatusCode statusCode = SignalLogger.setPath(path);
-
-        if (statusCode.isOK()) {
-          System.out.println(
-              "SUCCESS: "
-                  + path
-                  + " -> "
-                  + statusCode.getName()
-                  + ", "
-                  + statusCode.getDescription());
-          return; // or break outer
-        } else {
-          System.out.println(
-              "FAIL: " + path + " -> " + statusCode.getName() + ", " + statusCode.getDescription());
-        }
-      }
-
-      System.out.println("Signal Logger Try FAILED. Sleeping thread for 500 ms then trying again");
-      try {
-        Thread.sleep(500);
-      } catch (Exception e) {
-        System.out.println("THREAD SLEEP FAILED: " + e.getMessage());
-      }
-    }
+    new File(path).mkdirs();
+    StatusCode statusCode = SignalLogger.setPath(path);
+    System.out.println(
+        "status code for logging: " + statusCode.getName() + ", " + statusCode.getDescription());
   }
 
   /** This function is called once when the robot is disabled. */

@@ -51,7 +51,6 @@ import frc.robot.subsystems.feeder.Feeder;
 import frc.robot.subsystems.feeder.FeederIO;
 import frc.robot.subsystems.feeder.FeederSimulationIO;
 import frc.robot.subsystems.feeder.FeederTalonFXIO;
-import frc.robot.subsystems.feeder.FeederValidityContainer;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeIO;
 import frc.robot.subsystems.intake.IntakeSimulationIO;
@@ -146,12 +145,8 @@ public class RobotContainer {
         feeder =
             new Feeder(
                 new FeederTalonFXIO(FeederConstants.MOTOR_ID),
-                new FeederValidityContainer(
-                    () -> drive.isOriented(),
-                    () -> shooter.isOnTarget(),
-                    () -> true,
-                    operatorController.leftTrigger(),
-                    () -> drive.isInScoringZone())); // feeder =
+                () -> drive.isOriented(),
+                () -> shooter.isOnTarget()); // feeder =
         //     new Feeder(
         //         new FeederIO() {},
         //         () -> drive.isPointingToGoal(),
@@ -189,13 +184,7 @@ public class RobotContainer {
 
         feeder =
             new Feeder(
-                new FeederSimulationIO(),
-                new FeederValidityContainer(
-                    () -> drive.isOriented(),
-                    () -> shooter.isOnTarget(),
-                    () -> true,
-                    operatorController.leftTrigger(),
-                    () -> drive.isInScoringZone()));
+                new FeederSimulationIO(), () -> drive.isOriented(), () -> shooter.isOnTarget());
         vision =
             new Vision(
                 drive::addVisionMeasurement,
@@ -216,11 +205,7 @@ public class RobotContainer {
 
         belt = new Belt(new BeltIO() {});
 
-        feeder =
-            new Feeder(
-                new FeederIO() {},
-                new FeederValidityContainer(
-                    () -> false, () -> false, () -> false, () -> false, () -> false));
+        feeder = new Feeder(new FeederIO() {}, () -> false, () -> false);
 
         shooter = new Shooter(new ShooterIO() {}, () -> drive.getDistanceToTarget());
 
