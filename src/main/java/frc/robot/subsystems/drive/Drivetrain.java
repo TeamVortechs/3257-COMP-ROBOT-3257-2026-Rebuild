@@ -21,6 +21,9 @@ import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.util.LocalADStarAK;
 import frc.robot.util.VortechsUtil;
+
+import static frc.robot.subsystems.vision.VisionConstants.bannedTags;
+
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.AutoLogOutput;
@@ -62,8 +65,6 @@ public class Drivetrain extends SubsystemBase {
   public void periodic() {
     drivetrainIO.updateInputs(inputs);
     Logger.processInputs("drivetrain", inputs);
-
-    Logger.recordOutput("drivetrain/targetPose", rawTargetpose.get());
   }
 
   public void runVelocity(ChassisSpeeds speeds) {
@@ -158,15 +159,25 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public boolean isOriented() {
-    return getPose()
+
+    boolean isOriented = getPose()
             .getRotation()
             .minus(VortechsUtil.getHeadingToTarget(getPose(), rawTargetpose.get()))
             .getRadians()
         < DriveConstants.ORIENTATION_TOLERANCE;
+
+    Logger.recordOutput("Drivetrain/isOriented", isOriented);
+
+    return isOriented;
   }
 
   public double getDistanceToTarget() {
-    return getPose().getTranslation().getDistance(rawTargetpose.get().getTranslation());
+
+    double distanceToTarget = getPose().getTranslation().getDistance(rawTargetpose.get().getTranslation());
+
+    Logger.recordOutput("Drivetrain/distanceToTarget", distanceToTarget);
+
+    return distanceToTarget;
   }
 
   // pose related commands
@@ -195,7 +206,12 @@ public class Drivetrain extends SubsystemBase {
 
   @AutoLogOutput
   public boolean isRightSideZone() {
-    return VortechsUtil.isWithinYZone(4.05, false, getPose());
+
+    boolean isRightSideZone = VortechsUtil.isWithinYZone(4.05, false, getPose());;
+
+    Logger.recordOutput("Drivetrain/isRightSideZone", isRightSideZone);
+
+    return isRightSideZone;
   }
 
   // pose shot stuff
@@ -207,18 +223,26 @@ public class Drivetrain extends SubsystemBase {
       () -> {
         if (isInScoringZone()) {
           // in this case ur shooting
+
+          Logger.recordOutput("Drivetrain/TargetPose", DriveConstants.GOAL_POSE.get());
           return DriveConstants.GOAL_POSE.get();
         }
 
         if (getPose().getY() < DriveConstants.CENTER_POINT.getY()) {
+          Logger.recordOutput("Drivetrain/TargetPose", DriveConstants.PASSING_POSE_DOWN.get());
           return DriveConstants.PASSING_POSE_DOWN.get();
         }
 
+        Logger.recordOutput("Drivetrain/TargetPose", DriveConstants.PASSING_POSE_UP.get());
         return DriveConstants.PASSING_POSE_UP.get();
       };
 
   public boolean isInScoringZone() {
-    return (VortechsUtil.isWithinXZone(DriveConstants.X_POSE_TO_PASS, false, getPose()));
+
+    boolean isInScoringZone = VortechsUtil.isWithinXZone(DriveConstants.X_POSE_TO_PASS, false, getPose());
+    Logger.recordOutput("Drivetrain/isInScoringZone", isInScoringZone);
+
+    return isInScoringZone;
   }
 
   public Command sysIdQuasistatic(Direction direction) {
