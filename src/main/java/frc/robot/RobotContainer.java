@@ -417,10 +417,6 @@ public class RobotContainer {
     //                 intake.intakeRetractWhileShooting(() -> feeder.getTargetSpeed() > 0))
     //             .withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
 
-    operatorController
-        .rightBumper()
-        .onTrue(new InstantCommand(() -> shooter.setAutomaticallyChargeFully(true)))
-        .onFalse(new InstantCommand(() -> shooter.setAutomaticallyChargeFully(false)));
   }
 
   public void configureSysIdBindings() {
@@ -436,7 +432,9 @@ public class RobotContainer {
     return autoChooser.get();
   }
 
-  public void updateAllianceConstants() {}
+  public void updateAllianceConstants() {
+    drive.updateAllianceMultiplier();
+  }
 
   public Intake getIntake() {
     return intake;
@@ -542,7 +540,7 @@ public class RobotContainer {
         .whileTrue(
             new RunCommand(
                 () -> {
-                  shooter.setAutomaticSpeed(1);
+                  shooter.setAutomaticSpeed();
                 }));
 
     new EventTrigger("intakeUpEvent")

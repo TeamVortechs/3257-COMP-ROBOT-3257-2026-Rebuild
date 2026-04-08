@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.ShooterConstants;
-import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.Logger;
 
@@ -34,7 +33,6 @@ public class Shooter extends SubsystemBase {
   // private final Notifier logger;
 
   // wether or not the shooter automatically charges to
-  private boolean automaticallyChargeFully = false;
 
   /**
    * @param shooterIO the hardware interface
@@ -90,7 +88,6 @@ public class Shooter extends SubsystemBase {
 
     // logger.startPeriodic(1 / ShooterConstants.FREQUENCY_HZ);
 
-    setAutomaticallyChargeFully(false);
   }
 
   @Override
@@ -101,15 +98,10 @@ public class Shooter extends SubsystemBase {
 
   // SUBSYSTEM METHODS
 
-  public void setAutomaticSpeed(double scalar) {
+  public void setAutomaticSpeed() {
     double automaticSpeed = getSpeedFromDistance(distanceSupplier.getAsDouble());
-    double automaticSpeedScaled = scalar * automaticSpeed;
 
-    shooterIO.setSpeed(automaticSpeedScaled);
-
-    // Logger.recordOutput("Shooter/AutomaticSpeedScalar", scalar);
-    // Logger.recordOutput("Shooter/AutomaticSpeedPreScaled", automaticSpeed);
-    // Logger.recordOutput("Shooter/AutomaticSpeedScaled", automaticSpeedScaled);
+    shooterIO.setSpeed(automaticSpeed);
   }
 
   /**
@@ -132,16 +124,6 @@ public class Shooter extends SubsystemBase {
    */
   public boolean isOnTarget() {
     return shooterIO.isOnTargetSpeed();
-  }
-
-  public void setAutomaticallyChargeFully(boolean automaticallyChargeFully) {
-    this.automaticallyChargeFully = automaticallyChargeFully;
-
-    Logger.recordOutput("Shooter/AutomaticallyChargeFully", automaticallyChargeFully);
-  }
-
-  public boolean isAutomaticallyChargeFully() {
-    return automaticallyChargeFully;
   }
 
   // COMMANDS
@@ -197,37 +179,9 @@ public class Shooter extends SubsystemBase {
   public Command setAutomaticCommandRun() {
     return new RunCommand(
         () -> {
-          setAutomaticSpeed(1);
+          setAutomaticSpeed();
         },
         this);
-  }
-
-  public Command defaultCommand() {
-    return new InstantCommand(
-        () -> {
-          this.setVoltage(0);
-        },
-        this);
-    // return new RunCommand(
-    //     () -> {
-
-    //       // if this flag is in action we're probably gonna shoot soon and should default to full
-    //       // charge
-    //       if (automaticallyChargeFully) {
-    //         setAutomaticSpeed(1);
-    //         return;
-    //       }
-
-    //       setVoltage(0);
-    //     },
-    //     this);
-  }
-
-  public Command setAutomaticallyChargeFully(BooleanSupplier automaticallyChargeFully) {
-    return new InstantCommand(
-        () -> {
-          setAutomaticallyChargeFully(automaticallyChargeFully.getAsBoolean());
-        });
   }
 
   // HELPER METHODS
@@ -238,12 +192,6 @@ public class Shooter extends SubsystemBase {
    * @return
    */
   private double getSpeedFromDistance(double distance) {
-
-    // dummy value for now
-    // return distance;
-
-    // commented otu for now becaues this is flat since we don't have values, I want something we
-    // can debug from
     return this.distToSpeedTable.get(distance);
   }
 
