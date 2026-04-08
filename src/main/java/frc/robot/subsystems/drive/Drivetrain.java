@@ -21,9 +21,6 @@ import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.util.LocalADStarAK;
 import frc.robot.util.VortechsUtil;
-
-import static frc.robot.subsystems.vision.VisionConstants.bannedTags;
-
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.AutoLogOutput;
@@ -160,11 +157,12 @@ public class Drivetrain extends SubsystemBase {
 
   public boolean isOriented() {
 
-    boolean isOriented = getPose()
-            .getRotation()
-            .minus(VortechsUtil.getHeadingToTarget(getPose(), rawTargetpose.get()))
-            .getRadians()
-        < DriveConstants.ORIENTATION_TOLERANCE;
+    boolean isOriented =
+        getPose()
+                .getRotation()
+                .minus(VortechsUtil.getHeadingToTarget(getPose(), rawTargetpose.get()))
+                .getRadians()
+            < DriveConstants.ORIENTATION_TOLERANCE;
 
     Logger.recordOutput("Drivetrain/isOriented", isOriented);
 
@@ -173,7 +171,8 @@ public class Drivetrain extends SubsystemBase {
 
   public double getDistanceToTarget() {
 
-    double distanceToTarget = getPose().getTranslation().getDistance(rawTargetpose.get().getTranslation());
+    double distanceToTarget =
+        getPose().getTranslation().getDistance(rawTargetpose.get().getTranslation());
 
     Logger.recordOutput("Drivetrain/distanceToTarget", distanceToTarget);
 
@@ -207,7 +206,8 @@ public class Drivetrain extends SubsystemBase {
   @AutoLogOutput
   public boolean isRightSideZone() {
 
-    boolean isRightSideZone = VortechsUtil.isWithinYZone(4.05, false, getPose());;
+    boolean isRightSideZone = VortechsUtil.isWithinYZone(4.05, false, getPose());
+    ;
 
     Logger.recordOutput("Drivetrain/isRightSideZone", isRightSideZone);
 
@@ -239,7 +239,8 @@ public class Drivetrain extends SubsystemBase {
 
   public boolean isInScoringZone() {
 
-    boolean isInScoringZone = VortechsUtil.isWithinXZone(DriveConstants.X_POSE_TO_PASS, false, getPose());
+    boolean isInScoringZone =
+        VortechsUtil.isWithinXZone(DriveConstants.X_POSE_TO_PASS, false, getPose());
     Logger.recordOutput("Drivetrain/isInScoringZone", isInScoringZone);
 
     return isInScoringZone;
