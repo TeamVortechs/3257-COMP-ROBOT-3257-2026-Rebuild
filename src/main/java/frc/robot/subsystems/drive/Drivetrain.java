@@ -218,7 +218,7 @@ public class Drivetrain extends SubsystemBase {
   public Command sysIdQuasistatic(Direction direction) {
     // done with instant command for requirements
     return new InstantCommand(() -> {}, this)
-        .andThen(drivetrainIO.sysIdQuasistaticCommand(direction));
+        .andThen(this.drivetrainIO);
   }
 
   public Command sysIdDynamic(Direction direction) {

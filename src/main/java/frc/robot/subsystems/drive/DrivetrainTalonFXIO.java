@@ -3,6 +3,7 @@ package frc.robot.subsystems.drive;
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
+import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -14,7 +15,16 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.DriveConstants;
 
 public class DrivetrainTalonFXIO extends CommandSwerveDrivetrain implements DrivetrainIO {
-  private SwerveRequest.ApplyFieldSpeeds m_ApplyFieldSpeeds = new SwerveRequest.ApplyFieldSpeeds();
+  private SwerveRequest.ApplyFieldSpeeds m_ApplyFieldSpeeds;
+  private SwerveRequest.ApplyRobotSpeeds m_ApplyRobotSpeeds;
+  private SwerveRequest.FieldCentric m_FieldCentric;
+  private SwerveRequest.FieldCentricFacingAngle m_FieldCentricFacingAngle;
+  private SwerveRequest.Idle m_Idle;
+  private SwerveRequest.PointWheelsAt m_PointWheelsAt;
+  private SwerveRequest.RobotCentric m_RobotCentric;
+  private SwerveRequest.RobotCentricFacingAngle m_RobotCentricFacingAngle;
+  private SwerveRequest.SwerveDriveBrake m_Brake;
+
   private SwerveRequest.SwerveDriveBrake m_SwerveDriveBrake = new SwerveRequest.SwerveDriveBrake();
   private SwerveRequest.RobotCentric m_RobotCentricReq = new SwerveRequest.RobotCentric();
   private SwerveRequest.FieldCentric m_FieldCentricReq = new SwerveRequest.FieldCentric();
@@ -30,14 +40,17 @@ public class DrivetrainTalonFXIO extends CommandSwerveDrivetrain implements Driv
     super(swerveDrivetrainConstants, modules);
     m_XAccelSignal = this.getPigeon2().getAccelerationX();
     m_YAccelSignal = this.getPigeon2().getAccelerationY();
+    m_CurrentStateCopy = this.getStateCopy();
+    this.initializeSwerveRequests();
   }
 
   public void updateInputs(DrivetrainIOInputsAutoLogged inputsAutoLogged) {
     BaseStatusSignal.refreshAll(m_XAccelSignal, m_YAccelSignal);
+    m_CurrentStateCopy = this.getStateCopy();
     inputsAutoLogged.chassisSpeeds = this.getChassisSpeeds();
     inputsAutoLogged.pose = this.getPose();
     inputsAutoLogged.xAcceleration = this.getXAcceleration();
-    inputsAutoLogged.pose = getPose();
+    inputsAutoLogged.yAcceleration = this.getYAcceleration();
   }
 
   public void runRobotCentricVelocity(ChassisSpeeds chassisSpeeds) {
@@ -70,7 +83,11 @@ public class DrivetrainTalonFXIO extends CommandSwerveDrivetrain implements Driv
   }
 
   public ChassisSpeeds getChassisSpeeds() {
-    return getStateCopy().Speeds;
+    return this.m_CurrentStateCopy.Speeds;
+  }
+
+  public Pose2d getPose() {
+    return this.m_CurrentStateCopy.Pose;
   }
 
   /**
@@ -95,15 +112,6 @@ public class DrivetrainTalonFXIO extends CommandSwerveDrivetrain implements Driv
     resetPose(pose);
   }
 
-  public Pose2d getPose() {
-    return 
-  }
-
-  public Rotation2d getHeading() {
-
-    return getStateCopy().RawHeading;
-  }
-
   public Command sysIdQuasistaticCommand(SysIdRoutine.Direction direction) {
     return sysIdQuasistatic(direction);
   }
@@ -113,6 +121,18 @@ public class DrivetrainTalonFXIO extends CommandSwerveDrivetrain implements Driv
   }
 
   private void initializeSwerveRequests() {
-
+    m_ApplyFieldSpeeds = new SwerveRequest.ApplyFieldSpeeds()
+                                          .withDriveRequestType(SwerveModule.DriveRequestType.Velocity);
+    m_ApplyRobotSpeeds = new SwerveRequest.ApplyRobotSpeeds()
+                                          .withDriveRequestType(SwerveModule.DriveRequestType.Velocity);
+    m_FieldCentric = new SwerveRequest.FieldCentric()
+                                      .withDriveRequestType(SwerveModule.DriveRequestType.Velocity);
+    m_FieldCentricFacingAngle = new SwerveRequest.FieldCentricFacingAngle()
+                                                 .withDriveRequestType(SwerveModule.DriveRequestType.Velocity);
+    m_Idle = new SwerveRequest.Idle();
+    m_PointWheelsAt = new SwerveRequest.PointWheelsAt();
+    m_RobotCentric = new SwerveRequest.RobotCentric();
+    m_RobotCentricFacingAngle = new SwerveRequest.RobotCentricFacingAngle();
+    m_Brake = new SwerveRequest.SwerveDriveBrake();
   }
 }
