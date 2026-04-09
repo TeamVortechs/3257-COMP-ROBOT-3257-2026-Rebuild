@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import org.littletonrobotics.junction.AutoLog;
 
 public interface DrivetrainIO {
-
   @AutoLog
   public static class DrivetrainIOInputs {
     ChassisSpeeds chassisSpeeds;
@@ -27,16 +26,21 @@ public interface DrivetrainIO {
 
   public default void applyRobotSpeeds(ChassisSpeeds speeds) {}
 
-  public default void applyfieldCentricTeleop(double velocityX, double velocityY) {}
+  public default void applyfieldCentric(double velocityX, double velocityY, double rotationalRate) {}
 
+  public default void applyfieldCentricFacingAngle(double velocityX, double velocityY, Rotation2d facingAngle) {}
 
-  public default void runRobotCentricVelocity(ChassisSpeeds chassisSpeeds) {}
+  public default void applyIdle() {}
 
-  public default void runFieldCentricVelocity(ChassisSpeeds chassisSpeeds) {}
+  public default void applyPointWheelsAt(Rotation2d angleToPointAt) {}
 
-  public default void runFieldCentricVelocityAtRotation(ChassisSpeeds chassisSpeeds, Rotation2d rotation2d) {}
+  public default void applyRobotCentric(double velocityX, double velocityY) {}
 
-  public default void setSwerveBrake() {}
+  public default void applyRobotCentricFacingAnlge(double velocityX, double velocityY, Rotation2d facingAngle) {}
+
+  public default void applyBrake() {}
+
+  public default void setPose(Pose2d pose) {}
 
   public default ChassisSpeeds getChassisSpeeds() {
     return new ChassisSpeeds();
@@ -59,8 +63,6 @@ public interface DrivetrainIO {
   public default double getYAcceleration() {
     return 0;
   }
-
-  public default void setPose(Pose2d pose) {}
 
   public default Pose2d getPose() {
     return new Pose2d();

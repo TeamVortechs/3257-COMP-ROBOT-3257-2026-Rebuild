@@ -332,6 +332,11 @@ public final class Constants {
           70; // Target acceleration of 160 rps/s (0.5 seconds)
       motionMagicConfigs.MotionMagicJerk = 1600; // Target jerk of 1600 rps/s/s (0.1 seconds)
     }
+
+    public static enum ForwardPerspective {
+        BlueAlliance,
+        OperatorPerspective
+    }
   }
 
   // copied directly from ShooterConstants
