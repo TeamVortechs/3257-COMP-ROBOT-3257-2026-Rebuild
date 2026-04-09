@@ -1,23 +1,17 @@
 package frc.robot.subsystems.feeder;
 
-import static edu.wpi.first.units.Units.Volts;
 import static edu.wpi.first.units.Units.Seconds;
+import static edu.wpi.first.units.Units.Volts;
 
-import edu.wpi.first.wpilibj.Notifier;
+import com.ctre.phoenix6.SignalLogger;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import java.util.function.BooleanSupplier;
-
 import frc.robot.Constants.FeederConstants;
-import frc.robot.Constants.ShooterConstants;
-
+import java.util.function.BooleanSupplier;
 import org.littletonrobotics.junction.Logger;
-
-import com.ctre.phoenix6.SignalLogger;
 
 public class Feeder extends SubsystemBase {
 
@@ -67,9 +61,10 @@ public class Feeder extends SubsystemBase {
 
   /**
    * Sets feeder speed
+   *
    * @param speed Speed in RPS
    */
-  public void setSpeed(double speed){
+  public void setSpeed(double speed) {
     feederIO.setSpeed(speed);
   }
   /**
@@ -96,7 +91,12 @@ public class Feeder extends SubsystemBase {
   // COMMANDS
 
   public Command setSpeedCommand(double speed) {
-    return Commands.startRun(() -> {feederIO.setSpeed(speed);}, () -> {}, this);
+    return Commands.startRun(
+        () -> {
+          feederIO.setSpeed(speed);
+        },
+        () -> {},
+        this);
   }
 
   /**
@@ -129,7 +129,7 @@ public class Feeder extends SubsystemBase {
     return Commands.run(
         () -> {
           if (isValidToFeed()) {
-            this.setPercentMotorOutput(percentage);
+            this.setSpeed(98);
           } else {
             this.setPercentMotorOutput(0);
           }
@@ -148,7 +148,7 @@ public class Feeder extends SubsystemBase {
     return Commands.run(
         () -> {
           if (isValidToFeed()) {
-            this.setPercentMotorOutput(percentage);
+            this.setSpeed(98);
           } else {
             this.setPercentMotorOutput(0);
           }
@@ -160,7 +160,8 @@ public class Feeder extends SubsystemBase {
     return Commands.run(
         () -> {
           if (shooterOnTarget.getAsBoolean()) {
-            this.setPercentMotorOutput(percentage);
+            this.setSpeed(98);
+
           } else {
             this.setPercentMotorOutput(0);
           }

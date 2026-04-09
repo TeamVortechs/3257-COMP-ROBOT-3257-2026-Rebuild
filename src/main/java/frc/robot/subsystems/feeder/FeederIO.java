@@ -26,7 +26,7 @@ public interface FeederIO {
   /**
    * @param speed Sets speed in RPS
    */
-  public default void setSpeed(double speed){}
+  public default void setSpeed(double speed) {}
   /**
    * sets the voltage of the motor
    *

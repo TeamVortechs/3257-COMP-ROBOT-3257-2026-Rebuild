@@ -332,15 +332,17 @@ public final class Constants {
       CONFIG.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
       // Dummy values, need to be tuned
-      SLOT0CONFIGS.kP = 0.5; 
+      SLOT0CONFIGS.kP = 0.16837;
+      SLOT0CONFIGS.kS = 0.28264;
       SLOT0CONFIGS.kI = 0.0;
       SLOT0CONFIGS.kD = 0.0;
-      SLOT0CONFIGS.kV = 0.12;
+      SLOT0CONFIGS.kV = 0.11993;
+      SLOT0CONFIGS.kA = 0037456;
 
       // Also dummy values
       CONFIG.MotionMagic.MotionMagicCruiseVelocity = 80; // Rotations per second
       CONFIG.MotionMagic.MotionMagicAcceleration = 160;
-      CONFIG.MotionMagic.MotionMagicJerk = 1600; 
+      CONFIG.MotionMagic.MotionMagicJerk = 1600;
 
       CONFIG.Slot0 = SLOT0CONFIGS;
 
@@ -351,8 +353,6 @@ public final class Constants {
           Constants.CurrentLimitConstants.STATOR_CURRENT_LIMIT_FEEDER;
       CONFIG.CurrentLimits.StatorCurrentLimitEnable = true;
     }
-
-
   }
 
   // copied off feeder constants

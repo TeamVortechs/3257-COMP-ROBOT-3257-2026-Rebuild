@@ -50,7 +50,11 @@ public class Shooter extends SubsystemBase {
     // this.speedToTableInit(3.168, 65.75);
     // this.speedToTableInit(4.13, 71);
 
+    this.speedToTableInit(1.753, 61);
+    this.speedToTableInit(1.91, 62);
+    // this.speedToTableInit(2.25, 63);
     this.speedToTableInit(2.155, 63.85964912);
+    // this.speedToTableInit(2.155, 63.85964912);
     this.speedToTableInit(2.573, 68.42105263);
     this.speedToTableInit(3.299, 76.4);
     // this.speedToTableInit(4, 77);

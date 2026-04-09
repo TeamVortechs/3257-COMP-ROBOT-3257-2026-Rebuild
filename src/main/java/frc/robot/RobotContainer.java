@@ -425,7 +425,7 @@ public class RobotContainer {
             () -> -controller.getLeftX(),
             () -> -controller.getRightX()));
 
-    configureSysIdBindings(controller, shooter.BuildSysIdRoutine());
+    configureSysIdBindings(controller, feeder.BuildSysIdRoutine());
 
     @SuppressWarnings("unused")
     Command aimTowardsTargetCommand =
@@ -445,7 +445,9 @@ public class RobotContainer {
                         BeltConstants.FEED_POWER, () -> feeder.isValidToFeed()),
                     feeder.feedWhenValidRunCommand(FeederConstants.FEED_POWER),
                     intake.intakeRetractWhileShooting(() -> feeder.isValidToFeed()))
-                .withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
+                .withInterruptBehavior(InterruptionBehavior.kCancelIncoming))
+        .onFalse(
+            new InstantCommand(() -> intake.setPosition(IntakeConstants.INTAKE_DOWN_POSITION)));
 
     controller
         .leftTrigger()
@@ -465,6 +467,11 @@ public class RobotContainer {
                     feeder.feedWhenValidRunCommand(FeederConstants.FEED_POWER),
                     intake.intakeRetractWhileShooting(() -> feeder.isValidToFeed()))
                 .withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
+
+    controller
+        .povDown()
+        .onTrue(visionLogless.setPDHCommand(false))
+        .onFalse(visionLogless.setPDHCommand(true).ignoringDisable(true));
   }
 
   /**

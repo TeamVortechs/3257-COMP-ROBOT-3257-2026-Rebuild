@@ -35,10 +35,11 @@ public class FeederSimulationIO implements FeederIO {
   }
 
   @Override
-  public void setSpeed(double speed){
+  public void setSpeed(double speed) {
     setVoltage(speed);
     targetSpeed = speed;
   }
+
   public void stop() {
     targetSpeed = 0;
     setVoltage(0);

@@ -65,7 +65,7 @@ public class FeederTalonFXIO implements FeederIO {
     motor.setControl(mVelocityRequest.withVelocity(speed));
     targetSpeed = speed;
   }
-  
+
   public void stop() {
     motor.set(0);
   }
