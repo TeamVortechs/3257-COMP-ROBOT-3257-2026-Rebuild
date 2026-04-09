@@ -22,7 +22,6 @@ import frc.robot.util.LocalADStarAK;
 import frc.robot.util.VortechsUtil;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
-import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 public class Drivetrain extends SubsystemBase {
@@ -158,10 +157,11 @@ public class Drivetrain extends SubsystemBase {
   public boolean isOriented() {
 
     boolean isOriented =
-        getPose()
-                .getRotation()
-                .minus(VortechsUtil.getHeadingToTarget(getPose(), rawTargetpose.get()))
-                .getRadians()
+        Math.abs(
+                getPose()
+                    .getRotation()
+                    .minus(VortechsUtil.getHeadingToTarget(getPose(), rawTargetpose.get()))
+                    .getRadians())
             < DriveConstants.ORIENTATION_TOLERANCE;
 
     Logger.recordOutput("Drivetrain/isOriented", isOriented);
@@ -207,7 +207,6 @@ public class Drivetrain extends SubsystemBase {
     drivetrainIO.addVisionMeasurement(visionRobotPoseMeters, timestampSeconds);
   }
 
-  @AutoLogOutput
   public boolean isRightSideZone() {
 
     boolean isRightSideZone = VortechsUtil.isWithinYZone(4.05, false, getPose());
