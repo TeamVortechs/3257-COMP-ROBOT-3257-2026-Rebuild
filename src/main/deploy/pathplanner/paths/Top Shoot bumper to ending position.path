@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.858125741399763,
-        "y": 6.568790035587188
+        "x": 3.2884934756820883,
+        "y": 5.880201660735468
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.7586943977911007,
-        "y": 6.800176059365955
+        "x": 3.189062132073426,
+        "y": 6.111587684514235
       },
       "isLocked": false,
-      "linkedName": "Top Shoot Ramp"
+      "linkedName": "new top left shooting 2"
     },
     {
       "anchor": {
@@ -55,7 +55,7 @@
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 3.5,
-    "maxAcceleration": 3.0,
+    "maxAcceleration": 3.5,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -69,7 +69,7 @@
   "folder": "Front Top",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -55.80679915434133
+    "rotation": -52.8533133019782
   },
   "useDefaultConstraints": true
 }

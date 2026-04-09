@@ -19,16 +19,16 @@ public class VisionConstants {
       AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
 
   // Camera names, must match names configured on coprocessor
-  public static String limelight0Name = "limelight";
-  public static String photon0Name = "Arducam_Left";
-  public static String photon1Name = "Arducam_Right";
+  public static String limelightLeftName = "limelight";
+  public static String photonLeftName = "Arducam_Left";
+  public static String photonRightName = "Arducam_Right";
 
   // Robot to camera transforms
   // (Not used by Limelight, configure in web UI instead)
   // (instead used by the vision simulation)
 
   // !!!! TODO: GET NEW TRANSFORMS FOR NEW ROBOT !!!!
-  public static Transform3d robotToPhoton0 =
+  public static Transform3d robotToPhotonLeft =
       new Transform3d(
           -0.2921, // 12.902 in (CAD)
           0.2921, // 11.043 - 2.5 in (CAD)
@@ -38,7 +38,7 @@ public class VisionConstants {
               -Units.degreesToRadians(25.258),
               -Units.degreesToRadians(35))); // old one is 25.3
   public static Transform3d
-      robotToPhoton1 = // !! WARNING !! rough estimates. i punched this in at 9:10 PM; recheck
+      robotToPhotonRight = // !! WARNING !! rough estimates. i punched this in at 9:10 PM; recheck
           // better
           new Transform3d(
               -0.2921, // 0.3277108

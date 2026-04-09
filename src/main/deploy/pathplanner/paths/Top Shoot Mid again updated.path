@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.858125741399763,
-        "y": 6.568790035587188
+        "x": 3.2884934756820883,
+        "y": 5.880201660735468
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.4506244485635813,
-        "y": 6.644211558320621
+        "x": 2.805077078354321,
+        "y": 6.127454175892447
       },
       "isLocked": false,
-      "linkedName": "Top Shoot Ramp"
+      "linkedName": "new top left shooting 2"
     },
     {
       "anchor": {
@@ -20,12 +20,12 @@
         "y": 7.35
       },
       "prevControl": {
-        "x": 2.63315008085245,
-        "y": 7.280330744508206
+        "x": 2.51863401647055,
+        "y": 7.064473121041079
       },
       "nextControl": {
-        "x": 3.5152958128769796,
-        "y": 7.460486671214675
+        "x": 3.335216212836185,
+        "y": 7.576166173052445
       },
       "isLocked": false,
       "linkedName": null
@@ -36,12 +36,12 @@
         "y": 7.35
       },
       "prevControl": {
-        "x": 3.490202148879011,
-        "y": 7.322114667634062
+        "x": 3.5550424474716285,
+        "y": 7.35452087392437
       },
       "nextControl": {
-        "x": 5.133243962525594,
-        "y": 7.362192648694552
+        "x": 5.333911205421387,
+        "y": 7.3470631469273515
       },
       "isLocked": false,
       "linkedName": null
@@ -52,12 +52,12 @@
         "y": 7.332692763938315
       },
       "prevControl": {
-        "x": 4.771144504164575,
-        "y": 7.3262123343382966
+        "x": 4.517806229004345,
+        "y": 7.388949485801645
       },
       "nextControl": {
-        "x": 6.236512455516015,
-        "y": 7.3434519572953745
+        "x": 6.232271255098858,
+        "y": 7.269012647221973
       },
       "isLocked": false,
       "linkedName": null
@@ -68,12 +68,12 @@
         "y": 5.794128113879003
       },
       "prevControl": {
-        "x": 5.967532621589562,
-        "y": 6.235255041518387
+        "x": 5.914245050880801,
+        "y": 6.132919073535955
       },
       "nextControl": {
-        "x": 5.917011131940493,
-        "y": 5.544794682981111
+        "x": 5.9566063818006585,
+        "y": 5.449832812230859
       },
       "isLocked": false,
       "linkedName": null
@@ -84,12 +84,12 @@
         "y": 3.9112692763938313
       },
       "prevControl": {
-        "x": 5.623238434163701,
-        "y": 4.49226571767497
+        "x": 5.300462633451958,
+        "y": 4.37391459074733
       },
       "nextControl": {
-        "x": 7.701059077309713,
-        "y": 2.8661452143433084
+        "x": 7.629139991901473,
+        "y": 3.3624688694005713
       },
       "isLocked": false,
       "linkedName": null
@@ -100,12 +100,12 @@
         "y": 5.675776986949834
       },
       "prevControl": {
-        "x": 8.81862804125846,
-        "y": 4.693847116945188
+        "x": 8.807959667852908,
+        "y": 4.535302491103202
       },
       "nextControl": {
-        "x": 6.568869452921721,
-        "y": 6.062741238634997
+        "x": 6.726953308979436,
+        "y": 6.015749967887098
       },
       "isLocked": false,
       "linkedName": null
@@ -116,12 +116,12 @@
         "y": 5.718813760378066
       },
       "prevControl": {
-        "x": 5.6903321470974095,
-        "y": 5.718813760378066
+        "x": 5.8464476081660095,
+        "y": 5.711687270603456
       },
       "nextControl": {
-        "x": 5.090652227894983,
-        "y": 5.718813760378066
+        "x": 5.190370629485333,
+        "y": 5.723200070110331
       },
       "isLocked": false,
       "linkedName": null
@@ -132,28 +132,28 @@
         "y": 5.718813760378066
       },
       "prevControl": {
-        "x": 4.634212732022796,
-        "y": 5.718813760378066
+        "x": 4.633392645314355,
+        "y": 5.675776986951364
       },
       "nextControl": {
-        "x": 3.7486002372516207,
-        "y": 5.718813760378066
+        "x": 3.7002587096239465,
+        "y": 5.739040304623408
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.858125741399763,
-        "y": 6.568790035587188
+        "x": 3.2884934756820883,
+        "y": 5.880201660735468
       },
       "prevControl": {
-        "x": 2.5898824658368595,
-        "y": 6.809858248904331
+        "x": 3.1131509820744903,
+        "y": 6.058401015210924
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Top Shoot Ramp"
+      "linkedName": "new top left shooting 2"
     }
   ],
   "rotationTargets": [
@@ -206,15 +206,15 @@
       "command": null
     },
     {
-      "name": "intakeClearEvent",
-      "waypointRelativePos": 6.724944320712713,
-      "endWaypointRelativePos": null,
-      "command": null
-    },
-    {
       "name": "revShooterEvent",
       "waypointRelativePos": 6.907749077490823,
       "endWaypointRelativePos": 9.0,
+      "command": null
+    },
+    {
+      "name": "intakeClearEvent",
+      "waypointRelativePos": 6.945434298440982,
+      "endWaypointRelativePos": null,
       "command": null
     },
     {
@@ -226,7 +226,7 @@
   ],
   "globalConstraints": {
     "maxVelocity": 3.5,
-    "maxAcceleration": 3.0,
+    "maxAcceleration": 3.5,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -234,13 +234,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -55.80679915434133
+    "rotation": -52.8533133019782
   },
   "reversed": false,
   "folder": "Front Top",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -55.80679915434133
+    "rotation": -52.8533133019782
   },
   "useDefaultConstraints": true
 }

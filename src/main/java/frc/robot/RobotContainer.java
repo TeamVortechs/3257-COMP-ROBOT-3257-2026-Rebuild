@@ -52,9 +52,7 @@ import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterIO;
 import frc.robot.subsystems.shooter.ShooterSimulationIO;
 import frc.robot.subsystems.shooter.ShooterTalonFXIO;
-import frc.robot.subsystems.vision.PowerModuleIO;
-import frc.robot.subsystems.vision.PowerModuleIORev;
-import frc.robot.subsystems.vision.VisionLogless;
+// import frc.robot.subsystems.vision.VisionLogless;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -78,7 +76,7 @@ public class RobotContainer {
 
   //   private final Vision vision;
 
-  private final VisionLogless visionLogless;
+  //   private final VisionLogless visionLogless;
 
   // Controller
 
@@ -154,7 +152,7 @@ public class RobotContainer {
         //             VisionConstants.photon0Name, VisionConstants.robotToPhoton0),
         //         new VisionIOPhotonVision(
         //             VisionConstants.photon1Name, VisionConstants.robotToPhoton1));
-        visionLogless = new VisionLogless(drive::addVisionMeasurement, new PowerModuleIORev());
+        // visionLogless = new VisionLogless(drive::addVisionMeasurement, new PowerModuleIORev());
 
         break;
 
@@ -189,7 +187,7 @@ public class RobotContainer {
         //             VisionConstants.photon1Name, VisionConstants.robotToPhoton1,
         // drive::getPose));
 
-        visionLogless = new VisionLogless(drive::addVisionMeasurement, new PowerModuleIO() {});
+        // visionLogless = new VisionLogless(drive::addVisionMeasurement, new PowerModuleIO() {});
 
         break;
 
@@ -207,7 +205,7 @@ public class RobotContainer {
         shooter = new Shooter(new ShooterIO() {}, () -> drive.getDistanceToTarget());
 
         // vision = new Vision(drive::addVisionMeasurement, new PowerModuleIO() {});
-        visionLogless = new VisionLogless(drive::addVisionMeasurement, new PowerModuleIO() {});
+        // visionLogless = new VisionLogless(drive::addVisionMeasurement, new PowerModuleIO() {});
 
         break;
     }
@@ -387,10 +385,10 @@ public class RobotContainer {
 
     // operatorController.b().onTrue(vision.setPDHCommand(false)).onFalse(vision.setPDHCommand(true));
 
-    operatorController
-        .b()
-        .onTrue(visionLogless.setPDHCommand(false))
-        .onFalse(visionLogless.setPDHCommand(true));
+    // operatorController
+    //     .b()
+    //     .onTrue(visionLogless.setPDHCommand(false))
+    //     .onFalse(visionLogless.setPDHCommand(true));
 
     operatorController
         .povUp()
@@ -468,10 +466,10 @@ public class RobotContainer {
                     intake.intakeRetractWhileShooting(() -> feeder.isValidToFeed()))
                 .withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
 
-    controller
-        .povDown()
-        .onTrue(visionLogless.setPDHCommand(false))
-        .onFalse(visionLogless.setPDHCommand(true).ignoringDisable(true));
+    // controller
+    //     .povDown()
+    //     .onTrue(visionLogless.setPDHCommand(false))
+    //     .onFalse(visionLogless.setPDHCommand(true).ignoringDisable(true));
   }
 
   /**

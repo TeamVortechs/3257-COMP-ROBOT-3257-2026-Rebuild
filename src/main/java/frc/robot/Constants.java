@@ -200,10 +200,7 @@ public final class Constants {
     }
 
     public static PPHolonomicDriveController PATHPLANNER_CONTROLLER =
-        new PPHolonomicDriveController(
-            new PIDConstants(5, 0, 0),
-            new PIDConstants(
-                DriveConstants.ANGLE_KP, DriveConstants.ANGLE_KI, DriveConstants.ANGLE_KD));
+        new PPHolonomicDriveController(new PIDConstants(5, 0, 0), new PIDConstants(5, 0, 0));
 
     public static final RobotConfig PP_CONFIG =
         new RobotConfig(
