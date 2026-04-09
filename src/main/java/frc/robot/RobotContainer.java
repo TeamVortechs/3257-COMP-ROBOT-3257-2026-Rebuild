@@ -135,8 +135,8 @@ public class RobotContainer {
         feeder =
             new Feeder(
                 new FeederTalonFXIO(FeederConstants.MOTOR_ID),
-                () -> drive.isOriented(),
-                () -> shooter.isOnTarget()); // feeder =
+                () -> shooter.isOnTarget(),
+                () -> drive.isOriented()); // feeder =
         //     new Feeder(
         //         new FeederIO() {},
         //         () -> drive.isPointingToGoal(),
@@ -178,7 +178,7 @@ public class RobotContainer {
 
         feeder =
             new Feeder(
-                new FeederSimulationIO(), () -> drive.isOriented(), () -> shooter.isOnTarget());
+                new FeederSimulationIO(), () -> shooter.isOnTarget(), () -> drive.isOriented());
         // vision =
         //     new Vision(
         //         drive::addVisionMeasurement,
@@ -218,7 +218,8 @@ public class RobotContainer {
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
 
     // Configure the button bindings
-    configureButtonBindings();
+
+    configureSysIdBindings();
   }
 
   /**
@@ -275,9 +276,9 @@ public class RobotContainer {
                     aimTowardsTargetCommand,
                     shooter.setAutomaticCommandRun(),
                     belt.setPercentMotorOutputRunCommand(
-                        BeltConstants.FEED_POWER, () -> feeder.getTargetSpeed() > 0),
-                    feeder.feedWhenShooterIsRevvedCommand(FeederConstants.FEED_POWER),
-                    intake.intakeRetractWhileShooting(() -> feeder.getTargetSpeed() > 0))
+                        BeltConstants.FEED_POWER, () -> feeder.isValidToFeed()),
+                    feeder.feedWhenValidRunCommand(FeederConstants.FEED_POWER),
+                    intake.intakeRetractWhileShooting(() -> feeder.isValidToFeed()))
                 .withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
 
     controller
@@ -412,7 +413,58 @@ public class RobotContainer {
   }
 
   public void configureSysIdBindings() {
-    // configureSysIdBindings(controller, null);
+
+    shooter.setDefaultCommand(shooter.setVoltageRunCommand(0));
+    intake.setDefaultCommand(intake.setRollerVoltageCommand(0));
+    feeder.setDefaultCommand(feeder.setPercentMotorRunCommand(0));
+    belt.setDefaultCommand(belt.setPercentMotorOutputCommand(BeltConstants.DEFAULT_POWER));
+
+    drive.setDefaultCommand(
+        drive.joystickDrive(
+            () -> -controller.getLeftY(),
+            () -> -controller.getLeftX(),
+            () -> -controller.getRightX()));
+
+    configureSysIdBindings(controller, shooter.BuildSysIdRoutine());
+
+    @SuppressWarnings("unused")
+    Command aimTowardsTargetCommand =
+        drive.joystickDriveAtTarget(
+            // drive,
+            () -> -controller.getLeftY() * DriveConstants.K_JOYSTICK_WHEN_SHOOTING,
+            () -> -controller.getLeftX() * DriveConstants.K_JOYSTICK_WHEN_SHOOTING);
+
+    // shoot commands
+    controller
+        .rightTrigger()
+        .whileTrue(
+            Commands.parallel(
+                    aimTowardsTargetCommand,
+                    shooter.setAutomaticCommandRun(),
+                    belt.setPercentMotorOutputRunCommand(
+                        BeltConstants.FEED_POWER, () -> feeder.isValidToFeed()),
+                    feeder.feedWhenValidRunCommand(FeederConstants.FEED_POWER),
+                    intake.intakeRetractWhileShooting(() -> feeder.isValidToFeed()))
+                .withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
+
+    controller
+        .leftTrigger()
+        .whileTrue(
+            intake
+                .setPositionCommandConsistentEnd(IntakeConstants.INTAKE_DOWN_POSITION)
+                .andThen(intake.setRollerVoltageCommand(IntakeConstants.INTAKE_VOLTS)));
+
+    controller
+        .leftBumper()
+        .whileTrue(
+            Commands.parallel(
+                    shooter.setManualSpeedRunCommand(
+                        () -> ShooterConstants.SHOOTER_TEST_SPEED.get()),
+                    belt.setPercentMotorOutputRunCommand(
+                        BeltConstants.FEED_POWER, () -> feeder.isValidToFeed()),
+                    feeder.feedWhenValidRunCommand(FeederConstants.FEED_POWER),
+                    intake.intakeRetractWhileShooting(() -> feeder.isValidToFeed()))
+                .withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
   }
 
   /**

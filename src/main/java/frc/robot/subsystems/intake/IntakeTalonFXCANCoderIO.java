@@ -88,12 +88,15 @@ public class IntakeTalonFXCANCoderIO implements IntakeIO {
 
   public void updateInputs(IntakeIOInputsAutoLogged inputsAutoLogged) {
 
-    BaseStatusSignal.refreshAll(rollerVelocity);
+    BaseStatusSignal.refreshAll(rollerVelocity, intakePosition);
 
     inputsAutoLogged.rollerSpeed = rollerVelocity.getValueAsDouble();
 
     inputsAutoLogged.position = intakePosition.getValueAsDouble();
     inputsAutoLogged.targetPosition = targetPosition;
+
+    inputsAutoLogged.isOnTarget =
+        Math.abs(targetPosition - inputsAutoLogged.position) < IntakeConstants.POSITION_TOLERANCE;
   }
 
   // setters for motors

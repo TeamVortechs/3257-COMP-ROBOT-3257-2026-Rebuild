@@ -38,6 +38,7 @@ import edu.wpi.first.wpilibj.RobotBase;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drive.filtering.DeadbandDriveInputFilter;
 import frc.robot.subsystems.drive.filtering.DriveInputFilter;
+import frc.robot.util.SmartConstant;
 import frc.robot.util.VortechsUtil;
 import java.util.function.Supplier;
 
@@ -200,8 +201,7 @@ public final class Constants {
 
     public static PPHolonomicDriveController PATHPLANNER_CONTROLLER =
         new PPHolonomicDriveController(
-            new PIDConstants(
-                DriveConstants.TRANS_KP, DriveConstants.TRANS_KI, DriveConstants.TRANS_KD),
+            new PIDConstants(5, 0, 0),
             new PIDConstants(
                 DriveConstants.ANGLE_KP, DriveConstants.ANGLE_KI, DriveConstants.ANGLE_KD));
 
@@ -257,18 +257,18 @@ public final class Constants {
 
     public static final double DEFAULT_SPEED = 0; // speed shooter run at default
 
-    // public static final SmartConstant SHOOTER_TEST_SPEED =
-    //     new SmartConstant("shooter test speed", 70);
+    public static final SmartConstant SHOOTER_TEST_SPEED =
+        new SmartConstant("shooter test speed", 70);
 
     // the time that the feeder waits before shooting once it is valis
 
     // CHANGE !
-    public static final double KS = 0;
-    public static final double KV = 0.12052;
-    public static final double KP = 0.5; // 11339
+    public static final double KS = 0.088821;
+    public static final double KV = 0.11515;
+    public static final double KP = 0.5; // 0.027803
     public static final double KI = 0.0;
     public static final double KD = 0.0;
-    public static final double KA = 0.026169;
+    public static final double KA = 0.010264;
 
     public static final TalonFXConfiguration CONFIG;
     public static final Slot0Configs SLOT0CONFIGS;
@@ -318,7 +318,7 @@ public final class Constants {
     // not real
     public static final int MOTOR_ID = 23;
 
-    public static final double FEED_POWER = 0.7;
+    public static final double FEED_POWER = 1;
     public static final double EJECT_POWER_AUTO = -1;
 
     public static final Slot0Configs SLOT0CONFIGS;
@@ -432,7 +432,7 @@ public final class Constants {
     public static final double KS = 0;
     public static final double KV = 0.2;
     public static final double KA = 0;
-    public static final double KP = 80;
+    public static final double KP = 40;
     public static final double KI = 0;
     public static final double KD = 0;
     public static final double KG = 0.5;
