@@ -487,7 +487,7 @@ public class RobotContainer {
                     .andThen(
                         feeder
                             .feedWhenValidRunCommand(FeederConstants.FEED_POWER)
-                            .withDeadline(new WaitCommand(3))),
+                            .withDeadline(new WaitCommand(2.4))),
 
                 // second command(point towards target)
                 drive.joystickDriveAtTarget(() -> 0, () -> 0),

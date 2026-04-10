@@ -5,9 +5,9 @@
   "pathFolders": [
     "Front Left",
     "Front Right",
-    "New Folder",
-    "New Right",
+    "New Left",
     "Mid Auto",
+    "New Right",
     "TeleopCommands"
   ],
   "autoFolders": [],
