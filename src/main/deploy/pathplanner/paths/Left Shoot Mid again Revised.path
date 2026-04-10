@@ -4,12 +4,12 @@
     {
       "anchor": {
         "x": 3.2884934756820883,
-        "y": 5.880201660735468
+        "y": 5.79
       },
       "prevControl": null,
       "nextControl": {
         "x": 2.805077078354321,
-        "y": 6.127454175892447
+        "y": 6.037252515156979
       },
       "isLocked": false,
       "linkedName": "new top left shooting 2"
@@ -145,11 +145,11 @@
     {
       "anchor": {
         "x": 3.2884934756820883,
-        "y": 5.880201660735468
+        "y": 5.79
       },
       "prevControl": {
         "x": 3.1131509820744903,
-        "y": 6.058401015210924
+        "y": 5.968199354475456
       },
       "nextControl": null,
       "isLocked": false,
@@ -234,13 +234,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -52.8533133019782
+    "rotation": -52.230401783312686
   },
   "reversed": false,
-  "folder": "Front Top",
+  "folder": "Mid Auto",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -52.8533133019782
+    "rotation": -52.230401783312686
   },
   "useDefaultConstraints": true
 }

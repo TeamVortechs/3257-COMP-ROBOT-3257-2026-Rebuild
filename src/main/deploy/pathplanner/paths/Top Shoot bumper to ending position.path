@@ -4,12 +4,12 @@
     {
       "anchor": {
         "x": 3.2884934756820883,
-        "y": 5.880201660735468
+        "y": 5.79
       },
       "prevControl": null,
       "nextControl": {
         "x": 3.189062132073426,
-        "y": 6.111587684514235
+        "y": 6.021386023778767
       },
       "isLocked": false,
       "linkedName": "new top left shooting 2"
@@ -66,10 +66,10 @@
     "rotation": 0.0
   },
   "reversed": false,
-  "folder": "Front Top",
+  "folder": "Front Left",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -52.8533133019782
+    "rotation": -52.230401783312686
   },
   "useDefaultConstraints": true
 }
