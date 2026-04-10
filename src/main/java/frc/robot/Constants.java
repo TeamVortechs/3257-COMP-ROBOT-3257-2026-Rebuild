@@ -8,7 +8,6 @@
 package frc.robot;
 
 import static edu.wpi.first.units.Units.MetersPerSecond;
-import static edu.wpi.first.units.Units.Seconds;
 
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
@@ -33,7 +32,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.RobotBase;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drive.filtering.DeadbandDriveInputFilter;
@@ -132,7 +130,6 @@ public final class Constants {
     public static final ProfiledPIDController ANGLE_CONTROLLER;
 
     public static final double K_JOYSTICK_WHEN_SHOOTING = 1;
-    public static final double K_JOYSTICK_WHEN_PASSING = 1;
     public static final double K_JOYSTICK_ROTATION = 0.7;
     public static final double K_JOYSTICK_TRANSLATION = 1;
 
@@ -315,6 +312,7 @@ public final class Constants {
     // not real
     public static final int MOTOR_ID = 23;
 
+    public static final double FEED_SPEED = 98;
     public static final double FEED_POWER = 1;
     public static final double EJECT_POWER_AUTO = -1;
 
@@ -385,13 +383,6 @@ public final class Constants {
 
   public class IntakeConstants {
 
-    // JAM VALUES: if we exceed all these values at the same time, we're prob in a jam
-
-    // these all depend on the motor. right now, these are just generic values, will update after
-    // research
-    public static final double ROLLER_JAM_CURRENT_AMPS = 40.0;
-    public static final double ROLLER_JAM_VELOCITY = 2.0;
-    public static final double POSITION_JAM_CURRENT_AMPS = 35.0;
     // Minimum voltage applied on a motor for there to be considered a jam(unit: volts)
     public static final double MIN_VOLTAGE_APPLIED = 2.0;
 
@@ -443,11 +434,9 @@ public final class Constants {
     public static final double MOTION_MAGIC_ACCELERATION = 30;
     public static final double MOTION_MAGIC_JERK = 100000000.0;
     // for slowing down the intake when attempting to close while firing
-    public static final Time WAIT_TIME_TO_PULL_INTAKE = Seconds.of(2);
     public static final double MOTION_MAGIC_SLOWED_VELOCITY = 1.5; // originally 1.5
     public static final double MOTION_MAGIC_SLOWED_VELOCITY_SECOND_TIME = 1.25;
     // constants for the oscillateIntake command
-    public static final Time WAIT_TIME_BETWEEN_INTAKE_OSCILLATION = Seconds.of(0.5);
     public static final double OSCILLATION_VELOCITY = 1;
 
     public static final double RAMP_RATE_VOLTS_ROLLER_SYSID = 0.25;
@@ -514,18 +503,5 @@ public final class Constants {
           Constants.CurrentLimitConstants.STATOR_CURRENT_LIMIT_INTAKE_ROLLER;
       ROLLER_CONFIG.CurrentLimits.StatorCurrentLimitEnable = true;
     }
-  }
-
-  public class MatchTimelineConstants {
-    public static final double TIMER_FREQUENCY = 1.0 / 4.0; // Also used for periodic measurement
-    public static final double SHIFT_LENGTH = 25.0; // Length of each shift
-    public static final double SHOOTING_BUFFER_TIME = 3.0;
-
-    // DUMMY VALUES, update when there's time at a practice field to more realistic numbers
-    public static final double SENSOR_TIME =
-        .5; // Time it takes for ball to go from entering hub to roll past hub
-    public static final double SHOOTING_TOLERANCE = .25;
-    public static final double MIN_FLIGHT_LENGTH = 0.0;
-    public static final double MAX_FLIGHT_LENGTH = 3.0;
   }
 }

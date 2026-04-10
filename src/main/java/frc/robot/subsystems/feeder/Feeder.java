@@ -129,7 +129,7 @@ public class Feeder extends SubsystemBase {
     return Commands.run(
         () -> {
           if (isValidToFeed()) {
-            this.setSpeed(98);
+            this.setSpeed(FeederConstants.FEED_SPEED);
           } else {
             this.setPercentMotorOutput(0);
           }
@@ -148,7 +148,7 @@ public class Feeder extends SubsystemBase {
     return Commands.run(
         () -> {
           if (isValidToFeed()) {
-            this.setSpeed(98);
+            this.setSpeed(FeederConstants.FEED_SPEED);
           } else {
             this.setPercentMotorOutput(0);
           }
@@ -160,7 +160,7 @@ public class Feeder extends SubsystemBase {
     return Commands.run(
         () -> {
           if (shooterOnTarget.getAsBoolean()) {
-            this.setSpeed(98);
+            this.setSpeed(FeederConstants.FEED_SPEED);
 
           } else {
             this.setPercentMotorOutput(0);

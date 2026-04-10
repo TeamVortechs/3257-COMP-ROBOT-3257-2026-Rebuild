@@ -217,7 +217,7 @@ public class RobotContainer {
 
     // Configure the button bindings
 
-    configureSysIdBindings();
+    configureButtonBindings();
   }
 
   /**
@@ -277,7 +277,9 @@ public class RobotContainer {
                         BeltConstants.FEED_POWER, () -> feeder.isValidToFeed()),
                     feeder.feedWhenValidRunCommand(FeederConstants.FEED_POWER),
                     intake.intakeRetractWhileShooting(() -> feeder.isValidToFeed()))
-                .withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
+                .withInterruptBehavior(InterruptionBehavior.kCancelIncoming))
+        .onFalse(
+            new InstantCommand(() -> intake.setPosition(IntakeConstants.INTAKE_DOWN_POSITION)));
 
     controller
         .rightStick()
@@ -288,56 +290,6 @@ public class RobotContainer {
                 () -> new Rotation2d(-controller.getLeftY(), -controller.getLeftX())));
 
     controller.leftStick().whileTrue(drive.applyBrakeRequest());
-
-    // controller
-    //     .y()
-    //     .whileTrue(
-    //         drive
-    //             .joystickDriveRotation(
-    //                 () -> -controller.getLeftY() * DriveConstants.K_JOYSTICK_WHEN_SHOOTING,
-    //                 () -> -controller.getLeftX() * DriveConstants.K_JOYSTICK_WHEN_SHOOTING,
-    //                 () ->
-    //                     DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue
-    //                         ? Rotation2d.k180deg
-    //                         : Rotation2d.kZero)
-    //             .alongWith(
-    //                 shooter
-    //                     .setManualSpeedCommand(83)
-    //                     .alongWith(
-    //                         new WaitUntilCommand(() -> shooter.isOnTarget())
-    //                             .andThen(
-    //                                 feeder
-    //                                     .setPercentMotorRunCommand(FeederConstants.FEED_POWER)
-    //                                     .alongWith(
-    //                                         intake.intakeRetractWhileShooting(
-    //                                             () -> shooter.isOnTarget())))))
-    //             .alongWith(
-    //                 belt.setPercentMotorOutputRunCommand(
-    //                     BeltConstants.FEED_POWER, () -> feeder.getTargetSpeed() > 0)));
-
-    // controller
-    //     .x()
-    //     .whileTrue(
-    //         new ConditionalCommand(
-    //             shootAfterPathingCommand(
-    //                 new PathfindToPoseCommand(drive, DriveConstants.CLIMB_SHOOT_POSE_RIGHT,
-    // true)),
-    //             shootAfterPathingCommand(
-    //                 new PathfindToPoseCommand(drive, DriveConstants.CLIMB_SHOOT_POSE_LEFT,
-    // true)),
-    //             () -> drive.isRightSideZone()));
-
-    // controller
-    //     .b()
-    //     .whileTrue(
-    //         new ConditionalCommand(
-    //             shootAfterPathingCommand(
-    //                 new PathfindToPoseCommand(drive, DriveConstants.BUMPER_SHOOT_POSE_RIGHT,
-    // true)),
-    //             shootAfterPathingCommand(
-    //                 new PathfindToPoseCommand(drive, DriveConstants.BUMPER_SHOOT_POSE_LEFT,
-    // true)),
-    //             () -> drive.isRightSideZone()));
 
     // eject balls
     controller
@@ -383,8 +335,6 @@ public class RobotContainer {
                 intake))
         .onFalse(new InstantCommand(() -> intake.setPositionVoltage(0)));
 
-    // operatorController.b().onTrue(vision.setPDHCommand(false)).onFalse(vision.setPDHCommand(true));
-
     // operatorController
     //     .b()
     //     .onTrue(visionLogless.setPDHCommand(false))
@@ -397,17 +347,31 @@ public class RobotContainer {
         .povDown()
         .whileTrue(intake.setPositionCommand(IntakeConstants.INTAKE_HALFWAY_LOWER_POSITION));
 
-    // operatorController
-    //     .rightBumper()
-    //     .whileTrue(
-    //         Commands.parallel(
-    //                 shooter.setManualSpeedRunCommand(69),
-    //                 belt.setPercenxtMotorOutputRunCommand(
-    //                     BeltConstants.FEED_POWER, () -> feeder.getTargetSpeed() > 0),
-    //                 feeder.feedWhenShooterIsRevvedCommand(FeederConstants.FEED_POWER),
-    //                 intake.intakeRetractWhileShooting(() -> feeder.getTargetSpeed() > 0))
-    //             .withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
-
+    // 76
+    operatorController
+        .leftTrigger()
+        .whileTrue(
+            shooter
+                .setManualSpeedCommand(76)
+                .alongWith(
+                    new WaitUntilCommand(() -> shooter.isOnTarget())
+                        .andThen(
+                            Commands.parallel(
+                                feeder.setSpeedCommand(FeederConstants.FEED_SPEED),
+                                belt.setPercentMotorOutputRunCommand(BeltConstants.FEED_POWER),
+                                intake.intakeRetractWhileShooting(() -> true)))));
+    operatorController
+        .rightTrigger()
+        .whileTrue(
+            shooter
+                .setManualSpeedCommand(61)
+                .alongWith(
+                    new WaitUntilCommand(() -> shooter.isOnTarget())
+                        .andThen(
+                            Commands.parallel(
+                                feeder.setSpeedCommand(FeederConstants.FEED_SPEED),
+                                belt.setPercentMotorOutputRunCommand(BeltConstants.FEED_POWER),
+                                intake.intakeRetractWhileShooting(() -> true)))));
   }
 
   public void configureSysIdBindings() {
