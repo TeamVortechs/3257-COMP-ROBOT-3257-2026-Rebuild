@@ -9,8 +9,12 @@ package frc.robot.subsystems.vision;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 
 public class VisionConstants {
@@ -70,4 +74,18 @@ public class VisionConstants {
   public static double linearStdDevMegatag2Factor = 0.5; // More stable than full 3D solve
   public static double angularStdDevMegatag2Factor =
       Double.POSITIVE_INFINITY; // No rotation data available
+
+  // ------ FROM EYE OF THE STORM ---------
+
+  // These baseline standard deviations are pretty untrusting of X/Y and completely reject angular
+  // estimations by vision
+  // this means we need to ensure that the gyro initializes the proper heading at the beginning of
+  // each match
+  // [xStdDev, yStdDev, thetaStdDev]
+  public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(0.8, 0.8, 999999);
+
+  // [xStdDev, yStdDev, thetaStdDev]
+  public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.35, 0.35, 999999);
+
+  // ------ END EYE OF THE STORM ----------
 }
