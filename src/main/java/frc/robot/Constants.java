@@ -36,8 +36,6 @@ import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drive.filtering.DeadbandDriveInputFilter;
 import frc.robot.subsystems.drive.filtering.DriveInputFilter;
 import frc.robot.util.SmartConstant;
-import frc.robot.util.VortechsUtil;
-import java.util.function.Supplier;
 
 /**
  * This class defines the runtime mode used by AdvantageKit. The mode is always "real" when running
@@ -154,17 +152,9 @@ public final class Constants {
     public static final Pose2d PASSING_POSE_UP_RED = new Pose2d(14, 6, new Rotation2d());
     public static final Pose2d PASSING_POSE_DOWN_RED = new Pose2d(14, 2, new Rotation2d());
 
-    public static final Supplier<Pose2d> PASSING_POSE_DOWN =
-        VortechsUtil.AllianceBasedPose(PASSING_POSE_DOWN_BLUE, PASSING_POSE_DOWN_RED);
-    public static final Supplier<Pose2d> PASSING_POSE_UP =
-        VortechsUtil.AllianceBasedPose(PASSING_POSE_UP_BLUE, PASSING_POSE_UP_RED);
-
     // find this
     public static final Pose2d GOAL_POSE_BLUE = new Pose2d(4.622, 4.03, new Rotation2d());
     public static final Pose2d GOAL_POSE_RED = new Pose2d(11.917, 4.030, new Rotation2d());
-
-    public static final Supplier<Pose2d> GOAL_POSE =
-        VortechsUtil.AllianceBasedPose(GOAL_POSE_BLUE, GOAL_POSE_RED);
 
     // the zone where we choose to more agressively charge the shooter
     public static final double X_POSE_TO_CHARGE = 5.5;

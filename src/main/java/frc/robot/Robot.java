@@ -162,6 +162,7 @@ public class Robot extends LoggedRobot {
     }
 
     robotContainer.updateAllianceConstants();
+    AlliancePoseManager.update();
   }
 
   /** This function is called periodically during autonomous. */
@@ -180,6 +181,7 @@ public class Robot extends LoggedRobot {
     }
 
     robotContainer.updateAllianceConstants();
+    AlliancePoseManager.update();
   }
 
   /** This function is called periodically during operator control. */

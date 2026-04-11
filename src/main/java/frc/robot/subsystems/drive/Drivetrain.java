@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.robot.AlliancePoseManager;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.util.LocalADStarAK;
@@ -297,17 +298,17 @@ public class Drivetrain extends SubsystemBase {
         if (isInScoringZone()) {
           // in this case ur shooting
 
-          Logger.recordOutput("Drivetrain/TargetPose", DriveConstants.GOAL_POSE.get());
-          return DriveConstants.GOAL_POSE.get();
+          Logger.recordOutput("Drivetrain/TargetPose", AlliancePoseManager.GOAL_POSE.get());
+          return AlliancePoseManager.GOAL_POSE.get();
         }
 
         if (getPose().getY() < DriveConstants.CENTER_POINT.getY()) {
-          Logger.recordOutput("Drivetrain/TargetPose", DriveConstants.PASSING_POSE_DOWN.get());
-          return DriveConstants.PASSING_POSE_DOWN.get();
+          Logger.recordOutput("Drivetrain/TargetPose", AlliancePoseManager.PASSING_POSE_DOWN.get());
+          return AlliancePoseManager.PASSING_POSE_DOWN.get();
         }
 
-        Logger.recordOutput("Drivetrain/TargetPose", DriveConstants.PASSING_POSE_UP.get());
-        return DriveConstants.PASSING_POSE_UP.get();
+        Logger.recordOutput("Drivetrain/TargetPose", AlliancePoseManager.PASSING_POSE_UP.get());
+        return AlliancePoseManager.PASSING_POSE_UP.get();
       };
 
   public boolean isInScoringZone() {
