@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.2884934756820883,
-        "y": 5.79
+        "x": 2.7769014084507053,
+        "y": 5.567957746478873
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.805077078354321,
-        "y": 6.037252515156979
+        "x": 2.293485011122938,
+        "y": 5.815210261635852
       },
       "isLocked": false,
       "linkedName": "new top left shooting 2"
@@ -144,12 +144,12 @@
     },
     {
       "anchor": {
-        "x": 3.2884934756820883,
-        "y": 5.79
+        "x": 2.7769014084507053,
+        "y": 5.567957746478873
       },
       "prevControl": {
-        "x": 3.1131509820744903,
-        "y": 5.968199354475456
+        "x": 2.6015589148431073,
+        "y": 5.7461571009543295
       },
       "nextControl": null,
       "isLocked": false,
@@ -234,13 +234,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -52.230401783312686
+    "rotation": -39.739977784329014
   },
   "reversed": false,
   "folder": "New Left",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -52.230401783312686
+    "rotation": -39.739977784329014
   },
   "useDefaultConstraints": true
 }

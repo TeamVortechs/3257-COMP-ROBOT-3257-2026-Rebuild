@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.2884934756820883,
-        "y": 5.79
+        "x": 2.7769014084507053,
+        "y": 5.567957746478873
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.282116472396437,
-        "y": 6.6498244736726715
+        "x": 1.770524405165054,
+        "y": 6.427782220151545
       },
       "isLocked": false,
       "linkedName": "new top left shooting 2"
@@ -106,7 +106,7 @@
   "folder": "New Left",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -52.230401783312686
+    "rotation": -39.739977784329014
   },
   "useDefaultConstraints": true
 }
