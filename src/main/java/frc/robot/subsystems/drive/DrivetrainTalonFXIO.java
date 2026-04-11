@@ -32,13 +32,11 @@ public class DrivetrainTalonFXIO extends CommandSwerveDrivetrain implements Driv
   private SwerveRequest.FieldCentricFacingAngle m_FieldCentricAngleReqOpenLoop =
       new SwerveRequest.FieldCentricFacingAngle()
           .withHeadingPID(DriveConstants.ANGLE_KP, DriveConstants.ANGLE_KI, DriveConstants.ANGLE_KD)
-          .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
           .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
   private SwerveRequest.FieldCentricFacingAngle m_FieldCentricAngleReqVelocity =
       new SwerveRequest.FieldCentricFacingAngle()
           .withHeadingPID(DriveConstants.ANGLE_KP, DriveConstants.ANGLE_KI, DriveConstants.ANGLE_KD)
-          .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
           .withDriveRequestType(DriveRequestType.Velocity);
 
   private BuiltInAccelerometer builtInAccelerometer = new BuiltInAccelerometer();
