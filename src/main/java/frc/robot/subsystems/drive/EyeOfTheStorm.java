@@ -36,9 +36,7 @@ public class EyeOfTheStorm {
   }
 
   private void submitVisionEstimates(PhotonCamera camera, PhotonPoseEstimator photonEstimator) {
-    int resultSet = 0;
     for (var result : camera.getAllUnreadResults()) {
-      resultSet++;
       var visionEst = photonEstimator.estimateCoprocMultiTagPose(result);
       if (visionEst.isEmpty()) {
         visionEst = photonEstimator.estimateLowestAmbiguityPose(result);
