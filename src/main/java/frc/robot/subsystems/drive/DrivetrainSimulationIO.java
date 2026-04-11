@@ -81,7 +81,7 @@ public class DrivetrainSimulationIO extends CommandSwerveDrivetrain implements D
     m_simNotifier.startPeriodic(0.004);
   }
 
-  public void runRobotCentricVelocity(ChassisSpeeds chassisSpeeds) {
+  public void runRobotCentricVelocity(ChassisSpeeds chassisSpeeds, boolean openLoop) {
 
     setControl(
         m_RobotCentricReq
@@ -90,7 +90,7 @@ public class DrivetrainSimulationIO extends CommandSwerveDrivetrain implements D
             .withRotationalRate(chassisSpeeds.omegaRadiansPerSecond));
   }
 
-  public void runFieldCentricVelocity(ChassisSpeeds chassisSpeeds) {
+  public void runFieldCentricVelocity(ChassisSpeeds chassisSpeeds, boolean openLoop) {
     setControl(
         m_FieldCentricReq
             .withVelocityX(chassisSpeeds.vxMetersPerSecond)
@@ -99,7 +99,7 @@ public class DrivetrainSimulationIO extends CommandSwerveDrivetrain implements D
   }
 
   public void runFieldCentricVelocityAtRotation(
-      ChassisSpeeds chassisSpeeds, Rotation2d rotation2d) {
+      ChassisSpeeds chassisSpeeds, Rotation2d rotation2d, boolean openLoop) {
     setControl(
         m_FieldCentricAngleReq
             .withVelocityX(chassisSpeeds.vxMetersPerSecond)

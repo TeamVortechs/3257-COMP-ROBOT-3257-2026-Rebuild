@@ -39,6 +39,8 @@ import org.photonvision.targeting.PhotonPipelineResult;
 
 public class Drivetrain extends SubsystemBase {
 
+
+
   private PhotonCamera m_LeftCamera;
   private PhotonCamera m_RightCamera;
   private PhotonPoseEstimator m_LeftCameraEstimator;
@@ -64,7 +66,7 @@ public class Drivetrain extends SubsystemBase {
         this::getPose,
         this::resetPose,
         this::getChassisSpeeds,
-        this::runVelocity,
+        this::runVelocityPathplanner,
         DriveConstants.PATHPLANNER_CONTROLLER,
         DriveConstants.PP_CONFIG,
         () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
@@ -132,8 +134,12 @@ public class Drivetrain extends SubsystemBase {
     UpdateForwardCamera();
   }
 
-  public void runVelocity(ChassisSpeeds speeds) {
-    drivetrainIO.runRobotCentricVelocity(speeds);
+  public void runVelocity(ChassisSpeeds speeds, boolean openLoop) {
+    drivetrainIO.runRobotCentricVelocity(speeds, openLoop);
+  }
+
+  public void runVelocityPathplanner(ChassisSpeeds speeds) {
+    runVelocity(speeds, false);
   }
 
   public void updateAllianceMultiplier() {
@@ -146,11 +152,11 @@ public class Drivetrain extends SubsystemBase {
   }
 
   // drive commands
-  public Command runVelocityCommand(ChassisSpeeds speeds) {
+  public Command runVelocityCommand(ChassisSpeeds speeds, boolean openLoop) {
 
     return Commands.run(
         () -> {
-          drivetrainIO.runRobotCentricVelocity(speeds);
+          runVelocity(speeds, openLoop);
         },
         this);
   }
@@ -187,7 +193,7 @@ public class Drivetrain extends SubsystemBase {
               DriveConstants.DRIVE_INPUT_FILTER.calculate(
                   new ChassisSpeeds(xSpeed, ySpeed, omegaSpeed));
 
-          drivetrainIO.runFieldCentricVelocity(filteredSpeeds);
+          drivetrainIO.runFieldCentricVelocity(filteredSpeeds, DriveConstants.RUN_OPEN_LOOP_TELEOP);
         },
         this);
   }
@@ -207,7 +213,7 @@ public class Drivetrain extends SubsystemBase {
           ChassisSpeeds filteredSpeeds =
               DriveConstants.DRIVE_INPUT_FILTER.calculate(new ChassisSpeeds(xSpeed, ySpeed, 0));
 
-          drivetrainIO.runFieldCentricVelocityAtRotation(filteredSpeeds, rotationSupplier.get());
+          drivetrainIO.runFieldCentricVelocityAtRotation(filteredSpeeds, rotationSupplier.get(), DriveConstants.RUN_OPEN_LOOP_TELEOP);
         },
         this);
   }

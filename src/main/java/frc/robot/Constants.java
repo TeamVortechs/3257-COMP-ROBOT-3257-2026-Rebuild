@@ -99,6 +99,9 @@ public final class Constants {
 
   public class DriveConstants {
 
+    public static final boolean RUN_OPEN_LOOP_TELEOP = false;
+    public static final boolean RUN_OPEN_LOOP_AUTONOMOUS = false;
+
     // pathplanner constants
     public static final double ROBOT_WEIGHT = 58.060;
     public static final double ROBOT_MOI = 7.218;
