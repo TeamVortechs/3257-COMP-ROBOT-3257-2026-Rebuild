@@ -1,19 +1,14 @@
 package frc.robot.subsystems.drive;
 
-import com.ctre.phoenix6.Utils;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.pathfinding.Pathfinding;
 import com.pathplanner.lib.util.PathPlannerLogging;
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
-import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -23,34 +18,15 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants.DriveConstants;
-import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.util.LocalADStarAK;
 import frc.robot.util.VortechsUtil;
-import java.util.List;
-import java.util.Optional;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
-import org.photonvision.EstimatedRobotPose;
-import org.photonvision.PhotonCamera;
-import org.photonvision.PhotonPoseEstimator;
-import org.photonvision.PhotonPoseEstimator.PoseStrategy;
-import org.photonvision.targeting.PhotonPipelineResult;
 
 public class Drivetrain extends SubsystemBase {
 
-
-
-  private PhotonCamera m_LeftCamera;
-  private PhotonCamera m_RightCamera;
-  private PhotonPoseEstimator m_LeftCameraEstimator;
-  private PhotonPoseEstimator m_RightCameraEstimator;
-
-  AprilTagFieldLayout aprilTagFieldLayout =
-      AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
-
-  StructPublisher<Pose2d> publisher =
-      NetworkTableInstance.getDefault().getStructTopic("Robot Pose", Pose2d.struct).publish();
+  private EyeOfTheStorm eyeOfTheStorm;
 
   private double allianceMultipler = 1;
 
@@ -81,48 +57,7 @@ public class Drivetrain extends SubsystemBase {
           Logger.recordOutput("Odometry/TrajectorySetpoint", targetPose);
         });
 
-    ConfigureCameras();
-  }
-
-  private void ConfigureCameras() {
-    this.m_LeftCamera = new PhotonCamera(VisionConstants.photonLeftName);
-    this.m_LeftCameraEstimator =
-        new PhotonPoseEstimator(
-            aprilTagFieldLayout,
-            PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
-            VisionConstants.robotToPhotonLeft);
-    this.m_RightCamera = new PhotonCamera(VisionConstants.photonRightName);
-    this.m_RightCameraEstimator =
-        new PhotonPoseEstimator(
-            aprilTagFieldLayout,
-            PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
-            VisionConstants.robotToPhotonRight);
-  }
-
-  private void UpdateForwardCamera() {
-    if (m_LeftCamera.isConnected()) {
-      List<PhotonPipelineResult> list = m_LeftCamera.getAllUnreadResults();
-      if (!list.isEmpty()) {
-        Optional<EstimatedRobotPose> estimatedPose = m_LeftCameraEstimator.update(list.get(0));
-        if (estimatedPose.isPresent()) {
-          this.addVisionMeasurement(
-              estimatedPose.get().estimatedPose.toPose2d(), Utils.getCurrentTimeSeconds());
-        }
-      }
-    }
-  }
-
-  private void UpdateFarCamera() {
-    if (m_RightCamera.isConnected()) {
-      List<PhotonPipelineResult> list = m_RightCamera.getAllUnreadResults();
-      if (!list.isEmpty()) {
-        Optional<EstimatedRobotPose> estimatedPose = m_RightCameraEstimator.update(list.get(0));
-        if (estimatedPose.isPresent()) {
-          this.addVisionMeasurement(
-              estimatedPose.get().estimatedPose.toPose2d(), Utils.getCurrentTimeSeconds());
-        }
-      }
-    }
+    eyeOfTheStorm = new EyeOfTheStorm(this::addVisionMeasurement);
   }
 
   @Override
@@ -130,8 +65,7 @@ public class Drivetrain extends SubsystemBase {
     drivetrainIO.updateInputs(inputs);
     Logger.processInputs("drivetrain", inputs);
 
-    UpdateFarCamera();
-    UpdateForwardCamera();
+    eyeOfTheStorm.periodic();
   }
 
   public void runVelocity(ChassisSpeeds speeds, boolean openLoop) {
@@ -213,7 +147,8 @@ public class Drivetrain extends SubsystemBase {
           ChassisSpeeds filteredSpeeds =
               DriveConstants.DRIVE_INPUT_FILTER.calculate(new ChassisSpeeds(xSpeed, ySpeed, 0));
 
-          drivetrainIO.runFieldCentricVelocityAtRotation(filteredSpeeds, rotationSupplier.get(), DriveConstants.RUN_OPEN_LOOP_TELEOP);
+          drivetrainIO.runFieldCentricVelocityAtRotation(
+              filteredSpeeds, rotationSupplier.get(), DriveConstants.RUN_OPEN_LOOP_TELEOP);
         },
         this);
   }
