@@ -125,7 +125,7 @@
   "eventMarkers": [
     {
       "name": "intakeDownEvent",
-      "waypointRelativePos": 0.4949381327334034,
+      "waypointRelativePos": 0.0,
       "endWaypointRelativePos": null,
       "command": null
     },

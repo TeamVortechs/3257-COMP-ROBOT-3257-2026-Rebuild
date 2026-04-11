@@ -30,9 +30,9 @@ public class ShooterTalonFXIO implements ShooterIO {
   // private PIDController PIDController = new PIDController(0.9, 0, 0.1);
 
   public ShooterTalonFXIO(int MainMotorCANID, int FollowerMotorCANID, int followerMotor2CANID) {
-    mainMotor = new TalonFX(MainMotorCANID, Constants.MECHANISM_CANBUS);
-    followerMotor = new TalonFX(FollowerMotorCANID, Constants.MECHANISM_CANBUS);
-    followerMotor2 = new TalonFX(followerMotor2CANID, Constants.MECHANISM_CANBUS);
+    mainMotor = new TalonFX(MainMotorCANID);
+    followerMotor = new TalonFX(FollowerMotorCANID);
+    followerMotor2 = new TalonFX(followerMotor2CANID);
 
     // Basic Configuration
     TalonFXConfiguration config = Constants.ShooterConstants.CONFIG;

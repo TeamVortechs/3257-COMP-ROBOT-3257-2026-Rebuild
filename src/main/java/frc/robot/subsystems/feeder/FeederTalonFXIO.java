@@ -25,7 +25,7 @@ public class FeederTalonFXIO implements FeederIO {
   private boolean isBraked = true;
 
   public FeederTalonFXIO(int canId) {
-    motor = new TalonFX(canId, Constants.MECHANISM_CANBUS);
+    motor = new TalonFX(canId);
     // mVelocityRequest = new VelocityVoltage(0).withSlot(0);
 
     // Basic Configuration

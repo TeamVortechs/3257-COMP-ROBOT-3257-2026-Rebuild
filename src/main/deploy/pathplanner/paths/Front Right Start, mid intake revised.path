@@ -21,11 +21,11 @@
       },
       "prevControl": {
         "x": 7.52761565836299,
-        "y": 0.6404744958481604
+        "y": 0.6404744958481605
       },
       "nextControl": {
         "x": 7.925877843107336,
-        "y": 1.3801187432853321
+        "y": 1.3801187432853326
       },
       "isLocked": false,
       "linkedName": null
@@ -84,7 +84,7 @@
         "y": 2.3
       },
       "prevControl": {
-        "x": 3.546226274358719,
+        "x": 3.5462262743587196,
         "y": 2.262862831735484
       },
       "nextControl": null,
@@ -125,7 +125,7 @@
   "eventMarkers": [
     {
       "name": "intakeDownEvent",
-      "waypointRelativePos": 0.4287305122494427,
+      "waypointRelativePos": 0.0,
       "endWaypointRelativePos": null,
       "command": null
     },

@@ -36,10 +36,10 @@ public class IntakeTalonFXCANCoderIO implements IntakeIO {
 
   public IntakeTalonFXCANCoderIO(
       int canIdRoller, int canIDRoller2, int canIdPosition, int canIdCANCoder) {
-    roller = new TalonFX(canIdRoller, Constants.MECHANISM_CANBUS);
-    rollerFollower = new TalonFX(canIDRoller2, Constants.MECHANISM_CANBUS);
-    position = new TalonFX(canIdPosition, Constants.MECHANISM_CANBUS);
-    caNcoder = new CANcoder(canIdCANCoder, Constants.MECHANISM_CANBUS);
+    roller = new TalonFX(canIdRoller);
+    rollerFollower = new TalonFX(canIDRoller2);
+    position = new TalonFX(canIdPosition);
+    caNcoder = new CANcoder(canIdCANCoder);
 
     mVoltageRequest = new MotionMagicVoltage(0);
 

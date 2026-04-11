@@ -100,7 +100,7 @@ public class Robot extends LoggedRobot {
   @Override
   public void robotInit() {
 
-    String[] paths = {"u/logs", "/media/sda1/ctre-logs/", "/media/sdb1/ctre-logs/"};
+    String[] paths = {"u/logs", "/media/sda1/ctre-logs/", "/media/sdb1/ctre-logs/", "u/"};
 
     for (int i = 0; i < 5; i++) {
       System.out.println("Signal logger try no." + (i + 1));

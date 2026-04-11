@@ -9,7 +9,6 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.MetersPerSecond;
 
-import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
@@ -47,7 +46,7 @@ import java.util.function.Supplier;
  */
 public final class Constants {
 
-  public static final CANBus MECHANISM_CANBUS = new CANBus("Mech - Canivore");
+  // public static final CANBus MECHANISM_CANBUS = new CANBus("Mech - Canivore");
 
   public static final Mode SIM_MODE = Mode.SIM;
   public static final Mode CURR_MODE = RobotBase.isReal() ? Mode.REAL : SIM_MODE;
