@@ -372,6 +372,27 @@ public class RobotContainer {
                                 feeder.setSpeedCommand(FeederConstants.FEED_SPEED),
                                 belt.setPercentMotorOutputRunCommand(BeltConstants.FEED_POWER),
                                 intake.intakeRetractWhileShooting(() -> true)))));
+
+    operatorController
+        .povUp()
+        .whileTrue(
+            new InstantCommand(
+                () -> drive.resetPose(new Pose2d(0, 0, drive.getPose().getRotation()))));
+    operatorController
+        .povDown()
+        .whileTrue(
+            new InstantCommand(
+                () -> drive.resetPose(new Pose2d(10, 10, drive.getPose().getRotation()))));
+    operatorController
+        .povLeft()
+        .whileTrue(
+            new InstantCommand(
+                () -> drive.resetPose(new Pose2d(0, 10, drive.getPose().getRotation()))));
+    operatorController
+        .povRight()
+        .whileTrue(
+            new InstantCommand(
+                () -> drive.resetPose(new Pose2d(10, 0, drive.getPose().getRotation()))));
   }
 
   public void configureSysIdBindings() {

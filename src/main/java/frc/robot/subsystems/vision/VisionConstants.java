@@ -84,5 +84,6 @@ public class VisionConstants {
   public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(0.8, 0.8, 999999);
 
   // [xStdDev, yStdDev, thetaStdDev]
-  public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.35, 0.35, 999999);
+  // 0.35
+  public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.25, 0.25, 999999);
 }
