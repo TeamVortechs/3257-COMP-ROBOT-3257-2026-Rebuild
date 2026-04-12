@@ -29,12 +29,16 @@ public interface DrivetrainIO {
 
   public default void updateInputs(DrivetrainIOInputsAutoLogged inputsAutoLogged) {}
 
-  public default void runRobotCentricVelocity(ChassisSpeeds chassisSpeeds) {}
+  public default void runRobotCentricVelocity(ChassisSpeeds chassisSpeeds, boolean openLoop) {}
 
-  public default void runFieldCentricVelocity(ChassisSpeeds chassisSpeeds) {}
+  public default void runFieldCentricVelocity(ChassisSpeeds chassisSpeeds, boolean openLoop) {}
 
   public default void runFieldCentricVelocityAtRotation(
-      ChassisSpeeds chassisSpeeds, Rotation2d rotation2d) {}
+      ChassisSpeeds chassisSpeeds, Rotation2d rotation2d, boolean openLoop) {}
+
+  public default void seedFieldRelative() {
+    
+  }
 
   public default void runSwerveDriveBrake() {}
 

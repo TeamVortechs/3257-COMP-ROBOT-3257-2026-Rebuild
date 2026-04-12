@@ -15,7 +15,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "Front Top Start, mid intake"
+                        "pathName": "Front Left Start, mid intake revised"
                       }
                     },
                     {
@@ -27,13 +27,19 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "Top Shoot Mid again"
+                        "pathName": "Left Shoot Mid again Revised"
                       }
                     },
                     {
                       "type": "named",
                       "data": {
                         "name": "feedWhenValidAndStop"
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "left Shoot to ending position farther"
                       }
                     }
                   ]

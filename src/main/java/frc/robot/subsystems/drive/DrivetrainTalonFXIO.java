@@ -1,6 +1,7 @@
 package frc.robot.subsystems.drive;
 
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
+import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.math.Matrix;
@@ -18,15 +19,25 @@ public class DrivetrainTalonFXIO extends CommandSwerveDrivetrain implements Driv
 
   private SwerveRequest.SwerveDriveBrake m_SwerveDriveBrake = new SwerveRequest.SwerveDriveBrake();
 
-  private SwerveRequest.RobotCentric m_RobotCentricReq = new SwerveRequest.RobotCentric();
+  private SwerveRequest.RobotCentric m_RobotCentricOpenLoop =
+      new SwerveRequest.RobotCentric().withDriveRequestType(DriveRequestType.OpenLoopVoltage);
+  private SwerveRequest.RobotCentric m_RobotCentricReqVelocity =
+      new SwerveRequest.RobotCentric().withDriveRequestType(DriveRequestType.Velocity);
 
-  private SwerveRequest.FieldCentric m_FieldCentricReq = new SwerveRequest.FieldCentric();
+  private SwerveRequest.FieldCentric m_FieldCentricReqOpenLoop =
+      new SwerveRequest.FieldCentric().withDriveRequestType(DriveRequestType.OpenLoopVoltage);
+  private SwerveRequest.FieldCentric m_FieldCentricReqVelocity =
+      new SwerveRequest.FieldCentric().withDriveRequestType(DriveRequestType.Velocity);
 
-  private SwerveRequest.FieldCentricFacingAngle m_FieldCentricAngleReq =
+  private SwerveRequest.FieldCentricFacingAngle m_FieldCentricAngleReqOpenLoop =
       new SwerveRequest.FieldCentricFacingAngle()
-          .withHeadingPID(
-              DriveConstants.ANGLE_KP, DriveConstants.ANGLE_KI, DriveConstants.ANGLE_KD);
-  ;
+          .withHeadingPID(DriveConstants.ANGLE_KP, DriveConstants.ANGLE_KI, DriveConstants.ANGLE_KD)
+          .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
+
+  private SwerveRequest.FieldCentricFacingAngle m_FieldCentricAngleReqVelocity =
+      new SwerveRequest.FieldCentricFacingAngle()
+          .withHeadingPID(DriveConstants.ANGLE_KP, DriveConstants.ANGLE_KI, DriveConstants.ANGLE_KD)
+          .withDriveRequestType(DriveRequestType.Velocity);
 
   private BuiltInAccelerometer builtInAccelerometer = new BuiltInAccelerometer();
 
@@ -53,30 +64,54 @@ public class DrivetrainTalonFXIO extends CommandSwerveDrivetrain implements Driv
     inputsAutoLogged.heading = lastState.RawHeading;
   }
 
-  public void runRobotCentricVelocity(ChassisSpeeds chassisSpeeds) {
+  public void runRobotCentricVelocity(ChassisSpeeds chassisSpeeds, boolean openLoop) {
 
-    setControl(
-        m_RobotCentricReq
-            .withVelocityX(chassisSpeeds.vxMetersPerSecond)
-            .withVelocityY(chassisSpeeds.vyMetersPerSecond)
-            .withRotationalRate(chassisSpeeds.omegaRadiansPerSecond));
+    if (openLoop) {
+      setControl(
+          m_RobotCentricOpenLoop
+              .withVelocityX(chassisSpeeds.vxMetersPerSecond)
+              .withVelocityY(chassisSpeeds.vyMetersPerSecond)
+              .withRotationalRate(chassisSpeeds.omegaRadiansPerSecond));
+    } else {
+      setControl(
+          m_RobotCentricReqVelocity
+              .withVelocityX(chassisSpeeds.vxMetersPerSecond)
+              .withVelocityY(chassisSpeeds.vyMetersPerSecond)
+              .withRotationalRate(chassisSpeeds.omegaRadiansPerSecond));
+    }
   }
 
-  public void runFieldCentricVelocity(ChassisSpeeds chassisSpeeds) {
-    setControl(
-        m_FieldCentricReq
-            .withVelocityX(chassisSpeeds.vxMetersPerSecond)
-            .withVelocityY(chassisSpeeds.vyMetersPerSecond)
-            .withRotationalRate(chassisSpeeds.omegaRadiansPerSecond));
+  public void runFieldCentricVelocity(ChassisSpeeds chassisSpeeds, boolean openLoop) {
+    if (openLoop) {
+      setControl(
+          m_FieldCentricReqOpenLoop
+              .withVelocityX(chassisSpeeds.vxMetersPerSecond)
+              .withVelocityY(chassisSpeeds.vyMetersPerSecond)
+              .withRotationalRate(chassisSpeeds.omegaRadiansPerSecond));
+    } else {
+      setControl(
+          m_FieldCentricReqVelocity
+              .withVelocityX(chassisSpeeds.vxMetersPerSecond)
+              .withVelocityY(chassisSpeeds.vyMetersPerSecond)
+              .withRotationalRate(chassisSpeeds.omegaRadiansPerSecond));
+    }
   }
 
   public void runFieldCentricVelocityAtRotation(
-      ChassisSpeeds chassisSpeeds, Rotation2d rotation2d) {
-    setControl(
-        m_FieldCentricAngleReq
-            .withVelocityX(chassisSpeeds.vxMetersPerSecond)
-            .withVelocityY(chassisSpeeds.vyMetersPerSecond)
-            .withTargetDirection(rotation2d));
+      ChassisSpeeds chassisSpeeds, Rotation2d rotation2d, boolean openLoop) {
+    if (openLoop) {
+      setControl(
+          m_FieldCentricAngleReqOpenLoop
+              .withVelocityX(chassisSpeeds.vxMetersPerSecond)
+              .withVelocityY(chassisSpeeds.vyMetersPerSecond)
+              .withTargetDirection(rotation2d));
+    } else {
+      setControl(
+          m_FieldCentricAngleReqVelocity
+              .withVelocityX(chassisSpeeds.vxMetersPerSecond)
+              .withVelocityY(chassisSpeeds.vyMetersPerSecond)
+              .withTargetDirection(rotation2d));
+    }
   }
 
   public void runSwerveDriveBrake() {
@@ -116,6 +151,10 @@ public class DrivetrainTalonFXIO extends CommandSwerveDrivetrain implements Driv
   public Rotation2d getHeading() {
 
     return lastState.RawHeading;
+  }
+
+  public void seedFieldRelative() {
+    this.seedFieldCentric();
   }
 
   public Command sysIdQuasistaticCommand(SysIdRoutine.Direction direction) {

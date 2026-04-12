@@ -77,7 +77,7 @@ public final class Constants {
     // more info
 
     public static final double SUPPLY_CURRENT_LIMIT_SHOOTER = 500;
-    public static final double STATOR_CURRENT_LIMIT_SHOOTER = 150;
+    public static final double STATOR_CURRENT_LIMIT_SHOOTER = 60;
 
     public static final double SUPPLY_CURRENT_LIMIT_FEEDER = 40.0;
     public static final double STATOR_CURRENT_LIMIT_FEEDER = 120;
@@ -96,6 +96,9 @@ public final class Constants {
   }
 
   public class DriveConstants {
+
+    public static final boolean RUN_OPEN_LOOP_TELEOP = false;
+    public static final boolean RUN_OPEN_LOOP_AUTONOMOUS = false;
 
     // pathplanner constants
     public static final double ROBOT_WEIGHT = 58.060;
@@ -121,7 +124,8 @@ public final class Constants {
     public static final double ANGLE_MAX_ACCELERATION = 20.0;
     public static final double ANGLE_MAX_VELOCITY = 8.0;
 
-    public static final double ORIENTATION_TOLERANCE = 0.2;
+    public static final double ORIENTATION_TOLERANCE = 0.075;
+    // 0.1
 
     // this gets made with the other constants
     public static final ProfiledPIDController ANGLE_CONTROLLER;
