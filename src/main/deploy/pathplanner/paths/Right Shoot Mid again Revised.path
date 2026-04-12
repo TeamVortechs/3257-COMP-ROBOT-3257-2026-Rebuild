@@ -4,12 +4,12 @@
     {
       "anchor": {
         "x": 2.7236737089201886,
-        "y": 5.679
+        "y": 2.321
       },
       "prevControl": null,
       "nextControl": {
         "x": 1.853970171171809,
-        "y": 4.906702555816945
+        "y": 1.5487025558169445
       },
       "isLocked": false,
       "linkedName": "Right Shoot"
@@ -145,11 +145,11 @@
     {
       "anchor": {
         "x": 2.7236737089201886,
-        "y": 5.679
+        "y": 2.321
       },
       "prevControl": {
         "x": 2.5542539810095852,
-        "y": 5.418245685068562
+        "y": 2.0602456850685615
       },
       "nextControl": null,
       "isLocked": false,
@@ -234,13 +234,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -43.315
+    "rotation": 42.48376443503037
   },
   "reversed": false,
   "folder": "New Right",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -43.315
+    "rotation": 42.48376443503037
   },
   "useDefaultConstraints": true
 }

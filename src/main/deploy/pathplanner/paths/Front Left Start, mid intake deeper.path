@@ -80,16 +80,16 @@
     },
     {
       "anchor": {
-        "x": 2.7236737089201886,
-        "y": 5.679
+        "x": 2.777,
+        "y": 5.568
       },
       "prevControl": {
-        "x": 2.9708998727023443,
-        "y": 5.716137904377586
+        "x": 3.024226163782156,
+        "y": 5.605137904377585
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Right Shoot"
+      "linkedName": "new top left shooting 2"
     }
   ],
   "rotationTargets": [
@@ -180,7 +180,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -43.315
+    "rotation": -39.739977784329014
   },
   "reversed": false,
   "folder": "New Left",
