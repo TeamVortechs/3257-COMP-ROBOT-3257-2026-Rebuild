@@ -126,7 +126,8 @@ public final class Constants {
     public static final double ANGLE_MAX_ACCELERATION = 20.0;
     public static final double ANGLE_MAX_VELOCITY = 8.0;
 
-    public static final double ORIENTATION_TOLERANCE = 0.2;
+    public static final double ORIENTATION_TOLERANCE = 0.075;
+    // 0.1
 
     // this gets made with the other constants
     public static final ProfiledPIDController ANGLE_CONTROLLER;

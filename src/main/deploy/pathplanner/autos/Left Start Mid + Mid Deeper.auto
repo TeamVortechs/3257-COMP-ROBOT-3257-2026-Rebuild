@@ -15,7 +15,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "Front Right Start, mid intake revised"
+                        "pathName": "Front Left Start, mid intake deeper"
                       }
                     },
                     {
@@ -27,7 +27,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "Right Shoot Mid again Revised"
+                        "pathName": "Left Shoot Mid again Revised"
                       }
                     },
                     {
@@ -39,7 +39,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "right Shoot to ending position"
+                        "pathName": "left Shoot to ending position farther"
                       }
                     }
                   ]

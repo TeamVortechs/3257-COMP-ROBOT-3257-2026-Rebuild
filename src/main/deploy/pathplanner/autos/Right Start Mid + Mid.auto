@@ -5,33 +5,47 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "race",
           "data": {
-            "pathName": "Bottom Start, Mid intake revised"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "feedWhenValidAndStop"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Back Mid Back ot mid"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "feedWhenValidAndStop"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Back Mid shoot to ending position"
+            "commands": [
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Front Right Start, mid intake revised"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "feedWhenValidAndStop"
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Right Shoot Mid again Revised"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "feedWhenValidAndStop"
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "right Shoot to ending position"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]
