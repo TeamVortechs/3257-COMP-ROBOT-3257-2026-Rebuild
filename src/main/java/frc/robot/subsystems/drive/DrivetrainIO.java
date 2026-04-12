@@ -36,6 +36,10 @@ public interface DrivetrainIO {
   public default void runFieldCentricVelocityAtRotation(
       ChassisSpeeds chassisSpeeds, Rotation2d rotation2d, boolean openLoop) {}
 
+  public default void seedFieldRelative() {
+    
+  }
+
   public default void runSwerveDriveBrake() {}
 
   public default ChassisSpeeds getChassisSpeeds() {

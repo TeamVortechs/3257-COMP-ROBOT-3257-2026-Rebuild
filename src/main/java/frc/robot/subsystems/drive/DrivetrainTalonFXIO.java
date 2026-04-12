@@ -153,6 +153,10 @@ public class DrivetrainTalonFXIO extends CommandSwerveDrivetrain implements Driv
     return lastState.RawHeading;
   }
 
+  public void seedFieldRelative() {
+    this.seedFieldCentric();
+  }
+
   public Command sysIdQuasistaticCommand(SysIdRoutine.Direction direction) {
     return sysIdQuasistatic(direction);
   }

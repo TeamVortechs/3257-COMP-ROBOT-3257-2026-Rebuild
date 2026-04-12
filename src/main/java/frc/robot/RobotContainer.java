@@ -254,8 +254,7 @@ public class RobotContainer {
         .onTrue(
             Commands.runOnce(
                     () ->
-                        drive.resetPose(
-                            new Pose2d(drive.getPose().getTranslation(), Rotation2d.kZero)),
+                        drive.resetGyro(),
                     drive)
                 .ignoringDisable(true));
 
@@ -301,6 +300,7 @@ public class RobotContainer {
                         IntakeConstants.INTAKE_DOWN_POSITION, IntakeConstants.EJECT_VOLTS)
                     .alongWith(belt.setPercentMotorOutputCommand(BeltConstants.EJECT_POWER))));
     // intake command
+
     controller
         .leftTrigger()
         .whileTrue(

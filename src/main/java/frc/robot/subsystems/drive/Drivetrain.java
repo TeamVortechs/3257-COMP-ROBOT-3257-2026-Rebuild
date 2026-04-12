@@ -76,6 +76,10 @@ public class Drivetrain extends SubsystemBase {
     runVelocity(speeds, false);
   }
 
+  public void resetGyro() {
+    drivetrainIO.seedFieldRelative();
+  }
+
   public void updateAllianceMultiplier() {
     if (DriverStation.getAlliance().isEmpty()
         || DriverStation.getAlliance().get() == Alliance.Blue) {
